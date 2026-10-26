@@ -10,10 +10,11 @@ import {
   Tv,
   Copy,
   Check,
-  MoreVertical,
+  Archive,
   GraduationCap,
   Sparkles,
-  Archive,
+  Building2,
+  CalendarCheck
 } from 'lucide-react';
 
 interface GroupItem {
@@ -65,17 +66,15 @@ export default function GroupsPage() {
 
   const handleNameChange = (val: string) => {
     setName(val);
-    if (!slug || slug === name.toLowerCase().replace(/[^a-z0-9]/g, '-')) {
-      const autoSlug = val
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-      setSlug(autoSlug);
-    }
+    const generatedSlug = val
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[đĐ]/g, 'd')
+      .replace(/[^a-z0-9 ]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+    setSlug(generatedSlug);
   };
 
   const handleCreateGroup = async (e: React.FormEvent) => {
@@ -134,52 +133,57 @@ export default function GroupsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Quản lý Lớp & Câu lạc bộ
-          </h1>
-          <p className="text-sm text-slate-500">
-            Tạo lớp dạy thêm, câu lạc bộ thể thao hoặc nhóm thuê phòng
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Lớp học & Câu lạc bộ
+            </h1>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+              Quản trị
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Tạo lớp dạy thêm, câu lạc bộ thể thao (Pickleball, Cầu lông) hoặc nhóm phòng trọ
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold rounded-xl shadow-sm transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 stroke-[3]" />
           <span>Tạo lớp / CLB mới</span>
         </button>
       </div>
 
       {/* Group Cards Grid */}
       {loading ? (
-        <div className="text-center py-16 text-slate-400">Đang tải danh sách lớp...</div>
+        <div className="text-center py-16 text-slate-400 animate-pulse text-xs">Đang tải danh sách lớp...</div>
       ) : groups.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {groups.map((group) => (
             <div
               key={group.id}
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between hover:border-slate-300 transition"
+              className="ting-card p-5 flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
                       {group.groupType === 'CLASS'
                         ? 'Lớp học'
                         : group.groupType === 'SPORTS_CLUB'
                         ? 'CLB Thể thao'
                         : 'Cho thuê'}
                     </span>
-                    <h2 className="text-lg font-bold text-slate-900 mt-1">{group.name}</h2>
+                    <h2 className="text-base font-bold text-white mt-1.5">{group.name}</h2>
                   </div>
                   <button
                     onClick={() => handleArchiveGroup(group.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition"
+                    className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg transition"
                     title="Lưu trữ lớp này"
                   >
                     <Archive className="w-4 h-4" />
@@ -187,19 +191,19 @@ export default function GroupsPage() {
                 </div>
 
                 {group.description && (
-                  <p className="text-xs text-slate-500 line-clamp-2">{group.description}</p>
+                  <p className="text-xs text-slate-400 line-clamp-2">{group.description}</p>
                 )}
 
-                <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs">
+                <div className="pt-2 border-t border-[#1E283D] grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-slate-400 block">Thành viên:</span>
-                    <span className="font-semibold text-slate-800">
-                      {group._count.members} người
+                    <span className="text-slate-400 block text-[11px]">Sĩ số:</span>
+                    <span className="font-semibold text-white">
+                      {group._count.members} thành viên
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block">Định mức phí:</span>
-                    <span className="font-semibold text-slate-800 font-mono">
+                    <span className="text-slate-400 block text-[11px]">Định mức phí:</span>
+                    <span className="font-semibold text-emerald-400 font-mono">
                       {formatVND(group.defaultFee)}
                     </span>
                   </div>
@@ -207,22 +211,22 @@ export default function GroupsPage() {
               </div>
 
               {/* Actions */}
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+              <div className="mt-5 pt-3.5 border-t border-[#1E283D] flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => handleCopyPortalLink(group.slug)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 transition"
-                  title="Sao chép link gửi phụ huynh qua Zalo"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#1E283D] text-slate-300 hover:text-white hover:bg-[#182136] transition"
+                  title="Sao chép link cổng tra cứu phụ huynh"
                 >
                   {copiedSlug === group.slug ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Đã chép link Zalo</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Đã chép link</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Link Zalo</span>
+                      <span>Link Cổng Phụ Huynh</span>
                     </>
                   )}
                 </button>
@@ -231,8 +235,8 @@ export default function GroupsPage() {
                   <Link
                     href={`/kiosk/${group.id}`}
                     target="_blank"
-                    className="p-1.5 text-slate-600 hover:text-indigo-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition"
-                    title="Mở màn hình Kiosk cho iPad tại sân"
+                    className="p-1.5 text-slate-400 hover:text-emerald-400 border border-[#1E283D] rounded-lg hover:bg-[#182136] transition"
+                    title="Mở màn hình Kiosk iPad"
                   >
                     <Tv className="w-4 h-4" />
                   </Link>
@@ -240,7 +244,7 @@ export default function GroupsPage() {
                   <Link
                     href={`/p/${group.slug}`}
                     target="_blank"
-                    className="p-1.5 text-slate-600 hover:text-indigo-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition"
+                    className="p-1.5 text-slate-400 hover:text-emerald-400 border border-[#1E283D] rounded-lg hover:bg-[#182136] transition"
                     title="Xem cổng thu phí công khai"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -251,17 +255,17 @@ export default function GroupsPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto">
+        <div className="ting-card p-12 text-center space-y-3">
+          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-slate-900">Chưa có lớp hoặc câu lạc bộ nào</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          <h3 className="text-base font-bold text-white">Chưa có lớp hoặc câu lạc bộ nào</h3>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
             Bấm nút &quot;Tạo lớp / CLB mới&quot; để bắt đầu quản lý học viên, điểm danh và tạo mã VietQR tự động.
           </p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition"
+            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl transition"
           >
             Tạo lớp đầu tiên
           </button>
@@ -270,27 +274,27 @@ export default function GroupsPage() {
 
       {/* Create Group Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h3 className="text-lg font-bold text-slate-900">Tạo Lớp / CLB mới</h3>
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-scaleUp">
+            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
+              <h3 className="text-base font-bold text-white">Tạo Lớp / CLB mới</h3>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-slate-600 text-lg font-bold"
+                className="text-slate-400 hover:text-white text-sm"
               >
                 ✕
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleCreateGroup} className="space-y-4">
+            <form onSubmit={handleCreateGroup} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Tên lớp / câu lạc bộ *
                 </label>
                 <input
@@ -298,36 +302,36 @@ export default function GroupsPage() {
                   required
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="Ví dụ: Lớp Toán Thầy Tuấn 12A, CLB Cầu Lông Ting..."
-                  className="w-full text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Ví dụ: Lớp Toán Thầy Tuấn 12A, CLB Pickleball Hà Nội..."
+                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Đường dẫn công khai (slug) *
                 </label>
-                <div className="flex items-center text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                <div className="flex items-center text-xs text-slate-400 bg-[#111726] border border-[#1E283D] rounded-xl px-3 py-2">
                   <span>tingroster.vn/p/</span>
                   <input
                     type="text"
                     required
                     value={slug}
                     onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                    className="bg-transparent font-semibold text-slate-900 focus:outline-none flex-1 ml-1"
+                    className="bg-transparent font-semibold text-emerald-400 focus:outline-none flex-1 ml-1"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
                     Loại hình
                   </label>
                   <select
                     value={groupType}
                     onChange={(e) => setGroupType(e.target.value)}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
                   >
                     <option value="CLASS">Lớp học dạy thêm</option>
                     <option value="SPORTS_CLUB">Câu lạc bộ thể thao / Sân</option>
@@ -336,13 +340,13 @@ export default function GroupsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
                     Kỳ tính phí
                   </label>
                   <select
                     value={billingCycle}
                     onChange={(e) => setBillingCycle(e.target.value)}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
                   >
                     <option value="MONTHLY">Theo tháng</option>
                     <option value="PER_SESSION">Theo buổi học / lượt chơi</option>
@@ -352,7 +356,7 @@ export default function GroupsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Học phí mặc định (VND)
                 </label>
                 <input
@@ -361,12 +365,12 @@ export default function GroupsPage() {
                   step="10000"
                   value={defaultFee}
                   onChange={(e) => setDefaultFee(Number(e.target.value))}
-                  className="w-full text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Mô tả ngắn (tùy chọn)
                 </label>
                 <textarea
@@ -374,22 +378,22 @@ export default function GroupsPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
                   placeholder="Ghi chú về lịch học, địa chỉ sân tập..."
-                  className="w-full text-sm border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E283D]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
                 >
                   {isSubmitting ? 'Đang tạo...' : 'Xác nhận tạo'}
                 </button>

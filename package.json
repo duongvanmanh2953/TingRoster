@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "db:generate": "prisma generate",
@@ -17,6 +17,11 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
+    "@mui/material-nextjs": "^9.5.0",
     "@prisma/client": "^5.21.1",
     "@tanstack/react-query": "^5.59.16",
     "bcryptjs": "^2.4.3",

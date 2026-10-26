@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import MuiThemeRegistry from '@/components/theme/MuiThemeRegistry';
 
 export const metadata: Metadata = {
-  title: 'TingRoster — Nền tảng điểm danh & tự động đối soát thu phí bằng VietQR',
-  description: 'Điểm danh một chạm. Thu phí tự động. Đối soát khỏi lo. Giải pháp dành cho giáo viên, câu lạc bộ thể thao và chủ phòng trọ.',
+  title: 'TingRoster — Quản lý điểm danh, học phí & Đối soát VietQR tự động',
+  description: 'Nền tảng điểm danh một chạm và tự động đối soát ngân hàng VietQR cho giáo viên dạy thêm, CLB thể thao và căn hộ.',
 };
 
 export default function RootLayout({
@@ -12,9 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      <body className="antialiased min-h-screen font-sans selection:bg-indigo-500 selection:text-white">
-        {children}
+    <html lang="vi" className="dark">
+      <body className="antialiased min-h-screen text-slate-100 bg-[#080C14] selection:bg-emerald-500 selection:text-white">
+        <MuiThemeRegistry>
+          {children}
+        </MuiThemeRegistry>
       </body>
     </html>
   );

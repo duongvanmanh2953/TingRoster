@@ -5,6 +5,7 @@ import { formatVND, formatDateVN } from '@/lib/utils';
 import { generateVietQRUrl } from '@/lib/providers/vietqr';
 import { Check, Copy, AlertCircle, CheckCircle2, Clock, Ban } from 'lucide-react';
 import Image from 'next/image';
+import { BankLogo } from '@/components/common/BankLogo';
 
 export interface PublicInvoiceData {
   id: string;
@@ -222,12 +223,15 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
 
               {/* Bank Account */}
               <div className="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                <div>
-                  <span className="text-xs text-slate-500 block">Số tài khoản ({invoice.bankId})</span>
-                  <span className="text-sm font-semibold text-slate-900 font-mono">
-                    {invoice.bankAccountNo}
-                  </span>
-                  <span className="text-xs text-slate-500 block uppercase">{invoice.bankAccountName}</span>
+                <div className="flex items-center gap-3">
+                  <BankLogo bankId={invoice.bankId} size="md" />
+                  <div>
+                    <span className="text-xs text-slate-500 block">Ngân hàng ({invoice.bankId})</span>
+                    <span className="text-sm font-semibold text-slate-900 font-mono">
+                      {invoice.bankAccountNo}
+                    </span>
+                    <span className="text-xs text-slate-500 block uppercase font-medium">{invoice.bankAccountName}</span>
+                  </div>
                 </div>
                 <button
                   type="button"

@@ -5,32 +5,49 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
-  Users2,
   CalendarCheck,
-  Receipt,
-  ArrowRightLeft,
-  BarChart3,
-  Zap,
-  HelpCircle,
+  CreditCard,
+  QrCode,
+  Users2,
+  GraduationCap,
+  Tv,
   Settings,
   LogOut,
+  Bell,
+  Search,
+  Zap,
+  BarChart3,
+  CheckCircle2,
+  ChevronRight,
+  ExternalLink,
+  Plus,
+  ShieldCheck,
   Menu,
-  X,
-  GraduationCap,
-  Sparkles,
-  Compass,
+  X
 } from 'lucide-react';
+import { BankLogo } from '@/components/common/BankLogo';
 
-const NAV_ITEMS = [
+interface UserData {
+  name: string;
+  email: string;
+  bankId?: string;
+  bankAccountNo?: string;
+}
+
+const PRIMARY_NAV = [
   { href: '/dashboard', label: 'Tổng quan', icon: LayoutDashboard },
-  { href: '/groups', label: 'Lớp & Câu lạc bộ', icon: Users2 },
-  { href: '/attendance', label: 'Điểm danh hôm nay', icon: CalendarCheck },
-  { href: '/invoices', label: 'Phiếu thu & Học phí', icon: Receipt },
-  { href: '/transactions', label: 'Đối soát giao dịch', icon: ArrowRightLeft },
-  { href: '/reports', label: 'Báo cáo & Phân tích', icon: BarChart3 },
-  { href: '/automations', label: 'Tự động hóa', icon: Zap },
-  { href: '/help', label: 'Hướng dẫn sử dụng', icon: HelpCircle },
-  { href: '/settings', label: 'Cài đặt tài khoản', icon: Settings },
+  { href: '/attendance', label: 'Điểm danh 1 chạm', icon: CalendarCheck, badge: 'Hôm nay' },
+  { href: '/invoices', label: 'Học phí & Hóa đơn', icon: CreditCard },
+  { href: '/transactions', label: 'Đối soát VietQR', icon: QrCode, live: true },
+  { href: '/groups', label: 'Lớp học & CLB', icon: Users2 },
+  { href: '/members', label: 'Học viên & Hội viên', icon: GraduationCap },
+];
+
+const SECONDARY_NAV = [
+  { href: '/kiosk', label: 'Màn hình Kiosk', icon: Tv, external: true },
+  { href: '/reports', label: 'Báo cáo doanh thu', icon: BarChart3 },
+  { href: '/automations', label: 'Tự động nhắc nợ', icon: Zap },
+  { href: '/settings', label: 'Cài đặt ngân hàng', icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -40,27 +57,33 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [userData, setUserData] = useState<UserData>({
+    name: 'Cô Mai Hương',
+    email: 'huong.mai@tingroster.vn',
+    bankId: 'MB',
+    bankAccountNo: '0987654321',
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userName, setUserName] = useState<string>('Chủ tài khoản');
-  const [planType, setPlanType] = useState<string>('PRO');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/auth/me')
       .then((res) => {
-        if (res.status === 401) {
-          router.push('/login');
-          return null;
-        }
+        if (res.status === 401) return null;
         return res.json();
       })
       .then((data) => {
         if (data?.data) {
-          setUserName(data.data.name);
-          setPlanType(data.data.planType);
+          setUserData({
+            name: data.data.name || 'Người dùng TingRoster',
+            email: data.data.email || 'user@tingroster.vn',
+            bankId: data.data.bankId || 'MB',
+            bankAccountNo: data.data.bankAccountNo || '0987654321',
+          });
         }
       })
       .catch(() => {});
-  }, [router]);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -71,131 +94,260 @@ export default function DashboardLayout({
     }
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/invoices?search=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
-      {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 flex-shrink-0">
-        {/* Brand */}
-        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-950/40">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div>
+    <div className="min-h-screen bg-[#080C14] text-slate-100 flex flex-col md:flex-row font-sans selection:bg-emerald-500 selection:text-white">
+      
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-64 bg-[#0B0F19] border-r border-[#1B2333] flex-shrink-0 relative z-20">
+        
+        {/* Brand Header */}
+        <div className="h-16 flex items-center px-5 gap-3 border-b border-[#1B2333]">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-400 font-black text-lg">
+            ⚡
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-base text-white tracking-tight">TingRoster</span>
-              <span className="block text-[10px] text-indigo-400 font-medium">SaaS VietQR V2</span>
+              <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                Pro
+              </span>
             </div>
+            <p className="text-[11px] text-slate-400 truncate">Đối soát VietQR tự động</p>
           </div>
         </div>
 
-        {/* User Card & Wizard link */}
-        <div className="p-3.5 mx-3 my-3 bg-slate-800/60 rounded-2xl border border-slate-750 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-white truncate max-w-[120px]">{userName}</span>
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-              <Sparkles className="w-2.5 h-2.5" />
-              {planType}
-            </span>
+        {/* Bank Connection Pill with Logo */}
+        <div className="p-3">
+          <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#111726] border border-[#1E283D] text-[11px]">
+            <div className="flex items-center gap-2 min-w-0">
+              <BankLogo bankId={userData.bankId} size="xs" />
+              <span className="font-semibold text-slate-200 truncate">{userData.bankId} {userData.bankAccountNo}</span>
+            </div>
+            <span className="text-[10px] text-emerald-400 font-bold ml-1 flex-shrink-0">Live</span>
           </div>
-          <Link
-            href="/onboarding"
-            className="flex items-center gap-1.5 text-[11px] text-indigo-400 hover:text-indigo-300 transition"
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Mở hướng dẫn thiết lập</span>
-          </Link>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-3 space-y-1 py-1 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
+        {/* Navigation Menu */}
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
+          <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Quản lý cốt lõi
+          </div>
+          {PRIMARY_NAV.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href || pathname.startsWith(item.href + '/');
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium transition ${
-                  active
-                    ? 'bg-indigo-600 text-white shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-emerald-500/15 text-emerald-400 font-semibold border border-emerald-500/30'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#131A2B]'
                 }`}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{item.label}</span>
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`} />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge && (
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                    {item.badge}
+                  </span>
+                )}
+                {item.live && (
+                  <span className="flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Auto
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+
+          <div className="pt-4 pb-1 px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Mở rộng & Công cụ
+          </div>
+          {SECONDARY_NAV.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#131A2B]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon className="w-4 h-4 text-slate-400" />
+                  <span>{item.label}</span>
+                </div>
+                {item.external && <ExternalLink className="w-3 h-3 text-slate-400" />}
               </Link>
             );
           })}
         </nav>
 
-        {/* Logout */}
-        <div className="p-3 border-t border-slate-800">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Đăng xuất</span>
-          </button>
+        {/* User Profile Footer */}
+        <div className="p-3 border-t border-[#1B2333] bg-[#0A0D17]">
+          <div className="flex items-center justify-between p-2 rounded-xl bg-[#111726] border border-[#1E283D]">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
+                {userData.name.charAt(0)}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-white truncate">{userData.name}</p>
+                <p className="text-[10px] text-slate-400 truncate">{userData.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              title="Đăng xuất"
+              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors flex-shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
+
       </aside>
 
-      {/* Mobile Top Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-16 bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
-            <GraduationCap className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base">TingRoster V2</span>
-        </div>
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-slate-300 hover:text-white rounded-lg focus:outline-none"
-          aria-label="Toggle Navigation"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </header>
-
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-900 border-b border-slate-800 px-4 py-3 space-y-1 animate-in slide-in-from-top duration-200">
-          <div className="px-3 py-2 text-xs text-slate-400 border-b border-slate-800 mb-2">
-            Xin chào, <strong className="text-white">{userName}</strong> ({planType})
-          </div>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium ${
-                  active ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-rose-400 hover:bg-rose-500/10 rounded-xl"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Đăng xuất</span>
-          </button>
-        </div>
-      )}
-
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+      <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-0">
+        
+        {/* Global Topbar */}
+        <header className="h-16 bg-[#0B0F19]/90 border-b border-[#1B2333] px-4 lg:px-8 flex items-center justify-between gap-4 sticky top-0 z-30 backdrop-blur-xl">
+          
+          {/* Mobile menu trigger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[#131A2B]"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          {/* Search bar */}
+          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm theo mã thanh toán (VD: TR84920), tên học viên, lớp..."
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#111726] border border-[#1E283D] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+            />
+          </form>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/invoices"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold transition-all shadow-sm"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Tạo hóa đơn</span>
+            </Link>
+
+            <Link
+              href="/transactions"
+              title="Giao dịch VietQR"
+              className="w-9 h-9 rounded-xl bg-[#111726] border border-[#1E283D] text-slate-300 hover:text-emerald-400 hover:border-emerald-500/40 flex items-center justify-center relative transition-colors"
+            >
+              <QrCode className="w-4 h-4" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 absolute top-2 right-2 ting-badge-pulse" />
+            </Link>
+
+            <Link
+              href="/settings"
+              title="Cài đặt hệ thống"
+              className="w-9 h-9 rounded-xl bg-[#111726] border border-[#1E283D] text-slate-300 hover:text-white hover:bg-[#182136] flex items-center justify-center transition-colors"
+            >
+              <Settings className="w-4 h-4" />
+            </Link>
+
+            <div className="flex items-center gap-2 pl-2 border-l border-[#1B2333]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xs font-bold text-emerald-400">
+                {userData.name.charAt(0)}
+              </div>
+              <span className="text-xs font-medium text-slate-200 hidden sm:inline">{userData.name}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Mobile dropdown drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-[#0B0F19] border-b border-[#1B2333] px-4 py-3 space-y-1">
+            {PRIMARY_NAV.concat(SECONDARY_NAV).map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs text-slate-300 hover:bg-[#131A2B]"
+                >
+                  <Icon className="w-4 h-4 text-emerald-400" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Page Inner Content */}
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
           {children}
-        </div>
-      </main>
+        </main>
+
+      </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#0B0F19]/95 border-t border-[#1B2333] backdrop-blur-xl flex items-center justify-around px-2 z-40">
+        <Link 
+          href="/dashboard" 
+          className={`flex flex-col items-center gap-1 text-[10px] ${pathname === '/dashboard' ? 'text-emerald-400 font-bold' : 'text-slate-400'}`}
+        >
+          <LayoutDashboard className="w-5 h-5" />
+          <span>Tổng quan</span>
+        </Link>
+        <Link 
+          href="/attendance" 
+          className={`flex flex-col items-center gap-1 text-[10px] ${pathname === '/attendance' ? 'text-emerald-400 font-bold' : 'text-slate-400'}`}
+        >
+          <CalendarCheck className="w-5 h-5" />
+          <span>Điểm danh</span>
+        </Link>
+        <Link 
+          href="/invoices" 
+          className="w-11 h-11 -mt-5 rounded-full bg-emerald-500 hover:bg-emerald-600 flex items-center justify-center text-[#080C14] shadow-lg shadow-emerald-500/30 border-2 border-[#080C14] font-bold"
+        >
+          <Plus className="w-6 h-6 stroke-[3]" />
+        </Link>
+        <Link 
+          href="/transactions" 
+          className={`flex flex-col items-center gap-1 text-[10px] ${pathname === '/transactions' ? 'text-emerald-400 font-bold' : 'text-slate-400'}`}
+        >
+          <QrCode className="w-5 h-5" />
+          <span>Đối soát</span>
+        </Link>
+        <Link 
+          href="/groups" 
+          className={`flex flex-col items-center gap-1 text-[10px] ${pathname === '/groups' ? 'text-emerald-400 font-bold' : 'text-slate-400'}`}
+        >
+          <Users2 className="w-5 h-5" />
+          <span>Lớp & CLB</span>
+        </Link>
+      </div>
+
     </div>
   );
 }

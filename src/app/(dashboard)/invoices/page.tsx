@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { formatVND, formatDateVN } from '@/lib/utils';
 import {
-  Receipt,
+  CreditCard,
   Plus,
   ExternalLink,
   Copy,
@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Clock,
   Ban,
+  QrCode
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -155,29 +156,34 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Quản lý Phiếu thu & Học phí
-          </h1>
-          <p className="text-sm text-slate-500">
-            Tạo mã thanh toán VietQR riêng biệt cho từng thành viên, tự động gạch nợ
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Học phí & Hóa đơn
+            </h1>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+              VietQR Napas
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Quản lý đợt thu, tạo mã thanh toán riêng biệt cho từng thành viên và theo dõi công nợ
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold rounded-xl shadow-sm transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 stroke-[3]" />
           <span>Tạo đợt thu mới</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="ting-card p-4 flex flex-col md:flex-row gap-3 items-center justify-between">
         <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -185,7 +191,7 @@ export default function InvoicesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo mã TR, tên học viên..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 pr-4 py-2 text-xs bg-[#111726] border border-[#1E283D] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
           />
         </form>
 
@@ -193,7 +199,7 @@ export default function InvoicesPage() {
           <select
             value={selectedGroupId}
             onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="text-xs font-semibold border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="text-xs font-semibold border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-slate-200 focus:outline-none focus:border-emerald-500"
           >
             <option value="">Tất cả các lớp</option>
             {groups.map((g) => (
@@ -206,7 +212,7 @@ export default function InvoicesPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="text-xs font-semibold border border-slate-200 rounded-xl px-3 py-2 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="text-xs font-semibold border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-slate-200 focus:outline-none focus:border-emerald-500"
           >
             <option value="">Tất cả trạng thái</option>
             <option value="UNPAID">Chưa đóng</option>
@@ -217,80 +223,87 @@ export default function InvoicesPage() {
 
           <button
             onClick={loadInvoices}
-            className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition"
-            title="Tải lại"
+            className="p-2 border border-[#1E283D] rounded-xl hover:bg-[#182136] text-slate-400 hover:text-white transition"
+            title="Tải lại danh sách"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Invoices List Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="ting-card overflow-hidden">
         {loading ? (
-          <div className="text-center py-16 text-slate-400">Đang tải danh sách phiếu thu...</div>
+          <div className="text-center py-16 text-slate-400 animate-pulse text-xs">Đang tải danh sách hóa đơn...</div>
         ) : invoices.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#111726] border-b border-[#1E283D] text-slate-400 uppercase font-bold tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4">Mã thu</th>
-                  <th className="py-3.5 px-4">Học viên</th>
-                  <th className="py-3.5 px-4">Lớp / Nhóm</th>
-                  <th className="py-3.5 px-4 text-right">Phải thu</th>
-                  <th className="py-3.5 px-4 text-right">Đã thu</th>
-                  <th className="py-3.5 px-4 text-center">Trạng thái</th>
-                  <th className="py-3.5 px-4 text-right">Thao tác</th>
+                  <th className="py-3 px-4">Mã thu</th>
+                  <th className="py-3 px-4">Học viên</th>
+                  <th className="py-3 px-4">Lớp / Nhóm</th>
+                  <th className="py-3 px-4 text-right">Phải thu</th>
+                  <th className="py-3 px-4 text-right">Đã thu</th>
+                  <th className="py-3 px-4 text-center">Trạng thái</th>
+                  <th className="py-3 px-4 text-right">Hạn nộp</th>
+                  <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1A2338]">
                 {invoices.map((inv) => {
                   return (
-                    <tr key={inv.id} className="hover:bg-slate-50/80 transition">
-                      <td className="py-3.5 px-4 font-mono font-bold text-xs text-indigo-600">
+                    <tr key={inv.id} className="hover:bg-[#131C2E] transition-colors">
+                      <td className="py-3 px-4 font-mono font-bold text-emerald-400">
                         {inv.paymentCode}
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-900">
+                      <td className="py-3 px-4 font-semibold text-white">
                         {inv.member.name}
+                        {inv.member.phone && (
+                          <span className="block text-[10px] text-slate-400 font-normal">{inv.member.phone}</span>
+                        )}
                       </td>
-                      <td className="py-3.5 px-4 text-xs text-slate-600">
+                      <td className="py-3 px-4 text-slate-300">
                         {inv.group.name}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-900">
+                      <td className="py-3 px-4 text-right font-mono font-bold text-white">
                         {formatVND(inv.amountDue)}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-semibold text-emerald-600">
+                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-400">
                         {formatVND(inv.amountPaid)}
                       </td>
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-3 px-4 text-center">
                         {inv.status === 'PAID' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
                             <CheckCircle2 className="w-3 h-3" /> Đã đóng
                           </span>
                         ) : inv.status === 'PARTIAL' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25">
                             <Clock className="w-3 h-3" /> Đóng thiếu
                           </span>
                         ) : inv.status === 'OVERPAID' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/25">
                             Đóng thừa
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25">
                             <AlertCircle className="w-3 h-3" /> Chưa đóng
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3 px-4 text-right text-slate-400 text-[11px]">
+                        {formatDateVN(inv.dueDate)}
+                      </td>
+                      <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             type="button"
                             onClick={() => handleCopyLink(inv.group.slug, inv.publicToken)}
-                            className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 text-slate-600 transition"
-                            title="Sao chép link phiếu thu gửi phụ huynh"
+                            className="p-1.5 border border-[#1E283D] rounded-lg hover:bg-[#182136] text-slate-400 hover:text-white transition"
+                            title="Sao chép link VietQR gửi phụ huynh"
                           >
                             {copiedToken === inv.publicToken ? (
-                              <Check className="w-4 h-4 text-emerald-600" />
+                              <Check className="w-4 h-4 text-emerald-400" />
                             ) : (
                               <Copy className="w-4 h-4" />
                             )}
@@ -299,8 +312,8 @@ export default function InvoicesPage() {
                           <Link
                             href={`/p/${inv.group.slug}?token=${inv.publicToken}`}
                             target="_blank"
-                            className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 text-indigo-600 transition"
-                            title="Xem trang VietQR phiếu thu"
+                            className="p-1.5 border border-[#1E283D] rounded-lg hover:bg-[#182136] text-emerald-400 transition"
+                            title="Xem trang thanh toán VietQR"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </Link>
@@ -314,10 +327,10 @@ export default function InvoicesPage() {
           </div>
         ) : (
           <div className="text-center py-16 text-slate-400 space-y-3">
-            <p>Chưa có phiếu thu nào phù hợp với bộ lọc</p>
+            <p className="text-xs">Chưa có hóa đơn nào phù hợp với bộ lọc</p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl transition"
             >
               Tạo đợt thu mới
             </button>
@@ -327,33 +340,36 @@ export default function InvoicesPage() {
 
       {/* Batch Create Invoices Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h3 className="text-lg font-bold text-slate-900">Tạo đợt thu học phí mới</h3>
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl animate-scaleUp">
+            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
+              <div>
+                <h3 className="text-base font-bold text-white">Tạo đợt thu học phí mới</h3>
+                <p className="text-[11px] text-slate-400">Tự động sinh mã VietQR riêng cho từng học viên trong lớp</p>
+              </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-slate-600 text-lg font-bold"
+                className="text-slate-400 hover:text-white text-sm"
               >
                 ✕
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
+              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleCreateBatch} className="space-y-4 text-sm">
+            <form onSubmit={handleCreateBatch} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Chọn Lớp / Nhóm *
                 </label>
                 <select
                   value={batchGroupId}
                   onChange={(e) => setBatchGroupId(e.target.value)}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
                 >
                   {groups.map((g) => (
                     <option key={g.id} value={g.id}>
@@ -364,7 +380,7 @@ export default function InvoicesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Tiêu đề đợt thu *
                 </label>
                 <input
@@ -373,12 +389,12 @@ export default function InvoicesPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Ví dụ: Học phí Tháng 11/2026..."
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Phương thức tính phí
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -387,12 +403,12 @@ export default function InvoicesPage() {
                     onClick={() => setPricingType('FIXED')}
                     className={`p-3 rounded-xl border text-left font-medium transition ${
                       pricingType === 'FIXED'
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-900'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                        : 'border-[#1E283D] bg-[#111726] text-slate-400 hover:text-white'
                     }`}
                   >
-                    <span className="block font-bold text-xs">Cố định tháng</span>
-                    <span className="text-[11px] text-slate-500">Mức phí đồng đều cho cả lớp</span>
+                    <span className="block font-bold text-xs text-white">Cố định tháng</span>
+                    <span className="text-[11px] text-slate-400">Mức phí đồng đều cho cả lớp</span>
                   </button>
 
                   <button
@@ -400,19 +416,19 @@ export default function InvoicesPage() {
                     onClick={() => setPricingType('PER_SESSION')}
                     className={`p-3 rounded-xl border text-left font-medium transition ${
                       pricingType === 'PER_SESSION'
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-900'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                        : 'border-[#1E283D] bg-[#111726] text-slate-400 hover:text-white'
                     }`}
                   >
-                    <span className="block font-bold text-xs">Theo số buổi điểm danh</span>
-                    <span className="text-[11px] text-slate-500">Nhân với số buổi có mặt thực tế</span>
+                    <span className="block font-bold text-xs text-white">Theo số buổi điểm danh</span>
+                    <span className="text-[11px] text-slate-400">Nhân với số buổi có mặt thực tế</span>
                   </button>
                 </div>
               </div>
 
               {pricingType === 'FIXED' ? (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
                     Số tiền cố định mỗi học viên (VND)
                   </label>
                   <input
@@ -421,13 +437,13 @@ export default function InvoicesPage() {
                     step="10000"
                     value={fixedAmount}
                     onChange={(e) => setFixedAmount(Number(e.target.value))}
-                    className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                    className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
               ) : (
-                <div className="space-y-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="space-y-3 p-3 bg-[#111726] rounded-xl border border-[#1E283D]">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
                       Đơn giá mỗi buổi học (VND)
                     </label>
                     <input
@@ -436,27 +452,27 @@ export default function InvoicesPage() {
                       step="5000"
                       value={feePerSession}
                       onChange={(e) => setFeePerSession(Number(e.target.value))}
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                      className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 font-mono"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Từ ngày</label>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">Từ ngày</label>
                       <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs"
+                        className="w-full border border-[#1E283D] rounded-xl px-3 py-1.5 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 text-xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Đến ngày</label>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">Đến ngày</label>
                       <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full border border-slate-200 rounded-xl px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs"
+                        className="w-full border border-[#1E283D] rounded-xl px-3 py-1.5 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 text-xs"
                       />
                     </div>
                   </div>
@@ -464,29 +480,29 @@ export default function InvoicesPage() {
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
                   Hạn nộp học phí
                 </label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E283D]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition"
+                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
                 >
                   {isSubmitting ? 'Đang tạo...' : 'Xác nhận tạo đợt thu'}
                 </button>

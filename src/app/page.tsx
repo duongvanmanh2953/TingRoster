@@ -1,125 +1,162 @@
 import Link from 'next/link';
 import {
-  GraduationCap,
-  ArrowRight,
-  QrCode,
-  CheckCircle2,
   Zap,
-  ShieldCheck,
-  Users,
-  Smartphone,
+  ArrowRight,
+  CheckCircle2,
+  CalendarCheck,
+  CreditCard,
+  QrCode,
+  Users2,
   Tv,
+  ShieldCheck,
+  Building2,
+  TrendingUp,
+  Sparkles
 } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 flex flex-col">
-      {/* Top Navigation */}
-      <header className="border-b border-slate-100 bg-white/80 backdrop-blur sticky top-0 z-50">
+    <div className="min-h-screen bg-[#080C14] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+      
+      {/* Header */}
+      <header className="border-b border-[#1B2333] bg-[#0B0F19]/90 sticky top-0 z-50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20">
-              <GraduationCap className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-lg">
+              ⚡
             </div>
-            <span className="font-extrabold text-lg text-slate-900 tracking-tight">
-              TingRoster
-            </span>
+            <div>
+              <span className="font-black text-lg text-white tracking-tight">TingRoster</span>
+              <span className="hidden sm:inline-block ml-2 text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                VietQR SaaS
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="px-4 py-2 text-xs font-bold text-slate-700 hover:text-indigo-600 transition"
+              className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
             >
               Đăng nhập
             </Link>
             <Link
-              href="/register"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition"
+              href="/dashboard"
+              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold shadow-lg shadow-emerald-500/20 flex items-center gap-1.5 transition-all"
             >
-              Dùng thử miễn phí
+              <span>Vào ứng dụng</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center space-y-8 flex-1 flex flex-col justify-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-xs font-bold text-indigo-700 mx-auto shadow-sm">
-          <Zap className="w-3.5 h-3.5 text-indigo-600" />
-          <span>Tự động đối soát thu phí qua VietQR • SePay & Casso Webhook</span>
+      <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center space-y-8 flex-1 flex flex-col justify-center relative">
+        
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs font-bold text-emerald-400 mx-auto shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 ting-badge-pulse" />
+          <span>Giải pháp đối soát học phí & hội phí tự động 100% tại Việt Nam</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black text-slate-950 tracking-tight leading-tight">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1]">
           Điểm danh một chạm. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600">
+          <span className="text-emerald-400">
             Thu phí tự động.
-          </span>{' '}
+          </span> <br />
           Đối soát khỏi lo.
         </h1>
 
-        <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Không còn phải dò từng dòng sao kê ngân hàng hay yêu cầu phụ huynh chụp màn hình chuyển khoản.
-          TingRoster tự động nhận diện giao dịch và gạch nợ tức thời trong 5 giây.
+        <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          Tạm biệt những buổi tối mỏi mắt dò từng dòng sao kê ngân hàng. TingRoster tự động sinh mã VietQR theo học viên và gạch nợ ngay khi tiền về tài khoản.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
           <Link
             href="/dashboard"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-bold rounded-2xl shadow-lg shadow-indigo-600/25 transition"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-[#080C14] font-extrabold text-sm shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
           >
-            <span>Vào Bảng Điều Khiển</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Khám phá bảng điều hành</span>
+            <ArrowRight className="w-4 h-4 stroke-[3]" />
           </Link>
-
           <Link
-            href="/p/lop-toan-12a"
-            target="_blank"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold rounded-2xl transition"
+            href="/login"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#111726] hover:bg-[#182136] border border-[#1E283D] text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-2"
           >
-            <Smartphone className="w-4 h-4 text-slate-500" />
-            <span>Xem Cổng Phụ Huynh Mẫu</span>
+            <span>Dùng thử tài khoản mẫu</span>
           </Link>
         </div>
 
-        {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-16 text-left">
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-3xl space-y-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-              <QrCode className="w-5 h-5" />
-            </div>
-            <h2 className="text-base font-bold text-slate-900">Mã VietQR Riêng Biệt</h2>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Mỗi học viên có mã định danh TR84920 ngẫu nhiên an toàn. Quét mã bằng bất kỳ app ngân hàng nào là có sẵn số tiền và nội dung.
-            </p>
+        {/* Feature Grid Pills */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-12 text-left">
+          <div className="ting-card p-4">
+            <CalendarCheck className="w-5 h-5 text-emerald-400 mb-2" />
+            <h3 className="text-xs font-bold text-white">Điểm danh thông minh</h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Hỗ trợ Có mặt, Vắng có phép, Vắng trừ phí, Học bù linh hoạt</p>
           </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-3xl space-y-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-            <h2 className="text-base font-bold text-slate-900">Gạch Nợ Tự Động Trong 5 Giây</h2>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Webhook nhận biến động số dư tức thời từ SePay & Casso. Tự động kiểm tra số tiền, cập nhật trạng thái Đã đóng và ghi sổ kiểm toán.
-            </p>
+          <div className="ting-card p-4">
+            <QrCode className="w-5 h-5 text-indigo-400 mb-2" />
+            <h3 className="text-xs font-bold text-white">VietQR Động Chuẩn Napas</h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Sinh mã QR có sẵn số tiền & mã thanh toán TR... chống gõ nhầm</p>
           </div>
 
-          <div className="p-6 bg-slate-50 border border-slate-200 rounded-3xl space-y-3">
-            <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
-              <Tv className="w-5 h-5" />
+          <div className="ting-card p-4">
+            <Zap className="w-5 h-5 text-purple-400 mb-2" />
+            <h3 className="text-xs font-bold text-white">Tự động Ting! & Gạch nợ</h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Kết nối trực tiếp SePay, Casso, MB Bank với độ trễ dưới 1 giây</p>
+          </div>
+
+          <div className="ting-card p-4">
+            <Tv className="w-5 h-5 text-cyan-400 mb-2" />
+            <h3 className="text-xs font-bold text-white">Kiosk Tự Check-in</h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Màn hình cảm ứng đặt tại cửa lớp hoặc sân thể thao không cần nhân viên</p>
+          </div>
+        </div>
+
+      </section>
+
+      {/* Target Audiences */}
+      <section className="py-16 border-t border-[#1B2333] bg-[#0A0E1A]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-2 mb-10">
+            <h2 className="text-2xl font-bold text-white">Được thiết kế chuyên biệt cho 3 nhóm khách hàng</h2>
+            <p className="text-xs text-slate-400">Tối ưu quy trình vận hành thu chi thực tế tại Việt Nam</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="ting-card p-6 space-y-3">
+              <span className="text-2xl">👩‍🏫</span>
+              <h3 className="text-base font-bold text-white">Giáo viên & Trung tâm dạy thêm</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Tự động tính học phí theo số buổi học thực tế của học sinh. Phụ huynh nhận link cổng tra cứu xem lịch sử điểm danh và quét VietQR thanh toán 1 chạm.
+              </p>
             </div>
-            <h2 className="text-base font-bold text-slate-900">Chế Độ Kiosk iPad Tại Sân</h2>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Dành riêng cho câu lạc bộ thể thao, sân cầu lông, bóng đá: Chạm tên, hiện QR lớn, phát tiếng chuông &quot;Ting&quot; khi nhận tiền.
-            </p>
+
+            <div className="ting-card p-6 space-y-3">
+              <span className="text-2xl">🏸</span>
+              <h3 className="text-base font-bold text-white">Chủ CLB Thể thao (Pickleball, Cầu lông)</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Quản lý thành viên tham gia theo ca, theo tháng. Thành viên check-in tại sân và thanh toán tiền quỹ, tiền nước qua VietQR tự động.
+              </p>
+            </div>
+
+            <div className="ting-card p-6 space-y-3">
+              <span className="text-2xl">🏢</span>
+              <h3 className="text-base font-bold text-white">Chủ Phòng trọ & Căn hộ dịch vụ</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Quản lý tiền phòng, điện, nước hàng tháng. Khách thuê chuyển khoản theo mã phòng, hệ thống tự động gạch nợ không sợ nhầm phòng này sang phòng khác.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-100 py-6 text-center text-xs text-slate-400">
-        TingRoster © 2026 • Nền tảng điểm danh và tự động đối soát thu phí bằng VietQR
+      <footer className="py-8 border-t border-[#1B2333] text-center text-xs text-slate-400">
+        <p>© 2026 TingRoster — Nền tảng quản lý điểm danh, học phí & đối soát VietQR tự động.</p>
       </footer>
+
     </div>
   );
 }
