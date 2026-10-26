@@ -1,0 +1,324 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanType {
+  FREE
+  PRO
+}
+
+enum GroupType {
+  CLASS
+  SPORTS_CLUB
+  RENTAL
+}
+
+enum BillingCycle {
+  DAILY
+  MONTHLY
+  PER_SESSION
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT_CHARGED
+  ABSENT_EXCUSED
+  MAKEUP
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  OVERPAID
+  VOID
+}
+
+enum TransactionDirection {
+  IN
+  OUT
+}
+
+enum ProcessingStatus {
+  UNMATCHED
+  MATCHED
+  PROCESSED
+  DUPLICATE
+  IGNORED
+  FAILED
+}
+
+enum ProviderType {
+  SEPAY
+  CASSO
+  MANUAL
+}
+
+enum NotificationChannel {
+  TELEGRAM
+  ZALO
+  EMAIL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum OutboxStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  name            String
+  passwordHash    String
+  bankId          String         @default("MB")
+  bankAccountNo   String         @default("0987654321")
+  bankAccountName String         @default("NGUYEN VAN A")
+  planType        PlanType       @default(FREE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  groups          Group[]
+  invoices        Invoice[]
+  transactionLogs TransactionLog[]
+  providerConfigs PaymentProviderConfig[]
+  notificationLogs NotificationLog[]
+  auditLogs       AuditLog[]
+  automationRules AutomationRule[]
+
+  @@index([email])
+}
+
+model Group {
+  id                  String       @id @default(cuid())
+  userId              String
+  name                String
+  slug                String       @unique
+  description         String?
+  defaultFee          Int          @default(0) // VND integer
+  billingCycle        BillingCycle @default(MONTHLY)
+  groupType           GroupType    @default(CLASS)
+  isActive            Boolean      @default(true)
+  publicPortalEnabled Boolean      @default(true)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  members     Member[]
+  attendances Attendance[]
+  invoices    Invoice[]
+
+  @@index([userId])
+  @@index([slug])
+}
+
+model Member {
+  id         String       @id @default(cuid())
+  groupId    String
+  name       String
+  phone      String?
+  parentName String?
+  status     MemberStatus @default(ACTIVE)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  group       Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  attendances Attendance[]
+  invoices    Invoice[]
+
+  @@index([groupId])
+  @@index([name])
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  groupId   String
+  memberId  String
+  date      DateTime         @db.Date
+  isPresent Boolean          @default(true)
+  status    AttendanceStatus @default(PRESENT)
+  note      String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, memberId, date])
+  @@index([groupId, date])
+  @@index([memberId])
+}
+
+model Invoice {
+  id                 String        @id @default(cuid())
+  memberId           String
+  groupId            String
+  userId             String
+  title              String
+  amountDue          Int // VND integer
+  amountPaid         Int           @default(0) // VND integer
+  paymentCode        String        @unique // e.g. TR84920
+  publicToken        String        @unique @default(cuid()) // Opaque secure token for public URL
+  status             InvoiceStatus @default(UNPAID)
+  dueDate            DateTime?
+  billingPeriodStart DateTime?
+  billingPeriodEnd   DateTime?
+  sessionCount       Int?          @default(0)
+  feePerSession      Int?          @default(0)
+  paidAt             DateTime?
+  metadata           String?       // JSON metadata
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  member              Member              @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  group               Group               @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allocations         PaymentAllocation[]
+  matchedTransactions TransactionLog[]
+
+  @@index([userId])
+  @@index([groupId])
+  @@index([memberId])
+  @@index([paymentCode])
+  @@index([publicToken])
+  @@index([status])
+}
+
+model TransactionLog {
+  id                    String               @id @default(cuid())
+  userId                String?
+  provider              ProviderType
+  providerTransactionId String
+  rawPayload            String // Safe JSON string
+  matchedInvoiceId      String?
+  amount                Int // VND integer
+  content               String
+  direction             TransactionDirection @default(IN)
+  transactionDate       DateTime
+  processingStatus      ProcessingStatus     @default(UNMATCHED)
+  failureReason         String?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  user           User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  matchedInvoice Invoice?            @relation(fields: [matchedInvoiceId], references: [id], onDelete: SetNull)
+  allocations    PaymentAllocation[]
+
+  @@unique([provider, providerTransactionId])
+  @@index([userId])
+  @@index([matchedInvoiceId])
+  @@index([processingStatus])
+  @@index([transactionDate])
+}
+
+model PaymentAllocation {
+  id               String         @id @default(cuid())
+  transactionLogId String
+  invoiceId        String
+  amount           Int // VND integer
+  createdAt        DateTime       @default(now())
+
+  transactionLog TransactionLog @relation(fields: [transactionLogId], references: [id], onDelete: Cascade)
+  invoice        Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([transactionLogId])
+  @@index([invoiceId])
+}
+
+model PaymentProviderConfig {
+  id            String       @id @default(cuid())
+  userId        String
+  provider      ProviderType
+  apiKey        String
+  webhookSecret String
+  accountNumber String?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+}
+
+model NotificationLog {
+  id              String              @id @default(cuid())
+  userId          String
+  invoiceId       String?
+  channel         NotificationChannel @default(TELEGRAM)
+  recipient       String
+  message         String
+  status          NotificationStatus  @default(PENDING)
+  responsePayload String?
+  createdAt       DateTime            @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  details    String?  // JSON formatted details
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model OutboxEvent {
+  id          String       @id @default(cuid())
+  eventType   String       // e.g. PAYMENT_RECEIVED, INVOICE_PAID
+  payload     String       // JSON string
+  status      OutboxStatus @default(PENDING)
+  retryCount  Int          @default(0)
+  lastError   String?
+  processedAt DateTime?
+  createdAt   DateTime     @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AutomationRule {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  trigger       String   // ON_PAYMENT_DUE, ON_UNMATCHED_TRANSACTION, ON_DAILY_SUMMARY, ON_INVOICE_PAID
+  action        String   // TELEGRAM_ALERT, EMAIL_SUMMARY, AUTO_REMINDER
+  isEnabled     Boolean  @default(true)
+  lastRunAt     DateTime?
+  lastRunStatus String?  // SUCCESS, FAILED
+  config        String?  // JSON configuration
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

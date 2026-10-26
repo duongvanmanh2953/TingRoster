@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tingroster-db
+    restart: always
+    environment:
+      POSTGRES_USER: tingroster
+      POSTGRES_PASSWORD: tingroster_secret_password
+      POSTGRES_DB: tingroster
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tingroster -d tingroster"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-app
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://tingroster:tingroster_secret_password@postgres:5432/tingroster?schema=public"
+      JWT_SECRET: "tingroster_super_jwt_secret_key_production_2026_xyz"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3001"
+      SEPAY_WEBHOOK_API_KEY: "sepay_test_api_key_123"
+      CASSO_WEBHOOK_SECURE_TOKEN: "casso_test_token_456"
+
+volumes:
+  pgdata:
+    driver: local
