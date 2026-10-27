@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Avatar } from '@/components/common/Avatar';
 
 interface GroupDetail {
   id: string;
@@ -239,7 +240,7 @@ export default function GroupDetailPage() {
         <button
           onClick={() => setActiveTab('MEMBERS')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 ${
-            activeTab === 'MEMBERS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+            activeTab === 'MEMBERS' ? 'bg-[#2538D9] text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <span>Học viên</span>
@@ -250,7 +251,7 @@ export default function GroupDetailPage() {
 
         <Link
           href={`/attendance?groupId=${group.id}`}
-          className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center gap-1.5"
+          className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap flex items-center gap-1.5"
         >
           <CalendarCheck className="w-3.5 h-3.5" />
           <span>Sổ điểm danh</span>
@@ -258,7 +259,7 @@ export default function GroupDetailPage() {
 
         <Link
           href={`/invoices?groupId=${group.id}`}
-          className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition whitespace-nowrap flex items-center gap-1.5"
+          className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap flex items-center gap-1.5"
         >
           <Receipt className="w-3.5 h-3.5" />
           <span>Phiếu thu</span>
@@ -268,22 +269,22 @@ export default function GroupDetailPage() {
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'OVERVIEW' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <div className="ting-card p-5 space-y-1">
             <span className="text-xs font-semibold text-slate-400 block uppercase">Sĩ số lớp</span>
-            <span className="text-2xl font-black text-slate-900">{group.members.length} học viên</span>
-            <p className="text-xs text-slate-500">Đang hoạt động trong danh sách</p>
+            <span className="text-2xl font-black text-slate-900 dark:text-slate-100 font-mono">{group.members.length} học viên</span>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Đang hoạt động trong danh sách</p>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <div className="ting-card p-5 space-y-1">
             <span className="text-xs font-semibold text-slate-400 block uppercase">Học phí định mức</span>
-            <span className="text-2xl font-black text-slate-900 font-mono">{formatVND(group.defaultFee)}</span>
-            <p className="text-xs text-slate-500">Kỳ tính: {group.billingCycle === 'MONTHLY' ? 'Theo tháng' : 'Theo buổi'}</p>
+            <span className="text-2xl font-black text-slate-900 dark:text-slate-100 font-mono">{formatVND(group.defaultFee)}</span>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Kỳ tính: {group.billingCycle === 'MONTHLY' ? 'Theo tháng' : 'Theo buổi'}</p>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <div className="ting-card p-5 space-y-1">
             <span className="text-xs font-semibold text-slate-400 block uppercase">Phiếu thu đã tạo</span>
-            <span className="text-2xl font-black text-indigo-600">{group._count.invoices} đợt thu</span>
-            <Link href={`/invoices?groupId=${group.id}`} className="text-xs text-indigo-600 font-semibold hover:underline block">
+            <span className="text-2xl font-black text-[#2538D9] dark:text-indigo-400 font-mono">{group._count.invoices} đợt thu</span>
+            <Link href={`/invoices?groupId=${group.id}`} className="text-xs text-[#2538D9] dark:text-indigo-400 font-semibold hover:underline block">
               Xem danh sách phiếu thu →
             </Link>
           </div>
@@ -294,19 +295,19 @@ export default function GroupDetailPage() {
       {activeTab === 'MEMBERS' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-slate-900">Danh sách học viên ({group.members.length})</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Danh sách học viên ({group.members.length})</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowImportAi(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-xl border border-indigo-200 dark:border-indigo-800/60 transition"
               >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                 <span>AI Nhập Excel/CSV</span>
               </button>
 
               <button
                 onClick={() => setShowAddMember(true)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition"
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-xs transition"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Thêm học viên</span>
@@ -314,28 +315,33 @@ export default function GroupDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="ting-card overflow-hidden">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
+              <thead className="bg-slate-50 dark:bg-slate-900/80 border-b border-[#E4E7EC] dark:border-[#1E293B] text-slate-600 dark:text-slate-400 text-xs uppercase font-semibold">
                 <tr>
                   <th className="py-3 px-4 w-12 text-center">STT</th>
-                  <th className="py-3 px-4">Họ và tên</th>
+                  <th className="py-3 px-4">Học viên</th>
                   <th className="py-3 px-4">Số điện thoại</th>
                   <th className="py-3 px-4">Tên phụ huynh</th>
                   <th className="py-3 px-4 text-right">Chi tiết</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#1E293B]">
                 {group.members.map((m, idx) => (
-                  <tr key={m.id} className="hover:bg-slate-50 transition">
+                  <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                     <td className="py-3 px-4 text-center text-xs font-mono text-slate-400">{idx + 1}</td>
-                    <td className="py-3 px-4 font-semibold text-slate-900">{m.name}</td>
-                    <td className="py-3 px-4 text-xs font-mono text-slate-600">{m.phone || '-'}</td>
-                    <td className="py-3 px-4 text-xs text-slate-600">{m.parentName || '-'}</td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={m.name} size="sm" />
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">{m.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-xs font-mono text-slate-600 dark:text-slate-400">{m.phone || '-'}</td>
+                    <td className="py-3 px-4 text-xs text-slate-600 dark:text-slate-400">{m.parentName || '-'}</td>
                     <td className="py-3 px-4 text-right">
                       <Link
-                        href={`/members/${m.id}`}
-                        className="text-xs font-semibold text-indigo-600 hover:underline"
+                        href={`/members?search=${encodeURIComponent(m.name)}`}
+                        className="text-xs font-semibold text-[#2538D9] dark:text-indigo-400 hover:underline"
                       >
                         Hồ sơ →
                       </Link>

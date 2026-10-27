@@ -206,14 +206,14 @@ export default function DashboardPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* 1. Header Row — Greeting & Action Controls (per 00-overview.png Screen 3) */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#101828]">
+            <h1 className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] leading-tight">
               Xin chào, Nguyễn Văn Minh 🌤️
             </h1>
           </div>
-          <p className="text-xs text-[#475467] mt-0.5 capitalize">
+          <p className="text-sm text-[#475467] dark:text-slate-400 mt-1 capitalize">
             {formattedTodayVN} • Chúc bạn một ngày làm việc hiệu quả và thu học phí thuận lợi!
           </p>
         </div>
@@ -226,24 +226,24 @@ export default function DashboardPage() {
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
               sx={{
-                fontSize: '0.75rem',
+                fontSize: '0.8125rem',
                 fontWeight: 600,
                 height: 38,
                 borderRadius: '0.75rem',
-                backgroundColor: '#FFFFFF',
-                color: '#101828',
+                backgroundColor: 'background.paper',
+                color: 'text.primary',
               }}
             >
-              <MenuItem value={currentMonthStr} sx={{ fontSize: '0.75rem' }}>{currentMonthStr}</MenuItem>
-              <MenuItem value={prevMonthStr} sx={{ fontSize: '0.75rem' }}>{prevMonthStr}</MenuItem>
-              <MenuItem value={prev2MonthStr} sx={{ fontSize: '0.75rem' }}>{prev2MonthStr}</MenuItem>
+              <MenuItem value={currentMonthStr} sx={{ fontSize: '0.8125rem' }}>{currentMonthStr}</MenuItem>
+              <MenuItem value={prevMonthStr} sx={{ fontSize: '0.8125rem' }}>{prevMonthStr}</MenuItem>
+              <MenuItem value={prev2MonthStr} sx={{ fontSize: '0.8125rem' }}>{prev2MonthStr}</MenuItem>
             </Select>
           </FormControl>
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2 rounded-xl bg-white border border-[#E4E7EC] text-[#475467] hover:text-[#101828] hover:border-slate-300 transition-colors shadow-sm"
+            className="p-2 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] text-[#475467] dark:text-slate-300 hover:text-[#101828] transition-colors shadow-xs"
             title="Làm mới số liệu"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#2538D9]' : ''}`} />
@@ -254,15 +254,15 @@ export default function DashboardPage() {
               setSimSuccess(null);
               setSimModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-semibold text-[#2538D9] hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-semibold text-[#2538D9] dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
           >
-            <Zap className="w-3.5 h-3.5 text-[#2538D9]" />
+            <Zap className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />
             <span>Thử &quot;Ting!&quot;</span>
           </button>
 
           <button
             onClick={() => router.push('/invoices')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-semibold text-[#101828] hover:bg-slate-50 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs"
           >
             <Plus className="w-4 h-4 text-slate-500" />
             <span>Tạo đợt thu</span>
@@ -270,7 +270,7 @@ export default function DashboardPage() {
 
           <button
             onClick={() => router.push('/attendance')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold transition-all shadow-sm shadow-[#2538D9]/25"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold transition-all shadow-xs"
           >
             <CalendarCheck className="w-4 h-4" />
             <span>Điểm danh hôm nay</span>
@@ -301,17 +301,17 @@ export default function DashboardPage() {
         {/* Card 1: Doanh thu */}
         <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#475467]">Doanh thu</span>
+            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Doanh thu ghi nhận</span>
             <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-bold text-[#101828] tracking-tight tabular-nums">
+            <div className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] font-mono font-tnum leading-none">
               {formatVND(totalRevenue)}
             </div>
             <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                 <TrendingUp className="w-3 h-3 mr-0.5" />
                 +12% so với tháng trước
               </span>
@@ -322,17 +322,17 @@ export default function DashboardPage() {
         {/* Card 2: Đã thu */}
         <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#475467]">Đã thu</span>
+            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Đã thực thu</span>
             <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight tabular-nums">
+            <div className="text-2xl sm:text-[28px] font-bold text-emerald-700 dark:text-emerald-400 font-mono font-tnum leading-none">
               {formatVND(totalCollected)}
             </div>
             <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                 <TrendingUp className="w-3 h-3 mr-0.5" />
                 +78% so với cùng kỳ
               </span>
@@ -343,71 +343,45 @@ export default function DashboardPage() {
         {/* Card 3: Cần phải thu */}
         <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#475467]">Cần phải thu</span>
+            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Còn phải thu</span>
             <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center">
               <AlertCircle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-bold text-rose-600 tracking-tight tabular-nums">
+            <div className="text-2xl sm:text-[28px] font-bold text-rose-600 dark:text-rose-400 font-mono font-tnum leading-none">
               {formatVND(remainingDue)}
             </div>
             <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                -15% so với tháng trước
+              <span className="text-xs text-[#475467] dark:text-slate-400 font-medium">
+                {stats?.unpaidCount || 12} khoản thu chưa hoàn tất
               </span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: Tỷ lệ thu (có mini Donut indicator) */}
+        {/* Card 4: Tỷ lệ thu */}
         <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-[#475467]">Tỷ lệ thu</span>
+            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Tỷ lệ thu phí</span>
             <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between">
-            <div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#101828] tracking-tight tabular-nums">
-                {collectionRate}%
-              </div>
-              <div className="mt-2.5 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <TrendingUp className="w-3 h-3 mr-0.5" />
-                  +12%
-                </span>
-              </div>
+          <div className="mt-3">
+            <div className="text-2xl sm:text-[28px] font-bold text-[#2538D9] dark:text-indigo-400 font-mono font-tnum leading-none">
+              {collectionRate}%
             </div>
-
-            {/* SVG Circular Donut Gauge */}
-            <div className="relative w-14 h-14 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <path
-                  className="text-slate-100"
-                  strokeWidth="3.5"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+            <div className="mt-2.5">
+              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+                <div
+                  className="bg-[#2538D9] h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, collectionRate)}%` }}
                 />
-                <path
-                  className="text-emerald-500 transition-all duration-1000 ease-out"
-                  strokeDasharray={`${collectionRate}, 100`}
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <span className="absolute text-[11px] font-bold text-[#101828] tabular-nums">
-                {collectionRate}%
-              </span>
+              </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* 3. Row 2: Charts & Breakdown Row (Doanh thu theo thời gian, Tình trạng các lớp, Sắp đến hạn) */}
@@ -415,16 +389,16 @@ export default function DashboardPage() {
         
         {/* Block A: Doanh thu theo thời gian (Span 6 columns) */}
         <div className="lg:col-span-6 ting-card p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
             <div>
-              <h2 className="text-sm font-bold text-[#101828]">Doanh thu theo thời gian</h2>
-              <p className="text-[11px] text-[#475467]">Dòng tiền học phí chuyển khoản thực tế qua VietQR</p>
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Doanh thu theo thời gian</h2>
+              <p className="text-[11px] text-[#475467] dark:text-slate-400">Dòng tiền học phí chuyển khoản thực tế qua VietQR</p>
             </div>
-            <div className="flex items-center gap-1 bg-[#F5F7FB] p-0.5 rounded-lg border border-[#E4E7EC] text-[11px]">
+            <div className="flex items-center gap-1 bg-[#F5F7FB] dark:bg-slate-900 p-0.5 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] text-[11px]">
               <button
                 onClick={() => setChartFilter('week')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                  chartFilter === 'week' ? 'bg-white text-[#2538D9] shadow-xs font-semibold' : 'text-[#475467]'
+                  chartFilter === 'week' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-semibold' : 'text-[#475467] dark:text-slate-400'
                 }`}
               >
                 Tuần này
@@ -432,7 +406,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setChartFilter('month')}
                 className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                  chartFilter === 'month' ? 'bg-white text-[#2538D9] shadow-xs font-semibold' : 'text-[#475467]'
+                  chartFilter === 'month' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-semibold' : 'text-[#475467] dark:text-slate-400'
                 }`}
               >
                 Tháng này
@@ -488,55 +462,55 @@ export default function DashboardPage() {
         {/* Block B: Tình trạng các lớp (Span 3 columns) */}
         <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-bold text-[#101828]">Tình trạng các lớp</h2>
-            <p className="text-[11px] text-[#475467]">Phân bổ tiến độ thu các lớp</p>
+            <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Tình trạng các lớp</h2>
+            <p className="text-[11px] text-[#475467] dark:text-slate-400">Phân bổ tiến độ thu các lớp</p>
           </div>
 
           <div className="flex items-center justify-center py-4">
             <div className="relative w-28 h-28 flex items-center justify-center">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                 {/* 4 segments */}
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#E4E7EC" strokeWidth="4" />
+                <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" className="text-slate-100 dark:text-slate-800" strokeWidth="4" />
                 <circle cx="18" cy="18" r="14" fill="none" stroke="#2538D9" strokeWidth="4.5" strokeDasharray="50 100" strokeDashoffset="0" />
                 <circle cx="18" cy="18" r="14" fill="none" stroke="#067647" strokeWidth="4.5" strokeDasharray="25 100" strokeDashoffset="-50" />
                 <circle cx="18" cy="18" r="14" fill="none" stroke="#B54708" strokeWidth="4.5" strokeDasharray="15 100" strokeDashoffset="-75" />
                 <circle cx="18" cy="18" r="14" fill="none" stroke="#B42318" strokeWidth="4.5" strokeDasharray="10 100" strokeDashoffset="-90" />
               </svg>
               <div className="absolute text-center">
-                <span className="text-base font-extrabold text-[#101828] block">4 lớp</span>
-                <span className="text-[9px] text-[#475467] uppercase font-bold tracking-wider">Đang chạy</span>
+                <span className="text-base font-extrabold text-[#101828] dark:text-[#F8FAFC] block">4 lớp</span>
+                <span className="text-[9px] text-[#475467] dark:text-slate-400 uppercase font-bold tracking-wider">Đang chạy</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 text-xs pt-2 border-t border-[#E4E7EC]">
-            <div className="flex items-center justify-between text-[#475467]">
+          <div className="space-y-1.5 text-xs pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B]">
+            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
                 Đã thu
               </span>
-              <span className="font-semibold text-[#101828]">3 lớp</span>
+              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">3 lớp</span>
             </div>
-            <div className="flex items-center justify-between text-[#475467]">
+            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#067647]" />
                 Đúng hạn
               </span>
-              <span className="font-semibold text-[#101828]">1 lớp</span>
+              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
             </div>
-            <div className="flex items-center justify-between text-[#475467]">
+            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#B54708]" />
                 Chờ nộp
               </span>
-              <span className="font-semibold text-[#101828]">1 lớp</span>
+              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
             </div>
-            <div className="flex items-center justify-between text-[#475467]">
+            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#B42318]" />
                 Còn nợ
               </span>
-              <span className="font-semibold text-[#101828]">1 lớp</span>
+              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
             </div>
           </div>
         </div>
@@ -545,54 +519,54 @@ export default function DashboardPage() {
         <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-[#101828]">Sắp đến hạn</h2>
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Sắp đến hạn</h2>
               <Clock className="w-4 h-4 text-slate-400" />
             </div>
-            <p className="text-[11px] text-[#475467]">Các đợt thu học phí cần nhắc</p>
+            <p className="text-[11px] text-[#475467] dark:text-slate-400">Các đợt thu học phí cần nhắc</p>
           </div>
 
           <div className="space-y-3 my-3">
-            <div className="flex items-center justify-between p-2 rounded-xl bg-rose-50/50 border border-rose-100 text-xs">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-[11px]">
+                <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold text-[11px]">
                   6A
                 </div>
                 <div>
-                  <p className="font-semibold text-[#101828]">Lớp Toán 6A</p>
-                  <p className="text-[10px] text-slate-500">Hạn: 26/04</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lớp Toán 6A</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 26/04</p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300">
                 2 ngày
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/50 border border-amber-100 text-xs">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-[11px]">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-[11px]">
                   PB
                 </div>
                 <div>
-                  <p className="font-semibold text-[#101828]">CLB Pickleball</p>
-                  <p className="text-[10px] text-slate-500">Hạn: 29/04</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">CLB Pickleball</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 29/04</p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
                 5 ngày
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[11px]">
+                <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-[11px]">
                   7A
                 </div>
                 <div>
-                  <p className="font-semibold text-[#101828]">Lớp Tiếng Anh 7</p>
-                  <p className="text-[10px] text-slate-500">Hạn: 30/04</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lớp Tiếng Anh 7</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 30/04</p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
                 7 ngày
               </span>
             </div>
@@ -600,7 +574,7 @@ export default function DashboardPage() {
 
           <Link
             href="/invoices?status=UNPAID"
-            className="text-xs text-[#2538D9] hover:underline font-semibold flex items-center justify-between pt-2 border-t border-[#E4E7EC]"
+            className="text-xs text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold flex items-center justify-between pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B]"
           >
             <span>Gửi thông báo nhắc phí</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -610,17 +584,17 @@ export default function DashboardPage() {
       </div>
 
       {/* Lịch biểu & Ca dạy hôm nay Widget */}
-      <div className="ting-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-white via-white to-blue-50/40">
+      <div className="ting-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-white via-white to-blue-50/40 dark:from-[#111726] dark:via-[#111726] dark:to-blue-950/20">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-[#2538D9] flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
             <CalendarDays className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-[#101828]">Lịch biểu & Ca tiếp theo hôm nay</h3>
+              <h3 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Lịch biểu & Ca tiếp theo hôm nay</h3>
               <Chip label="17:30 chiều" size="small" sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, backgroundColor: '#EFF6FF', color: '#2538D9' }} />
             </div>
-            <p className="text-xs text-[#475467] mt-0.5">
+            <p className="text-xs text-[#475467] dark:text-slate-400 mt-0.5">
               <strong>CLB Pickleball - Giao lưu đôi</strong> • Sân 2 - Cụm thể thao (16 hội viên) • Dự kiến thu: 800.000 đ
             </p>
           </div>
@@ -629,7 +603,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
             href="/calendar"
-            className="px-3.5 py-2 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#101828] transition-colors"
+            className="px-3.5 py-2 rounded-xl border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] transition-colors"
           >
             Xem toàn bộ lịch tuần
           </Link>
@@ -648,27 +622,27 @@ export default function DashboardPage() {
         
         {/* Feed 1: Giao dịch vừa nhận */}
         <div className="ting-card p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <h2 className="text-sm font-bold text-[#101828]">Giao dịch vừa nhận</h2>
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Giao dịch vừa nhận</h2>
             </div>
-            <Link href="/transactions" className="text-[11px] text-[#2538D9] hover:underline font-medium">
+            <Link href="/transactions" className="text-[11px] text-[#2538D9] dark:text-indigo-400 hover:underline font-medium">
               Xem tất cả
             </Link>
           </div>
 
-          <div className="divide-y divide-slate-100 my-2">
+          <div className="divide-y divide-slate-100 dark:divide-[#1E293B] my-2">
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2.5">
                 <Avatar name="Nguyễn Văn A" size="sm" />
                 <div>
-                  <p className="font-semibold text-[#101828]">Nguyễn Văn A</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Nguyễn Văn A</p>
                   <p className="text-[10px] text-slate-400">MBBank • TR84920</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-emerald-700 tabular-nums block">+300.000đ</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums block">+300.000đ</span>
                 <span className="text-[10px] text-slate-400">10:24</span>
               </div>
             </div>
@@ -677,12 +651,12 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2.5">
                 <Avatar name="Trần Thị B" size="sm" />
                 <div>
-                  <p className="font-semibold text-[#101828]">Trần Thị B</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Trần Thị B</p>
                   <p className="text-[10px] text-slate-400">Vietcombank • TR93821</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-emerald-700 tabular-nums block">+600.000đ</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums block">+600.000đ</span>
                 <span className="text-[10px] text-slate-400">09:14</span>
               </div>
             </div>
@@ -691,47 +665,47 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2.5">
                 <Avatar name="Phạm Minh C" size="sm" />
                 <div>
-                  <p className="font-semibold text-[#101828]">Phạm Minh C</p>
+                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Phạm Minh C</p>
                   <p className="text-[10px] text-slate-400">Techcombank • TR10924</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-emerald-700 tabular-nums block">+600.000đ</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400 tabular-nums block">+600.000đ</span>
                 <span className="text-[10px] text-slate-400">08:52</span>
               </div>
             </div>
           </div>
 
           <div className="pt-2 text-[11px] text-slate-400 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>Đối soát tự động 100% qua SePay Webhook</span>
           </div>
         </div>
 
         {/* Feed 2: Giao dịch cần xử lý */}
         <div className="ting-card p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-amber-500" />
-              <h2 className="text-sm font-bold text-[#101828]">Giao dịch cần xử lý</h2>
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Giao dịch cần xử lý</h2>
             </div>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
               3 chờ duyệt
             </span>
           </div>
 
-          <div className="divide-y divide-slate-100 my-2">
+          <div className="divide-y divide-slate-100 dark:divide-[#1E293B] my-2">
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828]">Lê Văn D</p>
-                <div className="flex items-center gap-1 text-[10px] text-amber-700 mt-0.5">
-                  <span className="px-1.5 py-0.2 rounded bg-amber-50 border border-amber-200">Thiếu 50.000đ</span>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lê Văn D</p>
+                <div className="flex items-center gap-1 text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">Thiếu 50.000đ</span>
                   <span>• 09:43</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#101828] tabular-nums block">200.000đ</span>
-                <Link href="/transactions" className="text-[10px] text-[#2538D9] hover:underline font-semibold">
+                <span className="font-bold text-[#101828] dark:text-[#F8FAFC] tabular-nums block">200.000đ</span>
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold">
                   Khớp thủ công
                 </Link>
               </div>
@@ -739,15 +713,15 @@ export default function DashboardPage() {
 
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828]">Hoàng Thị E</p>
-                <div className="flex items-center gap-1 text-[10px] text-amber-700 mt-0.5">
-                  <span className="px-1.5 py-0.2 rounded bg-amber-50 border border-amber-200">Sai nội dung</span>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Hoàng Thị E</p>
+                <div className="flex items-center gap-1 text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">Sai nội dung</span>
                   <span>• 09:18</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#101828] tabular-nums block">400.000đ</span>
-                <Link href="/transactions" className="text-[10px] text-[#2538D9] hover:underline font-semibold">
+                <span className="font-bold text-[#101828] dark:text-[#F8FAFC] tabular-nums block">400.000đ</span>
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold">
                   Gợi ý khớp
                 </Link>
               </div>
@@ -755,14 +729,14 @@ export default function DashboardPage() {
 
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828]">Đỗ Văn F</p>
-                <div className="flex items-center gap-1 text-[10px] text-rose-700 mt-0.5">
-                  <span className="px-1.5 py-0.2 rounded bg-rose-50 border border-rose-200">Trùng webhook</span>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Đỗ Văn F</p>
+                <div className="flex items-center gap-1 text-[10px] text-rose-700 dark:text-rose-400 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60">Trùng webhook</span>
                   <span>• 08:35</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#101828] font-mono block">600.000đ</span>
+                <span className="font-bold text-[#101828] dark:text-[#F8FAFC] font-mono block">600.000đ</span>
                 <span className="text-[10px] text-slate-400">Đã chặn</span>
               </div>
             </div>
@@ -770,7 +744,7 @@ export default function DashboardPage() {
 
           <Link
             href="/transactions"
-            className="pt-2 text-xs text-[#2538D9] hover:underline font-semibold flex items-center justify-between border-t border-[#E4E7EC]"
+            className="pt-2 text-xs text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold flex items-center justify-between border-t border-[#E4E7EC] dark:border-[#1E293B]"
           >
             <span>Mở trang đối soát chi tiết</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -779,49 +753,49 @@ export default function DashboardPage() {
 
         {/* Feed 3: Hoạt động gần đây */}
         <div className="ting-card p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
-            <h2 className="text-sm font-bold text-[#101828]">Hoạt động gần đây</h2>
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+            <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Hoạt động gần đây</h2>
             <History className="w-4 h-4 text-slate-400" />
           </div>
 
-          <div className="divide-y divide-slate-100 my-2">
+          <div className="divide-y divide-slate-100 dark:divide-[#1E293B] my-2">
             <div className="py-2.5 flex items-start gap-3 text-xs">
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Check className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[#101828] truncate">Đã thanh toán học phí Tháng 4</p>
-                <p className="text-[11px] text-slate-500">Học sinh: Nguyễn Văn A • Lớp 6A</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Đã thanh toán học phí Tháng 4</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Học sinh: Nguyễn Văn A • Lớp 6A</p>
                 <span className="text-[10px] text-slate-400 mt-0.5 block">10:24</span>
               </div>
             </div>
 
             <div className="py-2.5 flex items-start gap-3 text-xs">
-              <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Plus className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[#101828] truncate">Tạo đợt thu mới: CLB Pickleball</p>
-                <p className="text-[11px] text-slate-500">Phát hành 12 thông báo thanh toán</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Tạo đợt thu mới: CLB Pickleball</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Phát hành 12 thông báo thanh toán</p>
                 <span className="text-[10px] text-slate-400 mt-0.5 block">09:48</span>
               </div>
             </div>
 
             <div className="py-2.5 flex items-start gap-3 text-xs">
-              <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <CalendarCheck className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[#101828] truncate">Điểm danh xong ca sáng</p>
-                <p className="text-[11px] text-slate-500">18/20 thành viên có mặt</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Điểm danh xong ca sáng</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">18/20 thành viên có mặt</p>
                 <span className="text-[10px] text-slate-400 mt-0.5 block">08:21</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-[#E4E7EC]">
+          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-[#E4E7EC] dark:border-[#1E293B]">
             <span>Audit log ghi nhận đầy đủ</span>
-            <ShieldCheck className="w-3.5 h-3.5 text-[#2538D9]" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />
           </div>
         </div>
 
@@ -844,24 +818,24 @@ export default function DashboardPage() {
       >
         <DialogTitle className="flex items-center justify-between pb-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-[#2538D9]" />
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />
             </div>
             <div>
-              <span className="font-bold text-base text-[#101828] block">Mô phỏng VietQR &quot;Ting!&quot;</span>
-              <span className="text-[11px] text-[#475467] font-normal">Kích hoạt webhook ngân hàng như thực tế</span>
+              <span className="font-bold text-base text-[#101828] dark:text-[#F8FAFC] block">Mô phỏng VietQR &quot;Ting!&quot;</span>
+              <span className="text-[11px] text-[#475467] dark:text-slate-400 font-normal">Kích hoạt webhook ngân hàng như thực tế</span>
             </div>
           </div>
         </DialogTitle>
 
         <form onSubmit={handleSimulatePayment}>
           <DialogContent className="space-y-4 pt-2">
-            <p className="text-xs text-[#475467]">
+            <p className="text-xs text-[#475467] dark:text-slate-400">
               Hệ thống sẽ gửi một Webhook SePay mô phỏng tiền chuyển vào tài khoản MB của bạn và tự động kích hoạt đối soát.
             </p>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1">
                 Tên phụ huynh / học sinh chuyển khoản
               </label>
               <TextField
@@ -874,7 +848,7 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1">
                 Mã thanh toán học phí (Invoice Code)
               </label>
               <TextField
@@ -887,7 +861,7 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1">
                 Số tiền chuyển (VND)
               </label>
               <TextField
@@ -900,14 +874,14 @@ export default function DashboardPage() {
               />
             </div>
 
-            <div className="p-3 rounded-xl bg-[#F5F7FB] border border-[#E4E7EC] text-xs space-y-1">
-              <div className="flex justify-between text-[#475467]">
+            <div className="p-3 rounded-xl bg-[#F5F7FB] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs space-y-1">
+              <div className="flex justify-between text-[#475467] dark:text-slate-400">
                 <span>Cổng nhận tiền:</span>
-                <span className="font-semibold text-[#101828]">MB Bank (0987654321)</span>
+                <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">MB Bank (0987654321)</span>
               </div>
-              <div className="flex justify-between text-[#475467]">
+              <div className="flex justify-between text-[#475467] dark:text-slate-400">
                 <span>Cú pháp tin nhắn:</span>
-                <span className="font-mono text-[11px] text-[#2538D9] font-bold">
+                <span className="font-mono text-[11px] text-[#2538D9] dark:text-indigo-400 font-bold">
                   {simSender.toUpperCase()} CK HOC PHI {simCode}
                 </span>
               </div>
@@ -919,7 +893,7 @@ export default function DashboardPage() {
               variant="outlined"
               onClick={() => setSimModalOpen(false)}
               disabled={simLoading}
-              sx={{ color: '#475467', borderColor: '#E4E7EC' }}
+              sx={{ color: 'inherit', borderColor: 'divider' }}
             >
               Hủy
             </Button>

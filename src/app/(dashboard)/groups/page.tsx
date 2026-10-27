@@ -254,7 +254,7 @@ export default function GroupsPage() {
             <button
               onClick={() => setStatusTab('PENDING')}
               className={`px-3 py-1.5 rounded-lg transition-colors ${
-                statusTab === 'PENDING' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-[#475467] hover:text-[#101828]'
+                statusTab === 'PENDING' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs' : 'text-[#475467] dark:text-slate-400 hover:text-[#101828] dark:hover:text-white'
               }`}
             >
               Đợi đối soát (1)
@@ -271,7 +271,7 @@ export default function GroupsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm kiếm lớp..."
-                className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
+                className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
               />
             </div>
 
@@ -284,9 +284,9 @@ export default function GroupsPage() {
                   borderRadius: '0.75rem',
                   fontSize: '0.75rem',
                   fontWeight: 500,
-                  bgcolor: '#ffffff',
+                  bgcolor: 'background.paper',
                   '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E4E7EC',
+                    borderColor: 'divider',
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#2538D9',
@@ -301,17 +301,17 @@ export default function GroupsPage() {
             </FormControl>
 
             {/* Grid / Table View Switcher */}
-            <div className="flex items-center bg-[#F5F7FB] p-0.5 rounded-lg border border-[#E4E7EC]">
+            <div className="flex items-center bg-[#F5F7FB] dark:bg-slate-900 p-0.5 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B]">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-md ${viewMode === 'grid' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-slate-400'}`}
+                className={`p-1.5 rounded-md ${viewMode === 'grid' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs' : 'text-slate-400'}`}
                 title="Dạng thẻ"
               >
                 <LayoutGrid className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('table')}
-                className={`p-1.5 rounded-md ${viewMode === 'table' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-slate-400'}`}
+                className={`p-1.5 rounded-md ${viewMode === 'table' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs' : 'text-slate-400'}`}
                 title="Dạng bảng"
               >
                 <List className="w-4 h-4" />

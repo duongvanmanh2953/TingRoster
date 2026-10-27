@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { question } = await req.json();
+    const body = await req.json();
+    const question = body.question || body.query;
     if (!question || typeof question !== 'string') {
       return NextResponse.json({ success: false, error: 'Thiếu câu hỏi' }, { status: 400 });
     }

@@ -246,7 +246,7 @@ export default function InvoicesPage() {
                 {paidCount} đã nộp
               </span>
             </div>
-            <span className="text-xs font-medium text-[#475467] mt-2 block">
+            <span className="text-xs font-medium text-[#475467] dark:text-slate-400 mt-2 block">
               Tổng {totalInvoices} phiếu thu
             </span>
           </div>
@@ -262,7 +262,7 @@ export default function InvoicesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm theo mã TR, tên học viên, SĐT..."
-            className="w-full pl-10 pr-4 py-2 text-xs bg-white border border-[#E4E7EC] rounded-xl text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors"
+            className="w-full pl-10 pr-4 py-2 text-xs bg-white dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] rounded-xl text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors"
           />
         </form>
 
@@ -276,9 +276,9 @@ export default function InvoicesPage() {
                 borderRadius: '0.75rem',
                 fontSize: '0.8125rem',
                 fontWeight: 500,
-                bgcolor: '#ffffff',
+                bgcolor: 'background.paper',
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#E4E7EC',
+                  borderColor: 'divider',
                 },
                 '&:hover .MuiOutlinedInput-notchedOutline': {
                   borderColor: '#2538D9',
@@ -303,9 +303,9 @@ export default function InvoicesPage() {
                 borderRadius: '0.75rem',
                 fontSize: '0.8125rem',
                 fontWeight: 500,
-                bgcolor: '#ffffff',
+                bgcolor: 'background.paper',
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#E4E7EC',
+                  borderColor: 'divider',
                 },
                 '&:hover .MuiOutlinedInput-notchedOutline': {
                   borderColor: '#2538D9',
@@ -322,7 +322,7 @@ export default function InvoicesPage() {
 
           <button
             onClick={loadInvoices}
-            className="p-2 border border-[#E4E7EC] rounded-xl bg-white hover:bg-slate-50 text-[#475467] hover:text-[#101828] transition-colors shadow-xs"
+            className="p-2 border border-[#E4E7EC] dark:border-[#1E293B] rounded-xl bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#475467] dark:text-slate-400 hover:text-[#101828] dark:hover:text-white transition-colors shadow-xs"
             title="Tải lại danh sách"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
@@ -333,7 +333,7 @@ export default function InvoicesPage() {
       {/* 4. Invoices List Table */}
       <div className="ting-card overflow-hidden">
         {loading ? (
-          <div className="text-center py-16 text-[#475467] animate-pulse text-xs font-medium">
+          <div className="text-center py-16 text-[#475467] dark:text-slate-400 animate-pulse text-xs font-medium">
             Đang tải danh sách hóa đơn học phí...
           </div>
         ) : invoices.length > 0 ? (

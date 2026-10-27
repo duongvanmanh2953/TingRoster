@@ -82,11 +82,26 @@ enum OutboxStatus {
   FAILED
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+enum LedgerType {
+  TOPUP
+  USAGE_WEBHOOK
+  USAGE_NOTIFICATION
+  USAGE_AI_OCR
+  REFUND
+}
+
 model User {
   id              String         @id @default(cuid())
   email           String         @unique
   name            String
   passwordHash    String
+  role            Role           @default(USER)
+  serviceBalance  Int            @default(100000) // VND integer
   bankId          String         @default("MB")
   bankAccountNo   String         @default("0987654321")
   bankAccountName String         @default("NGUYEN VAN A")
@@ -101,8 +116,11 @@ model User {
   notificationLogs NotificationLog[]
   auditLogs       AuditLog[]
   automationRules AutomationRule[]
+  walletLedgers   WalletLedgerEntry[]
+  aiImportJobs    AiImportJob[]
 
   @@index([email])
+  @@index([role])
 }
 
 model Group {
@@ -134,6 +152,9 @@ model Member {
   name       String
   phone      String?
   parentName String?
+  gender     String?      @default("OTHER")
+  ageGroup   String?      @default("TEEN")
+  avatarUrl  String?
   status     MemberStatus @default(ACTIVE)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -322,3 +343,40 @@ model AutomationRule {
 
   @@index([userId])
 }
+
+model WalletLedgerEntry {
+  id           String     @id @default(cuid())
+  userId       String
+  amount       Int        // Positive for credit/topup, negative for debit/usage
+  balanceAfter Int        // Snapshot of balance after this entry
+  type         LedgerType
+  description  String
+  referenceId  String?    // e.g. transaction code, invoice id, batch id
+  metadata     String?    // JSON extra payload
+  createdAt    DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([type])
+}
+
+model AiImportJob {
+  id              String   @id @default(cuid())
+  userId          String
+  fileName        String
+  fileType        String   // IMAGE, EXCEL, CSV
+  extractedCount  Int      @default(0)
+  confidenceScore Int      @default(95) // 0 - 100
+  rawResult       String   // Safe JSON representation of parsed roster
+  targetGroupId   String?
+  status          String   @default("COMPLETED") // PENDING, COMPLETED, FAILED
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+

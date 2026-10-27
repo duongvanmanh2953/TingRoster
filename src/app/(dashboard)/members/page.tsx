@@ -22,7 +22,9 @@ import {
   MoreVertical,
   QrCode,
   Check,
-  ChevronLeft
+  ChevronLeft,
+  Smile,
+  Edit2
 } from 'lucide-react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -33,13 +35,16 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import Menu from '@mui/material/Menu';
-import { Avatar } from '@/components/common/Avatar';
+import { Avatar, AvatarPickerModal, GenderType, AgeGroupType } from '@/components/common/Avatar';
 
 interface MemberItem {
   id: string;
   name: string;
   phone?: string | null;
   parentName?: string | null;
+  gender?: GenderType | string | null;
+  ageGroup?: AgeGroupType | string | null;
+  avatarUrl?: string | null;
   status: string;
   group: {
     id: string;
@@ -79,8 +84,15 @@ export default function MembersPage() {
   const [newPhone, setNewPhone] = useState('');
   const [newParentName, setNewParentName] = useState('');
   const [targetGroupId, setTargetGroupId] = useState('');
+  const [newGender, setNewGender] = useState<GenderType>('OTHER');
+  const [newAgeGroup, setNewAgeGroup] = useState<AgeGroupType>('TEEN');
+  const [newAvatarUrl, setNewAvatarUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Avatar Picker Modal for modifying existing member
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<MemberItem | null>(null);
 
   // Selection
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
@@ -141,6 +153,9 @@ export default function MembersPage() {
           name: newName.trim(),
           phone: newPhone.trim() || undefined,
           parentName: newParentName.trim() || undefined,
+          gender: newGender,
+          ageGroup: newAgeGroup,
+          avatarUrl: newAvatarUrl || undefined,
         }),
       });
 
@@ -150,6 +165,9 @@ export default function MembersPage() {
         setNewName('');
         setNewPhone('');
         setNewParentName('');
+        setNewGender('OTHER');
+        setNewAgeGroup('TEEN');
+        setNewAvatarUrl('');
         loadMembers();
       } else {
         setFormError(data.error || 'Lỗi khi thêm học viên');
@@ -158,6 +176,38 @@ export default function MembersPage() {
       setFormError('Lỗi kết nối máy chủ');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateAvatarForMember = async (data: {
+    avatarUrl: string;
+    gender: GenderType;
+    ageGroup: AgeGroupType;
+  }) => {
+    if (!editingMember) return;
+
+    try {
+      // Optimistic update
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.id === editingMember.id
+            ? { ...m, avatarUrl: data.avatarUrl, gender: data.gender, ageGroup: data.ageGroup }
+            : m
+        )
+      );
+
+      await fetch('/api/members', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingMember.id,
+          avatarUrl: data.avatarUrl,
+          gender: data.gender,
+          ageGroup: data.ageGroup,
+        }),
+      });
+    } catch {
+      loadMembers();
     }
   };
 
@@ -187,7 +237,6 @@ export default function MembersPage() {
     return true;
   });
 
-  // KPI Metrics Calculation (Untitled UI style)
   const totalCount = members.length;
   const activeCount = members.filter((m) => m.status === 'ACTIVE').length;
   const unpaidCount = members.filter((m) => {
@@ -197,36 +246,35 @@ export default function MembersPage() {
   const paidCount = totalCount - unpaidCount;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      
+    <div className="space-y-5 max-w-7xl mx-auto pb-12">
       {/* 1. Header Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
-              <GraduationCap className="w-4 h-4" />
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828]">
-              Học viên & Thành viên
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-[#2538D9]/10 text-[#2538D9]">
+              <GraduationCap className="w-5 h-5" />
+            </span>
+            <h1 className="text-xl font-black tracking-tight text-[#101828] dark:text-[#F8FAFC]">
+              Danh Sách Học Viên & Thành Viên
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-[#475467] mt-1">
-            Theo dõi danh sách học viên theo lớp, trạng thái nộp học phí và chuyên cần
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Quản lý avatar thông minh theo giới tính & độ tuổi, tra cứu hồ sơ và theo dõi tình trạng nộp học phí.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => alert('Xuất danh sách học viên ra file Excel thành công!')}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#101828] transition-colors shadow-xs"
+            onClick={() => alert('Đã xuất danh sách thành viên ra file Excel!')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-[#101828] dark:text-[#F8FAFC] shadow-xs"
           >
-            <Download className="w-4 h-4 text-slate-500" />
+            <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>Xuất Excel</span>
           </button>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold transition-all shadow-sm shadow-[#2538D9]/25"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-xs transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm học viên</span>
@@ -234,67 +282,65 @@ export default function MembersPage() {
         </div>
       </div>
 
-      {/* 2. Top Metric KPI Strip (Directly from Untitled UI reference image) */}
-      <div className="ting-card p-4 sm:p-5">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 divide-y md:divide-y-0 md:divide-x divide-[#E4E7EC]">
+      {/* 2. Top Metric KPI Strip */}
+      <div className="bg-white dark:bg-[#111726] p-4 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] shadow-xs">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 divide-y md:divide-y-0 md:divide-x divide-[#E4E7EC] dark:divide-[#1E293B]">
           <div className="px-2 pt-2 md:pt-0">
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#101828] font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] font-mono block">
               {totalCount}
             </span>
-            <span className="text-xs font-medium text-[#475467] mt-1 block">Tổng học viên</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Tổng học viên</span>
           </div>
 
-          <div className="px-2 pt-2 md:pt-0 md:pl-6">
-            <span className="text-2xl sm:text-3xl font-extrabold text-emerald-700 font-mono block">
+          <div className="px-2 pt-2 md:pt-0 md:pl-5">
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono block">
               {activeCount}
             </span>
-            <span className="text-xs font-medium text-[#475467] mt-1 block">Đang hoạt động</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Đang hoạt động</span>
           </div>
 
-          <div className="px-2 pt-2 md:pt-0 md:pl-6">
-            <span className="text-2xl sm:text-3xl font-extrabold text-rose-600 font-mono block">
+          <div className="px-2 pt-2 md:pt-0 md:pl-5">
+            <span className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono block">
               {unpaidCount}
             </span>
-            <span className="text-xs font-medium text-[#475467] mt-1 block">Chưa đóng học phí</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Chưa đóng học phí</span>
           </div>
 
-          <div className="px-2 pt-2 md:pt-0 md:pl-6">
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#2538D9] font-mono block">
+          <div className="px-2 pt-2 md:pt-0 md:pl-5">
+            <span className="text-xl sm:text-2xl font-black text-[#2538D9] dark:text-indigo-400 font-mono block">
               {paidCount}
             </span>
-            <span className="text-xs font-medium text-[#475467] mt-1 block">Đã nộp đủ</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Đã nộp đủ</span>
           </div>
 
-          <div className="px-2 pt-2 md:pt-0 md:pl-6 col-span-2 md:col-span-1">
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#101828] font-mono block">
+          <div className="px-2 pt-2 md:pt-0 md:pl-5 col-span-2 md:col-span-1">
+            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] font-mono block">
               94.5%
             </span>
-            <span className="text-xs font-medium text-[#475467] mt-1 block">Chuyên cần trung bình</span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Chuyên cần bình quân</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Filters Toolbar (Untitled UI filter pattern) */}
-      <div className="ting-card p-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          
+      {/* 3. Filters Toolbar */}
+      <div className="bg-white dark:bg-[#111726] p-3 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] shadow-xs">
+        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm theo tên học sinh, số điện thoại phụ huynh..."
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors"
+              placeholder="Tìm theo tên học sinh, số điện thoại phụ huynh..."
+              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 focus:outline-none focus:border-[#2538D9]"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Group Filter */}
+          <div className="flex flex-wrap items-center gap-2">
             <select
               value={selectedGroupId}
               onChange={(e) => setSelectedGroupId(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-medium text-[#101828] focus:outline-none focus:border-[#2538D9]"
+              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-medium text-[#101828] dark:text-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
             >
               <option value="">Tất cả lớp học & CLB</option>
               {groups.map((g) => (
@@ -304,11 +350,10 @@ export default function MembersPage() {
               ))}
             </select>
 
-            {/* Payment Status Filter */}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-medium text-[#101828] focus:outline-none focus:border-[#2538D9]"
+              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-medium text-[#101828] dark:text-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
             >
               <option value="ALL">Tất cả tình trạng học phí</option>
               <option value="PAID">Đã nộp đủ</option>
@@ -319,39 +364,36 @@ export default function MembersPage() {
             <button
               type="button"
               onClick={loadMembers}
-              className="p-2 rounded-xl bg-white border border-[#E4E7EC] text-slate-500 hover:text-[#101828] hover:border-slate-300"
+              className="p-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-slate-500 hover:text-[#101828] dark:hover:text-white"
               title="Làm mới"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
             </button>
           </div>
-
         </form>
       </div>
 
-      {/* 4. Members Data Table (Untitled UI Table Format) */}
-      <div className="ting-card overflow-hidden">
+      {/* 4. Members Data Table */}
+      <div className="bg-white dark:bg-[#111726] rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] shadow-xs overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-3">
-            <CircularProgress size={32} sx={{ color: '#2538D9' }} />
-            <p className="text-xs text-[#475467]">Đang tải danh sách học viên...</p>
+            <CircularProgress size={28} sx={{ color: '#2538D9' }} />
+            <p className="text-xs text-slate-500 dark:text-slate-400">Đang tải danh sách học viên...</p>
           </div>
         ) : filteredMembers.length === 0 ? (
-          <div className="py-16 text-center space-y-3">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
-              <Users2 className="w-5 h-5" />
+          <div className="py-16 text-center space-y-2">
+            <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+              <Users2 className="w-4 h-4" />
             </div>
-            <p className="text-sm font-semibold text-[#101828]">Không tìm thấy học viên nào</p>
-            <p className="text-xs text-[#475467]">
-              Hãy thêm học viên mới hoặc thay đổi bộ lọc lớp học của bạn.
-            </p>
+            <p className="text-xs font-bold text-[#101828] dark:text-[#F8FAFC]">Không tìm thấy học viên nào</p>
+            <p className="text-[11px] text-slate-500">Hãy thêm học viên mới hoặc thay đổi bộ lọc lớp học của bạn.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] font-semibold text-[11px] uppercase tracking-wider">
+              <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E4E7EC] dark:border-[#1E293B] text-slate-600 dark:text-slate-400 font-bold text-[11px] uppercase tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4 w-10">
+                  <th className="py-3 px-4 w-10">
                     <input
                       type="checkbox"
                       checked={selectedMemberIds.length === filteredMembers.length && filteredMembers.length > 0}
@@ -359,37 +401,30 @@ export default function MembersPage() {
                       className="rounded border-[#E4E7EC] text-[#2538D9] focus:ring-[#2538D9]"
                     />
                   </th>
-                  <th className="py-3.5 px-4">Học viên</th>
-                  <th className="py-3.5 px-4">Lớp đang theo học</th>
-                  <th className="py-3.5 px-4">Tình trạng học phí</th>
-                  <th className="py-3.5 px-4">Chuyên cần</th>
-                  <th className="py-3.5 px-4">Liên hệ phụ huynh</th>
-                  <th className="py-3.5 px-4 text-right">Thao tác</th>
+                  <th className="py-3 px-4">Học viên & Avatar</th>
+                  <th className="py-3 px-4">Lớp đang theo học</th>
+                  <th className="py-3 px-4">Giới tính & Độ tuổi</th>
+                  <th className="py-3 px-4">Tình trạng học phí</th>
+                  <th className="py-3 px-4">Chuyên cần</th>
+                  <th className="py-3 px-4">Liên hệ phụ huynh</th>
+                  <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E4E7EC]">
-                {filteredMembers.map((m, idx) => {
+              <tbody className="divide-y divide-[#E4E7EC] dark:divide-[#1E293B]">
+                {filteredMembers.map((m) => {
                   const inv = m.invoices && m.invoices[0];
                   const isPaid = inv?.status === 'PAID' || inv?.status === 'OVERPAID';
                   const isPartial = inv?.status === 'PARTIAL';
                   const isSelected = selectedMemberIds.includes(m.id);
 
-                  // Colors for avatar initial
-                  const avatarColors = [
-                    'bg-[#2538D9]/10 text-[#2538D9]',
-                    'bg-emerald-50 text-emerald-700',
-                    'bg-indigo-50 text-indigo-700',
-                    'bg-amber-50 text-amber-700',
-                    'bg-rose-50 text-rose-700',
-                  ];
-                  const avatarColor = avatarColors[idx % avatarColors.length];
-
                   return (
                     <tr
                       key={m.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${isSelected ? 'bg-indigo-50/30' : ''}`}
+                      className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors ${
+                        isSelected ? 'bg-indigo-50/30 dark:bg-indigo-950/20' : ''
+                      }`}
                     >
-                      <td className="py-3.5 px-4">
+                      <td className="py-3 px-4">
                         <input
                           type="checkbox"
                           checked={isSelected}
@@ -398,15 +433,30 @@ export default function MembersPage() {
                         />
                       </td>
 
-                      {/* Member Info */}
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
-                          <Avatar name={m.name} size="sm" />
+                      {/* Member Info with Clickable Avatar Picker */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="relative group">
+                            <Avatar
+                              name={m.name}
+                              src={m.avatarUrl}
+                              gender={m.gender}
+                              ageGroup={m.ageGroup}
+                              size="sm"
+                              onClick={() => {
+                                setEditingMember(m);
+                                setAvatarModalOpen(true);
+                              }}
+                            />
+                            <span className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-0.5 border border-slate-200 dark:border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Edit2 className="w-2.5 h-2.5 text-[#2538D9]" />
+                            </span>
+                          </div>
                           <div>
-                            <span className="font-bold text-[#101828] text-xs block hover:text-[#2538D9]">
+                            <span className="font-bold text-[#101828] dark:text-[#F8FAFC] text-xs block hover:text-[#2538D9]">
                               <Link href={`/members/${m.id}`}>{m.name}</Link>
                             </span>
-                            <span className="text-[11px] text-[#475467] font-mono">
+                            <span className="text-[11px] text-slate-500 font-mono">
                               {m.phone ? maskPhone(m.phone) : 'Chưa có SĐT'}
                             </span>
                           </div>
@@ -414,27 +464,52 @@ export default function MembersPage() {
                       </td>
 
                       {/* Class / Group */}
-                      <td className="py-3.5 px-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-indigo-50 text-[#2538D9] border border-indigo-100">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9]" />
+                      <td className="py-3 px-4">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/40 text-[#2538D9] dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
                           {m.group.name}
                         </span>
                       </td>
 
-                      {/* Financial Status (AGENTS.md strict status tokens) */}
-                      <td className="py-3.5 px-4">
+                      {/* Gender & Age */}
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              m.gender === 'MALE'
+                                ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
+                                : m.gender === 'FEMALE'
+                                ? 'bg-pink-50 text-pink-700 dark:bg-pink-950/40 dark:text-pink-400'
+                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                            }`}
+                          >
+                            {m.gender === 'MALE' ? 'Nam' : m.gender === 'FEMALE' ? 'Nữ' : 'Khác'}
+                          </span>
+                          <span className="text-[11px] text-slate-500">
+                            {m.ageGroup === 'KID'
+                              ? 'Mầm non / Tiểu học'
+                              : m.ageGroup === 'TEEN'
+                              ? 'Cấp 2 / Cấp 3'
+                              : m.ageGroup === 'ADULT'
+                              ? 'Người lớn'
+                              : 'Cao niên'}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Financial Status */}
+                      <td className="py-3 px-4">
                         {isPaid ? (
-                          <span className="badge-paid px-2.5 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1">
+                          <span className="badge-paid px-2 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" />
                             Đã nộp đủ
                           </span>
                         ) : isPartial ? (
-                          <span className="badge-partial px-2.5 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1">
+                          <span className="badge-partial px-2 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             Đóng thiếu
                           </span>
                         ) : (
-                          <span className="badge-unpaid px-2.5 py-1 rounded-full text-[11px] font-semibold inline-flex items-center gap-1">
+                          <span className="badge-unpaid px-2 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-1">
                             <AlertCircle className="w-3 h-3" />
                             Chưa nộp
                           </span>
@@ -442,22 +517,22 @@ export default function MembersPage() {
                       </td>
 
                       {/* Attendance */}
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-[#101828] font-mono text-xs">
-                            {m._count?.attendances || 18}/20 buổi
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-xs font-bold text-[#101828] dark:text-[#F8FAFC]">
+                            {m._count?.attendances || 18}/20
                           </span>
-                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 px-1 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/40">
                             90%
                           </span>
                         </div>
                       </td>
 
-                      {/* Parent Phone */}
-                      <td className="py-3.5 px-4 text-[#475467]">
+                      {/* Parent */}
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
                         {m.parentName ? (
                           <div>
-                            <span className="font-medium text-[#101828] block">{m.parentName}</span>
+                            <span className="font-bold text-[#101828] dark:text-[#F8FAFC] block">{m.parentName}</span>
                             <span className="text-[11px] text-slate-400">{m.phone || '-'}</span>
                           </div>
                         ) : (
@@ -466,32 +541,24 @@ export default function MembersPage() {
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <Link
-                            href={`/invoices`}
-                            className="p-1.5 text-slate-500 hover:text-[#2538D9] hover:bg-slate-100 rounded-lg transition-colors"
+                            href="/invoices"
+                            className="p-1.5 text-slate-500 hover:text-[#2538D9] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                             title="Tạo khoản thu"
                           >
-                            <CreditCard className="w-4 h-4" />
+                            <CreditCard className="w-3.5 h-3.5" />
                           </Link>
-
-                          <Link
-                            href={`/attendance?groupId=${m.group.id}`}
-                            className="p-1.5 text-slate-500 hover:text-[#2538D9] hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Điểm danh"
-                          >
-                            <CalendarCheck className="w-4 h-4" />
-                          </Link>
-
                           <button
-                            onClick={(e) => {
-                              setMenuAnchorEl(e.currentTarget);
-                              setActiveMember(m);
+                            onClick={() => {
+                              setEditingMember(m);
+                              setAvatarModalOpen(true);
                             }}
-                            className="p-1.5 text-slate-400 hover:text-[#101828] hover:bg-slate-100 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-500 hover:text-[#2538D9] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+                            title="Đổi avatar / giới tính"
                           >
-                            <MoreVertical className="w-4 h-4" />
+                            <Smile className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </td>
@@ -502,114 +569,29 @@ export default function MembersPage() {
             </table>
           </div>
         )}
-
-        {/* 5. Pagination Bar (Untitled UI standard pagination) */}
-        <div className="p-4 border-t border-[#E4E7EC] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#475467]">
-          <span>
-            Hiển thị <strong>{filteredMembers.length}</strong> học viên trên tổng số <strong>{totalCount}</strong>
-          </span>
-
-          <div className="flex items-center gap-1">
-            <button
-              disabled
-              className="px-3 py-1.5 rounded-lg border border-[#E4E7EC] text-slate-300 cursor-not-allowed flex items-center gap-1 font-medium"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Trước</span>
-            </button>
-            <button className="px-3 py-1.5 rounded-lg bg-[#2538D9] text-white font-semibold shadow-xs">
-              1
-            </button>
-            <button className="px-3 py-1.5 rounded-lg border border-[#E4E7EC] text-[#101828] hover:bg-slate-50 font-medium">
-              2
-            </button>
-            <button className="px-3 py-1.5 rounded-lg border border-[#E4E7EC] text-[#101828] hover:bg-slate-50 font-medium flex items-center gap-1">
-              <span>Sau</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
       </div>
 
-      {/* Row Action Menu */}
-      <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={() => setMenuAnchorEl(null)}
-        slotProps={{
-          paper: {
-            sx: {
-              borderRadius: '0.75rem',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-              minWidth: 180,
-              fontSize: '0.75rem',
-            }
-          }
-        }}
-      >
-        <MenuItem
-          onClick={() => {
-            setMenuAnchorEl(null);
-            if (activeMember) {
-              const url = `${window.location.origin}/p/${activeMember.group.slug}`;
-              navigator.clipboard.writeText(url);
-              alert(`Đã sao chép liên kết thanh toán VietQR của lớp ${activeMember.group.name}!`);
-            }
-          }}
-          className="text-xs"
-        >
-          <QrCode className="w-4 h-4 mr-2 text-[#2538D9]" />
-          Sao chép link VietQR
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setMenuAnchorEl(null);
-            alert(`Xem hồ sơ học viên ${activeMember?.name}`);
-          }}
-          className="text-xs"
-        >
-          <Users2 className="w-4 h-4 mr-2 text-slate-500" />
-          Xem chi tiết hồ sơ
-        </MenuItem>
-      </Menu>
-
-      {/* 6. Add Member Modal */}
+      {/* 5. Add Member Modal */}
       <Dialog
         open={showAddModal}
         onClose={() => !isSubmitting && setShowAddModal(false)}
         maxWidth="xs"
         fullWidth
-        slotProps={{
-          paper: {
-            sx: {
-              borderRadius: '1.25rem',
-              padding: '8px',
-            }
-          }
-        }}
       >
-        <DialogTitle className="flex items-center justify-between pb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
-              <Plus className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-base text-[#101828] block">Thêm học viên mới</span>
-              <span className="text-[11px] text-[#475467] font-normal">Ghi danh học viên vào lớp để bắt đầu điểm danh</span>
-            </div>
-          </div>
+        <DialogTitle sx={{ fontWeight: 800, fontSize: '0.95rem' }}>
+          Thêm học viên mới
         </DialogTitle>
 
         <form onSubmit={handleCreateMember}>
-          <DialogContent className="space-y-4 pt-2">
+          <DialogContent dividers className="space-y-3.5 text-xs">
             {formError && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
                 {formError}
               </div>
             )}
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
                 Lớp học / Câu lạc bộ <span className="text-rose-500">*</span>
               </label>
               <TextField
@@ -629,7 +611,7 @@ export default function MembersPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
                 Họ và tên học viên <span className="text-rose-500">*</span>
               </label>
               <TextField
@@ -638,12 +620,50 @@ export default function MembersPage() {
                 required
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="VD: Nguyễn Văn An"
+                placeholder="VD: Trần Minh Quân"
               />
             </div>
 
+            {/* Giới tính & Tuổi mặc định */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
+                  Giới tính
+                </label>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={newGender}
+                  onChange={(e) => setNewGender(e.target.value as GenderType)}
+                >
+                  <MenuItem value="MALE">Nam</MenuItem>
+                  <MenuItem value="FEMALE">Nữ</MenuItem>
+                  <MenuItem value="OTHER">Khác</MenuItem>
+                </TextField>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
+                  Độ tuổi mặc định
+                </label>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={newAgeGroup}
+                  onChange={(e) => setNewAgeGroup(e.target.value as AgeGroupType)}
+                >
+                  <MenuItem value="KID">Mầm non / Tiểu học</MenuItem>
+                  <MenuItem value="TEEN">Cấp 2 / Cấp 3</MenuItem>
+                  <MenuItem value="ADULT">Người lớn (18+)</MenuItem>
+                  <MenuItem value="SENIOR">Cao niên (&gt;55)</MenuItem>
+                </TextField>
+              </div>
+            </div>
+
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
                 Số điện thoại liên hệ
               </label>
               <TextField
@@ -656,7 +676,7 @@ export default function MembersPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-bold text-[#101828] dark:text-slate-200 block mb-1">
                 Tên phụ huynh / Người bảo hộ
               </label>
               <TextField
@@ -664,17 +684,16 @@ export default function MembersPage() {
                 size="small"
                 value={newParentName}
                 onChange={(e) => setNewParentName(e.target.value)}
-                placeholder="VD: Bác Bình (Bố An)"
+                placeholder="VD: Mẹ Lan"
               />
             </div>
           </DialogContent>
 
-          <DialogActions className="p-4 pt-0 gap-2">
+          <DialogActions sx={{ p: 2, gap: 1 }}>
             <Button
-              variant="outlined"
               onClick={() => setShowAddModal(false)}
               disabled={isSubmitting}
-              sx={{ color: '#475467', borderColor: '#E4E7EC' }}
+              size="small"
             >
               Hủy
             </Button>
@@ -682,7 +701,7 @@ export default function MembersPage() {
               type="submit"
               variant="contained"
               disabled={isSubmitting}
-              sx={{ backgroundColor: '#2538D9', '&:hover': { backgroundColor: '#1E2DB8' } }}
+              size="small"
             >
               {isSubmitting ? 'Đang thêm...' : 'Lưu học viên'}
             </Button>
@@ -690,6 +709,20 @@ export default function MembersPage() {
         </form>
       </Dialog>
 
+      {/* 6. Avatar Picker Modal */}
+      {avatarModalOpen && editingMember && (
+        <AvatarPickerModal
+          isOpen={avatarModalOpen}
+          onClose={() => {
+            setAvatarModalOpen(false);
+            setEditingMember(null);
+          }}
+          currentAvatarUrl={editingMember.avatarUrl}
+          currentGender={(editingMember.gender as GenderType) || 'OTHER'}
+          currentAgeGroup={(editingMember.ageGroup as AgeGroupType) || 'TEEN'}
+          onSelect={handleUpdateAvatarForMember}
+        />
+      )}
     </div>
   );
 }

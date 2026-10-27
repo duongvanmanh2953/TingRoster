@@ -16,6 +16,24 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: [
+          "'__Be_Vietnam_Pro_0df554'",
+          "var(--font-be-vietnam-pro)",
+          "Be Vietnam Pro",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "sans-serif",
+        ],
+      },
+      letterSpacing: {
+        tighter: "0px",
+        tight: "0px",
+        normal: "0.01em",
+        wide: "0.025em",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

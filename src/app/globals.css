@@ -28,95 +28,330 @@
     --destructive: 4 78% 41%; /* #B42318 danger */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%; /* #E4E7EC */
+    --border: 220 13% 91%; /* #E4E7EC neutral border */
     --input: 220 13% 91%;
     --ring: 234 71% 50%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem; /* 12px card radius per Master Prompt */
+  }
+
+  .dark {
+    --background: 222 47% 7%; /* #0B0F19 deep slate navy */
+    --foreground: 210 40% 98%; /* #F8FAFC crisp white text */
+
+    --card: 222 47% 11%; /* #111726 slate card */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 234 89% 64%; /* #4F62FF vivid royal cobalt */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 247 74% 68%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 215 20% 65%; /* #94A3B8 */
+    --muted-foreground: 210 40% 98%;
+
+    --accent: 247 74% 68%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 33% 17%; /* #1E293B dark border */
+    --input: 217 33% 17%;
+    --ring: 234 89% 64%;
   }
 }
 
-body {
-  color: #101828;
-  background-color: #F5F7FB;
+html, body, .font-sans {
+  font-family: '__Be_Vietnam_Pro_0df554', var(--font-be-vietnam-pro), "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: 0.005em; /* Relaxed letter-spacing so Vietnamese accents never collide */
+  line-height: 1.55;
   font-feature-settings: "rlig" 1, "calt" 1, "tnum" 1;
 }
 
-/* Custom modern scrollbars */
+/* Neutral letter-spacing override for headings so characters never stick together */
+h1, h2, h3, h4, h5, h6, span, p, a, button, label, th, td {
+  letter-spacing: 0.005em !important;
+}
+
+/* Custom selection and focus states */
+::selection {
+  background-color: #2538D9;
+  color: #FFFFFF;
+}
+
+:focus-visible {
+  outline: 2px solid #2538D9;
+  outline-offset: 1px;
+}
+
+input, textarea, select {
+  caret-color: #2538D9;
+}
+
+/* Sleek custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
-  border-radius: 9999px;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
 
-/* Financial Status Badge Helpers — Strictly adhering to AGENTS.md */
+/* Financial Status Badge Helpers — Strict and Crisp */
 .badge-unpaid {
-  @apply bg-rose-50 text-rose-700 border border-rose-200;
+  @apply bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60 font-medium;
 }
 .badge-partial {
-  @apply bg-amber-50 text-amber-700 border border-amber-200;
+  @apply bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 font-medium;
 }
 .badge-paid {
-  @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60 font-medium;
 }
 .badge-overpaid {
-  @apply bg-blue-50 text-blue-700 border border-blue-200;
+  @apply bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/60 font-medium;
 }
 
-/* Crisp surface & card tokens */
+/* Master Prompt standard card token: 12px radius, neutral 1px border */
 .ting-card {
   background-color: #FFFFFF;
   border: 1px solid #E4E7EC;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.05);
+  border-radius: 0.75rem; /* 12px */
+  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.04);
 }
 
-.ting-card:hover {
-  border-color: #D0D5DD;
+.dark .ting-card {
+  background-color: #111726;
+  border: 1px solid #1E293B;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
-.ting-card-interactive {
-  background-color: #FFFFFF;
-  border: 1px solid #E4E7EC;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.05);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+/* Tabular numerals for all monetary amounts and counters */
+.font-tnum {
+  font-variant-numeric: tabular-nums;
 }
 
-.ting-card-interactive:hover {
-  border-color: #CBD5E1;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px -2px rgba(16, 24, 40, 0.08);
+/* ==========================================================================
+   Comprehensive Dark Mode Inversion & High Contrast Text Protection
+   Ensures no hardcoded light text stays dark on black backgrounds
+   ========================================================================== */
+
+.dark,
+.dark body,
+[data-theme='dark'] {
+  color: #F8FAFC;
 }
 
-/* Ting soundwave ripple pulse */
-@keyframes ting-pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(37, 56, 217, 0.5);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(37, 56, 217, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(37, 56, 217, 0);
-  }
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #F8FAFC;
 }
 
-.ting-badge-pulse {
-  animation: ting-pulse 2.2s infinite;
+/* Primary dark mode text color for hardcoded dark tokens */
+.dark .text-\[\#101828\],
+.dark .text-slate-900,
+.dark .text-gray-900,
+.dark .text-neutral-900 {
+  color: #F8FAFC !important;
 }
+
+/* Secondary dark mode text */
+.dark .text-\[\#344054\],
+.dark .text-slate-800,
+.dark .text-gray-800,
+.dark .text-slate-700,
+.dark .text-gray-700 {
+  color: #E2E8F0 !important;
+}
+
+/* Muted / Secondary helper text */
+.dark .text-\[\#475467\],
+.dark .text-slate-600,
+.dark .text-gray-600,
+.dark .text-slate-500,
+.dark .text-gray-500 {
+  color: #94A3B8 !important;
+}
+
+.dark .text-\[\#667085\],
+.dark .text-slate-400,
+.dark .text-gray-400 {
+  color: #94A3B8 !important;
+}
+
+/* Dark mode surfaces & containers */
+.dark .bg-white {
+  background-color: #111726 !important;
+}
+
+.dark .bg-\[\#F5F7FB\],
+.dark .bg-\[\#F8FAFC\],
+.dark .bg-slate-50,
+.dark .bg-gray-50 {
+  background-color: #0B0F19 !important;
+}
+
+.dark .bg-slate-100,
+.dark .bg-gray-100 {
+  background-color: #1E293B !important;
+}
+
+.dark .bg-slate-200,
+.dark .bg-gray-200 {
+  background-color: #334155 !important;
+}
+
+/* Dark mode borders & dividers */
+.dark .border-\[\#E4E7EC\],
+.dark .border-\[\#EAECF0\],
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-gray-200 {
+  border-color: #1E293B !important;
+}
+
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-\[\#E4E7EC\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1E293B !important;
+}
+
+/* Dark mode hovers */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover {
+  background-color: #1E293B !important;
+}
+
+.dark .hover\:text-\[\#101828\]:hover {
+  color: #FFFFFF !important;
+}
+
+/* Gradient banner cards */
+.dark .bg-gradient-to-r.from-white {
+  background-image: linear-gradient(to right, #111726, #111726, rgba(30, 41, 59, 0.4)) !important;
+}
+
+/* Form inputs & dropdowns */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  color: #F8FAFC !important;
+  background-color: #0B0F19 !important;
+  border-color: #1E293B !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+.dark select option {
+  background-color: #111726;
+  color: #F8FAFC;
+}
+
+/* Table cells in dark mode */
+.dark th {
+  color: #94A3B8 !important;
+  background-color: #0B0F19 !important;
+}
+
+.dark td {
+  color: #E2E8F0 !important;
+}
+
+/* Preserve bright buttons, badges, and accents from text overrides */
+.dark .bg-\[\#2538D9\] {
+  background-color: #2538D9 !important;
+  color: #FFFFFF !important;
+}
+
+.dark .text-white {
+  color: #FFFFFF !important;
+}
+
+.dark .text-emerald-700,
+.dark .text-emerald-600 {
+  color: #34D399 !important;
+}
+
+.dark .text-rose-700,
+.dark .text-rose-600 {
+  color: #FB7185 !important;
+}
+
+.dark .text-amber-700,
+.dark .text-amber-600 {
+  color: #FBBF24 !important;
+}
+
+.dark .text-blue-700,
+.dark .text-blue-600 {
+  color: #60A5FA !important;
+}
+
+/* Vibrant indigo accent link in dark mode instead of dark royal blue */
+.dark a.text-\[\#2538D9\],
+.dark button.text-\[\#2538D9\],
+.dark span.text-\[\#2538D9\] {
+  color: #818CF8 !important;
+}
+
+/* MUI Dark Theme Integration */
+.dark .MuiPaper-root {
+  background-color: #111726 !important;
+  color: #F8FAFC !important;
+  border-color: #1E293B !important;
+}
+
+.dark .MuiDialogTitle-root,
+.dark .MuiDialogContent-root,
+.dark .MuiDialogActions-root {
+  color: #F8FAFC !important;
+}
+
+.dark .MuiOutlinedInput-root {
+  color: #F8FAFC !important;
+  background-color: #0B0F19 !important;
+}
+
+.dark .MuiOutlinedInput-notchedOutline {
+  border-color: #1E293B !important;
+}
+
+.dark .MuiMenuItem-root {
+  color: #F8FAFC !important;
+}
+
+.dark .MuiMenuItem-root:hover {
+  background-color: #1E293B !important;
+}
+
+.dark .MuiSelect-select {
+  color: #F8FAFC !important;
+}
+

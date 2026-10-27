@@ -10,6 +10,20 @@ const CreateMemberSchema = z.object({
   name: z.string().min(2, 'Tên học viên tối thiểu 2 ký tự'),
   phone: z.string().optional(),
   parentName: z.string().optional(),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional().default('OTHER'),
+  ageGroup: z.enum(['KID', 'TEEN', 'ADULT', 'SENIOR']).optional().default('TEEN'),
+  avatarUrl: z.string().optional().nullable(),
+});
+
+const UpdateMemberSchema = z.object({
+  id: z.string().min(1, 'Thiếu id học viên'),
+  name: z.string().min(2).optional(),
+  phone: z.string().optional().nullable(),
+  parentName: z.string().optional().nullable(),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
+  ageGroup: z.enum(['KID', 'TEEN', 'ADULT', 'SENIOR']).optional(),
+  avatarUrl: z.string().optional().nullable(),
+  status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -84,6 +98,9 @@ export async function POST(req: NextRequest) {
         name: parsed.name.trim(),
         phone: parsed.phone?.trim() || null,
         parentName: parsed.parentName?.trim() || null,
+        gender: parsed.gender || 'OTHER',
+        ageGroup: parsed.ageGroup || 'TEEN',
+        avatarUrl: parsed.avatarUrl || null,
       },
       include: {
         group: { select: { id: true, name: true, slug: true } },
@@ -97,5 +114,51 @@ export async function POST(req: NextRequest) {
     }
     console.error('Create member error:', err);
     return NextResponse.json({ success: false, error: 'Lỗi tạo học viên' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  const userId = getUserIdFromRequest(req);
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+    const parsed = UpdateMemberSchema.parse(body);
+
+    // Verify ownership through group
+    const existing = await prisma.member.findFirst({
+      where: { id: parsed.id, group: { userId } },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ success: false, error: 'Không tìm thấy học viên hoặc không có quyền' }, { status: 404 });
+    }
+
+    const updateData: any = {};
+    if (parsed.name) updateData.name = parsed.name.trim();
+    if (parsed.phone !== undefined) updateData.phone = parsed.phone?.trim() || null;
+    if (parsed.parentName !== undefined) updateData.parentName = parsed.parentName?.trim() || null;
+    if (parsed.gender) updateData.gender = parsed.gender;
+    if (parsed.ageGroup) updateData.ageGroup = parsed.ageGroup;
+    if (parsed.avatarUrl !== undefined) updateData.avatarUrl = parsed.avatarUrl;
+    if (parsed.status) updateData.status = parsed.status;
+
+    const updated = await prisma.member.update({
+      where: { id: parsed.id },
+      data: updateData,
+      include: {
+        group: { select: { id: true, name: true, slug: true } },
+      },
+    });
+
+    return NextResponse.json({ success: true, data: updated });
+  } catch (err: unknown) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ success: false, error: err.errors[0]?.message }, { status: 400 });
+    }
+    console.error('Update member error:', err);
+    return NextResponse.json({ success: false, error: 'Lỗi cập nhật học viên' }, { status: 500 });
   }
 }
