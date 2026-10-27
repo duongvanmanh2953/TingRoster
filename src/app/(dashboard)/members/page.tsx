@@ -36,6 +36,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CircularProgress from '@mui/material/CircularProgress';
 import Menu from '@mui/material/Menu';
 import { Avatar, AvatarPickerModal, GenderType, AgeGroupType } from '@/components/common/Avatar';
+import { TingSelect } from '@/components/common/Select';
 
 interface MemberItem {
   id: string;
@@ -337,29 +338,29 @@ export default function MembersPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <select
+            <TingSelect
               value={selectedGroupId}
               onChange={(e) => setSelectedGroupId(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-medium text-[#101828] dark:text-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
-            >
-              <option value="">Tất cả lớp học & CLB</option>
-              {groups.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name}
-                </option>
-              ))}
-            </select>
+              className="text-xs font-medium"
+              sizeVariant="sm"
+              options={[
+                { value: '', label: 'Tất cả lớp học & CLB' },
+                ...groups.map((g) => ({ value: g.id, label: g.name })),
+              ]}
+            />
 
-            <select
+            <TingSelect
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-slate-900 border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-medium text-[#101828] dark:text-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
-            >
-              <option value="ALL">Tất cả tình trạng học phí</option>
-              <option value="PAID">Đã nộp đủ</option>
-              <option value="UNPAID">Chưa nộp</option>
-              <option value="PARTIAL">Đóng thiếu</option>
-            </select>
+              className="text-xs font-medium"
+              sizeVariant="sm"
+              options={[
+                { value: 'ALL', label: 'Tất cả tình trạng học phí' },
+                { value: 'PAID', label: 'Đã nộp đủ' },
+                { value: 'UNPAID', label: 'Chưa nộp' },
+                { value: 'PARTIAL', label: 'Đóng thiếu' },
+              ]}
+            />
 
             <button
               type="button"

@@ -33,6 +33,7 @@ import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import { formatVND, formatDateTimeVN } from '@/lib/utils';
+import { TingSelect } from '@/components/common/Select';
 
 interface ChatMessage {
   id: string;
@@ -606,18 +607,17 @@ export default function AiAssistantPage() {
 
               {/* Group Select */}
               <div>
-                <label className="text-xs font-bold text-[#101828] mb-1.5 block">Nhóm / Lớp mục tiêu</label>
-                <select
+                <TingSelect
+                  label="Nhóm / Lớp mục tiêu"
                   value={selectedGroupId}
                   onChange={(e) => setSelectedGroupId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#E4E7EC] text-xs font-bold text-[#101828] bg-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
-                >
-                  {groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name}
-                    </option>
-                  ))}
-                </select>
+                  sizeVariant="md"
+                  containerClassName="w-full font-bold"
+                  options={groups.map((g) => ({
+                    value: g.id,
+                    label: g.name,
+                  }))}
+                />
               </div>
 
               {/* Sample Templates */}

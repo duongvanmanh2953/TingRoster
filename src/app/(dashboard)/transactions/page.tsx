@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { BankLogo } from '@/components/common/BankLogo';
 import { Avatar } from '@/components/common/Avatar';
+import { TingSelect } from '@/components/common/Select';
 
 interface TransactionItem {
   id: string;
@@ -410,20 +411,18 @@ export default function TransactionsPage() {
 
             <form onSubmit={handleAssignSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
-                  Chọn học viên / Phiếu thu để gạch nợ *
-                </label>
-                <select
+                <TingSelect
+                  label="Chọn học viên / Phiếu thu để gạch nợ"
+                  required
                   value={assignInvoiceId}
                   onChange={(e) => setAssignInvoiceId(e.target.value)}
-                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9] text-xs"
-                >
-                  {unpaidInvoices.map((inv) => (
-                    <option key={inv.id} value={inv.id}>
-                      {inv.member.name} — {inv.title} (Còn nợ: {formatVND(inv.amountDue - inv.amountPaid)})
-                    </option>
-                  ))}
-                </select>
+                  sizeVariant="md"
+                  containerClassName="w-full"
+                  options={unpaidInvoices.map((inv) => ({
+                    value: inv.id,
+                    label: `${inv.member.name} — ${inv.title} (Còn nợ: ${formatVND(inv.amountDue - inv.amountPaid)})`,
+                  }))}
+                />
               </div>
 
               <div>

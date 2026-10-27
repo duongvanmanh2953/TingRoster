@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="tingBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2538D9" />
+      <stop offset="50%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    <linearGradient id="tingSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+  <!-- Squircle Base -->
+  <rect width="32" height="32" rx="8" fill="url(#tingBrandGrad)" />
+  <!-- Gloss highlight -->
+  <path d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V12C32 12 24 9 16 9C8 9 0 12 0 12V8Z" fill="white" fill-opacity="0.18" />
+  <!-- Top bar of T -->
+  <path d="M6.5 9.5C6.5 8.67157 7.17157 8 8 8H20C20.8284 8 21.5 8.67157 21.5 9.5C21.5 10.3284 20.8284 11 20 11H8C7.17157 11 6.5 10.3284 6.5 9.5Z" fill="white" />
+  <!-- Stem of T extending into dynamic checkmark -->
+  <path d="M12 10H16V17L19.5 13.5C20.0858 12.9142 21.0355 12.9142 21.6213 13.5C22.2071 14.0858 22.2071 15.0355 21.6213 15.6213L15.6213 21.6213C14.8395 22.4031 13.5762 22.4031 12.7944 21.6213L9.5 18.3269C8.91421 17.7411 8.91421 16.7914 9.5 16.2056C10.0858 15.6198 11.0355 15.6198 11.6213 16.2056L13.5 18.0843L13.7 17V10H12Z" fill="white" />
+  <!-- Golden "Ting!" Sonic Chime Spark -->
+  <circle cx="23.5" cy="7.5" r="2.5" fill="url(#tingSparkGrad)" />
+  <path d="M23.5 3.5V4.5M23.5 10.5V11.5M19.5 7.5H20.5M26.5 7.5H27.5" stroke="#FDE047" stroke-width="1.2" stroke-linecap="round" />
+</svg>

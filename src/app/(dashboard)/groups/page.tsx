@@ -32,8 +32,8 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
 import CircularProgress from '@mui/material/CircularProgress';
+import { TingSelect } from '@/components/common/Select';
 
 interface GroupItem {
   id: string;
@@ -276,29 +276,18 @@ export default function GroupsPage() {
             </div>
 
             {/* Type Filter */}
-            <FormControl size="small" sx={{ minWidth: 160 }}>
-              <Select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                sx={{
-                  borderRadius: '0.75rem',
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
-                  bgcolor: 'background.paper',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'divider',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#2538D9',
-                  },
-                }}
-              >
-                <MenuItem value="ALL" sx={{ fontSize: '0.75rem' }}>Tất cả loại hình</MenuItem>
-                <MenuItem value="CLASS" sx={{ fontSize: '0.75rem' }}>Lớp học / Gia sư</MenuItem>
-                <MenuItem value="SPORTS_CLUB" sx={{ fontSize: '0.75rem' }}>CLB thể thao</MenuItem>
-                <MenuItem value="RENTAL" sx={{ fontSize: '0.75rem' }}>Nhà trọ / Phòng</MenuItem>
-              </Select>
-            </FormControl>
+            <TingSelect
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              sizeVariant="sm"
+              className="w-44 font-medium"
+              options={[
+                { value: 'ALL', label: 'Tất cả loại hình' },
+                { value: 'CLASS', label: 'Lớp học / Gia sư' },
+                { value: 'SPORTS_CLUB', label: 'CLB thể thao' },
+                { value: 'RENTAL', label: 'Nhà trọ / Phòng' },
+              ]}
+            />
 
             {/* Grid / Table View Switcher */}
             <div className="flex items-center bg-[#F5F7FB] dark:bg-slate-900 p-0.5 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B]">

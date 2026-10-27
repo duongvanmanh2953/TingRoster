@@ -11,8 +11,13 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'TingRoster — Quản lý điểm danh, học phí & Đối soát VietQR tự động',
-  description: 'Nền tảng điểm danh một chạm và tự động đối soát ngân hàng VietQR cho giáo viên dạy thêm, CLB thể thao và căn hộ.',
+  title: 'TingRoster — Điểm danh một chạm • Thu phí tự động • Đối soát khỏi lo',
+  description: 'Nền tảng quản lý điểm danh và tự động đối soát giao dịch ngân hàng VietQR hàng đầu tại Việt Nam.',
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
@@ -23,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className={beVietnamPro.variable} suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

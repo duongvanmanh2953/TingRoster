@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Zap,
   ArrowRight,
@@ -16,7 +17,6 @@ import {
   TrendingUp,
   Sparkles,
   Check,
-  Copy,
   ChevronRight,
   Clock,
   ExternalLink,
@@ -31,29 +31,91 @@ import {
   Home,
   CheckCircle,
   Smartphone,
-  Laptop
+  Laptop,
+  Activity,
+  DollarSign,
+  Sun,
+  Moon,
+  RefreshCw,
+  Sliders,
+  LogIn,
+  Layers,
+  FileCheck2,
+  CheckCheck
 } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
 import { Avatar, AvatarGroup } from '@/components/common/Avatar';
-import { BankLogo } from '@/components/common/BankLogo';
+import { BankLogo, POPULAR_BANKS } from '@/components/common/BankLogo';
+import { useTheme } from '@/components/theme/ThemeContext';
+import { formatVND } from '@/lib/utils';
+
+interface DemoStudent {
+  id: string;
+  name: string;
+  gender: 'male' | 'female';
+  age: number;
+  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
+  fee: number;
+}
 
 export default function HomePage() {
-  const [attendedStudents, setAttendedStudents] = useState<Record<string, boolean>>({
-    '1': true,
-    '2': true,
-    '3': false,
-  });
-  const [simulatedTing, setSimulatedTing] = useState(false);
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const router = useRouter();
+  const { isDark, toggleTheme } = useTheme();
 
-  const toggleStudent = (id: string) => {
-    setAttendedStudents(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
+  // Instant 1-Click Demo Login State
+  const [isDemoLoggingIn, setIsDemoLoggingIn] = useState(false);
+
+  // Interactive Live Attendance State
+  const [students, setStudents] = useState<DemoStudent[]>([
+    { id: '1', name: 'Nguyễn Văn An', gender: 'male', age: 17, status: 'PRESENT', fee: 150000 },
+    { id: '2', name: 'Trần Bảo Ngọc', gender: 'female', age: 17, status: 'PRESENT', fee: 150000 },
+    { id: '3', name: 'Lê Hoàng Nam', gender: 'male', age: 18, status: 'PRESENT', fee: 150000 },
+    { id: '4', name: 'Phạm Thuỳ Linh', gender: 'female', age: 17, status: 'LATE', fee: 150000 },
+  ]);
+
+  // Interactive Webhook / VietQR Simulator State
+  const [simulatedInvoiceStatus, setSimulatedInvoiceStatus] = useState<'PENDING' | 'PAID'>('PENDING');
+  const [simulatedWebhookLog, setSimulatedWebhookLog] = useState<{
+    bank: string;
+    amount: number;
+    code: string;
+    time: string;
+  } | null>(null);
+  const [isSimulatingBank, setIsSimulatingBank] = useState(false);
+
+  // Interactive Persona Tabs
+  const [activePersona, setActivePersona] = useState<'CLASS' | 'SPORTS' | 'RENTAL'>('CLASS');
+
+  // Interactive ROI Calculator State
+  const [memberCount, setMemberCount] = useState<number>(60);
+
+  // FAQ Accordion State
+  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+
+  // 1-Click Demo Instant Login Handler
+  const handleInstantDemoLogin = async () => {
+    setIsDemoLoggingIn(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'demo@tingroster.vn', password: '123456' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = '/dashboard';
+      } else {
+        router.push('/login');
+      }
+    } catch {
+      router.push('/login');
+    } finally {
+      setIsDemoLoggingIn(false);
+    }
   };
 
-  const playDemoTingSound = () => {
+  // Sound generator for "Ting!"
+  const playTingSound = () => {
     if (typeof window !== 'undefined' && ('AudioContext' in window || 'webkitAudioContext' in window)) {
       try {
         const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -72,102 +134,196 @@ export default function HomePage() {
         // audio fallback
       }
     }
-    setSimulatedTing(true);
-    setTimeout(() => setSimulatedTing(false), 4500);
   };
 
+  // Trigger simulated bank transaction webhook
+  const handleSimulatePayment = () => {
+    setIsSimulatingBank(true);
+    playTingSound();
+
+    setTimeout(() => {
+      setSimulatedInvoiceStatus('PAID');
+      setSimulatedWebhookLog({
+        bank: 'MB Bank',
+        amount: 600000,
+        code: 'TR84920',
+        time: new Date().toLocaleTimeString('vi-VN'),
+      });
+      setIsSimulatingBank(false);
+    }, 600);
+  };
+
+  const handleResetSimulatedPayment = () => {
+    setSimulatedInvoiceStatus('PENDING');
+    setSimulatedWebhookLog(null);
+  };
+
+  // Toggle student status in interactive hero widget
+  const cycleStudentStatus = (id: string) => {
+    const statusCycle: DemoStudent['status'][] = ['PRESENT', 'LATE', 'ABSENT', 'EXCUSED'];
+    setStudents(prev =>
+      prev.map(st => {
+        if (st.id === id) {
+          const currentIndex = statusCycle.indexOf(st.status);
+          const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+          return { ...st, status: nextStatus };
+        }
+        return st;
+      })
+    );
+  };
+
+  // Derived calculations for attendance
+  const presentCount = students.filter(s => s.status === 'PRESENT' || s.status === 'LATE').length;
+  const totalRevenue = students
+    .filter(s => s.status === 'PRESENT' || s.status === 'LATE')
+    .reduce((acc, s) => acc + s.fee, 0);
+
+  // ROI Calculator Math
+  const hoursSavedPerMonth = Math.round(memberCount * 0.45);
+  const moneyRecoveredPerMonth = Math.round(memberCount * 45000);
+
   return (
-    <div className="min-h-screen bg-[#F5F7FB] text-[#101828] flex flex-col font-sans selection:bg-[#2538D9] selection:text-white">
+    <div className="min-h-screen bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F1F5F9] flex flex-col font-sans selection:bg-[#2538D9] selection:text-white transition-colors duration-200">
       
-      {/* Top Banner / Announcement */}
-      <div className="bg-[#0B0F19] text-white text-xs py-2 px-4 text-center border-b border-[#1B2333] flex items-center justify-center gap-2">
+      {/* Top Banner / Announcement Bar */}
+      <div className="bg-[#0B0F19] dark:bg-[#060911] text-white text-xs py-2 px-4 text-center border-b border-[#1E283D] flex items-center justify-center gap-2 flex-wrap">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <span className="font-semibold text-slate-200">
-          Tự động đối soát VietQR Napas 24/7 trực tiếp qua SePay & Casso • Không phụ thuộc bên thứ ba
+          Tự động đối soát VietQR Napas 24/7 trực tiếp qua SePay & Casso • Không qua trung gian
         </span>
-        <Link href="/login" className="underline font-bold text-indigo-300 hover:text-white ml-1 inline-flex items-center gap-1">
-          Dùng thử ngay <ChevronRight className="w-3 h-3" />
-        </Link>
+        <button
+          onClick={handleInstantDemoLogin}
+          disabled={isDemoLoggingIn}
+          className="underline font-bold text-indigo-300 hover:text-white ml-1 inline-flex items-center gap-1 cursor-pointer"
+        >
+          {isDemoLoggingIn ? 'Đang vào...' : 'Vào thử Demo ngay'} <ChevronRight className="w-3 h-3" />
+        </button>
       </div>
 
-      {/* Global Navigation Header per Reference Panel 1 */}
-      <header className="border-b border-[#E4E7EC] bg-white/95 sticky top-0 z-50 backdrop-blur-md">
+      {/* Global Navigation Header */}
+      <header className="border-b border-[#E4E7EC] dark:border-[#1E283D] bg-white/95 dark:bg-[#0B0F19]/95 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex items-center justify-between">
           
-          {/* TingRoster Official Brand Logo */}
-          <Logo href="/" size="md" showTagline={false} />
+          {/* Unified Brand Logo */}
+          <Logo href="/" size="md" theme={isDark ? 'dark' : 'light'} showTagline={false} />
 
-          {/* Navigation Links per Spec Panel 1 */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-[#475467]">
-            <a href="#tinh-nang" className="hover:text-[#2538D9] transition-colors">Tính năng</a>
-            <a href="#doi-tuong" className="hover:text-[#2538D9] transition-colors">Đối tượng sử dụng</a>
-            <a href="#bang-gia" className="hover:text-[#2538D9] transition-colors">Bảng giá</a>
-            <a href="#huong-dan" className="hover:text-[#2538D9] transition-colors">Hướng dẫn</a>
-            <Link href="/kiosk" className="hover:text-[#2538D9] transition-colors flex items-center gap-1 text-[#2538D9]">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-7 text-xs font-semibold text-[#475467] dark:text-slate-300">
+            <a href="#tinh-nang" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Tính năng</a>
+            <a href="#trai-nghiem-live" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9] animate-ping" />
+              <span>Dùng thử Live</span>
+            </a>
+            <a href="#doi-tuong" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Đối tượng</a>
+            <a href="#roi-calculator" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Tính tiết kiệm</a>
+            <a href="#bang-gia" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Bảng giá</a>
+            <Link href="/kiosk" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors flex items-center gap-1 text-[#2538D9] dark:text-indigo-400">
               <Tv className="w-3.5 h-3.5" />
               <span>Kiosk tại sân</span>
             </Link>
           </nav>
 
-          {/* Action CTAs: Đăng nhập & Bắt đầu miễn phí */}
-          <div className="flex items-center gap-3">
+          {/* Action CTAs: Theme Toggle, Đăng nhập, Demo 1-Click & Bắt đầu */}
+          <div className="flex items-center gap-2.5">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            {/* Clear Đăng nhập Button */}
             <Link
               href="/login"
-              className="text-xs font-semibold text-[#475467] hover:text-[#101828] px-3.5 py-2 rounded-xl hover:bg-slate-100 transition-colors"
+              className="px-3.5 py-2 rounded-xl border border-[#E4E7EC] dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white transition-all flex items-center gap-1.5 shadow-xs"
             >
-              Đăng nhập
+              <LogIn className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />
+              <span>Đăng nhập</span>
             </Link>
-            <Link
-              href="/onboarding"
-              className="px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 flex items-center gap-1.5 transition-all hover:scale-[1.02]"
+
+            {/* Fast 1-Click Demo Button */}
+            <button
+              type="button"
+              onClick={handleInstantDemoLogin}
+              disabled={isDemoLoggingIn}
+              className="hidden sm:inline-flex px-4 py-2 rounded-xl bg-gradient-to-r from-[#2538D9] to-[#6D5CE8] hover:from-[#1E2DB8] hover:to-[#5B4BD8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 items-center gap-1.5 transition-all hover:scale-[1.02] cursor-pointer disabled:opacity-60"
             >
-              <span>Bắt đầu miễn phí</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+              {isDemoLoggingIn ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Đang kết nối...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5 fill-current text-yellow-300" />
+                  <span>Vào Demo (1-Click)</span>
+                </>
+              )}
+            </button>
           </div>
+
         </div>
       </header>
 
-      {/* Hero Section per Panel 1 (Exact Typography, Layout, Laptop + Mobile Mockup & Callout Annotations) */}
-      <section className="pt-12 pb-16 lg:pt-16 lg:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Hero Section */}
+      <section className="pt-10 pb-16 lg:pt-14 lg:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* Left Column: Headlines & CTAs */}
+          {/* Left Column: Headlines & High-Converting CTAs */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2538D9]/10 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9]">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
               <span className="w-2 h-2 rounded-full bg-[#2538D9] animate-pulse" />
-              <span>Nền tảng Quản trị & Đối soát tự động #1</span>
+              <span>Nền tảng Điểm danh & Thu phí tự động số 1</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-[#101828] tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.12]">
               Điểm danh một chạm. <br />
-              <span className="text-[#2538D9]">Thu phí tự động.</span> <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2538D9] via-[#4353EB] to-[#6D5CE8]">
+                Thu phí tự động.
+              </span> <br />
               Đối soát khỏi lo.
             </h1>
 
-            <p className="text-sm sm:text-base text-[#475467] leading-relaxed">
-              Quản lý lớp học, câu lạc bộ và khoản thu trên một nền tảng. Thao tác dễ dàng mọi lúc, an ninh với giáo viên và các đối tác.
+            <p className="text-sm sm:text-base text-[#475467] dark:text-slate-300 leading-relaxed">
+              Giải pháp toàn diện cho <strong className="text-[#101828] dark:text-white">Giáo viên dạy thêm</strong>, <strong className="text-[#101828] dark:text-white">CLB Thể thao (Pickleball/Cầu lông)</strong> và <strong className="text-[#101828] dark:text-white">Chủ nhà trọ mini</strong>. Tự động gạch nợ tức thì bằng VietQR Napas 24/7 trực tiếp vào tài khoản ngân hàng của bạn.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            {/* Direct Dual CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={handleInstantDemoLogin}
+                disabled={isDemoLoggingIn}
+                className="px-6 py-3.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#2538D9]/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+              >
+                {isDemoLoggingIn ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Đang khởi tạo phiên demo...</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-4 h-4 fill-current text-yellow-300" />
+                    <span>Vào Dashboard ngay (Demo 1-Click)</span>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                  </>
+                )}
+              </button>
+
               <Link
-                href="/onboarding"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#2538D9]/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+                href="/login"
+                className="px-5 py-3.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-[#E4E7EC] dark:border-slate-700 text-[#101828] dark:text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2"
               >
-                <span>Dùng thử miễn phí</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                <LogIn className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />
+                <span>Đăng nhập tài khoản</span>
               </Link>
-              <a
-                href="#cach-hoat-dong"
-                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 border border-[#E4E7EC] text-[#101828] font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2"
-              >
-                <Play className="w-3.5 h-3.5 fill-current text-[#2538D9]" />
-                <span>Xem cách hoạt động</span>
-              </a>
             </div>
 
-            {/* Micro social proof with Member Avatars */}
-            <div className="pt-4 flex items-center gap-3">
+            {/* Micro Social Proof */}
+            <div className="pt-2 flex items-center gap-3">
               <AvatarGroup
                 members={[
                   { name: 'Nguyễn Văn Minh' },
@@ -179,396 +335,674 @@ export default function HomePage() {
                 max={4}
                 size="sm"
               />
-              <p className="text-xs text-[#475467]">
-                <strong className="text-[#101828]">1.200+</strong> giáo viên, CLB & căn hộ tin dùng
+              <p className="text-xs text-[#475467] dark:text-slate-400">
+                <strong className="text-[#101828] dark:text-white">1.250+</strong> giáo viên, CLB & chủ nhà trọ tin dùng mỗi ngày
               </p>
             </div>
+
+            {/* 3 Value Highlights */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div className="space-y-0.5">
+                <span className="text-lg font-black text-[#2538D9] dark:text-indigo-400 tabular-nums">0.2s</span>
+                <span className="text-[11px] text-[#475467] dark:text-slate-400 block leading-tight">Gạch nợ tức thì</span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums">100%</span>
+                <span className="text-[11px] text-[#475467] dark:text-slate-400 block leading-tight">Về thẳng tài khoản</span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-lg font-black text-violet-600 dark:text-violet-400 tabular-nums">0 VNĐ</span>
+                <span className="text-[11px] text-[#475467] dark:text-slate-400 block leading-tight">Phí giao dịch</span>
+              </div>
+            </div>
+
           </div>
 
-          {/* Right Column: Hero Visual — Laptop Preview + Phone Mockup + Callout Tags */}
+          {/* Right Column: Hero Visual — Interactive Mockup Canvas */}
           <div className="lg:col-span-7 relative">
             
-            {/* Callout Tag 1: Quản lý dễ dàng (Pointing to Dashboard) */}
-            <div className="hidden sm:flex absolute -top-4 left-6 z-20 items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 border border-[#2538D9]/30 shadow-lg text-xs font-bold text-[#2538D9] backdrop-blur-md animate-bounce">
-              <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
-              <span>Quản lý dễ dàng</span>
-              <svg className="w-4 h-4 text-[#2538D9] transform rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+            {/* Ambient Glows */}
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-[#2538D9]/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-[#6D5CE8]/15 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Top Interactive Banner Tag */}
+            <div className="flex items-center justify-between px-4 py-2 bg-white dark:bg-slate-800 rounded-t-2xl border border-b-0 border-[#E4E7EC] dark:border-slate-700 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span className="font-bold text-[#101828] dark:text-white ml-2">TingRoster Live Simulator</span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Sẵn sàng tương tác
+              </span>
             </div>
 
-            {/* Callout Tag 2: Thu phí tự động (Pointing to Phone VietQR) */}
-            <div className="hidden sm:flex absolute -bottom-3 right-4 z-20 items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9] text-white shadow-xl text-xs font-bold shadow-[#2538D9]/30 animate-pulse">
-              <Zap className="w-3.5 h-3.5" />
-              <span>Thu phí tự động 100%</span>
-            </div>
-
-            {/* Callout Tag 3: Đối soát khỏi lo */}
-            <div className="hidden sm:flex absolute top-1/2 -left-4 z-20 items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-300 shadow-md text-xs font-bold text-emerald-800">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Đối soát khỏi lo</span>
-            </div>
-
-            {/* Laptop Device Frame */}
-            <div className="relative mx-auto bg-slate-900 p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border-4 border-slate-800 max-w-xl">
-              {/* Laptop Camera dot */}
-              <div className="w-2 h-2 bg-slate-700 rounded-full mx-auto mb-2" />
+            {/* Main Interactive Sandbox Card */}
+            <div className="bg-white dark:bg-slate-900 rounded-b-2xl border border-[#E4E7EC] dark:border-slate-700 shadow-2xl p-4 sm:p-6 space-y-5 text-left relative overflow-hidden">
               
-              {/* Screen Inner Preview */}
-              <div className="bg-[#F5F7FB] rounded-xl overflow-hidden border border-slate-700 shadow-inner">
-                {/* Simulated Mini Dashboard Header */}
-                <div className="bg-white px-3 py-2 border-b border-[#E4E7EC] flex items-center justify-between text-[10px]">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-rose-400" />
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span className="font-bold text-[#101828] ml-2">TingRoster Dashboard</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Avatar name="Nguyễn Văn Minh" size="xs" />
-                    <span className="font-medium text-[#475467]">Nguyễn Văn Minh</span>
+              {/* Top Row: Mini Metrics Bar */}
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] font-semibold text-[#475467] dark:text-slate-400 block">Sĩ số buổi này</span>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-base sm:text-lg font-black text-[#101828] dark:text-white tabular-nums">{presentCount}/4</span>
+                    <span className="text-[10px] font-bold text-[#2538D9] dark:text-indigo-400">({Math.round((presentCount / 4) * 100)}%)</span>
                   </div>
                 </div>
 
-                {/* Simulated Metrics Strip */}
-                <div className="p-3 grid grid-cols-3 gap-2 text-left">
-                  <div className="bg-white p-2.5 rounded-lg border border-[#E4E7EC]">
-                    <span className="text-[9px] text-[#475467] block">Tổng phải thu</span>
-                    <span className="text-xs font-bold text-[#101828] tabular-nums">48.500.000đ</span>
-                  </div>
-                  <div className="bg-white p-2.5 rounded-lg border border-[#E4E7EC]">
-                    <span className="text-[9px] text-emerald-600 block">Đã thu</span>
-                    <span className="text-xs font-bold text-emerald-700 tabular-nums">32.750.000đ</span>
-                  </div>
-                  <div className="bg-white p-2.5 rounded-lg border border-[#E4E7EC]">
-                    <span className="text-[9px] text-amber-600 block">Còn thiếu</span>
-                    <span className="text-xs font-bold text-amber-700 tabular-nums">15.750.000đ</span>
-                  </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 block">Dự kiến thu</span>
+                  <span className="text-base sm:text-lg font-black text-emerald-700 dark:text-emerald-300 tabular-nums block mt-0.5">
+                    {formatVND(totalRevenue)}
+                  </span>
                 </div>
 
-                {/* Mini Class Roster List */}
-                <div className="px-3 pb-3 space-y-1.5">
-                  <div className="flex items-center justify-between text-[10px] font-bold text-[#475467] px-1">
-                    <span>Lớp học gần đây</span>
-                    <span className="text-[#2538D9]">Tất cả (4)</span>
-                  </div>
-                  {[
-                    { name: 'Lớp Toán 6A', members: '48 học sinh', progress: '78%', status: 'Hoạt động' },
-                    { name: 'CLB Pickleball', members: '36 hội viên', progress: '92%', status: 'Đang đấu' },
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-white p-2 rounded-lg border border-[#E4E7EC] flex items-center justify-between text-[11px]">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-md bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold text-[10px]">
-                          {idx === 0 ? 'T' : 'P'}
-                        </div>
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <span className="text-[10px] font-semibold text-violet-600 dark:text-violet-400 block">Đối soát Napas</span>
+                  <span className="text-xs sm:text-sm font-bold text-violet-700 dark:text-violet-300 block mt-1 flex items-center gap-1">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    Tự động 24/7
+                  </span>
+                </div>
+              </div>
+
+              {/* Interactive Roster (Feature 1 Demo) */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-[#475467] dark:text-slate-300 px-1">
+                  <span className="flex items-center gap-1.5">
+                    <CalendarCheck className="w-4 h-4 text-[#2538D9]" />
+                    Bấm vào trạng thái để thử điểm danh 1-chạm:
+                  </span>
+                  <span className="text-[11px] text-[#2538D9] dark:text-indigo-400 font-semibold">Lớp Toán 12A</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {students.map(st => (
+                    <div
+                      key={st.id}
+                      className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={st.name} size="sm" gender={st.gender} age={st.age} />
                         <div>
-                          <span className="font-bold text-[#101828] block leading-none">{item.name}</span>
-                          <span className="text-[9px] text-[#475467]">{item.members}</span>
+                          <span className="text-xs font-bold text-[#101828] dark:text-white block leading-tight">
+                            {st.name}
+                          </span>
+                          <span className="text-[10px] text-[#475467] dark:text-slate-400">
+                            {formatVND(st.fee)} / buổi
+                          </span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <span className="tabular-nums font-bold text-[10px] text-[#2538D9]">{item.progress}</span>
-                        <span className="text-[9px] text-emerald-600 block">Đã đối soát</span>
-                      </div>
+
+                      {/* Clickable Status Switcher */}
+                      <button
+                        type="button"
+                        onClick={() => cycleStudentStatus(st.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer border ${
+                          st.status === 'PRESENT'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100'
+                            : st.status === 'LATE'
+                            ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800 hover:bg-amber-100'
+                            : st.status === 'ABSENT'
+                            ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800 hover:bg-rose-100'
+                            : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-800 hover:bg-blue-100'
+                        }`}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                        <span>
+                          {st.status === 'PRESENT' && 'Có mặt'}
+                          {st.status === 'LATE' && 'Đi muộn'}
+                          {st.status === 'ABSENT' && 'Vắng mặt'}
+                          {st.status === 'EXCUSED' && 'Nghỉ có phép'}
+                        </span>
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Laptop bottom base hinge */}
-              <div className="w-20 h-1.5 bg-slate-700 rounded-full mx-auto mt-2" />
-            </div>
-
-            {/* Overlapping Smartphone Mockup showing VietQR Bill */}
-            <div className="absolute -bottom-8 -right-2 sm:-right-6 w-44 sm:w-52 bg-slate-900 p-2 rounded-[2rem] shadow-2xl border-2 border-slate-700 z-10 hidden xs:block">
-              <div className="bg-white rounded-[1.7rem] p-3 text-center space-y-2 border border-slate-200">
-                <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto" />
-                <div className="flex items-center justify-between text-[9px] text-[#475467] px-1">
-                  <span className="font-bold text-[#101828]">VietQR Bill</span>
-                  <span className="text-emerald-600 font-bold">24/7 Napas</span>
-                </div>
-                
-                {/* Mini QR code representation */}
-                <div className="w-24 h-24 mx-auto bg-slate-50 border-2 border-[#2538D9] rounded-xl p-1.5 flex items-center justify-center relative shadow-sm">
-                  <QrCode className="w-full h-full text-slate-800" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="w-5 h-5 rounded-full bg-white shadow-xs flex items-center justify-center text-[8px] font-black text-[#2538D9]">
-                      Ting
+              {/* Interactive VietQR Webhook Box (Feature 2 Demo) */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/40 dark:to-blue-950/40 border border-[#2538D9]/25 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <QrCode className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />
+                    <span className="text-xs font-bold text-[#101828] dark:text-white">
+                      Hóa đơn #HD-1092: 600.000đ (Nguyễn Văn An)
                     </span>
                   </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                    simulatedInvoiceStatus === 'PAID'
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/60 dark:text-emerald-200 dark:border-emerald-700'
+                      : 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-900/60 dark:text-rose-200 dark:border-rose-700'
+                  }`}>
+                    {simulatedInvoiceStatus === 'PAID' ? '✓ ĐÃ GẠCH NỢ' : 'CHƯA ĐÓNG'}
+                  </span>
                 </div>
 
-                <div>
-                  <span className="text-[10px] text-[#475467] block">Số tiền thanh toán</span>
-                  <span className="text-sm font-bold text-[#2538D9] tabular-nums">500.000 đ</span>
+                {/* Simulated Payment Action */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
+                  <div className="text-[11px] text-[#475467] dark:text-slate-300 flex items-center gap-1.5">
+                    <BankLogo bankId="MB" size="xs" />
+                    <span>Nội dung chuyển khoản chuẩn: <code className="font-mono font-bold text-[#2538D9] dark:text-indigo-400">TR84920</code></span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {simulatedInvoiceStatus === 'PENDING' ? (
+                      <button
+                        type="button"
+                        onClick={handleSimulatePayment}
+                        disabled={isSimulatingBank}
+                        className="px-3.5 py-1.5 rounded-lg bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white text-xs font-bold transition-all shadow-md shadow-[#2538D9]/20 flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Zap className="w-3.5 h-3.5 fill-current text-yellow-300" />
+                        <span>{isSimulatingBank ? 'Đang nhận diện...' : 'Bắn thử 600.000đ (Ting!)'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleResetSimulatedPayment}
+                        className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-1 cursor-pointer"
+                      >
+                        <RefreshCw className="w-3 h-3" />
+                        <span>Thử lại</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                <div className="bg-slate-50 p-1.5 rounded-lg text-[9px] text-left border border-slate-200 space-y-0.5">
-                  <div className="flex justify-between">
-                    <span className="text-[#475467]">Người nhận:</span>
-                    <span className="font-bold text-[#101828]">NGUYEN VAN MINH</span>
+                {/* Webhook Confirmation Banner */}
+                {simulatedWebhookLog && (
+                  <div className="p-2.5 rounded-lg bg-emerald-500/15 border border-emerald-500/40 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-between animate-fadeIn">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCheck className="w-4 h-4 text-emerald-600" />
+                      Ting! Nhận +600.000đ lúc {simulatedWebhookLog.time} qua {simulatedWebhookLog.bank}. Hóa đơn khớp 100%!
+                    </span>
+                    <span className="text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded">
+                      ĐÃ ĐỐI SOÁT
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#475467]">Nội dung:</span>
-                    <span className="font-mono font-bold text-[#2538D9]">TR84920</span>
-                  </div>
-                </div>
+                )}
               </div>
+
+            </div>
+
+            {/* Direct Link to Full Dashboard */}
+            <div className="mt-3 text-center">
+              <button
+                type="button"
+                onClick={handleInstantDemoLogin}
+                className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+              >
+                <span>Xem giao diện đầy đủ với dữ liệu mẫu thật của bạn</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
           </div>
+
         </div>
       </section>
 
-      {/* 4 Core Benefits Row (Matching Screen 1 of Reference Image) */}
-      <section id="tinh-nang" className="py-12 bg-white border-y border-[#E4E7EC]">
+      {/* 4 Core Superpower Pillars */}
+      <section id="tinh-nang" className="py-14 bg-white dark:bg-slate-900 border-y border-[#E4E7EC] dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            {/* Benefit 1: Điểm danh nhanh */}
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-[#E4E7EC] hover:border-[#2538D9]/40 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 text-[#2538D9] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <CalendarCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold text-[#101828] mb-1.5">Điểm danh nhanh</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Chỉ 1 chạm, tiết kiệm thời gian. Tự động tính buổi học và đồng bộ công nợ tức thì.
-              </p>
-            </div>
-
-            {/* Benefit 2: QR VietQR */}
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-[#E4E7EC] hover:border-[#2538D9]/40 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-violet-100 text-[#6D5CE8] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <QrCode className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold text-[#101828] mb-1.5">QR VietQR</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Tạo mã quét mọi ngân hàng và ví điện tử. Tự điền đúng số tiền và nội dung chuyển khoản.
-              </p>
-            </div>
-
-            {/* Benefit 3: Đối soát tự động */}
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-[#E4E7EC] hover:border-[#2538D9]/40 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold text-[#101828] mb-1.5">Đối soát tự động</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Chính xác, an toàn, không bao giờ nhầm lẫn. Webhook ngân hàng khớp tiền trong 0.2 giây.
-              </p>
-            </div>
-
-            {/* Benefit 4: Nhắc phí thông minh */}
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-[#E4E7EC] hover:border-[#2538D9]/40 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Bell className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold text-[#101828] mb-1.5">Nhắc phí thông minh</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Nhắc phí tự động kèm link thanh toán trực tiếp qua Zalo / SMS, giảm 90% tỷ lệ nợ đọng.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Target Audience Section: "Dành cho bạn" per Panel 1 */}
-      <section id="doi-tuong" className="py-16 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-bold text-[#2538D9] tracking-wider uppercase">Dành cho bạn</span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] tracking-tight">
-            Thiết kế chuyên sâu cho từng mô hình
-          </h2>
-          <p className="text-xs sm:text-sm text-[#475467]">
-            Tối ưu riêng biệt cho giáo viên, quản lý câu lạc bộ thể thao và chủ khu phòng trọ.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* Card 1: Giáo viên dạy thêm */}
-          <div className="bg-white rounded-2xl border border-[#E4E7EC] p-6 lg:p-8 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-[#2538D9] flex items-center justify-center">
-                <GraduationCap className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#101828]">Giáo viên dạy thêm</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Quản lý sĩ số lớp học, điểm danh theo buổi và thu học phí tự động. Phụ huynh quét QR là gạch nợ ngay.
-              </p>
-              <ul className="space-y-2 pt-2 text-xs text-[#475467]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Điểm danh 1-chạm không mất thời gian</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Cổng nộp học phí VietQR riêng cho từng học sinh</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Xuất báo cáo phụ huynh minh bạch</span>
-                </li>
-              </ul>
-            </div>
-            <div className="pt-6">
-              <Link
-                href="/onboarding"
-                className="w-full py-2.5 rounded-xl bg-slate-50 hover:bg-[#2538D9] text-[#101828] hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-[#E4E7EC]"
-              >
-                <span>Tạo lớp học thử</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 2: Chủ CLB thể thao */}
-          <div className="bg-white rounded-2xl border border-[#2538D9]/40 p-6 lg:p-8 shadow-md hover:shadow-xl transition-all relative flex flex-col justify-between">
-            <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#2538D9] text-white text-[10px] font-bold">
-              Phổ biến nhất
-            </div>
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-violet-50 border border-violet-200 text-[#6D5CE8] flex items-center justify-center">
-                <Trophy className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#101828]">Chủ CLB thể thao</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Cầu lông, Pickleball, Bóng đá, Gym. Quản lý hội viên, lịch sân, gói tập và kiosk check-in quét QR tại sân.
-              </p>
-              <ul className="space-y-2 pt-2 text-xs text-[#475467]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Màn hình Kiosk quét QR tại sân tự động</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Thu hội phí tháng / quý / gói lượt chuẩn xác</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Cảnh báo hội viên hết hạn thẻ ngay khi check-in</span>
-                </li>
-              </ul>
-            </div>
-            <div className="pt-6">
-              <Link
-                href="/onboarding"
-                className="w-full py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm shadow-[#2538D9]/20"
-              >
-                <span>Tạo câu lạc bộ</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 3: Chủ nhà trọ nhỏ */}
-          <div className="bg-white rounded-2xl border border-[#E4E7EC] p-6 lg:p-8 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center">
-                <Home className="w-6 h-6" />
-              </div>
-              <h3 className="text-lg font-bold text-[#101828]">Chủ nhà trọ nhỏ</h3>
-              <p className="text-xs text-[#475467] leading-relaxed">
-                Theo dõi phòng, số điện, số nước, dịch vụ. Tự gửi hóa đơn tiền phòng kèm mã VietQR tới từng khách thuê.
-              </p>
-              <ul className="space-y-2 pt-2 text-xs text-[#475467]">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Ghi chỉ số điện nước & tính hóa đơn tự động</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Gạch nợ tiền thuê phòng ngay khi khách chuyển khoản</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Không sợ khách chuyển nhầm hay sửa nội dung</span>
-                </li>
-              </ul>
-            </div>
-            <div className="pt-6">
-              <Link
-                href="/onboarding"
-                className="w-full py-2.5 rounded-xl bg-slate-50 hover:bg-[#2538D9] text-[#101828] hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-[#E4E7EC]"
-              >
-                <span>Quản lý phòng trọ</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Interactive Workflow Section: "Xem cách hoạt động" */}
-      <section id="cach-hoat-dong" className="py-16 bg-[#0B0F19] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold text-indigo-400 tracking-wider uppercase">Quy trình 5 bước khép kín</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Từ điểm danh đến tiền về tài khoản
+          <div className="text-center max-w-3xl mx-auto mb-10 space-y-2">
+            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Tính năng cốt lõi</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828] dark:text-white tracking-tight">
+              Tất cả những gì bạn cần để vận hành thảnh thơi
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              Mọi công đoạn thủ công trước đây được TingRoster tự động hóa 100%.
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">
+              Không còn sổ sách thủ công, không còn canh tin nhắn ngân hàng từng phút để kiểm tra ai đã đóng tiền.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {[
-              { step: '01', title: 'Tạo Workspace', desc: 'Chọn mô hình lớp học, CLB thể thao hoặc nhà trọ.' },
-              { step: '02', title: 'Điểm danh 1-chạm', desc: 'Ghi nhận chuyên cần hoặc check-in qua Kiosk tại sân.' },
-              { step: '03', title: 'Tạo khoản thu', desc: 'Hệ thống tự sinh hóa đơn và mã chuyển khoản riêng.' },
-              { step: '04', title: 'Quét VietQR', desc: 'Học viên quét mã Napas 24/7 từ bất kỳ app ngân hàng nào.' },
-              { step: '05', title: 'Đối soát Ting!', desc: 'Webhook nhận diện và tự gạch nợ trong 0.2 giây.' },
-            ].map((st, i) => (
-              <div key={i} className="bg-[#131A2B] border border-[#1E283D] p-5 rounded-2xl relative">
-                <span className="text-2xl font-bold text-[#6D5CE8] tabular-nums block mb-2">{st.step}</span>
-                <h4 className="text-sm font-bold text-white mb-1">{st.title}</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">{st.desc}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* Superpower 1: Điểm danh một chạm */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E4E7EC] dark:border-slate-700/60 hover:border-[#2538D9]/40 hover:shadow-lg transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <CalendarCheck className="w-6 h-6" />
               </div>
-            ))}
-          </div>
-
-          {/* Sound & Webhook Simulator Bar */}
-          <div className="bg-[#131A2B] border border-[#2538D9]/40 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#2538D9] flex items-center justify-center text-white flex-shrink-0">
-                <Volume2 className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-white">Trải nghiệm âm thanh thông báo &quot;Ting!&quot; nhận tiền</p>
-                <p className="text-[11px] text-slate-400">Âm thanh chuông báo chuẩn ngân hàng khi giao dịch đối soát thành công</p>
-              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">Điểm danh 1-Chạm</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Thao tác nhanh trên điện thoại hoặc máy tính bảng. Tự động tính bù trừ nghỉ có phép và cập nhật học phí theo số buổi thực tế.
+              </p>
             </div>
+
+            {/* Superpower 2: QR VietQR Động */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E4E7EC] dark:border-slate-700/60 hover:border-[#2538D9]/40 hover:shadow-lg transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-[#6D5CE8] dark:text-violet-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <QrCode className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">VietQR Napas 24/7</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Tự động tạo mã QR có sẵn số tiền và nội dung chuyển khoản chuẩn xác. Quét được từ tất cả các ứng dụng ngân hàng và ví điện tử.
+              </p>
+            </div>
+
+            {/* Superpower 3: Đối soát Webhook tự động */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E4E7EC] dark:border-slate-700/60 hover:border-[#2538D9]/40 hover:shadow-lg transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">Đối soát tự động 0.2s</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Khớp giao dịch tức thì qua SePay & Casso. Hóa đơn tự động chuyển trạng thái &quot;Đã thanh toán&quot; mà không cần xem biên lai.
+              </p>
+            </div>
+
+            {/* Superpower 4: Nhắc phí Zalo & Cổng minh bạch */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-slate-800/60 border border-[#E4E7EC] dark:border-slate-700/60 hover:border-[#2538D9]/40 hover:shadow-lg transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Bell className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">Cổng Phụ huynh & Zalo</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Link tra cứu minh bạch chuyên cần và học phí riêng cho từng học viên / thành viên. Tự động gửi nhắc nợ nhẹ nhàng, tế nhị.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 3 Industry Personas Deep-Dive (Interactive Tabs) */}
+      <section id="doi-tuong" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+          <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Đối tượng sử dụng</span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
+            Tối ưu hóa chuyên sâu cho từng mô hình
+          </h2>
+          <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">
+            Tùy biến luồng dữ liệu theo đặc thù riêng biệt của lớp học, sân tập và căn hộ dịch vụ.
+          </p>
+        </div>
+
+        {/* Tab Headers */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex p-1.5 rounded-2xl bg-white dark:bg-slate-800 border border-[#E4E7EC] dark:border-slate-700 shadow-xs">
             <button
-              onClick={playDemoTingSound}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#2538D9]/30"
+              onClick={() => setActivePersona('CLASS')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                activePersona === 'CLASS'
+                  ? 'bg-[#2538D9] text-white shadow-md shadow-[#2538D9]/25'
+                  : 'text-[#475467] dark:text-slate-300 hover:text-[#101828] dark:hover:text-white'
+              }`}
             >
-              <Zap className="w-4 h-4" />
-              <span>Bấm thử âm thanh</span>
+              <GraduationCap className="w-4 h-4" />
+              <span>Giáo viên & Trung tâm</span>
+            </button>
+
+            <button
+              onClick={() => setActivePersona('SPORTS')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                activePersona === 'SPORTS'
+                  ? 'bg-[#2538D9] text-white shadow-md shadow-[#2538D9]/25'
+                  : 'text-[#475467] dark:text-slate-300 hover:text-[#101828] dark:hover:text-white'
+              }`}
+            >
+              <Trophy className="w-4 h-4" />
+              <span>CLB Thể thao (Pickleball/Cầu lông)</span>
+            </button>
+
+            <button
+              onClick={() => setActivePersona('RENTAL')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                activePersona === 'RENTAL'
+                  ? 'bg-[#2538D9] text-white shadow-md shadow-[#2538D9]/25'
+                  : 'text-[#475467] dark:text-slate-300 hover:text-[#101828] dark:hover:text-white'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              <span>Chủ nhà trọ & Căn hộ mini</span>
             </button>
           </div>
+        </div>
 
-          {simulatedTing && (
-            <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-400 text-emerald-200 text-xs sm:text-sm font-semibold flex items-center justify-between animate-pulse">
-              <span>⚡ <strong>TING!</strong> MB Bank vừa ghi nhận +500.000đ từ học sinh Nguyễn Văn A (Mã TR84920). Hóa đơn đã gạch nợ thành công!</span>
-              <span className="text-[10px] bg-emerald-500 text-white font-bold px-2 py-0.5 rounded">Khớp 100%</span>
+        {/* Tab Content Display */}
+        <div className="bg-white dark:bg-slate-800/80 rounded-3xl border border-[#E4E7EC] dark:border-slate-700 p-6 sm:p-10 shadow-lg">
+          {activePersona === 'CLASS' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4 text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Dành riêng cho Gia sư & Trung tâm Giáo dục</span>
+                </div>
+                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
+                  Quản lý chuyên cần và học phí không bao giờ sai sót
+                </h3>
+                <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-300 leading-relaxed">
+                  Giáo viên chỉ cần điểm danh 1 chạm vào đầu buổi học. Cuối tháng, hệ thống tự động nhân số buổi thực tế có mặt, trừ đi các buổi vắng có phép đã duyệt, và tạo hóa đơn kèm link VietQR động gửi đến từng phụ huynh.
+                </p>
+                <ul className="space-y-2.5 text-xs text-[#475467] dark:text-slate-300 pt-2">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Điểm danh sĩ số lớp nhanh bằng danh sách hoặc ảnh thẻ</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Cổng phụ huynh tra cứu lịch sử học và đóng học phí trực tiếp</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Xuất bảng kê điểm danh & tài chính ra file Excel chuẩn format</span>
+                  </li>
+                </ul>
+                <div className="pt-4 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleInstantDemoLogin}
+                    className="px-5 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/20 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Trải nghiệm ngay mô hình Lớp học</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <Link
+                    href="/p/demo"
+                    className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-semibold text-[#101828] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-1"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-[#2538D9]" />
+                    <span>Xem thử Cổng Phụ huynh</span>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 bg-[#F8FAFC] dark:bg-slate-900 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-5 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-[#101828] dark:text-white">
+                  <span>Học sinh Lớp 12A • Tháng này</span>
+                  <span className="text-emerald-600 font-bold">Đã thu 88%</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Nguyễn Văn An', sessions: '8/8 buổi', fee: '1.200.000đ', status: 'Đã đóng đủ' },
+                    { name: 'Trần Bảo Ngọc', sessions: '7/8 buổi (1 phép)', fee: '1.050.000đ', status: 'Đã đóng đủ' },
+                    { name: 'Lê Hoàng Nam', sessions: '8/8 buổi', fee: '1.200.000đ', status: 'Chưa đóng' },
+                  ].map((row, idx) => (
+                    <div key={idx} className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={row.name} size="sm" />
+                        <div>
+                          <span className="font-bold text-[#101828] dark:text-white block">{row.name}</span>
+                          <span className="text-[10px] text-[#475467] dark:text-slate-400">{row.sessions}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-[#101828] dark:text-white block tabular-nums">{row.fee}</span>
+                        <span className={`text-[10px] font-bold ${row.status === 'Chưa đóng' ? 'text-rose-600' : 'text-emerald-600'}`}>
+                          {row.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
+
+          {activePersona === 'SPORTS' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4 text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-800 text-xs font-bold text-[#6D5CE8] dark:text-violet-300">
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>Dành riêng cho CLB Cầu lông, Pickleball, Bóng đá</span>
+                </div>
+                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
+                  Kiosk quét QR tại sân & Chia tiền quỹ chuẩn từng xu
+                </h3>
+                <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-300 leading-relaxed">
+                  Đặt máy tính bảng hoặc iPad tại cửa sân làm Kiosk check-in. Hội viên chỉ cần quét mã QR để ghi nhận trận đấu. Tự động chia tiền thuê sân, tiền bóng, tiền nước và gửi VietQR thu hội phí theo tuần hoặc theo tháng.
+                </p>
+                <ul className="space-y-2.5 text-xs text-[#475467] dark:text-slate-300 pt-2">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Màn hình Kiosk quét QR tự phục vụ tại cửa sân</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Cảnh báo hết hạn gói lượt hoặc âm quỹ ngay khi check-in</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Chia đều tiền sân hoặc thu theo lượt chơi cực kỳ linh hoạt</span>
+                  </li>
+                </ul>
+                <div className="pt-4 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleInstantDemoLogin}
+                    className="px-5 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/20 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Trải nghiệm ngay CLB Thể thao</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <Link
+                    href="/kiosk"
+                    className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-semibold text-[#101828] dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-1"
+                  >
+                    <Tv className="w-3.5 h-3.5 text-violet-600" />
+                    <span>Mở màn hình Kiosk sân</span>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 bg-[#F8FAFC] dark:bg-slate-900 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-5 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-[#101828] dark:text-white">
+                  <span>CLB Pickleball Sài Gòn • Kiosk Sân 2</span>
+                  <span className="text-violet-600 font-bold">Kiosk Online</span>
+                </div>
+                <div className="p-4 rounded-xl bg-violet-900 text-white space-y-3 text-center">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-violet-700/60 flex items-center justify-center">
+                    <QrCode className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold block">Quét QR Check-in vào sân</span>
+                    <span className="text-[11px] text-violet-200">Đưa camera điện thoại quét mã thành viên</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activePersona === 'RENTAL' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4 text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                  <Home className="w-3.5 h-3.5" />
+                  <span>Dành riêng cho Chủ nhà trọ & Căn hộ mini</span>
+                </div>
+                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
+                  Chốt số điện nước & Tự động gạch nợ tiền thuê phòng
+                </h3>
+                <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-300 leading-relaxed">
+                  Nhập số công tơ điện nước vào cuối tháng, TingRoster tự sinh hóa đơn tiền phòng kèm mã VietQR riêng cho từng phòng. Khách thuê chuyển khoản xong là tiền vào tài khoản chủ nhà, hệ thống gạch nợ ngay lập tức.
+                </p>
+                <ul className="space-y-2.5 text-xs text-[#475467] dark:text-slate-300 pt-2">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Ghi chỉ số điện nước & dịch vụ theo công tơ nhanh chóng</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Mỗi phòng 1 mã chuyển khoản riêng biệt, không bao giờ nhầm lẫn</span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <span>Tự động phát hiện khách nợ đọng quá hạn để gửi thông báo</span>
+                  </li>
+                </ul>
+                <div className="pt-4">
+                  <button
+                    type="button"
+                    onClick={handleInstantDemoLogin}
+                    className="px-5 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/20 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Trải nghiệm ngay Quản lý nhà trọ</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 bg-[#F8FAFC] dark:bg-slate-900 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-5 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-[#101828] dark:text-white">
+                  <span>Dãy Trọ Hoa Sữa (12 phòng)</span>
+                  <span className="text-emerald-600 font-bold">Kỳ Tháng 10</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { room: 'Phòng 101', elec: '85 kWh', water: '6 khối', total: '3.650.000đ', status: 'Đã thanh toán' },
+                    { room: 'Phòng 102', elec: '110 kWh', water: '9 khối', total: '3.920.000đ', status: 'Chưa đóng' },
+                    { room: 'Phòng 201', elec: '70 kWh', water: '5 khối', total: '3.450.000đ', status: 'Đã thanh toán' },
+                  ].map((row, idx) => (
+                    <div key={idx} className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                      <div>
+                        <span className="font-bold text-[#101828] dark:text-white block">{row.room}</span>
+                        <span className="text-[10px] text-[#475467] dark:text-slate-400">Điện {row.elec} • Nước {row.water}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-[#101828] dark:text-white block tabular-nums">{row.total}</span>
+                        <span className={`text-[10px] font-bold ${row.status === 'Chưa đóng' ? 'text-rose-600' : 'text-emerald-600'}`}>
+                          {row.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Interactive ROI & Time Saved Calculator */}
+      <section id="roi-calculator" className="py-16 bg-[#0B0F19] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-indigo-400 tracking-wider uppercase">Tính toán hiệu quả đầu tư</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              TingRoster giúp bạn tiết kiệm bao nhiêu?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Kéo thanh trượt để ước tính số giờ làm việc và doanh thu thu hồi mỗi tháng.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto bg-[#131A2B] border border-[#1E283D] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
+            
+            {/* Slider Control */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-300">
+                  Số lượng học sinh / hội viên / khách thuê của bạn:
+                </span>
+                <span className="text-2xl font-black text-indigo-400 tabular-nums">
+                  {memberCount} <span className="text-sm font-semibold text-slate-400">người</span>
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="10"
+                max="300"
+                step="5"
+                value={memberCount}
+                onChange={(e) => setMemberCount(parseInt(e.target.value, 10))}
+                className="w-full h-2.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#2538D9]"
+              />
+
+              <div className="flex justify-between text-[11px] text-slate-500 font-semibold">
+                <span>10 người (Quy mô nhỏ)</span>
+                <span>150 người</span>
+                <span>300+ người (Quy mô lớn)</span>
+              </div>
+            </div>
+
+            {/* Calculated Results Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+              <div className="p-4 rounded-2xl bg-[#0B0F19] border border-slate-800 text-left">
+                <span className="text-[11px] text-slate-400 block">Thời gian tiết kiệm</span>
+                <span className="text-2xl sm:text-3xl font-black text-emerald-400 tabular-nums block mt-1">
+                  ~{hoursSavedPerMonth} giờ
+                </span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Tương đương {Math.round(hoursSavedPerMonth / 8)} ngày công lao động
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#0B0F19] border border-slate-800 text-left">
+                <span className="text-[11px] text-slate-400 block">Thất thoát thu hồi</span>
+                <span className="text-2xl sm:text-3xl font-black text-indigo-400 tabular-nums block mt-1">
+                  ~{formatVND(moneyRecoveredPerMonth)}
+                </span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Nhờ nhắc nợ tự động & đối soát chính xác
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#0B0F19] border border-slate-800 text-left">
+                <span className="text-[11px] text-slate-400 block">Tỷ lệ sai lệch nợ</span>
+                <span className="text-2xl sm:text-3xl font-black text-amber-400 tabular-nums block mt-1">
+                  0%
+                </span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Không còn nhầm lẫn nội dung chuyển khoản
+                </span>
+              </div>
+            </div>
+
+            {/* Instant Demo Action */}
+            <div className="pt-2 text-center">
+              <button
+                type="button"
+                onClick={handleInstantDemoLogin}
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#2538D9] to-[#6D5CE8] hover:from-[#1E2DB8] hover:to-[#5B4BD8] text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#2538D9]/25 transition-all flex items-center justify-center gap-2 mx-auto cursor-pointer"
+              >
+                <Zap className="w-4 h-4 fill-current text-yellow-300" />
+                <span>Bắt đầu tiết kiệm thời gian ngay hôm nay (Dùng thử miễn phí)</span>
+              </button>
+            </div>
+
+          </div>
 
         </div>
       </section>
 
-      {/* Pricing / Bảng giá */}
+      {/* Supported Bank Network Showcase */}
+      <section className="py-12 bg-white dark:bg-slate-900 border-b border-[#E4E7EC] dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+          <p className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase tracking-wider">
+            Tương thích trực tiếp với hệ sinh thái ngân hàng Napas 24/7 & Ví điện tử
+          </p>
+          
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 opacity-90">
+            {['MB', 'VCB', 'TCB', 'ACB', 'VPB', 'TPB', 'BIDV', 'ICB'].map((bankKey) => {
+              const b = POPULAR_BANKS[bankKey];
+              return (
+                <div key={bankKey} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <BankLogo bankId={bankKey} size="sm" />
+                  <span className="text-xs font-bold text-[#101828] dark:text-white">{b.shortName}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="text-[11px] text-[#475467] dark:text-slate-500 max-w-xl mx-auto">
+            Học viên & khách hàng quét mã từ app ngân hàng bất kỳ. Tiền chuyển về 100% thẳng tài khoản chính chủ của bạn.
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing / Bảng giá minh bạch */}
       <section id="bang-gia" className="py-16 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-bold text-[#2538D9] tracking-wider uppercase">Bảng giá minh bạch</span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] tracking-tight">
+          <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Bảng giá minh bạch</span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
             Gói dịch vụ phù hợp mọi quy mô
           </h2>
-          <p className="text-xs sm:text-sm text-[#475467]">
+          <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">
             Không phí ẩn, không hoa hồng trên mỗi giao dịch. Tiền vào thẳng tài khoản ngân hàng của bạn.
           </p>
         </div>
@@ -576,12 +1010,12 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Free Starter */}
-          <div className="bg-white rounded-2xl border border-[#E4E7EC] p-6 lg:p-8 flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-6 lg:p-8 flex flex-col justify-between">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#475467] uppercase">Khởi đầu</span>
-              <h3 className="text-2xl font-black text-[#101828]">Miễn phí</h3>
-              <p className="text-xs text-[#475467]">Cho giáo viên mới hoặc nhóm hoạt động dưới 20 thành viên.</p>
-              <div className="border-t border-[#E4E7EC] pt-4 space-y-2 text-xs text-[#475467]">
+              <span className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase">Khởi đầu</span>
+              <h3 className="text-2xl font-black text-[#101828] dark:text-white">Miễn phí</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400">Cho giáo viên mới hoặc nhóm hoạt động dưới 25 thành viên.</p>
+              <div className="border-t border-[#E4E7EC] dark:border-slate-700 pt-4 space-y-2 text-xs text-[#475467] dark:text-slate-300">
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>1 Workspace / Lớp học</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Tối đa 25 thành viên</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Điểm danh & xuất file Excel</span></div>
@@ -589,25 +1023,25 @@ export default function HomePage() {
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-bold text-[#101828] flex items-center justify-center">
+              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white flex items-center justify-center">
                 Bắt đầu ngay
               </Link>
             </div>
           </div>
 
           {/* Pro Plan */}
-          <div className="bg-white rounded-2xl border-2 border-[#2538D9] p-6 lg:p-8 relative shadow-xl flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-[#2538D9] p-6 lg:p-8 relative shadow-xl flex flex-col justify-between">
             <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#2538D9] text-white text-[10px] font-bold">
               Khuyên dùng
             </div>
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#2538D9] uppercase">Chuyên nghiệp</span>
+              <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 uppercase">Chuyên nghiệp (Pro)</span>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-[#101828]">199.000 đ</span>
-                <span className="text-xs text-[#475467]">/tháng</span>
+                <span className="text-3xl font-black text-[#101828] dark:text-white">199.000 đ</span>
+                <span className="text-xs text-[#475467] dark:text-slate-400">/tháng</span>
               </div>
-              <p className="text-xs text-[#475467]">Đầy đủ tự động hóa đối soát ngân hàng 24/7 và thông báo.</p>
-              <div className="border-t border-[#E4E7EC] pt-4 space-y-2 text-xs text-[#475467]">
+              <p className="text-xs text-[#475467] dark:text-slate-400">Đầy đủ tự động hóa đối soát ngân hàng 24/7 và thông báo.</p>
+              <div className="border-t border-[#E4E7EC] dark:border-slate-700 pt-4 space-y-2 text-xs text-[#475467] dark:text-slate-300">
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#2538D9]" /><span>Không giới hạn lớp học / CLB</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#2538D9]" /><span>Tối đa 500 thành viên</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#2538D9]" /><span>Tự động đối soát Casso & SePay</span></div>
@@ -616,30 +1050,34 @@ export default function HomePage() {
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold flex items-center justify-center shadow-md shadow-[#2538D9]/25">
-                Dùng thử 14 ngày
-              </Link>
+              <button
+                type="button"
+                onClick={handleInstantDemoLogin}
+                className="w-full py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold flex items-center justify-center shadow-md shadow-[#2538D9]/25 cursor-pointer"
+              >
+                Dùng thử Pro 14 ngày
+              </button>
             </div>
           </div>
 
           {/* Enterprise */}
-          <div className="bg-white rounded-2xl border border-[#E4E7EC] p-6 lg:p-8 flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-6 lg:p-8 flex flex-col justify-between">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#475467] uppercase">Trung tâm & Chuỗi</span>
+              <span className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase">Trung tâm & Chuỗi</span>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-[#101828]">499.000 đ</span>
-                <span className="text-xs text-[#475467]">/tháng</span>
+                <span className="text-3xl font-black text-[#101828] dark:text-white">499.000 đ</span>
+                <span className="text-xs text-[#475467] dark:text-slate-400">/tháng</span>
               </div>
-              <p className="text-xs text-[#475467]">Cho trung tâm nhiều cơ sở, chuỗi sân thể thao hoặc tòa nhà.</p>
-              <div className="border-t border-[#E4E7EC] pt-4 space-y-2 text-xs text-[#475467]">
-                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Không giới hạn số lượng học viên</span></div>
+              <p className="text-xs text-[#475467] dark:text-slate-400">Cho trung tâm nhiều cơ sở, chuỗi sân thể thao hoặc tòa nhà.</p>
+              <div className="border-t border-[#E4E7EC] dark:border-slate-700 pt-4 space-y-2 text-xs text-[#475467] dark:text-slate-300">
+                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Không giới hạn số lượng thành viên</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Phân quyền nhiều giáo viên & trợ giảng</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Tự động gửi tin nhắn Zalo ZNS</span></div>
                 <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Hỗ trợ kỹ thuật ưu tiên 24/7</span></div>
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-bold text-[#101828] flex items-center justify-center">
+              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white flex items-center justify-center">
                 Liên hệ tư vấn
               </Link>
             </div>
@@ -648,12 +1086,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ & Guides per Panel 1 */}
-      <section id="huong-dan" className="py-16 bg-white border-t border-[#E4E7EC]">
+      {/* FAQ & Knowledge Accordion */}
+      <section id="huong-dan" className="py-16 bg-white dark:bg-slate-900 border-t border-[#E4E7EC] dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828]">Câu hỏi thường gặp</h2>
-            <p className="text-xs sm:text-sm text-[#475467]">Những giải đáp nhanh giúp bạn an tâm vận hành</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828] dark:text-white">Câu hỏi thường gặp</h2>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">Những giải đáp nhanh giúp bạn an tâm vận hành</p>
           </div>
 
           <div className="space-y-3">
@@ -677,17 +1115,17 @@ export default function HomePage() {
             ].map((faq, idx) => (
               <div
                 key={idx}
-                className="border border-[#E4E7EC] rounded-xl overflow-hidden transition-colors"
+                className="border border-[#E4E7EC] dark:border-slate-700 rounded-xl overflow-hidden transition-colors"
               >
                 <button
                   onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full p-4 text-left font-bold text-xs sm:text-sm text-[#101828] flex items-center justify-between hover:bg-slate-50"
+                  className="w-full p-4 text-left font-bold text-xs sm:text-sm text-[#101828] dark:text-white flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   <span>{faq.q}</span>
-                  <ChevronRight className={`w-4 h-4 text-[#475467] transition-transform ${activeFaq === idx ? 'rotate-90 text-[#2538D9]' : ''}`} />
+                  <ChevronRight className={`w-4 h-4 text-[#475467] dark:text-slate-400 transition-transform ${activeFaq === idx ? 'rotate-90 text-[#2538D9] dark:text-indigo-400' : ''}`} />
                 </button>
                 {activeFaq === idx && (
-                  <div className="px-4 pb-4 text-xs text-[#475467] leading-relaxed border-t border-slate-100 pt-2 bg-slate-50/50">
+                  <div className="px-4 pb-4 text-xs text-[#475467] dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-2 bg-slate-50/50 dark:bg-slate-800/40">
                     {faq.a}
                   </div>
                 )}
@@ -697,33 +1135,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bottom Banner per Reference Image Panel 1 */}
-      <section className="bg-[#0B0F19] text-white py-12 px-4 border-t border-[#1B2333]">
+      {/* Global Footer */}
+      <footer className="bg-[#0B0F19] text-white py-12 px-4 border-t border-[#1E283D]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <Logo variant="full" theme="dark" size="md" showTagline={false} />
             <span className="hidden sm:inline text-xs text-slate-400 border-l border-slate-700 pl-3">
-              Quản lý lớp học, CLB, nhà trọ...
+              Quản lý lớp học, CLB thể thao, nhà trọ...
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
             <a href="#tinh-nang" className="hover:text-white">Tính năng</a>
             <a href="#doi-tuong" className="hover:text-white">Đối tượng</a>
+            <a href="#roi-calculator" className="hover:text-white">Tính tiết kiệm</a>
             <a href="#bang-gia" className="hover:text-white">Bảng giá</a>
-            <Link href="/login" className="hover:text-white">Đăng nhập</Link>
-            <Link
-              href="/onboarding"
-              className="px-4 py-2 rounded-xl bg-[#2538D9] text-white font-bold hover:bg-[#1E2DB8] transition-colors"
+            <Link href="/login" className="hover:text-white font-bold text-white">Đăng nhập</Link>
+            <button
+              onClick={handleInstantDemoLogin}
+              className="px-4 py-2 rounded-xl bg-[#2538D9] text-white font-bold hover:bg-[#1E2DB8] transition-colors cursor-pointer"
             >
-              Bắt đầu miễn phí
-            </Link>
+              Vào Demo ngay
+            </button>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-[#1B2333] text-center text-[11px] text-slate-500">
-          © {new Date().getFullYear()} TingRoster — Nền tảng điểm danh & đối soát tự động hàng đầu Việt Nam.
+        <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-[#1E283D] flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+          <span>© {new Date().getFullYear()} TingRoster — Điểm danh một chạm. Thu phí tự động. Đối soát khỏi lo.</span>
+          <span>100% VietQR Napas 24/7 • Casso & SePay Webhooks</span>
         </div>
-      </section>
+      </footer>
 
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { formatDateVN, formatDateTimeVN } from '@/lib/utils';
+import { formatDateTimeVN } from '@/lib/utils';
 import {
   Zap,
   Plus,
@@ -25,10 +25,18 @@ import {
   CreditCard,
   Volume2,
   Layers,
-  History
+  History,
+  Terminal,
+  Activity,
+  Code2,
+  Copy,
+  ChevronRight,
+  Building2,
+  GraduationCap
 } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import { TingSelect } from '@/components/common/Select';
 
 interface AutomationRuleItem {
   id: string;
@@ -45,110 +53,192 @@ interface WorkflowStep {
   title: string;
   desc: string;
   badge: string;
-  color: string;
+  iconName: 'webhook' | 'filter' | 'settle' | 'zalo' | 'sound' | 'calendar' | 'kiosk';
 }
 
 const PRESET_PIPELINES: Array<{
   id: string;
+  category: 'ALL' | 'EDUCATION' | 'SPORTS' | 'RENTAL';
   name: string;
   desc: string;
+  samplePayload: Record<string, unknown>;
   steps: WorkflowStep[];
 }> = [
   {
     id: 'vietqr-auto-settle',
-    name: 'Gạch nợ siêu tốc VietQR & Gửi Zalo ZNS',
-    desc: 'Tự động gạch nợ ngay lập tức khi tiền về tài khoản ngân hàng và gửi biên lai cho phụ huynh.',
+    category: 'EDUCATION',
+    name: 'Gạch nợ VietQR 24/7 & Gửi Zalo ZNS',
+    desc: 'Bắt webhook chuyển khoản ngân hàng qua Napas, tự động gạch nợ học phí nguyên tử và gửi biên lai xác nhận.',
+    samplePayload: {
+      gateway: 'SePay Webhook Engine',
+      transactionId: 'TX_84920491',
+      transferType: 'in',
+      transferAmount: 600000,
+      content: 'NGUYEN VAN A CK HOC PHI TR84920',
+      matchedInvoiceCode: 'TR84920',
+      allocationStatus: 'ATOMIC_SETTLED_PAID',
+      notificationChannels: ['Zalo ZNS (Sent)', 'Dashboard Web Chime (Played)'],
+      latencyMs: 38
+    },
     steps: [
       {
         type: 'TRIGGER',
-        title: 'Khi nhận tiền từ Webhook VietQR (Napas 24/7)',
-        desc: 'Bắt gói tin JSON từ SePay / Casso ngay lập tức',
-        badge: 'Trigger',
-        color: 'border-indigo-300 bg-indigo-50/50 text-[#2538D9]',
+        title: 'Webhook VietQR Napas 24/7',
+        desc: 'Bắt gói tin JSON từ SePay/Casso ngay khi tiền vào tài khoản',
+        badge: 'Trigger 01',
+        iconName: 'webhook',
       },
       {
         type: 'CONDITION',
-        title: 'Khớp mã thanh toán TR và số tiền >= Còn nợ',
-        desc: 'Kiểm tra tính hợp lệ và loại trừ giao dịch trùng lặp',
-        badge: 'Điều kiện',
-        color: 'border-amber-300 bg-amber-50/50 text-amber-800',
+        title: 'Fuzzy Matching & Lũy đẳng',
+        desc: 'Kiểm tra mã TR84920, số tiền >= Còn nợ, chặn cộng trùng',
+        badge: 'Rule Engine',
+        iconName: 'filter',
       },
       {
         type: 'ACTION',
-        title: 'Gạch nợ hóa đơn & Chuyển trạng thái PAID',
-        desc: 'Ghi nhật ký phân bổ thanh toán nguyên tử (Atomic)',
-        badge: 'Hành động 1',
-        color: 'border-emerald-300 bg-emerald-50/50 text-emerald-800',
+        title: 'Gạch nợ nguyên tử (Atomic)',
+        desc: 'Cập nhật Invoice PAID, lưu PaymentAllocation trong $transaction',
+        badge: 'Action 01',
+        iconName: 'settle',
       },
       {
         type: 'ACTION',
-        title: 'Gửi tin nhắn Zalo ZNS kèm link phiếu thu cá nhân',
-        desc: 'Khấu trừ 200 ₫ từ số dư dịch vụ TingRoster',
-        badge: 'Hành động 2',
-        color: 'border-blue-300 bg-blue-50/50 text-blue-800',
+        title: 'Gửi Zalo ZNS kèm link phiếu thu',
+        desc: 'Tin nhắn thương hiệu ZNS gửi tức thì đến số điện thoại phụ huynh',
+        badge: 'Action 02',
+        iconName: 'zalo',
       },
       {
         type: 'ACTION',
-        title: 'Phát âm thanh "Ting" chime trên Dashboard',
-        desc: 'Thông báo nổi tức thời cho thu ngân và giáo viên',
-        badge: 'Hành động 3',
-        color: 'border-purple-300 bg-purple-50/50 text-purple-800',
+        title: 'Phát âm thanh "Ting!" Chime',
+        desc: 'Rung chuông âm thanh trực tiếp trên Dashboard và Kiosk',
+        badge: 'Action 03',
+        iconName: 'sound',
+      },
+    ],
+  },
+  {
+    id: 'sports-kiosk-checkin',
+    category: 'SPORTS',
+    name: 'Quét QR Check-in sân CLB Pickleball / Cầu lông',
+    desc: 'Hội viên quét mã VietQR tại sân ➔ Tự động trừ tiền vé lượt ➔ Mở quyền vào sân và phát thông báo loa.',
+    samplePayload: {
+      venue: 'Sân Pickleball Sân 2 - Cụm Thể Thao',
+      member: 'Trần Văn Hoàng (Hội viên Vàng)',
+      ticketFee: 50000,
+      kioskId: 'KIOSK_GATE_02',
+      gateStatus: 'UNLOCKED_5_SECONDS',
+      audioBroadcast: 'Xin chào Trần Văn Hoàng, chúc bạn thi đấu vui vẻ!'
+    },
+    steps: [
+      {
+        type: 'TRIGGER',
+        title: 'Hội viên quét VietQR tại Kiosk',
+        desc: 'Mã QR động chứa số tiền vé lượt và ID sân thi đấu',
+        badge: 'Trigger 01',
+        iconName: 'kiosk',
+      },
+      {
+        type: 'CONDITION',
+        title: 'Xác thực tài khoản & Giờ thuê',
+        desc: 'Kiểm tra khung giờ ca chơi 17:30 - 19:30 có trùng lịch',
+        badge: 'Rule Engine',
+        iconName: 'filter',
+      },
+      {
+        type: 'ACTION',
+        title: 'Ghi nhận điểm danh & Trừ số dư',
+        desc: 'Tự động tạo phiếu thu lượt và cập nhật trạng thái có mặt',
+        badge: 'Action 01',
+        iconName: 'settle',
+      },
+      {
+        type: 'ACTION',
+        title: 'Phát loa thông báo chào mừng',
+        desc: 'Text-to-speech phát tên hội viên qua hệ thống âm thanh sân',
+        badge: 'Action 02',
+        iconName: 'sound',
+      },
+    ],
+  },
+  {
+    id: 'rental-monthly-billing',
+    category: 'RENTAL',
+    name: 'Chốt số điện nước & Lên hóa đơn phòng ngày 25',
+    desc: 'Tự động tính chỉ số điện nước, gửi thông báo tiền phòng kèm mã VietQR 1-chạm đến Zalo người thuê.',
+    samplePayload: {
+      room: 'Phòng 302 - Căn hộ dịch vụ Mini',
+      billingPeriod: 'Tháng 4/2026',
+      totalRent: 4200000,
+      electricity: '124 kWh x 3.800 đ',
+      water: '12 m³ x 25.000 đ',
+      status: 'INVOICE_SENT_ZALO',
+      paymentToken: 'https://tingroster.vn/p/p302-t4'
+    },
+    steps: [
+      {
+        type: 'TRIGGER',
+        title: 'Cron Job định kỳ ngày 25 hàng tháng',
+        desc: 'Hệ thống tự động kích hoạt tiến trình chốt chu kỳ thuê phòng',
+        badge: 'Cron Trigger',
+        iconName: 'calendar',
+      },
+      {
+        type: 'CONDITION',
+        title: 'Kiểm tra trạng thái phòng đang thuê',
+        desc: 'Loại trừ phòng trống hoặc hợp đồng đang thanh lý cọc',
+        badge: 'Rule Engine',
+        iconName: 'filter',
+      },
+      {
+        type: 'ACTION',
+        title: 'Tạo hóa đơn tổng hợp điện + nước + phòng',
+        desc: 'Tính toán biểu giá lũy tiến và tạo mã thanh toán duy nhất',
+        badge: 'Action 01',
+        iconName: 'settle',
+      },
+      {
+        type: 'ACTION',
+        title: 'Gửi link thanh toán VietQR qua Zalo',
+        desc: 'Người thuê chỉ cần quét là chuyển khoản chính xác từng đồng',
+        badge: 'Action 02',
+        iconName: 'zalo',
       },
     ],
   },
   {
     id: 'absent-warning',
+    category: 'EDUCATION',
     name: 'Cảnh báo vắng 2 buổi liên tiếp qua Zalo',
-    desc: 'Phát hiện sớm nguy cơ bỏ học và gửi tin nhắn quan tâm đến gia đình học viên.',
+    desc: 'Phát hiện sớm nguy cơ nghỉ học bất thường để giáo viên kịp thời quan tâm học sinh.',
+    samplePayload: {
+      student: 'Nguyễn Văn Minh (Lớp Toán 6A)',
+      absentDates: ['2026-04-18', '2026-04-20'],
+      alertLevel: 'HIGH_INTERVENTION_NEEDED',
+      autoRemind: 'Gửi tóm tắt bài giảng & bài tập về nhà vào Zalo mẹ'
+    },
     steps: [
       {
         type: 'TRIGGER',
-        title: 'Khi điểm danh kết thúc buổi học',
-        desc: 'Kích hoạt ngay khi giáo viên bấm "Lưu điểm danh"',
-        badge: 'Trigger',
-        color: 'border-indigo-300 bg-indigo-50/50 text-[#2538D9]',
+        title: 'Điểm danh xong ca học hôm nay',
+        desc: 'Kích hoạt ngay khi giáo viên bấm "Lưu sổ điểm danh"',
+        badge: 'Trigger 01',
+        iconName: 'calendar',
       },
       {
         type: 'CONDITION',
-        title: 'Học viên có 2 buổi vắng liên tiếp trong 7 ngày',
-        desc: 'Phân tích lịch sử từ bảng Attendance',
-        badge: 'Điều kiện',
-        color: 'border-amber-300 bg-amber-50/50 text-amber-800',
+        title: 'Phát hiện 2 buổi vắng liên tiếp trong 7 ngày',
+        desc: 'Quét bảng Attendance tìm chuỗi trạng thái ABSENT',
+        badge: 'Rule Engine',
+        iconName: 'filter',
       },
       {
         type: 'ACTION',
-        title: 'Gửi thông báo hỏi thăm vào Zalo phụ huynh',
-        desc: 'Đính kèm tóm tắt bài học & bài tập về nhà cần làm bù',
-        badge: 'Hành động',
-        color: 'border-blue-300 bg-blue-50/50 text-blue-800',
-      },
-    ],
-  },
-  {
-    id: 'overdue-reminder',
-    name: 'Nhắc nợ tự động lúc 09:00 khi quá hạn 3 ngày',
-    desc: 'Tự động gửi tin nhắn nhắc nợ lịch sự và mã VietQR cá nhân hóa mà không làm phiền phụ huynh.',
-    steps: [
-      {
-        type: 'TRIGGER',
-        title: 'Cron job định kỳ hàng ngày lúc 09:00 sáng',
-        desc: 'Lên lịch hệ thống tự động quét toàn bộ hóa đơn',
-        badge: 'Cron Trigger',
-        color: 'border-indigo-300 bg-indigo-50/50 text-[#2538D9]',
-      },
-      {
-        type: 'CONDITION',
-        title: 'Hóa đơn chưa thanh toán & quá hạn từ 1 đến 7 ngày',
-        desc: 'Loại trừ các học sinh đã xin bảo lưu hoặc đang chờ giải quyết',
-        badge: 'Điều kiện',
-        color: 'border-amber-300 bg-amber-50/50 text-amber-800',
-      },
-      {
-        type: 'ACTION',
-        title: 'Sinh mã VietQR động & Gửi nhắc nhở tinh tế qua Zalo',
-        desc: 'Giúp phụ huynh 1 chạm chuyển khoản ngay mà không cần nhập STK',
-        badge: 'Hành động',
-        color: 'border-emerald-300 bg-emerald-50/50 text-emerald-800',
+        title: 'Gửi tin nhắn hỏi thăm vào Zalo phụ huynh',
+        desc: 'Đính kèm tóm tắt bài giảng và bài tập về nhà cần hoàn thành',
+        badge: 'Action 01',
+        iconName: 'zalo',
       },
     ],
   },
@@ -162,6 +252,7 @@ export default function AutomationsPage() {
   const [selectedPipelineId, setSelectedPipelineId] = useState<string>('vietqr-auto-settle');
   const [simulatingStep, setSimulatingStep] = useState<number>(-1);
   const [simulationComplete, setSimulationComplete] = useState(false);
+  const [activeConsoleTab, setActiveConsoleTab] = useState<'visual' | 'payload' | 'logs'>('visual');
 
   // Form states
   const [name, setName] = useState('');
@@ -271,10 +362,31 @@ export default function AutomationsPage() {
         setSimulationComplete(true);
         setTimeout(() => setSimulationComplete(false), 5000);
       }
-    }, 900);
+    }, 750);
   };
 
   const activePipeline = PRESET_PIPELINES.find((p) => p.id === selectedPipelineId) || PRESET_PIPELINES[0];
+
+  const renderStepIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'webhook':
+        return <Zap className="w-4 h-4 text-amber-500" />;
+      case 'filter':
+        return <Filter className="w-4 h-4 text-indigo-500" />;
+      case 'settle':
+        return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
+      case 'zalo':
+        return <Smartphone className="w-4 h-4 text-blue-500" />;
+      case 'sound':
+        return <Volume2 className="w-4 h-4 text-purple-500" />;
+      case 'calendar':
+        return <Clock className="w-4 h-4 text-rose-500" />;
+      case 'kiosk':
+        return <CreditCard className="w-4 h-4 text-cyan-500" />;
+      default:
+        return <Activity className="w-4 h-4 text-[#2538D9]" />;
+    }
+  };
 
   const renderTriggerLabel = (t: string) => {
     switch (t) {
@@ -305,77 +417,92 @@ export default function AutomationsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      {/* 1. Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E4E7EC]">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12 font-sans">
+      
+      {/* 1. Header Toolbar */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-[#2538D9]/10 text-[#2538D9]">
+          <div className="flex items-center gap-2.5">
+            <span className="p-2 rounded-xl bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400">
               <Workflow className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-black text-[#101828] tracking-tight">Quy Trình Tự Động Hóa & Workflow Builder</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#101828] dark:text-[#F8FAFC] tracking-tight">
+              Quy Trình Tự Động Hóa & Workflow Builder
+            </h1>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 uppercase">
+              Idempotent Engine
+            </span>
           </div>
-          <p className="text-xs text-[#475467] mt-1">
-            Thiết kế trực quan các luồng sự kiện: Webhook VietQR ➔ Điều kiện kiểm tra ➔ Tự động gạch nợ ➔ Gửi tin Zalo.
+          <p className="text-xs text-[#475467] dark:text-slate-400 mt-1">
+            Thiết kế trực quan các luồng sự kiện: Webhook VietQR ➔ Kiểm tra điều kiện ➔ Tự động gạch nợ ➔ Gửi tin nhắn Zalo.
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-xs transition-all"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-lg shadow-xs transition-all flex-shrink-0"
         >
-          <Plus className="w-4 h-4" />
-          <span>Thêm kịch bản mới</span>
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>Tạo kịch bản mới</span>
         </button>
       </div>
 
       {/* 2. Visual Workflow Canvas */}
-      <div className="bg-white rounded-2xl border border-[#E4E7EC] p-6 shadow-xs space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E4E7EC]">
-          <div>
+      <div className="ting-card p-5 sm:p-6 space-y-6 overflow-hidden">
+        
+        {/* Canvas Toolbar: Unified TingSelect + Simulation Trigger */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase text-[#2538D9] tracking-wider">Visual Workflow Canvas</span>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Active Node Engine
+              <span className="text-xs font-bold uppercase text-[#2538D9] dark:text-indigo-400 tracking-wider flex items-center gap-1.5">
+                <Activity className="w-3.5 h-3.5" />
+                Interactive Workflow Canvas
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                {activePipeline.steps.length} Nodes
               </span>
             </div>
-            <h2 className="text-base font-bold text-[#101828] mt-1">{activePipeline.name}</h2>
-            <p className="text-xs text-[#475467] mt-0.5">{activePipeline.desc}</p>
+            <h2 className="text-base sm:text-lg font-bold text-[#101828] dark:text-[#F8FAFC]">
+              {activePipeline.name}
+            </h2>
+            <p className="text-xs text-[#475467] dark:text-slate-400 max-w-2xl leading-relaxed">
+              {activePipeline.desc}
+            </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <select
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Unified TingSelect for switching pipelines */}
+            <TingSelect
               value={selectedPipelineId}
               onChange={(e) => setSelectedPipelineId(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-[#E4E7EC] text-xs font-bold text-[#101828] bg-[#F8FAFC] focus:outline-none focus:border-[#2538D9]"
-            >
-              {PRESET_PIPELINES.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              options={PRESET_PIPELINES.map((p) => ({
+                value: p.id,
+                label: p.name,
+              }))}
+              icon={<Workflow className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />}
+              className="w-full sm:w-72 font-semibold text-xs"
+            />
 
             <button
               onClick={handleSimulateWorkflow}
               disabled={simulatingStep >= 0}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition-all"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-xs transition-all h-9 flex-shrink-0"
             >
-              <Play className="w-3.5 h-3.5" />
+              <Play className={`w-3.5 h-3.5 ${simulatingStep >= 0 ? 'animate-spin' : ''}`} />
               <span>{simulatingStep >= 0 ? 'Đang chạy mô phỏng...' : 'Chạy thử mô phỏng'}</span>
             </button>
           </div>
         </div>
 
         {simulationComplete && (
-          <Alert severity="success" className="text-xs font-bold">
-            Mô phỏng toàn bộ luồng thành công! Dữ liệu mẫu đã được kích hoạt, gạch nợ và gửi thông báo kiểm thử.
+          <Alert severity="success" className="text-xs font-bold rounded-lg">
+            Mô phỏng toàn bộ luồng thành công! Dữ liệu mẫu đã được chuyển trạng thái PAID và lưu nhật ký phân bổ (PaymentAllocation).
           </Alert>
         )}
 
-        {/* Node Pipeline View */}
+        {/* Node Pipeline View with Connected Wires */}
         <div className="relative py-4 overflow-x-auto">
-          <div className="flex items-stretch gap-4 min-w-[780px]">
+          <div className="flex items-stretch gap-3 min-w-[840px] pb-2">
             {activePipeline.steps.map((step, idx) => {
               const isCurrentSim = simulatingStep === idx;
               const isPastSim = simulatingStep > idx;
@@ -383,41 +510,55 @@ export default function AutomationsPage() {
               return (
                 <React.Fragment key={idx}>
                   <div
-                    className={`flex-1 p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${
-                      step.color
-                    } ${
-                      isCurrentSim
-                        ? 'ring-4 ring-[#2538D9]/30 scale-105 border-[#2538D9] shadow-lg'
+                    className={`
+                      flex-1 p-4 rounded-xl border transition-all duration-300 flex flex-col justify-between relative
+                      ${isCurrentSim
+                        ? 'border-[#2538D9] dark:border-indigo-400 ring-4 ring-[#2538D9]/20 scale-[1.02] bg-blue-50/40 dark:bg-blue-950/30 shadow-md'
                         : isPastSim
-                        ? 'opacity-90 border-emerald-400'
-                        : 'shadow-xs'
-                    }`}
+                        ? 'border-emerald-500/80 bg-emerald-50/20 dark:bg-emerald-950/20'
+                        : 'border-[#E4E7EC] dark:border-[#1E293B] bg-white dark:bg-[#111726] shadow-xs hover:border-slate-300 dark:hover:border-slate-700'
+                      }
+                    `}
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/80 border border-current">
+                      <div className="flex items-center justify-between mb-2.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                           {step.badge}
                         </span>
-                        {isCurrentSim && (
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9] animate-ping" />
-                        )}
-                        {isPastSim && (
-                          <Check className="w-4 h-4 text-emerald-600 font-bold" />
-                        )}
+
+                        <div className="flex items-center gap-1.5">
+                          {renderStepIcon(step.iconName)}
+                          {isCurrentSim && (
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9] dark:bg-indigo-400 animate-ping" />
+                          )}
+                          {isPastSim && (
+                            <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 font-bold" />
+                          )}
+                        </div>
                       </div>
-                      <h4 className="text-xs font-bold leading-tight">{step.title}</h4>
-                      <p className="text-[11px] opacity-80 mt-1 leading-snug">{step.desc}</p>
+
+                      <h4 className="text-xs font-bold text-[#101828] dark:text-[#F8FAFC] leading-snug">
+                        {step.title}
+                      </h4>
+                      <p className="text-[11px] text-[#475467] dark:text-slate-400 mt-1 leading-normal">
+                        {step.desc}
+                      </p>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-current/20 flex items-center justify-between text-[10px] font-mono">
+                    <div className="mt-4 pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B] flex items-center justify-between text-[10px] font-mono text-slate-400 dark:text-slate-500">
                       <span>Node #{idx + 1}</span>
-                      <span>{step.type}</span>
+                      <span className="font-semibold">{step.type}</span>
                     </div>
                   </div>
 
                   {idx < activePipeline.steps.length - 1 && (
-                    <div className="flex items-center justify-center flex-shrink-0 text-slate-400">
-                      <ArrowRight className={`w-5 h-5 ${isCurrentSim ? 'text-[#2538D9] animate-pulse' : ''}`} />
+                    <div className="flex items-center justify-center flex-shrink-0 px-1 text-slate-400 dark:text-slate-600">
+                      <div className="relative flex items-center justify-center">
+                        <ArrowRight className={`w-4 h-4 ${isCurrentSim ? 'text-[#2538D9] dark:text-indigo-400 scale-125 transition-transform' : ''}`} />
+                        {isCurrentSim && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9] dark:bg-indigo-400 absolute -top-1 animate-pulse" />
+                        )}
+                      </div>
                     </div>
                   )}
                 </React.Fragment>
@@ -425,61 +566,124 @@ export default function AutomationsPage() {
             })}
           </div>
         </div>
+
+        {/* Live Payload & Execution Log Inspector */}
+        <div className="rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] bg-[#F8FAFC] dark:bg-[#0B0F19] overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-[#E4E7EC] dark:border-[#1E293B] bg-slate-100/60 dark:bg-slate-900/60 text-xs">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />
+              <span className="font-bold text-[#101828] dark:text-[#F8FAFC]">Gói tin & Nhật ký luồng thời gian thực</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveConsoleTab('visual')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors ${
+                  activeConsoleTab === 'visual'
+                    ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-[#101828] dark:hover:text-white'
+                }`}
+              >
+                Tóm tắt luồng
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveConsoleTab('payload')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors ${
+                  activeConsoleTab === 'payload'
+                    ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-[#101828] dark:hover:text-white'
+                }`}
+              >
+                Gói tin JSON
+              </button>
+            </div>
+          </div>
+
+          <div className="p-3 font-mono text-[11px] text-slate-700 dark:text-slate-300 overflow-x-auto max-h-48">
+            {activeConsoleTab === 'payload' ? (
+              <pre className="text-[11px] leading-relaxed text-indigo-900 dark:text-indigo-300">
+                {JSON.stringify(activePipeline.samplePayload, null, 2)}
+              </pre>
+            ) : (
+              <div className="space-y-1.5 text-xs font-sans">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#475467] dark:text-slate-400">Trạng thái định tuyến:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">200 OK • Sẵn sàng nhận gói tin</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#475467] dark:text-slate-400">Webhook Endpoint:</span>
+                  <span className="font-mono text-[#2538D9] dark:text-indigo-400 font-semibold truncate max-w-xs">
+                    https://tingroster.vn/api/webhooks/sepay
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#475467] dark:text-slate-400">Nguyên tắc giao dịch:</span>
+                  <span className="text-[#101828] dark:text-[#F8FAFC]">Lũy đẳng (Idempotent) • Khóa chống double-spending</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* 3. Managed Rules List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <h3 className="text-xs font-black uppercase text-[#101828] tracking-wider">
+          <h3 className="text-xs font-bold uppercase text-[#101828] dark:text-[#F8FAFC] tracking-wider">
             Danh sách kịch bản đang vận hành ({rules.length})
           </h3>
           <button
             onClick={loadRules}
-            className="text-xs text-[#475467] hover:text-[#101828] flex items-center gap-1 font-medium"
+            className="text-xs text-[#475467] dark:text-slate-400 hover:text-[#101828] dark:hover:text-white flex items-center gap-1 font-medium transition-colors"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Làm mới
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
+            <span>Làm mới</span>
           </button>
         </div>
 
         {loading ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-[#E4E7EC] text-xs text-[#475467]">
-            <CircularProgress size={16} className="text-[#2538D9] mb-2" />
-            <p>Đang tải danh sách kịch bản tự động hóa...</p>
+          <div className="text-center py-16 ting-card text-xs text-[#475467] dark:text-slate-400">
+            <CircularProgress size={20} sx={{ color: '#2538D9', mb: 1 }} />
+            <p className="mt-2">Đang tải danh sách kịch bản tự động hóa...</p>
           </div>
         ) : rules.length > 0 ? (
           rules.map((rule) => (
             <div
               key={rule.id}
-              className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                rule.isEnabled ? 'bg-white border-[#E4E7EC] shadow-xs' : 'bg-slate-50 border-[#E2E8F0] opacity-60'
+              className={`ting-card p-4 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                rule.isEnabled ? '' : 'opacity-60 bg-slate-50 dark:bg-slate-900/40'
               }`}
             >
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#101828] text-xs">{rule.name}</span>
+                  <span className="font-bold text-[#101828] dark:text-[#F8FAFC] text-xs sm:text-sm">
+                    {rule.name}
+                  </span>
                   {rule.isEnabled ? (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                       Đang bật
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-[#475467] border border-slate-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                       Đã tắt
                     </span>
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#475467]">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#475467] dark:text-slate-400">
                   <span>
-                    ⚡ Khi: <strong className="text-[#101828]">{renderTriggerLabel(rule.trigger)}</strong>
+                    ⚡ Khi: <strong className="text-[#101828] dark:text-[#F8FAFC]">{renderTriggerLabel(rule.trigger)}</strong>
                   </span>
                   <span>
-                    ➔ Thực thi: <strong className="text-[#2538D9]">{renderActionLabel(rule.action)}</strong>
+                    ➔ Thực thi: <strong className="text-[#2538D9] dark:text-indigo-400">{renderActionLabel(rule.action)}</strong>
                   </span>
                 </div>
 
                 {rule.lastRunAt && (
-                  <p className="text-[11px] text-[#64748B]">
+                  <p className="text-[11px] text-[#64748B] dark:text-slate-500">
                     Lần chạy gần nhất: {formatDateTimeVN(rule.lastRunAt)} ({rule.lastRunStatus || 'SUCCESS'})
                   </p>
                 )}
@@ -490,48 +694,51 @@ export default function AutomationsPage() {
                   type="button"
                   disabled={testingId === rule.id}
                   onClick={() => handleTestRun(rule.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#101828] border border-[#E4E7EC] text-xs font-bold rounded-xl transition-colors shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#101828] dark:text-[#F8FAFC] border border-[#E4E7EC] dark:border-[#1E293B] text-xs font-bold rounded-lg transition-colors shadow-xs"
                 >
-                  <Play className="w-3.5 h-3.5 text-[#2538D9]" />
+                  <Play className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />
                   <span>{testingId === rule.id ? 'Đang chạy...' : 'Chạy thử'}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleToggle(rule.id, rule.isEnabled)}
-                  className="p-1 transition"
-                  title={rule.isEnabled ? 'Tắt quy tắc này' : 'Bật quy tắc này'}
+                  className="text-slate-400 hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors"
+                  title={rule.isEnabled ? 'Tắt quy trình' : 'Bật quy trình'}
                 >
                   {rule.isEnabled ? (
-                    <ToggleRight className="w-8 h-8 text-[#2538D9]" />
+                    <ToggleRight className="w-7 h-7 text-[#2538D9] dark:text-indigo-400" />
                   ) : (
-                    <ToggleLeft className="w-8 h-8 text-slate-400" />
+                    <ToggleLeft className="w-7 h-7 text-slate-300 dark:text-slate-600" />
                   )}
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center py-12 bg-white rounded-2xl border border-[#E4E7EC] text-xs text-[#475467]">
-            Chưa có kịch bản tự động hóa nào. Bấm &quot;Thêm kịch bản mới&quot; để thiết lập.
+          <div className="ting-card p-12 text-center text-xs text-[#475467] dark:text-slate-400">
+            Chưa có quy tắc tự động hóa nào. Nhấn &quot;Tạo kịch bản mới&quot; để thiết lập.
           </div>
         )}
       </div>
 
-      {/* 4. Create Automation Modal */}
+      {/* 4. Create Automation Modal with Unified TingSelect */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E4E7EC] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-[#E4E7EC] pb-3">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="ting-card max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-in zoom-in-95 duration-150">
+            
+            <div className="flex items-center justify-between border-b border-[#E4E7EC] dark:border-[#1E293B] pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center font-bold">
                   <Zap className="w-4 h-4" />
                 </div>
-                <h3 className="text-sm font-bold text-[#101828]">Thêm kịch bản tự động hóa</h3>
+                <h3 className="text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
+                  Thêm kịch bản tự động hóa
+                </h3>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="p-1 text-slate-400 hover:text-[#101828] rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-1.5 text-slate-400 hover:text-[#101828] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -539,7 +746,7 @@ export default function AutomationsPage() {
 
             <form onSubmit={handleCreateRule} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                   Tên kịch bản tự động *
                 </label>
                 <input
@@ -547,62 +754,66 @@ export default function AutomationsPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ví dụ: Báo động giao dịch sai mã TR..."
-                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9]"
+                  placeholder="Ví dụ: Báo động giao dịch sai mã TR vào Telegram..."
+                  className="w-full border border-[#E4E7EC] dark:border-[#1E293B] rounded-lg px-3.5 py-2.5 bg-white dark:bg-[#111726] text-[#101828] dark:text-[#F8FAFC] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9] h-10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
-                  Sự kiện kích hoạt (Trigger) *
-                </label>
-                <select
+                <TingSelect
+                  label="Sự kiện kích hoạt (Trigger)"
                   value={trigger}
                   onChange={(e) => setTrigger(e.target.value)}
-                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9]"
-                >
-                  <option value="ON_UNMATCHED_TRANSACTION">Giao dịch ngân hàng không khớp mã TR</option>
-                  <option value="ON_PAYMENT_SUCCESS">Nhận được học phí qua VietQR thành công</option>
-                  <option value="ON_ABSENCE_CONSECUTIVE">Học viên vắng 2 buổi liên tiếp</option>
-                  <option value="ON_INVOICE_OVERDUE">Học phí quá hạn nộp</option>
-                </select>
+                  options={[
+                    { value: 'ON_UNMATCHED_TRANSACTION', label: 'Giao dịch ngân hàng không khớp mã TR' },
+                    { value: 'ON_PAYMENT_SUCCESS', label: 'Nhận được học phí qua VietQR thành công' },
+                    { value: 'ON_ABSENCE_CONSECUTIVE', label: 'Học viên vắng 2 buổi liên tiếp' },
+                    { value: 'ON_INVOICE_OVERDUE', label: 'Học phí quá hạn nộp' },
+                  ]}
+                  icon={<Zap className="w-4 h-4 text-amber-500" />}
+                  sizeVariant="md"
+                  containerClassName="w-full"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
-                  Hành động thực thi (Action) *
-                </label>
-                <select
+                <TingSelect
+                  label="Hành động thực thi (Action)"
                   value={action}
                   onChange={(e) => setAction(e.target.value)}
-                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9]"
-                >
-                  <option value="TELEGRAM_ALERT">Báo động tức thì vào Telegram Quản trị</option>
-                  <option value="ZALO_PARENT_REMINDER">Gửi tin nhắn Zalo ZNS nhắc phụ huynh</option>
-                  <option value="AUTO_CHARGE_DEBT">Tự động tính phí buổi vắng vào kỳ sau</option>
-                </select>
+                  options={[
+                    { value: 'TELEGRAM_ALERT', label: 'Báo động tức thì vào Telegram Quản trị' },
+                    { value: 'ZALO_PARENT_REMINDER', label: 'Gửi tin nhắn Zalo ZNS nhắc phụ huynh' },
+                    { value: 'AUTO_CHARGE_DEBT', label: 'Tự động tính phí buổi vắng vào kỳ sau' },
+                  ]}
+                  icon={<Send className="w-4 h-4 text-emerald-500" />}
+                  sizeVariant="md"
+                  containerClassName="w-full"
+                />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC] dark:border-[#1E293B]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-bold text-[#475467] hover:text-[#101828] rounded-xl hover:bg-slate-100 transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-[#475467] dark:text-slate-400 hover:text-[#101828] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50"
+                  className="px-5 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-lg shadow-xs transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? 'Đang tạo...' : 'Lưu kịch bản'}
                 </button>
               </div>
             </form>
+
           </div>
         </div>
       )}
+
     </div>
   );
 }

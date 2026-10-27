@@ -53,9 +53,32 @@ export default function LoginPage() {
     }
   };
 
+  const handleDirectLogin = async (email = 'demo@tingroster.vn', pass = '123456') => {
+    setError(null);
+    setLoading(true);
+    setEmailOrPhone(email);
+    setPassword(pass);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push('/dashboard');
+      } else {
+        setError(data.error || 'Đăng nhập không thành công');
+      }
+    } catch {
+      setError('Lỗi kết nối máy chủ');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleQuickDemo = (demoAccount: string) => {
-    setEmailOrPhone(demoAccount);
-    setPassword('123456');
+    handleDirectLogin(demoAccount, '123456');
   };
 
   return (
@@ -133,6 +156,26 @@ export default function LoginPage() {
               <p className="text-xs text-[#475467] mt-1">
                 Đăng nhập để tiếp tục quản lý công việc.
               </p>
+            </div>
+
+            {/* 1-Click Fast Demo Banner */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-[#2538D9]/20 flex items-center justify-between gap-3 shadow-xs">
+              <div className="text-left">
+                <span className="text-xs font-bold text-[#2538D9] block flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  Trải nghiệm nhanh không cần mật khẩu
+                </span>
+                <span className="text-[11px] text-[#475467]">Vào ngay tài khoản Giáo viên mẫu</span>
+              </div>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleDirectLogin('demo@tingroster.vn', '123456')}
+                className="px-3.5 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white text-xs font-bold shadow-md shadow-[#2538D9]/20 transition-all flex items-center gap-1.5 flex-shrink-0"
+              >
+                <span>Vào Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
             {/* Error Message if any */}

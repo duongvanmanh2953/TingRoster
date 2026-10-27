@@ -75,8 +75,10 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
         MuiOutlinedInput: {
           styleOverrides: {
             root: {
-              backgroundColor: isDark ? '#0F172A' : '#FFFFFF',
+              backgroundColor: isDark ? '#111726' : '#FFFFFF',
               borderRadius: '0.5rem',
+              fontSize: '0.75rem',
+              fontWeight: 500,
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: isDark ? '#1E293B' : '#E4E7EC',
               },
@@ -90,8 +92,27 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
             },
             input: {
               color: isDark ? '#F8FAFC' : '#101828',
-              fontSize: '0.875rem',
-              padding: '8px 12px',
+              fontSize: '0.75rem',
+              padding: '7px 12px',
+              height: 'auto',
+            },
+            sizeSmall: {
+              height: '36px',
+            },
+          },
+        },
+        MuiSelect: {
+          styleOverrides: {
+            select: {
+              padding: '7px 28px 7px 12px !important',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+            },
+            icon: {
+              color: isDark ? '#94A3B8' : '#64748B',
+              right: '8px',
             },
           },
         },

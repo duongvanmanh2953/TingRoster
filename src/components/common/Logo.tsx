@@ -21,54 +21,30 @@ export function LogoMark({ size = 'md', className = '' }: { size?: LogoProps['si
     xl: 'w-14 h-14',
   };
 
-  const iconSizeMap = {
-    xs: 14,
-    sm: 18,
-    md: 22,
-    lg: 26,
-    xl: 30,
+  const pixelMap = {
+    xs: 24,
+    sm: 32,
+    md: 40,
+    lg: 48,
+    xl: 56,
   };
 
-  const s = iconSizeMap[size || 'md'];
+  const px = pixelMap[size || 'md'];
 
   return (
     <div
-      className={`${sizeMap[size || 'md']} rounded-xl bg-gradient-to-tr from-[#2538D9] via-[#4353EB] to-[#6D5CE8] flex items-center justify-center text-white font-black shadow-md shadow-[#2538D9]/25 flex-shrink-0 relative overflow-hidden transition-transform duration-200 hover:scale-105 ${className}`}
+      className={`${sizeMap[size || 'md']} flex-shrink-0 transition-transform duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-md shadow-[#2538D9]/25 border border-[#2538D9]/20 bg-[#0B0F19] relative flex items-center justify-center ${className}`}
+      style={{ width: px, height: px }}
     >
-      {/* Subtle sheen highlight */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent pointer-events-none" />
-      
-      {/* Brand Icon SVG: Modern geometric multi-layered Ting spark / roster check */}
-      <svg
-        width={s}
-        height={s}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="relative z-10"
-      >
-        <path
-          d="M12 2L3 7L12 12L21 7L12 2Z"
-          fill="white"
-          fillOpacity="0.95"
-        />
-        <path
-          d="M3 12L12 17L21 12"
-          stroke="white"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M3 17L12 22L21 17"
-          stroke="white"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Glowing spark dot representing VietQR "Ting!" */}
-        <circle cx="12" cy="7" r="1.5" fill="#FFE17D" />
-      </svg>
+      {/* High-Resolution Creative 3D TingRoster PNG Emblem */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo.png"
+        alt="TingRoster"
+        width={px}
+        height={px}
+        className="w-full h-full object-cover scale-[1.24] transform drop-shadow-md select-none pointer-events-none"
+      />
     </div>
   );
 }

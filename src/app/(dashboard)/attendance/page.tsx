@@ -40,6 +40,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Tooltip from '@mui/material/Tooltip';
 import { Avatar } from '@/components/common/Avatar';
+import { TingSelect } from '@/components/common/Select';
 
 interface GroupOption {
   id: string;
@@ -498,47 +499,32 @@ export default function AttendancePage() {
           <div className="flex flex-wrap items-center gap-3">
             {/* Show Range: 2 weeks / 1 week */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#101828] whitespace-nowrap">Khoảng thời gian:</span>
-              <FormControl size="small" sx={{ minWidth: 150 }}>
-                <Select
-                  value={rangeMode}
-                  onChange={(e) => setRangeMode(e.target.value as '2_WEEKS' | '1_WEEK')}
-                  sx={{
-                    borderRadius: '0.75rem',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    bgcolor: '#ffffff',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E7EC' },
-                  }}
-                >
-                  <MenuItem value="2_WEEKS" sx={{ fontSize: '0.8125rem' }}>2 tuần (14 ngày)</MenuItem>
-                  <MenuItem value="1_WEEK" sx={{ fontSize: '0.8125rem' }}>1 tuần (7 ngày)</MenuItem>
-                </Select>
-              </FormControl>
+              <span className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] whitespace-nowrap">Khoảng thời gian:</span>
+              <TingSelect
+                value={rangeMode}
+                onChange={(e) => setRangeMode(e.target.value as '2_WEEKS' | '1_WEEK')}
+                sizeVariant="sm"
+                className="w-40 font-semibold"
+                options={[
+                  { value: '2_WEEKS', label: '2 tuần (14 ngày)' },
+                  { value: '1_WEEK', label: '1 tuần (7 ngày)' },
+                ]}
+              />
             </div>
 
             {/* Select Students / Group */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#101828] whitespace-nowrap">Lớp học:</span>
-              <FormControl size="small" sx={{ minWidth: 200 }}>
-                <Select
-                  value={selectedGroupId}
-                  onChange={(e) => setSelectedGroupId(e.target.value)}
-                  sx={{
-                    borderRadius: '0.75rem',
-                    fontSize: '0.8125rem',
-                    fontWeight: 600,
-                    bgcolor: '#ffffff',
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E4E7EC' },
-                  }}
-                >
-                  {groups.map((g) => (
-                    <MenuItem key={g.id} value={g.id} sx={{ fontSize: '0.8125rem' }}>
-                      {g.name} ({formatVND(g.defaultFee)}/buổi)
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <span className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] whitespace-nowrap">Lớp học:</span>
+              <TingSelect
+                value={selectedGroupId}
+                onChange={(e) => setSelectedGroupId(e.target.value)}
+                sizeVariant="sm"
+                className="w-56 font-semibold"
+                options={groups.map((g) => ({
+                  value: g.id,
+                  label: `${g.name} (${formatVND(g.defaultFee)}/buổi)`,
+                }))}
+              />
             </div>
           </div>
 

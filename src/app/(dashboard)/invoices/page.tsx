@@ -24,6 +24,7 @@ import { Avatar } from '@/components/common/Avatar';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import { TingSelect } from '@/components/common/Select';
 
 interface InvoiceItem {
   id: string;
@@ -267,58 +268,30 @@ export default function InvoicesPage() {
         </form>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <FormControl size="small" sx={{ minWidth: 180 }}>
-            <Select
-              value={selectedGroupId}
-              onChange={(e) => setSelectedGroupId(e.target.value)}
-              displayEmpty
-              sx={{
-                borderRadius: '0.75rem',
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                bgcolor: 'background.paper',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'divider',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#2538D9',
-                },
-              }}
-            >
-              <MenuItem value="" sx={{ fontSize: '0.8125rem' }}>Tất cả các lớp & CLB</MenuItem>
-              {groups.map((g) => (
-                <MenuItem key={g.id} value={g.id} sx={{ fontSize: '0.8125rem' }}>
-                  {g.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <TingSelect
+            value={selectedGroupId}
+            onChange={(e) => setSelectedGroupId(e.target.value)}
+            sizeVariant="sm"
+            className="w-48 font-medium"
+            options={[
+              { value: '', label: 'Tất cả các lớp & CLB' },
+              ...groups.map((g) => ({ value: g.id, label: g.name })),
+            ]}
+          />
 
-          <FormControl size="small" sx={{ minWidth: 160 }}>
-            <Select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              displayEmpty
-              sx={{
-                borderRadius: '0.75rem',
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                bgcolor: 'background.paper',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'divider',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#2538D9',
-                },
-              }}
-            >
-              <MenuItem value="" sx={{ fontSize: '0.8125rem' }}>Tất cả trạng thái</MenuItem>
-              <MenuItem value="UNPAID" sx={{ fontSize: '0.8125rem' }}>Chưa đóng</MenuItem>
-              <MenuItem value="PARTIAL" sx={{ fontSize: '0.8125rem' }}>Đóng thiếu</MenuItem>
-              <MenuItem value="PAID" sx={{ fontSize: '0.8125rem' }}>Đã đóng đủ</MenuItem>
-              <MenuItem value="OVERPAID" sx={{ fontSize: '0.8125rem' }}>Đóng thừa</MenuItem>
-            </Select>
-          </FormControl>
+          <TingSelect
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            sizeVariant="sm"
+            className="w-40 font-medium"
+            options={[
+              { value: '', label: 'Tất cả trạng thái' },
+              { value: 'UNPAID', label: 'Chưa đóng' },
+              { value: 'PARTIAL', label: 'Đóng thiếu' },
+              { value: 'PAID', label: 'Đã đóng đủ' },
+              { value: 'OVERPAID', label: 'Đóng thừa' },
+            ]}
+          />
 
           <button
             onClick={loadInvoices}
