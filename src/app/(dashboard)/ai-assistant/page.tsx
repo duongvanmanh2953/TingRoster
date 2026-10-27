@@ -8,15 +8,15 @@ import {
   MessageSquare,
   PenTool,
   FileText,
-  Globe,
   Lightbulb,
-  BarChart,
-  ChevronDown,
+  BarChart3,
+  Copy,
+  Check,
   RotateCcw,
-  Paperclip,
-  CheckCircle2,
-  Calendar,
-  ArrowRight
+  CalendarCheck,
+  CreditCard,
+  Building2,
+  Users2
 } from 'lucide-react';
 
 interface ChatMessage {
@@ -33,27 +33,27 @@ export default function AiAssistantPage() {
     {
       id: '1',
       sender: 'user',
-      text: 'Giúp tôi lên kế hoạch học IELTS trong 1 tháng với trình độ hiện tại là 5.5 nhé.',
-      time: 'Hôm nay 09:15',
+      text: 'Học viên Trần Minh Quân lớp Toán 10A đã quá hạn nộp học phí 5 ngày. Hãy soạn giúp tôi tin nhắn Zalo gửi phụ huynh thật tinh tế, lịch sự nhưng rõ ràng số tiền 600.000đ và mã thanh toán TR84921 nhé.',
+      time: '09:15',
     },
     {
       id: '2',
       sender: 'ai',
-      text: 'Đây là kế hoạch học IELTS 1 tháng dành cho bạn:',
-      time: 'Hôm nay 09:15',
+      text: 'Dạ thầy/cô, đây là mẫu tin nhắn Zalo nhắc học phí nhẹ nhàng, giữ trọn sự tôn trọng và tạo cảm giác chu đáo:',
+      time: '09:15',
       bullets: [
-        'Tuần 1: Củng cố nền tảng (Listening + Reading)',
-        'Tuần 2: Phát triển kỹ năng (Speaking + Writing)',
-        'Tuần 3: Luyện đề và cải thiện điểm yếu',
-        'Tuần 4: Tổng ôn và thi thử chuyên sâu',
+        'Dạ em chào anh/chị phụ huynh em Trần Minh Quân ạ. Em gửi anh/chị thông tin học phí tháng 5/2026 của con là 600.000đ (đã tính theo 8 buổi học thực tế trên lớp).',
+        'Để thuận tiện gạch nợ tự động ngay lập tức, anh/chị vui lòng quét mã VietQR hoặc chuyển khoản với nội dung: TR84921 giúp em nhé ạ.',
+        'Anh/chị có thể xem lại chi tiết sổ điểm danh và phiếu thu của con tại link tra cứu cổng phụ huynh. Em cảm ơn gia đình nhiều ạ!'
       ],
-      actionLabel: 'Xem chi tiết kế hoạch',
+      actionLabel: 'Sao chép tin nhắn mẫu',
     },
   ]);
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeFeature, setActiveFeature] = useState('Trò chuyện thông minh');
+  const [activeFeature, setActiveFeature] = useState('Soạn tin nhắc phí');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +65,7 @@ export default function AiAssistantPage() {
       id: Date.now().toString(),
       sender: 'user',
       text: userText,
-      time: `Hôm nay ${now}`,
+      time: now,
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -80,13 +80,13 @@ export default function AiAssistantPage() {
       });
       const data = await res.json();
       
-      const aiReply = data?.answer || `Tôi đã ghi nhận yêu cầu: "${userText}". Tôi có thể hỗ trợ bạn lên lịch chi tiết, phân tích công việc hoặc trích xuất báo cáo ngay lập tức!`;
+      const aiReply = data?.answer || `Dạ, tôi đã phân tích yêu cầu: "${userText}". Đối với TingRoster, bạn có thể tự động hóa quy trình này bằng cách tạo mã VietQR động hoặc thiết lập bot cảnh báo tự động trong mục "Tự động hóa"!`;
 
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
         text: aiReply,
-        time: `Hôm nay ${now}`,
+        time: now,
       };
 
       setMessages((prev) => [...prev, aiMsg]);
@@ -94,8 +94,8 @@ export default function AiAssistantPage() {
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: `Đã phân tích yêu cầu: "${userText}". Tôi đã thêm nhiệm vụ này vào lịch trình hôm nay để bạn theo dõi.`,
-        time: `Hôm nay ${now}`,
+        text: `Dạ, tôi đã tiếp nhận yêu cầu về "${userText}". Bạn có thể áp dụng ngay quy trình điểm danh 1 chạm hoặc gạch nợ tự động để giải phóng 100% thời gian quản lý thủ công.`,
+        time: now,
       };
       setMessages((prev) => [...prev, aiMsg]);
     } finally {
@@ -103,57 +103,62 @@ export default function AiAssistantPage() {
     }
   };
 
-  const AI_FEATURES = [
+  const handleCopyMessage = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2500);
+  };
+
+  const AI_CAPABILITIES = [
     {
-      title: 'Trò chuyện thông minh',
-      desc: 'Trả lời câu hỏi, tư vấn, lên lịch',
+      title: 'Soạn tin nhắc phí',
+      desc: 'Nhắc khéo Zalo, ZNS phụ huynh & thành viên',
+      prompt: 'Hãy giúp tôi soạn tin nhắn Zalo nhắc học phí nhẹ nhàng, lịch thiệp cho học sinh nợ học phí tháng này.',
       icon: MessageSquare,
-      color: 'bg-indigo-500/20 text-indigo-400',
+      color: 'bg-indigo-50 text-[#2538D9]',
     },
     {
-      title: 'Tạo nội dung',
-      desc: 'Viết email, bài luận, kịch bản',
+      title: 'Đối soát chuyển khoản',
+      desc: 'Phân tích giao dịch sai nội dung hoặc thiếu mã TR',
+      prompt: 'Tôi có giao dịch 600.000đ từ "NGUYEN THI B CK TIEN HOC" không có mã TR. Hãy hướng dẫn tôi cách kiểm tra đối soát nhanh nhất.',
+      icon: CreditCard,
+      color: 'bg-emerald-50 text-emerald-700',
+    },
+    {
+      title: 'Quy chế điểm danh & học bù',
+      desc: 'Xây dựng chính sách nghỉ phép, bảo lưu học phí',
+      prompt: 'Gợi ý quy chế tính học phí khi học sinh vắng có phép và lịch học bù hợp lý cho lớp học thêm.',
+      icon: CalendarCheck,
+      color: 'bg-purple-50 text-[#6D5CE8]',
+    },
+    {
+      title: 'Phân tích doanh thu CLB',
+      desc: 'Đánh giá tỷ lệ thu tiền và dự báo dòng tiền',
+      prompt: 'Phân tích giúp tôi cách tối ưu tỷ lệ thu tiền sân và quỹ tháng cho câu lạc bộ Pickleball / Cầu lông.',
+      icon: BarChart3,
+      color: 'bg-blue-50 text-blue-700',
+    },
+    {
+      title: 'Thông báo nghỉ lễ & lịch học',
+      desc: 'Soạn thông báo chuyên nghiệp gửi vào nhóm Zalo',
+      prompt: 'Soạn giúp tôi thông báo nghỉ lễ 30/4 - 1/5 và lịch học bù gửi phụ huynh lớp học.',
       icon: PenTool,
-      color: 'bg-purple-500/20 text-purple-400',
-    },
-    {
-      title: 'Tóm tắt & phân tích',
-      desc: 'Tóm tắt tài liệu, PDF, ghi chú',
-      icon: FileText,
-      color: 'bg-pink-500/20 text-pink-400',
-    },
-    {
-      title: 'Dịch thuật',
-      desc: 'Đa ngôn ngữ, chuẩn ngữ cảnh',
-      icon: Globe,
-      color: 'bg-cyan-500/20 text-cyan-400',
-    },
-    {
-      title: 'Sáng tạo ý tưởng',
-      desc: 'Brainstorm, tìm ý tưởng dự án',
-      icon: Lightbulb,
-      color: 'bg-amber-500/20 text-amber-400',
-    },
-    {
-      title: 'Phân tích dữ liệu',
-      desc: 'Biểu đồ, báo cáo thu chi, insight',
-      icon: BarChart,
-      color: 'bg-emerald-500/20 text-emerald-400',
+      color: 'bg-amber-50 text-amber-700',
     },
   ];
 
   return (
-    <div className="h-[calc(100vh-8.5rem)] flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
+    <div className="h-[calc(100vh-8.5rem)] flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto">
       
-      {/* Left Column: AI Capabilities (Panel 4) */}
+      {/* Left Column: AI Capabilities */}
       <div className="w-full lg:w-80 flex flex-col gap-3 flex-shrink-0">
         <div className="flex items-center gap-2 px-1">
-          <Sparkles className="w-4 h-4 text-purple-400" />
-          <h2 className="text-sm font-bold text-white tracking-tight">Các tính năng AI</h2>
+          <Sparkles className="w-4 h-4 text-[#2538D9]" />
+          <h2 className="text-sm font-bold text-[#101828] tracking-tight">Kịch bản AI Hỗ trợ nhanh</h2>
         </div>
 
         <div className="space-y-2 overflow-y-auto pr-1">
-          {AI_FEATURES.map((feat) => {
+          {AI_CAPABILITIES.map((feat) => {
             const Icon = feat.icon;
             const isSelected = activeFeature === feat.title;
             return (
@@ -161,20 +166,20 @@ export default function AiAssistantPage() {
                 key={feat.title}
                 onClick={() => {
                   setActiveFeature(feat.title);
-                  setInput(`Hãy giúp tôi thực hiện: ${feat.title}`);
+                  setInput(feat.prompt);
                 }}
-                className={`w-full p-3 rounded-2xl text-left border transition-all flex items-start gap-3 ${
+                className={`w-full p-3.5 rounded-xl text-left border transition-all flex items-start gap-3 ${
                   isSelected
-                    ? 'bg-[#182042] border-indigo-500/40 shadow-lg shadow-indigo-600/10'
-                    : 'bg-[#12172C]/80 border-indigo-500/15 hover:border-indigo-500/30'
+                    ? 'bg-white border-[#2538D9] shadow-sm shadow-[#2538D9]/10'
+                    : 'bg-white border-[#E4E7EC] hover:border-slate-300'
                 }`}
               >
-                <div className={`w-8 h-8 rounded-xl ${feat.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <div className={`w-8 h-8 rounded-lg ${feat.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold text-white">{feat.title}</p>
-                  <p className="text-[11px] text-slate-400 truncate">{feat.desc}</p>
+                  <p className="text-xs font-bold text-[#101828]">{feat.title}</p>
+                  <p className="text-[11px] text-[#475467] truncate mt-0.5">{feat.desc}</p>
                 </div>
               </button>
             );
@@ -182,125 +187,138 @@ export default function AiAssistantPage() {
         </div>
       </div>
 
-      {/* Right Column: Interactive Chat Window (Panel 4) */}
-      <div className="flex-1 flex flex-col bg-[#12172C]/90 rounded-3xl border border-indigo-500/20 backdrop-blur-xl shadow-2xl overflow-hidden">
+      {/* Right Column: Interactive Chat Window */}
+      <div className="flex-1 flex flex-col bg-white rounded-2xl border border-[#E4E7EC] shadow-sm overflow-hidden">
         
         {/* Chat Header */}
-        <div className="h-14 px-6 border-b border-indigo-500/15 flex items-center justify-between bg-[#151C36]/50">
+        <div className="h-16 px-6 border-b border-[#E4E7EC] flex items-center justify-between bg-[#F8FAFC]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md">
-              <Bot className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#2538D9] to-[#6D5CE8] flex items-center justify-center text-white shadow-xs">
+              <Bot className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-white flex items-center gap-2">
-                Trò chuyện với AI
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <h3 className="text-xs font-bold text-[#101828] flex items-center gap-2">
+                Trợ lý AI TingRoster
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               </h3>
-              <p className="text-[10px] text-slate-400">MindFlow Intelligence Engine</p>
+              <p className="text-[10px] text-[#475467]">Chuyên gia vận hành lớp học, CLB & đối soát VietQR</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="px-2.5 py-1 rounded-lg bg-[#182142] border border-indigo-500/20 text-[11px] font-semibold text-indigo-300 flex items-center gap-1.5">
-              <span>GPT-4o</span>
-              <ChevronDown className="w-3 h-3" />
-            </button>
-            <button
-              onClick={() => setMessages([])}
-              title="Xóa đoạn chat"
-              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          <button
+            onClick={() => setMessages([])}
+            className="p-2 text-[#475467] hover:text-[#101828] hover:bg-slate-200/60 rounded-lg transition-colors text-xs font-medium flex items-center gap-1"
+            title="Làm mới cuộc trò chuyện"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Xóa đoạn chat</span>
+          </button>
         </div>
 
         {/* Message Thread */}
-        <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex gap-3 max-w-2xl ${msg.sender === 'user' ? 'ml-auto justify-end' : 'mr-auto'}`}
-            >
-              {msg.sender === 'ai' && (
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white flex-shrink-0 mt-1 shadow-md">
-                  <Bot className="w-4 h-4" />
-                </div>
-              )}
-
-              <div
-                className={`p-4 rounded-2xl text-xs space-y-2 leading-relaxed ${
-                  msg.sender === 'user'
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-tr-none shadow-lg shadow-indigo-600/20'
-                    : 'bg-[#182142] border border-indigo-500/20 text-slate-200 rounded-tl-none shadow-md'
-                }`}
-              >
-                <p className="font-medium">{msg.text}</p>
-
-                {msg.bullets && (
-                  <ul className="space-y-1.5 pl-2 pt-1 border-l-2 border-indigo-400/40 text-slate-300">
-                    {msg.bullets.map((b, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {msg.actionLabel && (
-                  <div className="pt-2">
-                    <button className="px-3 py-1.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 font-semibold text-[11px] flex items-center gap-1.5 transition-colors">
-                      <span>{msg.actionLabel}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-
-                <p className="text-[10px] text-slate-400 text-right pt-1">{msg.time}</p>
+        <div className="flex-1 p-4 lg:p-6 overflow-y-auto space-y-4">
+          {messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+                <Sparkles className="w-6 h-6" />
               </div>
+              <h4 className="text-sm font-bold text-[#101828]">Xin chào, tôi là Trợ lý AI của TingRoster</h4>
+              <p className="text-xs text-[#475467] max-w-md">
+                Tôi có thể giúp bạn soạn tin nhắn Zalo gửi phụ huynh, xử lý giao dịch chuyển khoản sai sót hoặc phân tích tài chính lớp học.
+              </p>
             </div>
-          ))}
+          ) : (
+            messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex gap-3 max-w-2xl ${msg.sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
+              >
+                <div
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                    msg.sender === 'user'
+                      ? 'bg-[#2538D9] text-white'
+                      : 'bg-[#6D5CE8]/15 text-[#6D5CE8]'
+                  }`}
+                >
+                  {msg.sender === 'user' ? 'Tôi' : <Bot className="w-4 h-4" />}
+                </div>
+
+                <div className="space-y-1">
+                  <div
+                    className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
+                      msg.sender === 'user'
+                        ? 'bg-[#2538D9] text-white rounded-tr-none'
+                        : 'bg-[#F8FAFC] border border-[#E4E7EC] text-[#101828] rounded-tl-none'
+                    }`}
+                  >
+                    <p className="whitespace-pre-line">{msg.text}</p>
+                    
+                    {msg.bullets && (
+                      <div className="mt-2.5 space-y-1.5 border-t border-slate-200/80 pt-2 text-[#475467]">
+                        {msg.bullets.map((b, i) => (
+                          <div key={i} className="flex items-start gap-1.5">
+                            <span className="text-[#2538D9] font-bold">•</span>
+                            <span className="text-xs text-[#101828]">{b}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {msg.bullets && (
+                      <button
+                        onClick={() => handleCopyMessage(msg.bullets!.join('\n\n'), msg.id)}
+                        className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E4E7EC] hover:bg-slate-50 text-[11px] font-bold text-[#2538D9] transition-colors shadow-xs"
+                      >
+                        {copiedId === msg.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Đã sao chép tin nhắn</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Sao chép tin nhắn gửi Zalo</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-[#475467] block px-1">{msg.time}</span>
+                </div>
+              </div>
+            ))
+          )}
 
           {loading && (
-            <div className="flex gap-3 max-w-md mr-auto">
-              <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
-                <Bot className="w-4 h-4 animate-bounce" />
+            <div className="flex gap-3 max-w-2xl">
+              <div className="w-7 h-7 rounded-lg bg-[#6D5CE8]/15 text-[#6D5CE8] flex items-center justify-center text-xs font-bold">
+                <Bot className="w-4 h-4" />
               </div>
-              <div className="p-3.5 rounded-2xl bg-[#182142] border border-indigo-500/20 text-slate-400 text-xs flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping" />
-                <span>MindFlow AI đang suy nghĩ...</span>
+              <div className="p-3 bg-[#F8FAFC] border border-[#E4E7EC] rounded-2xl rounded-tl-none text-xs text-[#475467] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#2538D9] animate-ping" />
+                <span>AI đang suy nghĩ và tổng hợp thông tin...</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Chat Input Bar */}
-        <form onSubmit={handleSend} className="p-3 sm:p-4 border-t border-indigo-500/15 bg-[#141A34]/50">
-          <div className="relative flex items-center gap-2">
-            <button
-              type="button"
-              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
-            >
-              <Paperclip className="w-4 h-4" />
-            </button>
-
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Nhập câu hỏi của bạn..."
-              className="flex-1 px-4 py-2.5 rounded-xl bg-[#182142] border border-indigo-500/20 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-            />
-
-            <button
-              type="submit"
-              disabled={loading || !input.trim()}
-              className="w-9 h-9 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center shadow-lg shadow-indigo-600/30 disabled:opacity-40 transition-all flex-shrink-0"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
+        {/* Input Bar */}
+        <form onSubmit={handleSend} className="p-3 border-t border-[#E4E7EC] bg-white flex items-center gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Hỏi AI về soạn tin nhắn nhắc phí, xử lý giao dịch hoặc biểu mẫu..."
+            className="flex-1 px-4 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || loading}
+            className="px-4 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
+          >
+            <span>Gửi</span>
+            <Send className="w-3.5 h-3.5" />
+          </button>
         </form>
 
       </div>

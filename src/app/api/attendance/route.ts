@@ -23,9 +23,11 @@ export async function GET(req: NextRequest) {
 
   const groupId = req.nextUrl.searchParams.get('groupId');
   const dateStr = req.nextUrl.searchParams.get('date'); // YYYY-MM-DD
+  const startDateStr = req.nextUrl.searchParams.get('startDate'); // YYYY-MM-DD
+  const endDateStr = req.nextUrl.searchParams.get('endDate'); // YYYY-MM-DD
 
-  if (!groupId || !dateStr) {
-    return NextResponse.json({ success: false, error: 'Thiếu groupId hoặc date' }, { status: 400 });
+  if (!groupId || (!dateStr && !startDateStr)) {
+    return NextResponse.json({ success: false, error: 'Thiếu groupId hoặc date/startDate' }, { status: 400 });
   }
 
   const group = await prisma.group.findFirst({
@@ -36,10 +38,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Không tìm thấy nhóm' }, { status: 404 });
   }
 
-  const date = new Date(dateStr);
+  let dateFilter: { gte?: Date; lte?: Date } | Date;
+  if (startDateStr && endDateStr) {
+    dateFilter = {
+      gte: new Date(startDateStr),
+      lte: new Date(endDateStr),
+    };
+  } else if (startDateStr) {
+    dateFilter = {
+      gte: new Date(startDateStr),
+    };
+  } else {
+    dateFilter = new Date(dateStr!);
+  }
 
   const attendances = await prisma.attendance.findMany({
-    where: { groupId, date },
+    where: { groupId, date: dateFilter },
     include: { member: { select: { id: true, name: true } } },
   });
 

@@ -5,17 +5,35 @@ import Link from 'next/link';
 import { formatVND } from '@/lib/utils';
 import {
   Plus,
-  Users,
+  Users2,
   ExternalLink,
   Tv,
   Copy,
   Check,
-  Archive,
   GraduationCap,
   Sparkles,
   Building2,
-  CalendarCheck
+  CalendarCheck,
+  Search,
+  CheckCircle2,
+  Layers,
+  LayoutGrid,
+  List,
+  ChevronRight,
+  TrendingUp,
+  AlertCircle,
+  QrCode
 } from 'lucide-react';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface GroupItem {
   id: string;
@@ -38,11 +56,17 @@ export default function GroupsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
+  // Filters & View mode
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('ALL');
+  const [statusTab, setStatusTab] = useState<'ALL' | 'ACTIVE' | 'PENDING'>('ALL');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+
   // Form states
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
-  const [defaultFee, setDefaultFee] = useState<number>(500000);
+  const [defaultFee, setDefaultFee] = useState<number>(600000);
   const [billingCycle, setBillingCycle] = useState('MONTHLY');
   const [groupType, setGroupType] = useState('CLASS');
   const [formError, setFormError] = useState<string | null>(null);
@@ -101,9 +125,10 @@ export default function GroupsPage() {
         setName('');
         setSlug('');
         setDescription('');
+        setDefaultFee(600000);
         loadGroups();
       } else {
-        setFormError(data.error || 'Lỗi tạo nhóm');
+        setFormError(data.error || 'Lỗi khi tạo lớp');
       }
     } catch {
       setFormError('Lỗi kết nối máy chủ');
@@ -112,296 +137,530 @@ export default function GroupsPage() {
     }
   };
 
-  const handleCopyPortalLink = (groupSlug: string) => {
-    const url = `${window.location.origin}/p/${groupSlug}`;
-    navigator.clipboard.writeText(url);
-    setCopiedSlug(groupSlug);
-    setTimeout(() => setCopiedSlug(null), 2500);
-  };
-
-  const handleArchiveGroup = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn lưu trữ lớp học này không?')) return;
-    try {
-      const res = await fetch(`/api/groups/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-      if (data.success) {
-        loadGroups();
-      }
-    } catch (err) {
-      console.error(err);
+  const copyPortalLink = (groupSlug: string) => {
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}/p/${groupSlug}`;
+      navigator.clipboard.writeText(url);
+      setCopiedSlug(groupSlug);
+      setTimeout(() => setCopiedSlug(null), 2500);
     }
   };
 
+  // Filter groups
+  const filteredGroups = groups.filter((g) => {
+    const matchesSearch =
+      g.name.toLowerCase().includes(search.toLowerCase()) ||
+      g.slug.toLowerCase().includes(search.toLowerCase()) ||
+      (g.description && g.description.toLowerCase().includes(search.toLowerCase()));
+
+    const matchesType = typeFilter === 'ALL' || g.groupType === typeFilter;
+    return matchesSearch && matchesType;
+  });
+
+  // Calculate high-level KPIs
+  const totalGroups = groups.length;
+  const totalMembers = groups.reduce((acc, g) => acc + (g._count?.members || 0), 0);
+  const totalInvoices = groups.reduce((acc, g) => acc + (g._count?.invoices || 0), 0);
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
+      {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Lớp học & Câu lạc bộ
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+              <Users2 className="w-4 h-4" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828]">
+              Lớp học / CLB
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
-              Quản trị
-            </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Tạo lớp dạy thêm, câu lạc bộ thể thao (Pickleball, Cầu lông) hoặc nhóm phòng trọ
+          <p className="text-xs sm:text-sm text-[#475467] mt-1">
+            Quản lý danh sách lớp học, câu lạc bộ và phòng trọ, theo dõi học phí và điểm danh
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold transition-all shadow-sm shadow-[#2538D9]/25"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
-          <span>Tạo lớp / CLB mới</span>
+          <Plus className="w-4 h-4" />
+          <span>Tạo lớp mới</span>
         </button>
       </div>
 
-      {/* Group Cards Grid */}
-      {loading ? (
-        <div className="text-center py-16 text-slate-400 animate-pulse text-xs">Đang tải danh sách lớp...</div>
-      ) : groups.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {groups.map((group) => (
-            <div
-              key={group.id}
-              className="ting-card p-5 flex flex-col justify-between"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                      {group.groupType === 'CLASS'
-                        ? 'Lớp học'
-                        : group.groupType === 'SPORTS_CLUB'
-                        ? 'CLB Thể thao'
-                        : 'Cho thuê'}
-                    </span>
-                    <h2 className="text-base font-bold text-white mt-1.5">{group.name}</h2>
-                  </div>
-                  <button
-                    onClick={() => handleArchiveGroup(group.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg transition"
-                    title="Lưu trữ lớp này"
-                  >
-                    <Archive className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {group.description && (
-                  <p className="text-xs text-slate-400 line-clamp-2">{group.description}</p>
-                )}
-
-                <div className="pt-2 border-t border-[#1E283D] grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-slate-400 block text-[11px]">Sĩ số:</span>
-                    <span className="font-semibold text-white">
-                      {group._count.members} thành viên
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block text-[11px]">Định mức phí:</span>
-                    <span className="font-semibold text-emerald-400 font-mono">
-                      {formatVND(group.defaultFee)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="mt-5 pt-3.5 border-t border-[#1E283D] flex items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleCopyPortalLink(group.slug)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[#1E283D] text-slate-300 hover:text-white hover:bg-[#182136] transition"
-                  title="Sao chép link cổng tra cứu phụ huynh"
-                >
-                  {copiedSlug === group.slug ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Đã chép link</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Link Cổng Phụ Huynh</span>
-                    </>
-                  )}
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={`/kiosk/${group.id}`}
-                    target="_blank"
-                    className="p-1.5 text-slate-400 hover:text-emerald-400 border border-[#1E283D] rounded-lg hover:bg-[#182136] transition"
-                    title="Mở màn hình Kiosk iPad"
-                  >
-                    <Tv className="w-4 h-4" />
-                  </Link>
-
-                  <Link
-                    href={`/p/${group.slug}`}
-                    target="_blank"
-                    className="p-1.5 text-slate-400 hover:text-emerald-400 border border-[#1E283D] rounded-lg hover:bg-[#182136] transition"
-                    title="Xem cổng thu phí công khai"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="ting-card p-12 text-center space-y-3">
-          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto">
-            <Users className="w-6 h-6" />
+      {/* 2. Top Metric Cards (Untitled UI / Pulse style) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="ting-card p-4">
+          <span className="text-xs font-medium text-[#475467] block">Tổng số lớp / CLB</span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl font-extrabold text-[#101828] font-mono">{totalGroups}</span>
+            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              Đang hoạt động
+            </span>
           </div>
-          <h3 className="text-base font-bold text-white">Chưa có lớp hoặc câu lạc bộ nào</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Bấm nút &quot;Tạo lớp / CLB mới&quot; để bắt đầu quản lý học viên, điểm danh và tạo mã VietQR tự động.
-          </p>
+        </div>
+
+        <div className="ting-card p-4">
+          <span className="text-xs font-medium text-[#475467] block">Tổng số học viên</span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl font-bold text-[#101828] tabular-nums">{totalMembers}</span>
+            <span className="text-[11px] font-medium text-[#475467]">Thành viên</span>
+          </div>
+        </div>
+
+        <div className="ting-card p-4">
+          <span className="text-xs font-medium text-[#475467] block">Số đợt thu học phí</span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl font-bold text-[#101828] tabular-nums">{totalInvoices}</span>
+            <span className="text-[11px] font-medium text-[#475467]">Hóa đơn</span>
+          </div>
+        </div>
+
+        <div className="ting-card p-4">
+          <span className="text-xs font-medium text-[#475467] block">Cổng VietQR công khai</span>
+          <div className="mt-2 flex items-baseline justify-between">
+            <span className="text-2xl font-bold text-emerald-700 tabular-nums">100%</span>
+            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              Sẵn sàng
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Search & Filter Bar */}
+      <div className="ting-card p-4 space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          
+          {/* Tabs Filter */}
+          <div className="flex items-center gap-1.5 p-1 bg-[#F5F7FB] rounded-xl border border-[#E4E7EC] text-xs font-semibold">
+            <button
+              onClick={() => setStatusTab('ALL')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
+                statusTab === 'ALL' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-[#475467] hover:text-[#101828]'
+              }`}
+            >
+              Tất cả ({groups.length})
+            </button>
+            <button
+              onClick={() => setStatusTab('ACTIVE')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
+                statusTab === 'ACTIVE' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-[#475467] hover:text-[#101828]'
+              }`}
+            >
+              Đang hoạt động ({groups.length})
+            </button>
+            <button
+              onClick={() => setStatusTab('PENDING')}
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
+                statusTab === 'PENDING' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-[#475467] hover:text-[#101828]'
+              }`}
+            >
+              Đợi đối soát (1)
+            </button>
+          </div>
+
+          {/* Right Controls: Search + MUI Type Filter + View Switcher */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Search */}
+            <div className="relative flex-1 sm:w-60">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Tìm kiếm lớp..."
+                className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
+              />
+            </div>
+
+            {/* Type Filter */}
+            <FormControl size="small" sx={{ minWidth: 160 }}>
+              <Select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                sx={{
+                  borderRadius: '0.75rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  bgcolor: '#ffffff',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#E4E7EC',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#2538D9',
+                  },
+                }}
+              >
+                <MenuItem value="ALL" sx={{ fontSize: '0.75rem' }}>Tất cả loại hình</MenuItem>
+                <MenuItem value="CLASS" sx={{ fontSize: '0.75rem' }}>Lớp học / Gia sư</MenuItem>
+                <MenuItem value="SPORTS_CLUB" sx={{ fontSize: '0.75rem' }}>CLB thể thao</MenuItem>
+                <MenuItem value="RENTAL" sx={{ fontSize: '0.75rem' }}>Nhà trọ / Phòng</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Grid / Table View Switcher */}
+            <div className="flex items-center bg-[#F5F7FB] p-0.5 rounded-lg border border-[#E4E7EC]">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 rounded-md ${viewMode === 'grid' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-slate-400'}`}
+                title="Dạng thẻ"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`p-1.5 rounded-md ${viewMode === 'table' ? 'bg-white text-[#2538D9] shadow-xs' : 'text-slate-400'}`}
+                title="Dạng bảng"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* 4. Groups Content */}
+      {loading ? (
+        <div className="py-20 flex flex-col items-center justify-center space-y-3">
+          <CircularProgress size={32} sx={{ color: '#2538D9' }} />
+          <p className="text-xs text-[#475467]">Đang tải danh sách lớp học...</p>
+        </div>
+      ) : filteredGroups.length === 0 ? (
+        <div className="ting-card p-12 text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center mx-auto">
+            <Users2 className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-[#101828]">Chưa có lớp học nào phù hợp</h3>
+            <p className="text-xs text-[#475467] mt-1">
+              {search ? 'Không tìm thấy lớp học với từ khóa này.' : 'Hãy tạo lớp học hoặc câu lạc bộ đầu tiên để bắt đầu điểm danh và thu học phí.'}
+            </p>
+          </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2538D9] text-white text-xs font-semibold"
           >
-            Tạo lớp đầu tiên
+            <Plus className="w-4 h-4" />
+            <span>Tạo lớp ngay</span>
           </button>
+        </div>
+      ) : viewMode === 'grid' ? (
+        /* Grid Cards View (per 00-overview.png Screen 4) */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredGroups.map((g) => {
+            const isSports = g.groupType === 'SPORTS_CLUB';
+            const isRental = g.groupType === 'RENTAL';
+            return (
+              <div
+                key={g.id}
+                className="ting-card p-5 flex flex-col justify-between hover:border-[#CBD5E1] transition-all hover:shadow-md"
+              >
+                <div>
+                  {/* Card Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold ${
+                        isSports
+                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                          : isRental
+                          ? 'bg-amber-50 text-amber-600 border border-amber-200'
+                          : 'bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20'
+                      }`}>
+                        {isSports ? '🏸' : isRental ? '🏠' : <GraduationCap className="w-5 h-5" />}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-sm text-[#101828] hover:text-[#2538D9] transition-colors">
+                          <Link href={`/groups/${g.id}`}>{g.name}</Link>
+                        </h3>
+                        <span className="text-[11px] text-[#475467] font-mono">/{g.slug}</span>
+                      </div>
+                    </div>
+
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Đang hoạt động
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  {g.description && (
+                    <p className="text-xs text-[#475467] mt-3 line-clamp-2">
+                      {g.description}
+                    </p>
+                  )}
+
+                  {/* Metric Badges */}
+                  <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-[#E4E7EC] text-xs">
+                    <div>
+                      <span className="text-[11px] text-[#475467] block">Sĩ số thành viên</span>
+                      <span className="font-bold text-[#101828] tabular-nums">{g._count.members} thành viên</span>
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-[#475467] block">Mức học phí</span>
+                      <span className="font-bold text-[#2538D9] tabular-nums">{formatVND(g.defaultFee)}</span>
+                    </div>
+                  </div>
+
+                  {/* Public Portal Pill */}
+                  <div className="mt-4 p-2.5 rounded-xl bg-[#F5F7FB] border border-[#E4E7EC] flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 truncate text-[#475467]">
+                      <QrCode className="w-3.5 h-3.5 text-[#2538D9] flex-shrink-0" />
+                      <span className="text-[11px] truncate">Cổng phụ huynh: /p/{g.slug}</span>
+                    </div>
+                    <button
+                      onClick={() => copyPortalLink(g.slug)}
+                      className="p-1 text-slate-500 hover:text-[#2538D9] transition-colors flex-shrink-0"
+                      title="Sao chép liên kết"
+                    >
+                      {copiedSlug === g.slug ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Footer Quick Actions */}
+                <div className="flex items-center gap-2 mt-5 pt-3 border-t border-[#E4E7EC]">
+                  <Link
+                    href={`/attendance?groupId=${g.id}`}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#101828] transition-colors"
+                  >
+                    <CalendarCheck className="w-3.5 h-3.5 text-[#2538D9]" />
+                    <span>Điểm danh</span>
+                  </Link>
+
+                  <Link
+                    href={`/groups/${g.id}`}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-xs font-semibold text-white transition-all shadow-xs"
+                  >
+                    <span>Xem chi tiết</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        /* Table View */
+        <div className="ting-card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] font-semibold uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th className="py-3 px-4">Tên lớp / CLB</th>
+                  <th className="py-3 px-4">Loại hình</th>
+                  <th className="py-3 px-4">Sĩ số</th>
+                  <th className="py-3 px-4">Học phí chuẩn</th>
+                  <th className="py-3 px-4">Chu kỳ</th>
+                  <th className="py-3 px-4">Trạng thái</th>
+                  <th className="py-3 px-4 text-right">Hành động</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E4E7EC]">
+                {filteredGroups.map((g) => (
+                  <tr key={g.id} className="hover:bg-slate-50/75 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="font-bold text-[#101828] hover:text-[#2538D9]">
+                        <Link href={`/groups/${g.id}`}>{g.name}</Link>
+                      </div>
+                      <span className="text-[11px] text-[#475467] font-mono">/{g.slug}</span>
+                    </td>
+                    <td className="py-3 px-4 text-[#475467]">
+                      {g.groupType === 'SPORTS_CLUB' ? 'CLB Thể thao' : g.groupType === 'RENTAL' ? 'Nhà trọ' : 'Lớp học'}
+                    </td>
+                    <td className="py-3 px-4 font-bold tabular-nums text-[#101828]">
+                      {g._count.members}
+                    </td>
+                    <td className="py-3 px-4 font-bold tabular-nums text-[#2538D9]">
+                      {formatVND(g.defaultFee)}
+                    </td>
+                    <td className="py-3 px-4 text-[#475467]">
+                      {g.billingCycle === 'MONTHLY' ? 'Theo tháng' : 'Theo buổi'}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Đang hoạt động
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right space-x-2">
+                      <Link
+                        href={`/attendance?groupId=${g.id}`}
+                        className="text-[#2538D9] font-semibold hover:underline"
+                      >
+                        Điểm danh
+                      </Link>
+                      <span className="text-slate-300">•</span>
+                      <Link
+                        href={`/groups/${g.id}`}
+                        className="text-[#101828] font-semibold hover:underline"
+                      >
+                        Chi tiết
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Create Group Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
-              <h3 className="text-base font-bold text-white">Tạo Lớp / CLB mới</h3>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-white text-sm"
-              >
-                ✕
-              </button>
+      {/* 5. Create Group Dialog Modal */}
+      <Dialog
+        open={showCreateModal}
+        onClose={() => !isSubmitting && setShowCreateModal(false)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '1.25rem',
+              padding: '8px',
+            }
+          }
+        }}
+      >
+        <DialogTitle className="flex items-center justify-between pb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+              <Plus className="w-4 h-4" />
             </div>
+            <div>
+              <span className="font-bold text-base text-[#101828] block">Tạo lớp học / CLB mới</span>
+              <span className="text-[11px] text-[#475467] font-normal">Thiết lập thông tin và cấu hình học phí tự động</span>
+            </div>
+          </div>
+        </DialogTitle>
 
+        <form onSubmit={handleCreateGroup}>
+          <DialogContent className="space-y-4 pt-2">
             {formError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleCreateGroup} className="space-y-4 text-xs">
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Tên lớp học / CLB <span className="text-rose-500">*</span>
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                required
+                value={name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                placeholder="VD: Lớp Toán 6A Thầy Minh"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Đường dẫn công khai (Slug) <span className="text-rose-500">*</span>
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                required
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                placeholder="VD: lop-toan-6a"
+                helperText="Dùng để chia sẻ cổng thanh toán VietQR cho phụ huynh: /p/lop-toan-6a"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Tên lớp / câu lạc bộ *
+                <label className="text-xs font-semibold text-[#101828] block mb-1">
+                  Mô hình quản lý
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="Ví dụ: Lớp Toán Thầy Tuấn 12A, CLB Pickleball Hà Nội..."
-                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Đường dẫn công khai (slug) *
-                </label>
-                <div className="flex items-center text-xs text-slate-400 bg-[#111726] border border-[#1E283D] rounded-xl px-3 py-2">
-                  <span>tingroster.vn/p/</span>
-                  <input
-                    type="text"
-                    required
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                    className="bg-transparent font-semibold text-emerald-400 focus:outline-none flex-1 ml-1"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Loại hình
-                  </label>
-                  <select
-                    value={groupType}
-                    onChange={(e) => setGroupType(e.target.value)}
-                    className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
-                  >
-                    <option value="CLASS">Lớp học dạy thêm</option>
-                    <option value="SPORTS_CLUB">Câu lạc bộ thể thao / Sân</option>
-                    <option value="RENTAL">Phòng trọ / Cho thuê</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Kỳ tính phí
-                  </label>
-                  <select
-                    value={billingCycle}
-                    onChange={(e) => setBillingCycle(e.target.value)}
-                    className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500"
-                  >
-                    <option value="MONTHLY">Theo tháng</option>
-                    <option value="PER_SESSION">Theo buổi học / lượt chơi</option>
-                    <option value="DAILY">Hàng ngày</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Học phí mặc định (VND)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="10000"
-                  value={defaultFee}
-                  onChange={(e) => setDefaultFee(Number(e.target.value))}
-                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Mô tả ngắn (tùy chọn)
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={2}
-                  placeholder="Ghi chú về lịch học, địa chỉ sân tập..."
-                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E283D]">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition"
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={groupType}
+                  onChange={(e) => setGroupType(e.target.value)}
                 >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
-                >
-                  {isSubmitting ? 'Đang tạo...' : 'Xác nhận tạo'}
-                </button>
+                  <MenuItem value="CLASS">Lớp học / Gia sư</MenuItem>
+                  <MenuItem value="SPORTS_CLUB">CLB Thể thao</MenuItem>
+                  <MenuItem value="RENTAL">Nhà trọ / Phòng</MenuItem>
+                </TextField>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <div>
+                <label className="text-xs font-semibold text-[#101828] block mb-1">
+                  Chu kỳ thu học phí
+                </label>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  value={billingCycle}
+                  onChange={(e) => setBillingCycle(e.target.value)}
+                >
+                  <MenuItem value="MONTHLY">Theo tháng</MenuItem>
+                  <MenuItem value="PER_SESSION">Theo từng buổi</MenuItem>
+                  <MenuItem value="DAILY">Theo ngày</MenuItem>
+                </TextField>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Mức học phí mặc định (VND)
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                type="number"
+                value={defaultFee}
+                onChange={(e) => setDefaultFee(Number(e.target.value))}
+                placeholder="VD: 600000"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Mô tả ngắn hoặc lịch học
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                multiline
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="VD: Lịch học Thứ 2 - 4 - 6 từ 17:30 đến 19:00 tại Trường THCS Lê Đình Chinh"
+              />
+            </div>
+          </DialogContent>
+
+          <DialogActions className="p-4 pt-0 gap-2">
+            <Button
+              variant="outlined"
+              onClick={() => setShowCreateModal(false)}
+              disabled={isSubmitting}
+              sx={{ color: '#475467', borderColor: '#E4E7EC' }}
+            >
+              Hủy
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isSubmitting}
+              sx={{ backgroundColor: '#2538D9', '&:hover': { backgroundColor: '#1E2DB8' } }}
+            >
+              {isSubmitting ? 'Đang tạo...' : 'Tạo lớp học'}
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
     </div>
   );
 }

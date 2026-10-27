@@ -19,21 +19,41 @@ export async function GET(req: NextRequest) {
   }
 
   const groupId = req.nextUrl.searchParams.get('groupId');
-  if (!groupId) {
-    return NextResponse.json({ success: false, error: 'Thiếu groupId' }, { status: 400 });
+  const search = req.nextUrl.searchParams.get('search');
+
+  const where: any = {
+    group: { userId },
+    status: 'ACTIVE',
+  };
+
+  if (groupId) {
+    where.groupId = groupId;
   }
 
-  // Ensure user owns this group
-  const group = await prisma.group.findFirst({
-    where: { id: groupId, userId },
-  });
-
-  if (!group) {
-    return NextResponse.json({ success: false, error: 'Không tìm thấy nhóm' }, { status: 404 });
+  if (search && search.trim()) {
+    where.OR = [
+      { name: { contains: search.trim(), mode: 'insensitive' } },
+      { phone: { contains: search.trim() } },
+      { parentName: { contains: search.trim(), mode: 'insensitive' } },
+    ];
   }
 
   const members = await prisma.member.findMany({
-    where: { groupId, status: 'ACTIVE' },
+    where,
+    include: {
+      group: {
+        select: { id: true, name: true, slug: true, defaultFee: true },
+      },
+      invoices: {
+        where: { status: { not: 'VOID' } },
+        select: { id: true, status: true, amountDue: true, amountPaid: true, paymentCode: true },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      },
+      _count: {
+        select: { attendances: true, invoices: true },
+      },
+    },
     orderBy: { name: 'asc' },
   });
 
@@ -64,6 +84,9 @@ export async function POST(req: NextRequest) {
         name: parsed.name.trim(),
         phone: parsed.phone?.trim() || null,
         parentName: parsed.parentName?.trim() || null,
+      },
+      include: {
+        group: { select: { id: true, name: true, slug: true } },
       },
     });
 

@@ -23,12 +23,20 @@
 ---
 
 ## 3. Design System & UX Standards
-- **Thương hiệu:** SaaS hiệu suất cao (Productivity SaaS), phong cách tối giản, đáng tin cậy.
+- **Thương hiệu:** SaaS hiệu suất cao (Productivity SaaS), phong cách hiện đại, sáng sủa, đáng tin cậy.
+- **Bảng màu chủ đạo:**
+  - Canvas (Nền App): `#F5F7FB`
+  - Surface (Card/Thẻ): `#FFFFFF` (viền `#E4E7EC`, bo góc `1rem`, bóng mờ tinh tế)
+  - Sidebar: Dark Navy `#0B0F19` với item active màu `#2538D9`
+  - Primary Brand: `#2538D9` (Royal Blue)
+  - Accent Violet: `#6D5CE8`
+  - Text: Chính `#101828`, Phụ `#475467`
 - **Màu sắc trạng thái tài chính (bắt buộc):**
   - Chưa đóng: `bg-rose-50 text-rose-700 border-rose-200`
   - Đóng thiếu: `bg-amber-50 text-amber-700 border-amber-200`
   - Đã đóng đủ: `bg-emerald-50 text-emerald-700 border-emerald-200`
   - Đóng thừa: `bg-blue-50 text-blue-700 border-blue-200`
+- **Typography:** Font `Be Vietnam Pro` hỗ trợ tiếng Việt chuẩn xác không lệch dấu, cấu hình `tnum` (tabular numerals) cho số tiền VND.
 - **Tiền tệ:** Tiền VND luôn là số nguyên (`Int`), định dạng qua hàm `formatVND()`.
 - **Ngôn ngữ:** 100% tiếng Việt tự nhiên, trực quan, không dùng thuật ngữ backend nội bộ.
 
@@ -62,7 +70,7 @@ tingroster/
 ---
 
 ## 6. AI Skills & Development Rules
-- Luôn kiểm tra và kích hoạt các skills phù hợp: `frontend-design`, `code-expert`, `vercel-react-best-practices`, `security-review`, `code-review-expert`.
+- Luôn kiểm tra và kích hoạt các skills phù hợp: `impeccable`, `frontend-design`, `code-expert`, `vercel-react-best-practices`, `security-review`, `code-review-expert`.
 - Không tạo component hoặc nút bấm giả không hoạt động.
 - Mọi màn hình phải có đủ 4 trạng thái: Loading, Empty, Error, Success.
 

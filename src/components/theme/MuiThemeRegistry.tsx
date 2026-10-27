@@ -5,41 +5,41 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 
-const darkTheme = createTheme({
+const lightTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#10B981', // Ting Emerald
-      contrastText: '#080C14',
+      main: '#2538D9', // Ting Royal Indigo Blue
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#6366F1', // Electric Indigo
+      main: '#6D5CE8', // Accent Violet
       contrastText: '#FFFFFF',
     },
     background: {
-      default: '#080C14',
-      paper: '#0F1626',
+      default: '#F5F7FB',
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#F8FAFC',
-      secondary: '#94A3B8',
+      primary: '#101828',
+      secondary: '#475467',
     },
-    divider: '#1E283D',
+    divider: '#E4E7EC',
     error: {
-      main: '#F43F5E',
+      main: '#B42318',
     },
     warning: {
-      main: '#F59E0B',
+      main: '#B54708',
     },
     success: {
-      main: '#10B981',
+      main: '#067647',
     },
     info: {
-      main: '#06B6D4',
+      main: '#2538D9',
     },
   },
   typography: {
-    fontFamily: 'inherit',
+    fontFamily: 'var(--font-be-vietnam-pro), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     button: {
       textTransform: 'none',
       fontWeight: 600,
@@ -52,17 +52,17 @@ const darkTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '0.75rem',
-          fontWeight: 700,
+          borderRadius: '0.625rem',
+          fontWeight: 600,
           boxShadow: 'none',
           padding: '8px 16px',
         },
         contained: {
-          backgroundColor: '#10B981',
-          color: '#080C14',
+          backgroundColor: '#2538D9',
+          color: '#FFFFFF',
           '&:hover': {
-            backgroundColor: '#059669',
-            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)',
+            backgroundColor: '#1E2DB8',
+            boxShadow: '0 4px 12px rgba(37, 56, 217, 0.25)',
           },
         },
       },
@@ -70,21 +70,21 @@ const darkTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          backgroundColor: '#111726',
-          borderRadius: '0.75rem',
+          backgroundColor: '#FFFFFF',
+          borderRadius: '0.625rem',
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#1E283D',
+            borderColor: '#E4E7EC',
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#334155',
+            borderColor: '#CBD5E1',
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#10B981',
+            borderColor: '#2538D9',
             borderWidth: 1.5,
           },
         },
         input: {
-          color: '#F8FAFC',
+          color: '#101828',
           fontSize: '0.875rem',
           padding: '10px 14px',
         },
@@ -93,10 +93,10 @@ const darkTheme = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          color: '#94A3B8',
+          color: '#475467',
           fontSize: '0.875rem',
           '&.Mui-focused': {
-            color: '#10B981',
+            color: '#2538D9',
           },
         },
       },
@@ -104,8 +104,8 @@ const darkTheme = createTheme({
     MuiSelect: {
       styleOverrides: {
         root: {
-          backgroundColor: '#111726',
-          borderRadius: '0.75rem',
+          backgroundColor: '#FFFFFF',
+          borderRadius: '0.625rem',
         },
       },
     },
@@ -113,8 +113,8 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          backgroundColor: '#0F1626',
-          border: '1px solid #1E283D',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E4E7EC',
         },
       },
     },
@@ -122,8 +122,9 @@ const darkTheme = createTheme({
       styleOverrides: {
         paper: {
           borderRadius: '1rem',
-          border: '1px solid #1E283D',
-          backgroundColor: '#0F1626',
+          border: '1px solid #E4E7EC',
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
         },
       },
     },
@@ -141,7 +142,7 @@ const darkTheme = createTheme({
 export default function MuiThemeRegistry({ children }: { children: React.ReactNode }) {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-      <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={lightTheme}>
         <CssBaseline />
         {children}
       </ThemeProvider>

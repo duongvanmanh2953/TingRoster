@@ -11,19 +11,14 @@ import {
   Zap,
   Save,
   RefreshCw,
+  Settings as SettingsIcon,
+  User,
+  AlertCircle
 } from 'lucide-react';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
-import Alert from '@mui/material/Alert';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import { BankLogo, POPULAR_BANKS } from '@/components/common/BankLogo';
 
 const VIETNAMESE_BANKS = Object.values(POPULAR_BANKS);
@@ -33,7 +28,7 @@ export default function SettingsPage() {
   const [email, setEmail] = useState('');
   const [bankId, setBankId] = useState('MB');
   const [bankAccountNo, setBankAccountNo] = useState('0987654321');
-  const [bankAccountName, setBankAccountName] = useState('NGUYEN VAN A');
+  const [bankAccountName, setBankAccountName] = useState('NGUYEN VAN MINH');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -73,7 +68,7 @@ export default function SettingsPage() {
       const data = await res.json();
       if (data.success) {
         setMessage('Đã lưu cấu hình tài khoản ngân hàng thành công!');
-        setTimeout(() => setMessage(null), 3000);
+        setTimeout(() => setMessage(null), 3500);
       } else {
         alert(data.error || 'Lỗi cập nhật cấu hình');
       }
@@ -84,7 +79,9 @@ export default function SettingsPage() {
     }
   };
 
-  const webhookUrl = typeof window !== 'undefined' ? `${window.location.origin}/api/webhooks/sepay` : 'https://tingroster.vn/api/webhooks/sepay';
+  const webhookUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/api/webhooks/sepay`
+    : 'https://tingroster.vn/api/webhooks/sepay';
 
   const handleCopyWebhook = () => {
     navigator.clipboard.writeText(webhookUrl);
@@ -95,207 +92,233 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="text-center py-24 space-y-3">
-        <CircularProgress color="success" size={32} />
-        <p className="text-xs text-slate-400">Đang tải cấu hình hệ thống...</p>
+        <CircularProgress size={32} sx={{ color: '#2538D9' }} />
+        <p className="text-xs text-[#475467] font-medium">Đang tải cấu hình hệ thống...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
+      
+      {/* 1. Header */}
       <div>
         <div className="flex items-center gap-2.5">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+            <SettingsIcon className="w-4 h-4" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828]">
             Cài đặt & Ngân hàng VietQR
           </h1>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20 uppercase">
             Hệ thống
           </span>
         </div>
-        <p className="text-xs sm:text-sm text-slate-400 mt-1">
+        <p className="text-xs sm:text-sm text-[#475467] mt-1">
           Thiết lập tài khoản ngân hàng thụ hưởng nhận học phí và cổng tự động đối soát SePay / Casso
         </p>
       </div>
 
       {message && (
-        <Alert severity="success" className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-          {message}
-        </Alert>
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 shadow-xs">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+          <span>{message}</span>
+        </div>
       )}
 
       {/* Main Form */}
       <form onSubmit={handleSave} className="space-y-6">
         
         {/* Bank Configuration Card */}
-        <Card className="bg-[#0F1626] border border-[#1E283D] rounded-2xl">
-          <CardContent className="p-6 space-y-5">
-            <div className="flex items-center justify-between pb-4 border-b border-[#1E283D]">
-              <div className="flex items-center gap-3">
-                <BankLogo bankId={bankId} size="lg" />
-                <div>
-                  <Typography variant="h6" className="text-sm font-bold text-white">
-                    Tài khoản Ngân hàng nhận tiền VietQR
-                  </Typography>
-                  <Typography variant="body2" className="text-[11px] text-slate-400">
-                    Sinh mã VietQR Napas 24/7 trực tiếp trỏ về tài khoản ngân hàng này
-                  </Typography>
-                </div>
+        <div className="ting-card p-6 space-y-5">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+            <div className="flex items-center gap-3">
+              <BankLogo bankId={bankId} size="lg" />
+              <div>
+                <h3 className="text-sm font-bold text-[#101828]">
+                  Tài khoản Ngân hàng nhận tiền VietQR
+                </h3>
+                <p className="text-[11px] text-[#475467]">
+                  Sinh mã VietQR Napas 24/7 trực tiếp trỏ về tài khoản ngân hàng này
+                </p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-                Chính thức
-              </span>
             </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Chính thức
+            </span>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-              <FormControl fullWidth size="small">
-                <InputLabel id="bank-select-label" className="text-slate-400">Ngân hàng thụ hưởng *</InputLabel>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
+            {/* Bank Select */}
+            <div>
+              <label className="block text-xs font-semibold text-[#101828] mb-1.5">
+                Ngân hàng thụ hưởng *
+              </label>
+              <FormControl size="small" fullWidth>
                 <Select
-                  labelId="bank-select-label"
                   value={bankId}
-                  label="Ngân hàng thụ hưởng *"
                   onChange={(e) => setBankId(e.target.value)}
-                  className="bg-[#111726] text-white"
+                  sx={{
+                    borderRadius: '0.75rem',
+                    fontSize: '0.8125rem',
+                    fontWeight: 600,
+                    bgcolor: '#ffffff',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#E4E7EC',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#2538D9',
+                    },
+                  }}
                 >
                   {VIETNAMESE_BANKS.map((b) => (
-                    <MenuItem key={b.code} value={b.code} className="bg-[#0F1626] text-white hover:bg-[#1E283D]">
-                      <div className="flex items-center gap-2.5 py-1">
+                    <MenuItem key={b.code} value={b.code} sx={{ fontSize: '0.8125rem' }}>
+                      <div className="flex items-center gap-2">
                         <BankLogo bankId={b.code} size="xs" />
-                        <span className="font-bold text-xs">{b.shortName}</span>
-                        <span className="text-[11px] text-slate-400">({b.name})</span>
+                        <span className="font-semibold text-[#101828]">{b.shortName}</span>
+                        <span className="text-slate-400 text-xs">— {b.name}</span>
                       </div>
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-
-              <TextField
-                fullWidth
-                size="small"
-                label="Số tài khoản ngân hàng *"
-                value={bankAccountNo}
-                onChange={(e) => setBankAccountNo(e.target.value)}
-                placeholder="VD: 0987654321"
-                slotProps={{
-                  input: {
-                    className: 'bg-[#111726] text-white font-mono',
-                  },
-                }}
-              />
-
-              <div className="sm:col-span-2">
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Tên chủ tài khoản (In hoa không dấu) *"
-                  value={bankAccountName}
-                  onChange={(e) => setBankAccountName(e.target.value.toUpperCase())}
-                  placeholder="VD: NGUYEN VAN A"
-                  helperText="Tên chủ tài khoản phải khớp chính xác với CMND/CCCD mở tài khoản để mã VietQR hiển thị tên chuẩn."
-                  slotProps={{
-                    input: {
-                      className: 'bg-[#111726] text-white font-mono font-bold',
-                    },
-                    formHelperText: {
-                      className: 'text-slate-400 text-[11px]',
-                    },
-                  }}
-                />
-              </div>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Account Number */}
+            <div>
+              <label className="block text-xs font-semibold text-[#101828] mb-1.5">
+                Số tài khoản ngân hàng *
+              </label>
+              <input
+                type="text"
+                required
+                value={bankAccountNo}
+                onChange={(e) => setBankAccountNo(e.target.value.trim())}
+                placeholder="VD: 0987654321"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs tabular-nums font-semibold text-[#101828] focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
+              />
+            </div>
+
+            {/* Account Name */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-semibold text-[#101828] mb-1.5">
+                Tên chủ tài khoản (In hoa không dấu) *
+              </label>
+              <input
+                type="text"
+                required
+                value={bankAccountName}
+                onChange={(e) => setBankAccountName(e.target.value.toUpperCase())}
+                placeholder="VD: NGUYEN VAN MINH"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs font-semibold text-[#101828] focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
+              />
+              <p className="text-[11px] text-[#475467] mt-1.5">
+                Tên chủ tài khoản phải khớp chính xác với CMND/CCCD mở tài khoản để mã VietQR hiển thị tên chuẩn.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* User Profile Card */}
-        <Card className="bg-[#0F1626] border border-[#1E283D] rounded-2xl">
-          <CardContent className="p-6 space-y-4">
-            <Typography variant="h6" className="text-sm font-bold text-white pb-3 border-b border-[#1E283D]">
+        <div className="ting-card p-6 space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-[#E4E7EC]">
+            <User className="w-4 h-4 text-[#2538D9]" />
+            <h3 className="text-sm font-bold text-[#101828]">
               Thông tin Người Quản trị
-            </Typography>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <TextField
-                fullWidth
-                size="small"
-                label="Họ và tên hiển thị"
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                Họ và tên hiển thị
+              </label>
+              <input
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                slotProps={{
-                  input: {
-                    className: 'bg-[#111726] text-white',
-                  },
-                }}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs font-medium text-[#101828] focus:outline-none focus:border-[#2538D9]"
               />
+            </div>
 
-              <TextField
-                fullWidth
-                size="small"
-                label="Email đăng nhập"
+            <div>
+              <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                Email đăng nhập
+              </label>
+              <input
+                type="email"
                 disabled
                 value={email}
-                slotProps={{
-                  input: {
-                    className: 'bg-[#0B0F19] text-slate-400',
-                  },
-                }}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E4E7EC] text-xs font-mono text-[#475467] cursor-not-allowed"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Webhook Gateway Card */}
-        <Card className="bg-[#0F1626] border border-[#1E283D] rounded-2xl">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E283D]">
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-emerald-400" />
-                <Typography variant="h6" className="text-sm font-bold text-white">
-                  Cổng đối soát SePay / Casso Webhook
-                </Typography>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-                Tự động Ting!
-              </span>
+        <div className="ting-card p-6 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-[#2538D9]" />
+              <h3 className="text-sm font-bold text-[#101828]">
+                Cổng đối soát SePay / Casso Webhook
+              </h3>
             </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Tự động Ting!
+            </span>
+          </div>
 
-            <Typography variant="body2" className="text-xs text-slate-400">
-              Dán đường dẫn Webhook này vào trang quản trị SePay của bạn để nhận thông báo biến động số dư theo thời gian thực:
-            </Typography>
+          <p className="text-xs text-[#475467]">
+            Dán đường dẫn Webhook này vào trang quản trị SePay của bạn để nhận thông báo biến động số dư theo thời gian thực:
+          </p>
 
-            <div className="flex items-center gap-2 bg-[#111726] border border-[#1E283D] p-2.5 rounded-xl">
-              <span className="text-xs font-mono text-emerald-400 flex-1 truncate">{webhookUrl}</span>
-              <Button
-                variant="outlined"
-                size="small"
-                color="primary"
-                onClick={handleCopyWebhook}
-                startIcon={copiedWebhook ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              >
-                {copiedWebhook ? 'Đã sao chép' : 'Sao chép'}
-              </Button>
-            </div>
+          <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E4E7EC] p-2.5 rounded-xl">
+            <span className="text-xs font-mono text-[#2538D9] font-bold flex-1 truncate px-1">
+              {webhookUrl}
+            </span>
+            <button
+              type="button"
+              onClick={handleCopyWebhook}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#101828] transition-colors shadow-xs"
+            >
+              {copiedWebhook ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Đã sao chép</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Sao chép</span>
+                </>
+              )}
+            </button>
+          </div>
 
-            <div className="p-3 bg-[#111726] rounded-xl border border-[#1E283D] text-[11px] text-slate-400 flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Cơ chế Lũy đẳng (Idempotency) ngăn chặn 100% tình trạng webhook gọi trùng lặp tiền.
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+          <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              Cơ chế Lũy đẳng (Idempotency) ngăn chặn 100% tình trạng webhook gọi trùng lặp tiền.
+            </span>
+          </div>
+        </div>
 
         {/* Save Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
+        <div className="flex justify-end pt-2">
+          <button
             type="submit"
-            variant="contained"
-            color="primary"
             disabled={saving}
-            startIcon={saving ? <CircularProgress size={16} color="inherit" /> : <Save className="w-4 h-4" />}
-            size="large"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 transition-all hover:scale-[1.01] disabled:opacity-50"
           >
-            {saving ? 'Đang lưu...' : 'Lưu cấu hình hệ thống'}
-          </Button>
-        </Box>
+            {saving ? (
+              <CircularProgress size={16} color="inherit" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            <span>{saving ? 'Đang lưu...' : 'Lưu cấu hình hệ thống'}</span>
+          </button>
+        </div>
 
       </form>
     </div>

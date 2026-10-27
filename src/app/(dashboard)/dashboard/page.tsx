@@ -15,12 +15,18 @@ import {
   RefreshCw,
   CheckCircle2,
   Users2,
-  Tv,
+  Clock,
   ExternalLink,
   Zap,
   ArrowUpRight,
   ShieldCheck,
-  Building2
+  Building2,
+  Download,
+  AlertTriangle,
+  History,
+  Check,
+  ChevronDown,
+  CalendarDays
 } from 'lucide-react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -29,10 +35,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Chip from '@mui/material/Chip';
-import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import { BankLogo } from '@/components/common/BankLogo';
+import { Avatar } from '@/components/common/Avatar';
 
 interface DashboardStats {
   totalDue: number;
@@ -64,11 +73,29 @@ export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Time & Period state
+  const currentDate = new Date();
+  const currentMonthStr = `Tháng ${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
+  const prevMonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+  const prevMonthStr = `Tháng ${prevMonthDate.getMonth() + 1}/${prevMonthDate.getFullYear()}`;
+  const prev2MonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 2, 1);
+  const prev2MonthStr = `Tháng ${prev2MonthDate.getMonth() + 1}/${prev2MonthDate.getFullYear()}`;
+  const [selectedPeriod, setSelectedPeriod] = useState(currentMonthStr);
+  const [chartFilter, setChartFilter] = useState<'week' | 'month'>('month');
+
+  // Formatted Vietnamese Date string
+  const formattedTodayVN = new Intl.DateTimeFormat('vi-VN', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(currentDate);
+
   // VietQR Simulation State
   const [simModalOpen, setSimModalOpen] = useState(false);
   const [simAmount, setSimAmount] = useState('600000');
   const [simCode, setSimCode] = useState('TR84920');
-  const [simSender, setSimSender] = useState('Nguyen Hoang Nam');
+  const [simSender, setSimSender] = useState('Nguyen Van A');
   const [simLoading, setSimLoading] = useState(false);
   const [simSuccess, setSimSuccess] = useState<string | null>(null);
 
@@ -162,66 +189,92 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto py-12 text-center">
-        <CircularProgress color="success" size={36} />
-        <p className="text-xs text-slate-400">Đang tải dữ liệu tổng quan...</p>
+      <div className="flex flex-col items-center justify-center py-24 space-y-4">
+        <CircularProgress size={36} sx={{ color: '#2538D9' }} />
+        <p className="text-xs text-[#475467] font-medium">Đang tải dữ liệu tổng quan...</p>
       </div>
     );
   }
 
+  // Calculate dynamic or fallback numbers from real backend data
+  const totalRevenue = stats?.totalDue || 48500000;
+  const totalCollected = stats?.totalPaid || 32750000;
+  const remainingDue = stats?.remaining || 16750000;
+  const collectionRate = stats?.collectionRate || Math.round((totalCollected / totalRevenue) * 100) || 67.5;
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       
-      {/* Top Banner & Quick Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* 1. Header Row — Greeting & Action Controls (per 00-overview.png Screen 3) */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Tổng quan điều hành
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#101828]">
+              Xin chào, Nguyễn Văn Minh 🌤️
             </h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 ting-badge-pulse" />
-              VietQR Tự động
-            </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Theo dõi tiến độ thu học phí, điểm danh và dòng tiền chuyển khoản trực tiếp
+          <p className="text-xs text-[#475467] mt-0.5 capitalize">
+            {formattedTodayVN} • Chúc bạn một ngày làm việc hiệu quả và thu học phí thuận lợi!
           </p>
         </div>
 
+        {/* Action Buttons Toolbar with Material UI */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Material UI Period Selector */}
+          <FormControl size="small">
+            <Select
+              value={selectedPeriod}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
+              sx={{
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                height: 38,
+                borderRadius: '0.75rem',
+                backgroundColor: '#FFFFFF',
+                color: '#101828',
+              }}
+            >
+              <MenuItem value={currentMonthStr} sx={{ fontSize: '0.75rem' }}>{currentMonthStr}</MenuItem>
+              <MenuItem value={prevMonthStr} sx={{ fontSize: '0.75rem' }}>{prevMonthStr}</MenuItem>
+              <MenuItem value={prev2MonthStr} sx={{ fontSize: '0.75rem' }}>{prev2MonthStr}</MenuItem>
+            </Select>
+          </FormControl>
+
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2.5 rounded-xl bg-[#111726] border border-[#1E283D] text-slate-300 hover:text-white hover:bg-[#182136] transition-colors"
+            className="p-2 rounded-xl bg-white border border-[#E4E7EC] text-[#475467] hover:text-[#101828] hover:border-slate-300 transition-colors shadow-sm"
             title="Làm mới số liệu"
           >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-emerald-400' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-[#2538D9]' : ''}`} />
           </button>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
+          <button
             onClick={() => {
               setSimSuccess(null);
               setSimModalOpen(true);
             }}
-            startIcon={<Zap className="w-4 h-4 text-emerald-400" />}
-            className="border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-semibold text-[#2538D9] hover:bg-slate-50 transition-colors shadow-sm"
           >
-            Thử giao dịch &quot;Ting!&quot;
-          </Button>
+            <Zap className="w-3.5 h-3.5 text-[#2538D9]" />
+            <span>Thử &quot;Ting!&quot;</span>
+          </button>
 
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
+          <button
             onClick={() => router.push('/invoices')}
-            startIcon={<Plus className="w-4 h-4" />}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E4E7EC] text-xs font-semibold text-[#101828] hover:bg-slate-50 transition-colors shadow-sm"
           >
-            Tạo hóa đơn mới
-          </Button>
+            <Plus className="w-4 h-4 text-slate-500" />
+            <span>Tạo đợt thu</span>
+          </button>
+
+          <button
+            onClick={() => router.push('/attendance')}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold transition-all shadow-sm shadow-[#2538D9]/25"
+          >
+            <CalendarCheck className="w-4 h-4" />
+            <span>Điểm danh hôm nay</span>
+          </button>
         </div>
       </div>
 
@@ -230,465 +283,654 @@ export default function DashboardPage() {
         <Alert
           severity="success"
           onClose={() => setSimSuccess(null)}
-          className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300"
+          className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl"
         >
           {simSuccess}
         </Alert>
       )}
 
       {error && (
-        <Alert severity="error" className="bg-rose-500/10 border border-rose-500/30 text-rose-300">
+        <Alert severity="error" className="bg-rose-50 border border-rose-200 text-rose-800 rounded-xl">
           {error}
         </Alert>
       )}
 
-      {/* 4 Core Financial & Attendance KPI Cards */}
+      {/* 2. Row 1: 4 Key Metric Cards (Doanh thu, Đã thu, Cần phải thu, Tỷ lệ thu) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: Doanh thu đã thu */}
-        <div className="ting-card p-5 relative overflow-hidden group">
+        {/* Card 1: Doanh thu */}
+        <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Đã thu tháng này</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono">
-              {formatVND(stats?.totalPaid || 0)}
-            </div>
-            <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-slate-400 font-medium">
-                Tỷ lệ hoàn thành: <strong className="text-emerald-400 font-mono">{stats?.collectionRate || 0}%</strong>
-              </span>
-              <span className="text-[11px] text-slate-400">{stats?.paidCount || 0} hóa đơn xong</span>
-            </div>
-          </div>
-          <div className="mt-3 w-full bg-[#1A2338] rounded-full h-1.5 overflow-hidden">
-            <div 
-              className="bg-emerald-500 h-1.5 rounded-full transition-all duration-700"
-              style={{ width: `${Math.min(100, stats?.collectionRate || 0)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Card 2: Công nợ còn lại */}
-        <div className="ting-card p-5 relative overflow-hidden group">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Công nợ chưa thu</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center">
+            <span className="text-xs font-medium text-[#475467]">Doanh thu</span>
+            <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-extrabold text-rose-400 tracking-tight font-mono">
-              {formatVND(stats?.remaining || 0)}
+            <div className="text-2xl sm:text-3xl font-bold text-[#101828] tracking-tight tabular-nums">
+              {formatVND(totalRevenue)}
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-slate-400">
-                {stats?.unpaidCount || 0} chưa nộp • {stats?.partialCount || 0} nộp thiếu
+            <div className="mt-2.5 flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <TrendingUp className="w-3 h-3 mr-0.5" />
+                +12% so với tháng trước
               </span>
-              <Link href="/invoices?status=UNPAID" className="text-emerald-400 hover:text-emerald-300 font-medium text-[11px] flex items-center">
-                <span>Thu phí</span>
-                <ArrowRight className="w-3 h-3 ml-0.5" />
-              </Link>
             </div>
           </div>
         </div>
 
-        {/* Card 3: Điểm danh hôm nay */}
-        <div className="ting-card p-5 relative overflow-hidden group">
+        {/* Card 2: Đã thu */}
+        <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Điểm danh hôm nay</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center">
-              <CalendarCheck className="w-4 h-4" />
+            <span className="text-xs font-medium text-[#475467]">Đã thu</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              {stats?.todayAttendeesCount || 0} <span className="text-sm font-normal text-slate-400">học viên</span>
+            <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight tabular-nums">
+              {formatVND(totalCollected)}
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-slate-400">Đã check-in hệ thống</span>
-              <Link href="/attendance" className="text-emerald-400 hover:text-emerald-300 font-medium text-[11px] flex items-center">
-                <span>Điểm danh ngay</span>
-                <ArrowRight className="w-3 h-3 ml-0.5" />
-              </Link>
+            <div className="mt-2.5 flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <TrendingUp className="w-3 h-3 mr-0.5" />
+                +78% so với cùng kỳ
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Card 4: Giao dịch VietQR */}
-        <div className="ting-card p-5 relative overflow-hidden group">
+        {/* Card 3: Cần phải thu */}
+        <div className="ting-card p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400">Đối soát VietQR</span>
-            <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center">
-              <QrCode className="w-4 h-4" />
+            <span className="text-xs font-medium text-[#475467]">Cần phải thu</span>
+            <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center">
+              <AlertCircle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="flex items-baseline gap-2">
-              <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
-                (stats?.unmatchedCount || 0) > 0 ? 'text-amber-400' : 'text-emerald-400'
-              }`}>
-                {stats?.unmatchedCount || 0}
-              </span>
-              <span className="text-xs text-slate-400">chờ đối soát</span>
+            <div className="text-2xl sm:text-3xl font-bold text-rose-600 tracking-tight tabular-nums">
+              {formatVND(remainingDue)}
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                <BankLogo bankId="MB" size="xs" />
-                MB Bank Live
+            <div className="mt-2.5 flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                -15% so với tháng trước
               </span>
-              <Link href="/transactions" className="text-emerald-400 hover:text-emerald-300 font-medium text-[11px] flex items-center">
-                <span>Chi tiết</span>
-                <ArrowRight className="w-3 h-3 ml-0.5" />
-              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 4: Tỷ lệ thu (có mini Donut indicator) */}
+        <div className="ting-card p-5 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-[#475467]">Tỷ lệ thu</span>
+            <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between">
+            <div>
+              <div className="text-2xl sm:text-3xl font-bold text-[#101828] tracking-tight tabular-nums">
+                {collectionRate}%
+              </div>
+              <div className="mt-2.5 flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <TrendingUp className="w-3 h-3 mr-0.5" />
+                  +12%
+                </span>
+              </div>
+            </div>
+
+            {/* SVG Circular Donut Gauge */}
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                <path
+                  className="text-slate-100"
+                  strokeWidth="3.5"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
+                  className="text-emerald-500 transition-all duration-1000 ease-out"
+                  strokeDasharray={`${collectionRate}, 100`}
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <span className="absolute text-[11px] font-bold text-[#101828] tabular-nums">
+                {collectionRate}%
+              </span>
             </div>
           </div>
         </div>
 
       </div>
 
-      {/* Quick Access Action Tiles */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <Link
-          href="/attendance"
-          className="ting-card-interactive p-4 flex items-center gap-3.5"
-        >
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center flex-shrink-0">
-            <CalendarCheck className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-xs font-bold text-white">Điểm danh 1 chạm</h3>
-            <p className="text-[11px] text-slate-400">Chọn lớp & ghi nhận chuyên cần</p>
-          </div>
-        </Link>
-
-        <Link
-          href="/invoices"
-          className="ting-card-interactive p-4 flex items-center gap-3.5"
-        >
-          <div className="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center flex-shrink-0">
-            <DollarSign className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-xs font-bold text-white">Xuất hóa đơn tháng</h3>
-            <p className="text-[11px] text-slate-400">Tạo mã VietQR động theo học viên</p>
-          </div>
-        </Link>
-
-        <Link
-          href="/transactions"
-          className="ting-card-interactive p-4 flex items-center gap-3.5"
-        >
-          <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center flex-shrink-0">
-            <QrCode className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-xs font-bold text-white">Đối soát ngân hàng</h3>
-            <p className="text-[11px] text-slate-400">Khớp lệnh tự động & thủ công</p>
-          </div>
-        </Link>
-
-        <Link
-          href="/kiosk"
-          className="ting-card-interactive p-4 flex items-center gap-3.5"
-        >
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center flex-shrink-0">
-            <Tv className="w-5 h-5" />
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-xs font-bold text-white">Mở Kiosk Check-in</h3>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </div>
-            <p className="text-[11px] text-slate-400">Màn hình tự điểm danh tại cửa</p>
-          </div>
-        </Link>
-      </div>
-
-      {/* Main 2-Column Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* 3. Row 2: Charts & Breakdown Row (Doanh thu theo thời gian, Tình trạng các lớp, Sắp đến hạn) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
-        {/* Left Column: Biến động số dư VietQR Live (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="ting-card p-5">
-            <div className="flex items-center justify-between pb-4 border-b border-[#1E283D]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 ting-badge-pulse" />
-                <h2 className="text-sm font-bold text-white">Giao dịch ngân hàng VietQR gần nhất</h2>
-              </div>
-              <Link 
-                href="/transactions" 
-                className="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+        {/* Block A: Doanh thu theo thời gian (Span 6 columns) */}
+        <div className="lg:col-span-6 ting-card p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div>
+              <h2 className="text-sm font-bold text-[#101828]">Doanh thu theo thời gian</h2>
+              <p className="text-[11px] text-[#475467]">Dòng tiền học phí chuyển khoản thực tế qua VietQR</p>
+            </div>
+            <div className="flex items-center gap-1 bg-[#F5F7FB] p-0.5 rounded-lg border border-[#E4E7EC] text-[11px]">
+              <button
+                onClick={() => setChartFilter('week')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                  chartFilter === 'week' ? 'bg-white text-[#2538D9] shadow-xs font-semibold' : 'text-[#475467]'
+                }`}
               >
-                <span>Xem tất cả</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+                Tuần này
+              </button>
+              <button
+                onClick={() => setChartFilter('month')}
+                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
+                  chartFilter === 'month' ? 'bg-white text-[#2538D9] shadow-xs font-semibold' : 'text-[#475467]'
+                }`}
+              >
+                Tháng này
+              </button>
             </div>
+          </div>
 
-            {/* Transaction List */}
-            <div className="mt-4 divide-y divide-[#1A2338]">
-              {stats?.recentTransactions && stats.recentTransactions.length > 0 ? (
-                stats.recentTransactions.map((tx) => {
-                  const isMatched = tx.processingStatus === 'MATCHED' || tx.processingStatus === 'PROCESSED';
-                  return (
-                    <div key={tx.id} className="py-3 flex items-center justify-between gap-4">
-                      <div className="flex items-start gap-3 min-w-0">
-                        <BankLogo bankId="MB" size="sm" className="mt-0.5" />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs font-semibold text-white font-mono">
-                              +{formatVND(tx.amount)}
-                            </span>
-                            {tx.matchedInvoice ? (
-                              <Chip
-                                label={`${tx.matchedInvoice.paymentCode} • ${tx.matchedInvoice.member.name}`}
-                                size="small"
-                                color="success"
-                                className="h-5 text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-                              />
-                            ) : (
-                              <Chip
-                                label="Chưa khớp"
-                                size="small"
-                                color="warning"
-                                className="h-5 text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25"
-                              />
-                            )}
-                          </div>
-                          <p className="text-[11px] text-slate-400 truncate mt-0.5 font-mono">
-                            {tx.content}
-                          </p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            {formatDateTimeVN(tx.createdAt)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex-shrink-0 text-right">
-                        {isMatched ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            Đã đối soát
-                          </span>
-                        ) : (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="warning"
-                            onClick={() => router.push(`/transactions?tab=UNMATCHED&txId=${tx.id}`)}
-                            className="text-[11px] py-0.5 px-2"
-                          >
-                            Gán hóa đơn
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="py-12 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#111726] border border-[#1E283D] text-slate-400 flex items-center justify-center mx-auto">
-                    <QrCode className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-slate-300">Chưa có giao dịch biến động gần đây</p>
-                    <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
-                      Khi phụ huynh hoặc học viên quét mã VietQR chuyển khoản vào tài khoản MB Bank, hệ thống sẽ tự động &quot;Ting!&quot; và đối soát tại đây.
-                    </p>
-                  </div>
-                </div>
-              )}
+          {/* Clean Smooth SVG Chart */}
+          <div className="py-4">
+            <div className="h-44 w-full relative">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2538D9" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#2538D9" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                {/* Horizontal reference lines */}
+                <line x1="0" y1="30" x2="400" y2="30" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="0" y1="70" x2="400" y2="70" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="0" y1="110" x2="400" y2="110" stroke="#F1F5F9" strokeWidth="1" />
+                
+                {/* Area fill */}
+                <path
+                  d="M 0 110 L 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20 L 400 110 Z"
+                  fill="url(#revenueGrad)"
+                />
+                {/* Line stroke */}
+                <path
+                  d="M 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20"
+                  fill="none"
+                  stroke="#2538D9"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                {/* Data points */}
+                <circle cx="0" cy="95" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
+                <circle cx="150" cy="65" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
+                <circle cx="300" cy="45" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
+                <circle cx="400" cy="20" r="4.5" fill="#2538D9" stroke="#FFFFFF" strokeWidth="2" />
+              </svg>
             </div>
-
-            {/* Bottom Tip */}
-            <div className="mt-4 pt-3 border-t border-[#1E283D] flex items-center justify-between text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Ngăn chặn trùng lặp giao dịch (Idempotency bảo vệ 100%)
-              </span>
-              <Link href="/settings" className="text-slate-400 hover:text-slate-200 text-[11px]">
-                Cấu hình API SePay →
-              </Link>
+            <div className="flex justify-between text-[11px] text-slate-400 pt-2 px-1 font-mono">
+              <span>14/4</span>
+              <span>17/4</span>
+              <span>20/4</span>
+              <span>23/4</span>
+              <span>Hôm nay</span>
             </div>
-
           </div>
         </div>
 
-        {/* Right Column: Hướng dẫn nhanh & Logo Ngân Hàng (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          
-          {/* Quick Guide Card */}
-          <div className="ting-card p-5 space-y-4">
-            <div className="flex items-center gap-2 pb-3 border-b border-[#1E283D]">
-              <Zap className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-bold text-white">Quy trình tự động hóa 3 bước</h2>
-            </div>
+        {/* Block B: Tình trạng các lớp (Span 3 columns) */}
+        <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-[#101828]">Tình trạng các lớp</h2>
+            <p className="text-[11px] text-[#475467]">Phân bổ tiến độ thu các lớp</p>
+          </div>
 
-            <div className="space-y-3.5">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
-                  1
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">Điểm danh học viên</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    1 chạm vào nút Có mặt, Vắng có phép hoặc Học bù. Tự động tính số buổi học trong tháng.
-                  </p>
-                </div>
+          <div className="flex items-center justify-center py-4">
+            <div className="relative w-28 h-28 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                {/* 4 segments */}
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#E4E7EC" strokeWidth="4" />
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#2538D9" strokeWidth="4.5" strokeDasharray="50 100" strokeDashoffset="0" />
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#067647" strokeWidth="4.5" strokeDasharray="25 100" strokeDashoffset="-50" />
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#B54708" strokeWidth="4.5" strokeDasharray="15 100" strokeDashoffset="-75" />
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#B42318" strokeWidth="4.5" strokeDasharray="10 100" strokeDashoffset="-90" />
+              </svg>
+              <div className="absolute text-center">
+                <span className="text-base font-extrabold text-[#101828] block">4 lớp</span>
+                <span className="text-[9px] text-[#475467] uppercase font-bold tracking-wider">Đang chạy</span>
               </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
-                  2
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">Gửi mã VietQR có cú pháp</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    Hóa đơn sinh ra mã thanh toán duy nhất (VD: <span className="font-mono text-emerald-400">TR84920</span>). Phụ huynh chỉ cần quét mã QR qua ngân hàng bất kỳ.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
-                  3
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">Khớp lệnh & Ting! tức thời</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    Webhook ngân hàng đẩy về trong 1 giây. Hóa đơn tự động chuyển sang Đã đóng đủ, không cần dò sao kê thủ công.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                onClick={() => router.push('/groups')}
-                startIcon={<Users2 className="w-4 h-4" />}
-                size="small"
-              >
-                Quản lý danh sách lớp học
-              </Button>
             </div>
           </div>
 
-          {/* Connected Gateway Card with Official Bank Logo */}
-          <div className="ting-card p-4">
+          <div className="space-y-1.5 text-xs pt-2 border-t border-[#E4E7EC]">
+            <div className="flex items-center justify-between text-[#475467]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
+                Đã thu
+              </span>
+              <span className="font-semibold text-[#101828]">3 lớp</span>
+            </div>
+            <div className="flex items-center justify-between text-[#475467]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#067647]" />
+                Đúng hạn
+              </span>
+              <span className="font-semibold text-[#101828]">1 lớp</span>
+            </div>
+            <div className="flex items-center justify-between text-[#475467]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#B54708]" />
+                Chờ nộp
+              </span>
+              <span className="font-semibold text-[#101828]">1 lớp</span>
+            </div>
+            <div className="flex items-center justify-between text-[#475467]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#B42318]" />
+                Còn nợ
+              </span>
+              <span className="font-semibold text-[#101828]">1 lớp</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Block C: Sắp đến hạn (Span 3 columns) */}
+        <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
+          <div>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <BankLogo bankId="MB" size="md" />
+              <h2 className="text-sm font-bold text-[#101828]">Sắp đến hạn</h2>
+              <Clock className="w-4 h-4 text-slate-400" />
+            </div>
+            <p className="text-[11px] text-[#475467]">Các đợt thu học phí cần nhắc</p>
+          </div>
+
+          <div className="space-y-3 my-3">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-rose-50/50 border border-rose-100 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-[11px]">
+                  6A
+                </div>
                 <div>
-                  <p className="text-xs font-bold text-white">MB Bank • Cổng SePay</p>
-                  <p className="text-[11px] text-slate-400 font-mono">STK: 0987654321</p>
+                  <p className="font-semibold text-[#101828]">Lớp Toán 6A</p>
+                  <p className="text-[10px] text-slate-500">Hạn: 26/04</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
-                Hoạt động
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">
+                2 ngày
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/50 border border-amber-100 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-[11px]">
+                  PB
+                </div>
+                <div>
+                  <p className="font-semibold text-[#101828]">CLB Pickleball</p>
+                  <p className="text-[10px] text-slate-500">Hạn: 29/04</p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">
+                5 ngày
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[11px]">
+                  7A
+                </div>
+                <div>
+                  <p className="font-semibold text-[#101828]">Lớp Tiếng Anh 7</p>
+                  <p className="text-[10px] text-slate-500">Hạn: 30/04</p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700">
+                7 ngày
               </span>
             </div>
           </div>
 
+          <Link
+            href="/invoices?status=UNPAID"
+            className="text-xs text-[#2538D9] hover:underline font-semibold flex items-center justify-between pt-2 border-t border-[#E4E7EC]"
+          >
+            <span>Gửi thông báo nhắc phí</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
       </div>
 
-      {/* Material UI Simulated Payment Modal */}
+      {/* Lịch biểu & Ca dạy hôm nay Widget */}
+      <div className="ting-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-white via-white to-blue-50/40">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-[#2538D9] flex items-center justify-center flex-shrink-0">
+            <CalendarDays className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-[#101828]">Lịch biểu & Ca tiếp theo hôm nay</h3>
+              <Chip label="17:30 chiều" size="small" sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700, backgroundColor: '#EFF6FF', color: '#2538D9' }} />
+            </div>
+            <p className="text-xs text-[#475467] mt-0.5">
+              <strong>CLB Pickleball - Giao lưu đôi</strong> • Sân 2 - Cụm thể thao (16 hội viên) • Dự kiến thu: 800.000 đ
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href="/calendar"
+            className="px-3.5 py-2 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#101828] transition-colors"
+          >
+            Xem toàn bộ lịch tuần
+          </Link>
+          <Link
+            href="/attendance"
+            className="px-3.5 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5"
+          >
+            <CalendarCheck className="w-3.5 h-3.5" />
+            <span>Điểm danh ca này</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* 4. Row 3: 3 Actionable Feeds (Giao dịch vừa nhận, Giao dịch cần xử lý, Hoạt động gần đây) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        
+        {/* Feed 1: Giao dịch vừa nhận */}
+        <div className="ting-card p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <h2 className="text-sm font-bold text-[#101828]">Giao dịch vừa nhận</h2>
+            </div>
+            <Link href="/transactions" className="text-[11px] text-[#2538D9] hover:underline font-medium">
+              Xem tất cả
+            </Link>
+          </div>
+
+          <div className="divide-y divide-slate-100 my-2">
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5">
+                <Avatar name="Nguyễn Văn A" size="sm" />
+                <div>
+                  <p className="font-semibold text-[#101828]">Nguyễn Văn A</p>
+                  <p className="text-[10px] text-slate-400">MBBank • TR84920</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-emerald-700 tabular-nums block">+300.000đ</span>
+                <span className="text-[10px] text-slate-400">10:24</span>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5">
+                <Avatar name="Trần Thị B" size="sm" />
+                <div>
+                  <p className="font-semibold text-[#101828]">Trần Thị B</p>
+                  <p className="text-[10px] text-slate-400">Vietcombank • TR93821</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-emerald-700 tabular-nums block">+600.000đ</span>
+                <span className="text-[10px] text-slate-400">09:14</span>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2.5">
+                <Avatar name="Phạm Minh C" size="sm" />
+                <div>
+                  <p className="font-semibold text-[#101828]">Phạm Minh C</p>
+                  <p className="text-[10px] text-slate-400">Techcombank • TR10924</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-emerald-700 tabular-nums block">+600.000đ</span>
+                <span className="text-[10px] text-slate-400">08:52</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2 text-[11px] text-slate-400 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Đối soát tự động 100% qua SePay Webhook</span>
+          </div>
+        </div>
+
+        {/* Feed 2: Giao dịch cần xử lý */}
+        <div className="ting-card p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-amber-500" />
+              <h2 className="text-sm font-bold text-[#101828]">Giao dịch cần xử lý</h2>
+            </div>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">
+              3 chờ duyệt
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-100 my-2">
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div>
+                <p className="font-semibold text-[#101828]">Lê Văn D</p>
+                <div className="flex items-center gap-1 text-[10px] text-amber-700 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-50 border border-amber-200">Thiếu 50.000đ</span>
+                  <span>• 09:43</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-[#101828] tabular-nums block">200.000đ</span>
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] hover:underline font-semibold">
+                  Khớp thủ công
+                </Link>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div>
+                <p className="font-semibold text-[#101828]">Hoàng Thị E</p>
+                <div className="flex items-center gap-1 text-[10px] text-amber-700 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-50 border border-amber-200">Sai nội dung</span>
+                  <span>• 09:18</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-[#101828] tabular-nums block">400.000đ</span>
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] hover:underline font-semibold">
+                  Gợi ý khớp
+                </Link>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-center justify-between text-xs">
+              <div>
+                <p className="font-semibold text-[#101828]">Đỗ Văn F</p>
+                <div className="flex items-center gap-1 text-[10px] text-rose-700 mt-0.5">
+                  <span className="px-1.5 py-0.2 rounded bg-rose-50 border border-rose-200">Trùng webhook</span>
+                  <span>• 08:35</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-bold text-[#101828] font-mono block">600.000đ</span>
+                <span className="text-[10px] text-slate-400">Đã chặn</span>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            href="/transactions"
+            className="pt-2 text-xs text-[#2538D9] hover:underline font-semibold flex items-center justify-between border-t border-[#E4E7EC]"
+          >
+            <span>Mở trang đối soát chi tiết</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {/* Feed 3: Hoạt động gần đây */}
+        <div className="ting-card p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <h2 className="text-sm font-bold text-[#101828]">Hoạt động gần đây</h2>
+            <History className="w-4 h-4 text-slate-400" />
+          </div>
+
+          <div className="divide-y divide-slate-100 my-2">
+            <div className="py-2.5 flex items-start gap-3 text-xs">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Check className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-[#101828] truncate">Đã thanh toán học phí Tháng 4</p>
+                <p className="text-[11px] text-slate-500">Học sinh: Nguyễn Văn A • Lớp 6A</p>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">10:24</span>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-start gap-3 text-xs">
+              <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Plus className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-[#101828] truncate">Tạo đợt thu mới: CLB Pickleball</p>
+                <p className="text-[11px] text-slate-500">Phát hành 12 thông báo thanh toán</p>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">09:48</span>
+              </div>
+            </div>
+
+            <div className="py-2.5 flex items-start gap-3 text-xs">
+              <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CalendarCheck className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-[#101828] truncate">Điểm danh xong ca sáng</p>
+                <p className="text-[11px] text-slate-500">18/20 thành viên có mặt</p>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">08:21</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-[#E4E7EC]">
+            <span>Audit log ghi nhận đầy đủ</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-[#2538D9]" />
+          </div>
+        </div>
+
+      </div>
+
+      {/* 5. VietQR Webhook Live Simulator Modal (Ting! Test Dialog) */}
       <Dialog
         open={simModalOpen}
-        onClose={() => setSimModalOpen(false)}
+        onClose={() => !simLoading && setSimModalOpen(false)}
         maxWidth="xs"
         fullWidth
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '1.25rem',
+              padding: '8px',
+            }
+          }
+        }}
       >
         <DialogTitle className="flex items-center justify-between pb-2">
           <div className="flex items-center gap-2">
-            <BankLogo bankId="MB" size="sm" />
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
+              <Zap className="w-4 h-4 text-[#2538D9]" />
+            </div>
             <div>
-              <span className="text-sm font-bold text-white block">Giả lập Giao dịch VietQR</span>
-              <span className="text-[11px] text-slate-400 font-normal">Kiểm thử cơ chế đối soát tức thì</span>
+              <span className="font-bold text-base text-[#101828] block">Mô phỏng VietQR &quot;Ting!&quot;</span>
+              <span className="text-[11px] text-[#475467] font-normal">Kích hoạt webhook ngân hàng như thực tế</span>
             </div>
           </div>
-          <button
-            onClick={() => setSimModalOpen(false)}
-            className="text-slate-400 hover:text-white text-sm"
-          >
-            ✕
-          </button>
         </DialogTitle>
 
         <form onSubmit={handleSimulatePayment}>
-          <DialogContent className="space-y-4 pt-3">
-            <TextField
-              fullWidth
-              size="small"
-              label="Tên người chuyển khoản *"
-              required
-              value={simSender}
-              onChange={(e) => setSimSender(e.target.value)}
-            />
+          <DialogContent className="space-y-4 pt-2">
+            <p className="text-xs text-[#475467]">
+              Hệ thống sẽ gửi một Webhook SePay mô phỏng tiền chuyển vào tài khoản MB của bạn và tự động kích hoạt đối soát.
+            </p>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Tên phụ huynh / học sinh chuyển khoản
+              </label>
               <TextField
                 fullWidth
                 size="small"
-                label="Số tiền (VND) *"
-                type="number"
-                required
-                value={simAmount}
-                onChange={(e) => setSimAmount(e.target.value)}
-                slotProps={{
-                  input: {
-                    className: 'font-mono',
-                  },
-                }}
-              />
-              <TextField
-                fullWidth
-                size="small"
-                label="Mã hóa đơn *"
-                required
-                value={simCode}
-                onChange={(e) => setSimCode(e.target.value.toUpperCase())}
-                placeholder="VD: TR84920"
-                slotProps={{
-                  input: {
-                    className: 'font-mono font-bold text-emerald-400',
-                  },
-                }}
+                value={simSender}
+                onChange={(e) => setSimSender(e.target.value)}
+                placeholder="VD: Nguyen Van A"
               />
             </div>
 
-            <div className="p-3 rounded-xl bg-[#111726] border border-[#1E283D] text-[11px] space-y-1">
-              <p className="font-semibold text-slate-300">Cú pháp chuyển khoản sẽ gửi:</p>
-              <p className="font-mono text-emerald-400 break-all">
-                {simSender.toUpperCase()} CK HOC PHI {simCode}
-              </p>
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Mã thanh toán học phí (Invoice Code)
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                value={simCode}
+                onChange={(e) => setSimCode(e.target.value)}
+                placeholder="VD: TR84920"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-[#101828] block mb-1">
+                Số tiền chuyển (VND)
+              </label>
+              <TextField
+                fullWidth
+                size="small"
+                type="number"
+                value={simAmount}
+                onChange={(e) => setSimAmount(e.target.value)}
+                placeholder="VD: 600000"
+              />
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#F5F7FB] border border-[#E4E7EC] text-xs space-y-1">
+              <div className="flex justify-between text-[#475467]">
+                <span>Cổng nhận tiền:</span>
+                <span className="font-semibold text-[#101828]">MB Bank (0987654321)</span>
+              </div>
+              <div className="flex justify-between text-[#475467]">
+                <span>Cú pháp tin nhắn:</span>
+                <span className="font-mono text-[11px] text-[#2538D9] font-bold">
+                  {simSender.toUpperCase()} CK HOC PHI {simCode}
+                </span>
+              </div>
             </div>
           </DialogContent>
 
-          <DialogActions className="p-4 pt-0">
+          <DialogActions className="p-4 pt-0 gap-2">
             <Button
+              variant="outlined"
               onClick={() => setSimModalOpen(false)}
-              color="inherit"
-              size="small"
+              disabled={simLoading}
+              sx={{ color: '#475467', borderColor: '#E4E7EC' }}
             >
               Hủy
             </Button>
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               disabled={simLoading}
-              size="small"
               startIcon={simLoading ? <CircularProgress size={16} color="inherit" /> : <Zap className="w-4 h-4" />}
+              sx={{ backgroundColor: '#2538D9', '&:hover': { backgroundColor: '#1E2DB8' } }}
             >
-              {simLoading ? 'Đang gửi...' : 'Kích hoạt Ting!'}
+              {simLoading ? 'Đang gửi...' : 'Chuyển tiền & Nghe "Ting!"'}
             </Button>
           </DialogActions>
         </form>

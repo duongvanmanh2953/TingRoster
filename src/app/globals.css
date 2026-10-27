@@ -4,122 +4,119 @@
 
 @layer base {
   :root {
-    --background: 222 47% 6%; /* #080C14 crisp deep slate */
-    --foreground: 210 40% 98%;
+    --background: 220 33% 98%; /* #F5F7FB clean SaaS canvas */
+    --foreground: 222 47% 11%; /* #101828 main text */
 
-    --card: 222 39% 10%; /* #0F1626 sleek card */
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%; /* #FFFFFF crisp white card */
+    --card-foreground: 222 47% 11%;
 
-    --popover: 222 39% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 160 84% 39%; /* #10B981 Ting Emerald */
-    --primary-foreground: 210 40% 98%;
+    --primary: 234 71% 50%; /* #2538D9 Ting Royal Blue */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 224 25% 15%; /* #1C2333 */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 247 74% 63%; /* #6D5CE8 Accent Violet */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 223 23% 16%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 215 16% 47%; /* #475467 secondary text */
+    --muted-foreground: 217 19% 27%;
 
-    --accent: 239 84% 67%; /* #6366F1 Electric Indigo */
-    --accent-foreground: 210 40% 98%;
+    --accent: 247 74% 63%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 346 84% 61%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 78% 41%; /* #B42318 danger */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 223 24% 18%; /* #1E2738 */
-    --input: 223 24% 18%;
-    --ring: 160 84% 39%;
+    --border: 220 13% 91%; /* #E4E7EC */
+    --input: 220 13% 91%;
+    --ring: 234 71% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
   }
 }
 
 body {
-  color: #f1f5f9;
-  background-color: #080c14;
-  background-image: 
-    linear-gradient(to bottom, rgba(16, 185, 129, 0.03) 0%, transparent 280px),
-    radial-gradient(ellipse at top, rgba(30, 41, 59, 0.4) 0%, #080c14 70%);
-  background-attachment: fixed;
+  color: #101828;
+  background-color: #F5F7FB;
   font-feature-settings: "rlig" 1, "calt" 1, "tnum" 1;
 }
 
-/* Custom crisp dark scrollbars */
+/* Custom modern scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #080c14;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e2738;
+  background: #CBD5E1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #94A3B8;
 }
 
-/* Financial Status Badge Helpers */
+/* Financial Status Badge Helpers — Strictly adhering to AGENTS.md */
 .badge-unpaid {
-  @apply bg-rose-500/10 text-rose-400 border border-rose-500/25;
+  @apply bg-rose-50 text-rose-700 border border-rose-200;
 }
 .badge-partial {
-  @apply bg-amber-500/10 text-amber-400 border border-amber-500/25;
+  @apply bg-amber-50 text-amber-700 border border-amber-200;
 }
 .badge-paid {
-  @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/25;
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
 }
 .badge-overpaid {
-  @apply bg-blue-500/10 text-blue-400 border border-blue-500/25;
+  @apply bg-blue-50 text-blue-700 border border-blue-200;
 }
 
-/* Crisp surface & card borders */
+/* Crisp surface & card tokens */
 .ting-card {
-  background-color: #0f1626;
-  border: 1px solid #1e2738;
-  border-radius: 0.875rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E7EC;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.05);
 }
 
 .ting-card:hover {
-  border-color: #2e3c54;
+  border-color: #D0D5DD;
 }
 
 .ting-card-interactive {
-  background-color: #0f1626;
-  border: 1px solid #1e2738;
-  border-radius: 0.875rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E7EC;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.05);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ting-card-interactive:hover {
-  border-color: #3b4d6c;
+  border-color: #CBD5E1;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 16px -2px rgba(16, 24, 40, 0.08);
 }
 
 /* Ting soundwave ripple pulse */
 @keyframes ting-pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 0 0 rgba(37, 56, 217, 0.5);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 8px rgba(37, 56, 217, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 0 rgba(37, 56, 217, 0);
   }
 }
 
 .ting-badge-pulse {
   animation: ting-pulse 2.2s infinite;
 }
-

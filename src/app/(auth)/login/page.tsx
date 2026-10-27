@@ -13,20 +13,17 @@ import {
   Lock,
   Mail,
   Eye,
-  EyeOff
+  EyeOff,
+  UserCheck,
+  Clock,
+  TrendingUp,
+  AlertCircle
 } from 'lucide-react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Alert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
-import Chip from '@mui/material/Chip';
-import { BankLogo } from '@/components/common/BankLogo';
+import { Logo } from '@/components/common/Logo';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('demo@tingroster.vn');
+  const [emailOrPhone, setEmailOrPhone] = useState('demo@tingroster.vn');
   const [password, setPassword] = useState('123456');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,13 +38,13 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: emailOrPhone, password }),
       });
       const data = await res.json();
       if (data.success) {
         router.push('/dashboard');
       } else {
-        setError(data.error || 'Email hoặc mật khẩu không chính xác');
+        setError(data.error || 'Email/Số điện thoại hoặc mật khẩu không chính xác');
       }
     } catch {
       setError('Lỗi kết nối máy chủ');
@@ -56,242 +53,235 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickDemoLogin = (demoEmail: string) => {
-    setEmail(demoEmail);
+  const handleQuickDemo = (demoAccount: string) => {
+    setEmailOrPhone(demoAccount);
     setPassword('123456');
   };
 
   return (
-    <div className="min-h-screen bg-[#080C14] text-slate-100 flex items-center justify-center p-4 lg:p-8 relative selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-[#F5F7FB] text-[#101828] flex items-center justify-center p-4 lg:p-8 font-sans selection:bg-[#2538D9] selection:text-white">
       
-      {/* Subtle background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
-
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center relative z-10">
+      {/* Container card matching Panel 2 of Reference Image */}
+      <div className="w-full max-w-4xl bg-white rounded-3xl border border-[#E4E7EC] shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
         
-        {/* Left Side: Brand presentation */}
-        <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-4">
-          <div className="space-y-4">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black text-2xl shadow-lg shadow-emerald-500/10">
-                ⚡
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-black tracking-tight text-white">
-                    TingRoster
-                  </h1>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
-                    VietQR 2.0
-                  </span>
-                </div>
-                <p className="text-xs font-semibold text-emerald-400 mt-0.5">
-                  Điểm danh một chạm • Thu phí tự động • Đối soát khỏi lo
-                </p>
-              </div>
-            </div>
+        {/* Left Brand Panel: Dark Navy matching Panel 2 */}
+        <div className="lg:col-span-5 bg-[#0B0F19] text-white p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden">
+          
+          {/* Subtle glowing ambient circles */}
+          <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-[#2538D9]/30 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full bg-[#6D5CE8]/20 blur-3xl pointer-events-none" />
 
-            <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
-              Nền tảng quản lý chuyên cần và tự động khớp lệnh học phí qua VietQR hàng đầu cho giáo viên dạy thêm, trung tâm đào tạo, CLB thể thao (Pickleball, Cầu lông) và căn hộ cho thuê.
-            </p>
+          {/* Logo */}
+          <div className="relative z-10">
+            <Logo href="/" theme="dark" size="md" showTagline={false} />
           </div>
 
-          {/* Interactive Live VietQR Simulation Mockup with Official Bank Logo */}
-          <div className="ting-card p-4.5 space-y-3 max-w-lg border-emerald-500/25 bg-[#0D1424]">
-            <div className="flex items-center justify-between text-xs pb-2 border-b border-[#1E283D]">
-              <div className="flex items-center gap-2 text-slate-300 font-semibold">
-                <BankLogo bankId="MB" size="xs" />
-                <span>Biến động số dư MB Bank (Ting!)</span>
-              </div>
-              <span className="text-[10px] text-slate-400 font-mono">Vừa xong</span>
-            </div>
-
-            <div className="flex items-center justify-between gap-4">
-              <div className="space-y-1">
-                <span className="text-xs text-slate-400">Số tiền thực nhận</span>
-                <div className="text-xl font-mono font-bold text-emerald-400">
-                  +1.200.000 ₫
-                </div>
-              </div>
-              <div className="text-right space-y-0.5">
-                <Chip
-                  label="Đã khớp tự động"
-                  color="success"
-                  size="small"
-                  className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-bold text-[11px]"
-                />
-                <p className="text-[11px] font-mono text-slate-300 font-medium">Mã: TR84920</p>
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-[#111828] border border-[#1E283D] text-[11px] text-slate-300">
-              <strong className="text-slate-400 font-normal">Nội dung CK:</strong> NGUYEN HOANG NAM chuyen hoc phi TR84920
-            </div>
-
-            {/* Supported Banks Row */}
-            <div className="pt-2 border-t border-[#1E283D] flex items-center justify-between">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hỗ trợ đối soát trực tiếp:</span>
-              <div className="flex items-center gap-1.5">
-                {['MB', 'VCB', 'TCB', 'ACB', 'BIDV', 'ICB'].map((code) => (
-                  <BankLogo key={code} bankId={code} size="xs" />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* 3 Pillars */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
-            <div className="p-3 rounded-xl bg-[#0F1626] border border-[#1E283D]">
-              <CalendarCheck className="w-4 h-4 text-emerald-400 mb-1.5" />
-              <h4 className="text-xs font-bold text-white">Điểm danh 1 chạm</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Tính buổi học & chuyên cần tức thì</p>
-            </div>
-            <div className="p-3 rounded-xl bg-[#0F1626] border border-[#1E283D]">
-              <QrCode className="w-4 h-4 text-indigo-400 mb-1.5" />
-              <h4 className="text-xs font-bold text-white">Mã VietQR động</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Phụ huynh quét mã, không gõ nhầm tiền</p>
-            </div>
-            <div className="p-3 rounded-xl bg-[#0F1626] border border-[#1E283D]">
-              <ShieldCheck className="w-4 h-4 text-purple-400 mb-1.5" />
-              <h4 className="text-xs font-bold text-white">Đối soát 0 giây</h4>
-              <p className="text-[11px] text-slate-400 mt-0.5">Chống trùng lặp giao dịch 100%</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side: Login Card with Material UI */}
-        <div className="lg:col-span-5">
-          <div className="ting-card p-6 sm:p-8 space-y-6 shadow-2xl">
-            <div className="space-y-1">
-              <h2 className="text-xl font-bold text-white tracking-tight">Đăng nhập tài khoản</h2>
-              <p className="text-xs text-slate-400">Truy cập bảng điều hành quản lý TingRoster</p>
-            </div>
-
-            {/* Quick Demo Login Preset Buttons */}
-            <div className="p-3 rounded-xl bg-[#111726] border border-[#1E283D] space-y-2">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="font-semibold text-slate-300">Dùng thử nhanh tài khoản mẫu:</span>
-                <span className="text-emerald-400 font-bold">Mật khẩu: 123456</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('demo@tingroster.vn')}
-                  className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border text-center transition-colors ${
-                    email === 'demo@tingroster.vn'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                      : 'bg-[#161F33] text-slate-300 border-[#222E47] hover:bg-[#1E2B47]'
-                  }`}
-                >
-                  Giáo viên dạy thêm
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('admin@tingroster.vn')}
-                  className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border text-center transition-colors ${
-                    email === 'admin@tingroster.vn'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                      : 'bg-[#161F33] text-slate-300 border-[#222E47] hover:bg-[#1E2B47]'
-                  }`}
-                >
-                  Chủ CLB thể thao
-                </button>
-              </div>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <Alert severity="error" className="bg-rose-500/10 border border-rose-500/30 text-rose-300">
-                {error}
-              </Alert>
-            )}
-
-            {/* Login Form with Material UI TextFields & Button */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <TextField
-                fullWidth
-                size="small"
-                label="Email đăng nhập *"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@tingroster.vn"
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Mail className="w-4 h-4 text-slate-400" />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-
-              <TextField
-                fullWidth
-                size="small"
-                label="Mật khẩu *"
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock className="w-4 h-4 text-slate-400" />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          size="small"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="text-slate-400 hover:text-white"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-
-              <div className="flex justify-end">
-                <a href="#" className="text-xs text-slate-400 hover:text-emerald-400 transition-colors">
-                  Quên mật khẩu?
-                </a>
-              </div>
-
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-                disabled={loading}
-                endIcon={loading ? <CircularProgress size={16} color="inherit" /> : <ArrowRight className="w-4 h-4" />}
-                className="py-3 mt-2"
-              >
-                {loading ? 'Đang xác thực...' : 'Đăng nhập vào hệ thống'}
-              </Button>
-            </form>
-
-            <div className="pt-2 text-center border-t border-[#1E283D]">
-              <p className="text-xs text-slate-400">
-                Chưa có tài khoản?{' '}
-                <Link href="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4">
-                  Đăng ký miễn phí
-                </Link>
+          {/* Middle text & 4 bullets per Panel 2 */}
+          <div className="relative z-10 my-8 space-y-6">
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                Quản lý thông minh <br />
+                <span className="text-indigo-400">Kết nối bền vững</span>
+              </h2>
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+                Giải pháp toàn diện cho giáo viên dạy thêm, CLB thể thao và chủ nhà trọ.
               </p>
             </div>
+
+            {/* 4 Core Value Bullets matching Panel 2 */}
+            <div className="space-y-3.5 pt-2">
+              {[
+                { num: '1', title: 'Tiết kiệm thời gian', desc: 'Điểm danh 1 chạm, gạch nợ tức thì' },
+                { num: '2', title: 'Tăng tỷ lệ thu phí', desc: 'Nhắc phí tự động kèm VietQR Napas 24/7' },
+                { num: '3', title: 'Giảm sai sót, nhầm lẫn', desc: 'Đối soát chuẩn xác qua webhook ngân hàng' },
+                { num: '4', title: 'Bảo mật tuyệt đối', desc: 'Tiền chuyển khoản vào thẳng tài khoản bạn' },
+              ].map((item) => (
+                <div key={item.num} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-[#2538D9]/40 border border-[#2538D9] flex items-center justify-center text-xs font-bold text-white flex-shrink-0 mt-0.5">
+                    {item.num}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white leading-tight">{item.title}</h4>
+                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* Bottom badge */}
+          <div className="relative z-10 text-[11px] text-slate-400 border-t border-slate-800 pt-4 flex items-center justify-between">
+            <span>TingRoster v2.0</span>
+            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Sẵn sàng kết nối
+            </span>
+          </div>
+
+        </div>
+
+        {/* Right Form Panel: Crisp White matching Panel 2 */}
+        <div className="lg:col-span-7 p-8 lg:p-12 flex flex-col justify-between">
+          
+          <div className="max-w-md mx-auto w-full space-y-6">
+            
+            {/* Header */}
+            <div>
+              <h3 className="text-2xl font-black text-[#101828] tracking-tight">
+                Chào mừng bạn quay lại!
+              </h3>
+              <p className="text-xs text-[#475467] mt-1">
+                Đăng nhập để tiếp tục quản lý công việc.
+              </p>
+            </div>
+
+            {/* Error Message if any */}
+            {error && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              
+              {/* Email / Phone Field */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-[#101828] block">
+                  Email hoặc số điện thoại
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={emailOrPhone}
+                    onChange={(e) => setEmailOrPhone(e.target.value)}
+                    placeholder="Nhập email hoặc số điện thoại"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E4E7EC] text-xs text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-all bg-[#F8FAFC]"
+                  />
+                </div>
+              </div>
+
+              {/* Password Field with "Quên mật khẩu?" */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-[#101828]">
+                    Mật khẩu
+                  </label>
+                  <a
+                    href="#forgot"
+                    onClick={(e) => { e.preventDefault(); alert('Vui lòng liên hệ quản trị viên hoặc sử dụng tài khoản mẫu với mật khẩu mặc định 123456'); }}
+                    className="text-xs font-semibold text-[#2538D9] hover:underline"
+                  >
+                    Quên mật khẩu?
+                  </a>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu"
+                    className="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-[#E4E7EC] text-xs text-[#101828] placeholder-[#98A2B3] focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-all bg-[#F8FAFC]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-60 text-white font-bold text-xs sm:text-sm shadow-md shadow-[#2538D9]/25 transition-all flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <span>Đang đăng nhập...</span>
+                ) : (
+                  <span>Đăng nhập</span>
+                )}
+              </button>
+            </form>
+
+            {/* Social Divider */}
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#E4E7EC]" />
+              </div>
+              <div className="relative flex justify-center text-[11px] uppercase">
+                <span className="bg-white px-3 text-[#667085] font-semibold">
+                  Hoặc đăng nhập với
+                </span>
+              </div>
+            </div>
+
+            {/* Google & Apple Buttons per Panel 2 */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('demo@tingroster.vn')}
+                className="py-2.5 px-4 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#344054] flex items-center justify-center gap-2 transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('demo@tingroster.vn')}
+                className="py-2.5 px-4 rounded-xl border border-[#E4E7EC] hover:bg-slate-50 text-xs font-semibold text-[#344054] flex items-center justify-center gap-2 transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.84c.62-.75 1.04-1.8 1.01-2.84-.95.04-2.09.64-2.73 1.39-.57.65-1.07 1.7-1.03 2.72 1.05.08 2.13-.52 2.75-1.27z" />
+                </svg>
+                <span>Apple</span>
+              </button>
+            </div>
+
+            {/* Quick Demo Access Bar */}
+            <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100 space-y-1.5 text-[11px]">
+              <span className="font-bold text-[#2538D9] block">Đăng nhập nhanh dữ liệu mẫu:</span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemo('demo@tingroster.vn')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-indigo-200 font-semibold text-[#2538D9] hover:bg-indigo-50"
+                >
+                  Admin / Giáo viên (demo@tingroster.vn)
+                </button>
+              </div>
+            </div>
+
+            {/* Footer per Panel 2 */}
+            <div className="text-center text-xs text-[#475467]">
+              <span>Chưa có tài khoản? </span>
+              <Link href="/onboarding" className="font-bold text-[#2538D9] hover:underline">
+                Đăng ký ngay
+              </Link>
+            </div>
+
+          </div>
+
+          <div className="text-center text-[11px] text-[#98A2B3] pt-4">
+            Bằng việc đăng nhập, bạn đồng ý với Điều khoản & Chính sách bảo mật của TingRoster.
+          </div>
+
         </div>
 
       </div>
+
     </div>
   );
 }

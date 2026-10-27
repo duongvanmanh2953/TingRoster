@@ -9,15 +9,21 @@ import {
   Copy,
   Check,
   Search,
-  Filter,
   RefreshCw,
   AlertCircle,
   CheckCircle2,
   Clock,
   Ban,
-  QrCode
+  QrCode,
+  X,
+  Calendar,
+  Layers
 } from 'lucide-react';
 import Link from 'next/link';
+import { Avatar } from '@/components/common/Avatar';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 interface InvoiceItem {
   id: string;
@@ -116,30 +122,41 @@ export default function InvoicesPage() {
 
   const handleCreateBatch = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
+    if (!batchGroupId || !title.trim()) {
+      setFormError('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
     setIsSubmitting(true);
+    setFormError(null);
 
     try {
-      const res = await fetch('/api/invoices/bulk-create', {
+      const payload: Record<string, unknown> = {
+        groupId: batchGroupId,
+        title: title.trim(),
+        pricingType,
+        dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+      };
+
+      if (pricingType === 'FIXED') {
+        payload.amount = fixedAmount;
+      } else {
+        payload.feePerSession = feePerSession;
+        payload.startDate = new Date(startDate).toISOString();
+        payload.endDate = new Date(endDate).toISOString();
+      }
+
+      const res = await fetch('/api/invoices/batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          groupId: batchGroupId,
-          title,
-          pricingType,
-          fixedAmount: Number(fixedAmount),
-          feePerSession: Number(feePerSession),
-          startDate,
-          endDate,
-          dueDate,
-        }),
+        body: JSON.stringify(payload),
       });
+
       const data = await res.json();
       if (data.success) {
         setShowCreateModal(false);
         loadInvoices();
       } else {
-        setFormError(data.error || 'Lỗi tạo đợt thu');
+        setFormError(data.error || 'Lỗi khi tạo đợt thu học phí');
       }
     } catch {
       setFormError('Lỗi kết nối máy chủ');
@@ -155,34 +172,88 @@ export default function InvoicesPage() {
     setTimeout(() => setCopiedToken(null), 2500);
   };
 
+  // Quick summary counts
+  const totalInvoices = invoices.length;
+  const unpaidCount = invoices.filter((i) => i.status === 'UNPAID').length;
+  const partialCount = invoices.filter((i) => i.status === 'PARTIAL').length;
+  const paidCount = invoices.filter((i) => i.status === 'PAID' || i.status === 'OVERPAID').length;
+  const totalDueAmount = invoices.reduce((acc, i) => acc + i.amountDue, 0);
+  const totalPaidAmount = invoices.reduce((acc, i) => acc + i.amountPaid, 0);
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
+      {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+              <CreditCard className="w-4 h-4" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828]">
               Học phí & Hóa đơn
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20 uppercase">
               VietQR Napas
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#475467] mt-1">
             Quản lý đợt thu, tạo mã thanh toán riêng biệt cho từng thành viên và theo dõi công nợ
           </p>
         </div>
 
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
-        >
-          <Plus className="w-4 h-4 stroke-[3]" />
-          <span>Tạo đợt thu mới</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold rounded-xl shadow-sm shadow-[#2538D9]/25 transition-all hover:scale-[1.01]"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tạo đợt thu mới</span>
+          </button>
+        </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* 2. Metric KPI Strip */}
+      <div className="ting-card p-4 sm:p-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-y md:divide-y-0 md:divide-x divide-[#E4E7EC]">
+          <div className="px-2 pt-2 md:pt-0">
+            <span className="text-2xl sm:text-3xl font-bold text-[#101828] tabular-nums block">
+              {formatVND(totalDueAmount)}
+            </span>
+            <span className="text-xs font-medium text-[#475467] mt-1 block">Tổng số tiền cần thu</span>
+          </div>
+
+          <div className="px-2 pt-2 md:pt-0 md:pl-6">
+            <span className="text-2xl sm:text-3xl font-bold text-emerald-700 tabular-nums block">
+              {formatVND(totalPaidAmount)}
+            </span>
+            <span className="text-xs font-medium text-[#475467] mt-1 block">Đã thanh toán thực tế</span>
+          </div>
+
+          <div className="px-2 pt-2 md:pt-0 md:pl-6">
+            <span className="text-2xl sm:text-3xl font-bold text-rose-600 tabular-nums block">
+              {formatVND(Math.max(0, totalDueAmount - totalPaidAmount))}
+            </span>
+            <span className="text-xs font-medium text-[#475467] mt-1 block">Công nợ còn lại</span>
+          </div>
+
+          <div className="px-2 pt-2 md:pt-0 md:pl-6">
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                {unpaidCount} chưa nộp
+              </span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                {paidCount} đã nộp
+              </span>
+            </div>
+            <span className="text-xs font-medium text-[#475467] mt-2 block">
+              Tổng {totalInvoices} phiếu thu
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Filter and Search Bar */}
       <div className="ting-card p-4 flex flex-col md:flex-row gap-3 items-center justify-between">
         <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -190,55 +261,85 @@ export default function InvoicesPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo mã TR, tên học viên..."
-            className="w-full pl-10 pr-4 py-2 text-xs bg-[#111726] border border-[#1E283D] rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+            placeholder="Tìm theo mã TR, tên học viên, SĐT..."
+            className="w-full pl-10 pr-4 py-2 text-xs bg-white border border-[#E4E7EC] rounded-xl text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors"
           />
         </form>
 
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <select
-            value={selectedGroupId}
-            onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="text-xs font-semibold border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-slate-200 focus:outline-none focus:border-emerald-500"
-          >
-            <option value="">Tất cả các lớp</option>
-            {groups.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.name}
-              </option>
-            ))}
-          </select>
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <Select
+              value={selectedGroupId}
+              onChange={(e) => setSelectedGroupId(e.target.value)}
+              displayEmpty
+              sx={{
+                borderRadius: '0.75rem',
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                bgcolor: '#ffffff',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#E4E7EC',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#2538D9',
+                },
+              }}
+            >
+              <MenuItem value="" sx={{ fontSize: '0.8125rem' }}>Tất cả các lớp & CLB</MenuItem>
+              {groups.map((g) => (
+                <MenuItem key={g.id} value={g.id} sx={{ fontSize: '0.8125rem' }}>
+                  {g.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="text-xs font-semibold border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-slate-200 focus:outline-none focus:border-emerald-500"
-          >
-            <option value="">Tất cả trạng thái</option>
-            <option value="UNPAID">Chưa đóng</option>
-            <option value="PARTIAL">Đóng thiếu</option>
-            <option value="PAID">Đã đóng đủ</option>
-            <option value="OVERPAID">Đóng thừa</option>
-          </select>
+          <FormControl size="small" sx={{ minWidth: 160 }}>
+            <Select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              displayEmpty
+              sx={{
+                borderRadius: '0.75rem',
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                bgcolor: '#ffffff',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#E4E7EC',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#2538D9',
+                },
+              }}
+            >
+              <MenuItem value="" sx={{ fontSize: '0.8125rem' }}>Tất cả trạng thái</MenuItem>
+              <MenuItem value="UNPAID" sx={{ fontSize: '0.8125rem' }}>Chưa đóng</MenuItem>
+              <MenuItem value="PARTIAL" sx={{ fontSize: '0.8125rem' }}>Đóng thiếu</MenuItem>
+              <MenuItem value="PAID" sx={{ fontSize: '0.8125rem' }}>Đã đóng đủ</MenuItem>
+              <MenuItem value="OVERPAID" sx={{ fontSize: '0.8125rem' }}>Đóng thừa</MenuItem>
+            </Select>
+          </FormControl>
 
           <button
             onClick={loadInvoices}
-            className="p-2 border border-[#1E283D] rounded-xl hover:bg-[#182136] text-slate-400 hover:text-white transition"
+            className="p-2 border border-[#E4E7EC] rounded-xl bg-white hover:bg-slate-50 text-[#475467] hover:text-[#101828] transition-colors shadow-xs"
             title="Tải lại danh sách"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
           </button>
         </div>
       </div>
 
-      {/* Invoices List Table */}
+      {/* 4. Invoices List Table */}
       <div className="ting-card overflow-hidden">
         {loading ? (
-          <div className="text-center py-16 text-slate-400 animate-pulse text-xs">Đang tải danh sách hóa đơn...</div>
+          <div className="text-center py-16 text-[#475467] animate-pulse text-xs font-medium">
+            Đang tải danh sách hóa đơn học phí...
+          </div>
         ) : invoices.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#111726] border-b border-[#1E283D] text-slate-400 uppercase font-bold tracking-wider">
+              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] uppercase font-bold tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Mã thu</th>
                   <th className="py-3 px-4">Học viên</th>
@@ -250,60 +351,67 @@ export default function InvoicesPage() {
                   <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1A2338]">
+              <tbody className="divide-y divide-[#E4E7EC]">
                 {invoices.map((inv) => {
                   return (
-                    <tr key={inv.id} className="hover:bg-[#131C2E] transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold text-emerald-400">
+                    <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-[#2538D9] tabular-nums">
                         {inv.paymentCode}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-white">
-                        {inv.member.name}
-                        {inv.member.phone && (
-                          <span className="block text-[10px] text-slate-400 font-normal">{inv.member.phone}</span>
-                        )}
+                      <td className="py-3.5 px-4 font-semibold text-[#101828]">
+                        <div className="flex items-center gap-2.5">
+                          <Avatar name={inv.member.name} size="xs" />
+                          <div>
+                            <Link href={`/members/${inv.member.id}`} className="hover:text-[#2538D9] transition-colors block">
+                              {inv.member.name}
+                            </Link>
+                            {inv.member.phone && (
+                              <span className="block text-[10px] text-[#475467] font-normal tabular-nums">{inv.member.phone}</span>
+                            )}
+                          </div>
+                        </div>
                       </td>
-                      <td className="py-3 px-4 text-slate-300">
+                      <td className="py-3.5 px-4 text-[#475467]">
                         {inv.group.name}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-white">
+                      <td className="py-3.5 px-4 text-right font-bold text-[#101828] tabular-nums">
                         {formatVND(inv.amountDue)}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-400">
+                      <td className="py-3.5 px-4 text-right font-bold text-emerald-700 tabular-nums">
                         {formatVND(inv.amountPaid)}
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center">
                         {inv.status === 'PAID' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <CheckCircle2 className="w-3 h-3" /> Đã đóng
                           </span>
                         ) : inv.status === 'PARTIAL' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                             <Clock className="w-3 h-3" /> Đóng thiếu
                           </span>
                         ) : inv.status === 'OVERPAID' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/25">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                             Đóng thừa
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/25">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                             <AlertCircle className="w-3 h-3" /> Chưa đóng
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right text-slate-400 text-[11px]">
+                      <td className="py-3.5 px-4 text-right text-[#475467] text-[11px]">
                         {formatDateVN(inv.dueDate)}
                       </td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => handleCopyLink(inv.group.slug, inv.publicToken)}
-                            className="p-1.5 border border-[#1E283D] rounded-lg hover:bg-[#182136] text-slate-400 hover:text-white transition"
+                            className="p-1.5 border border-[#E4E7EC] rounded-lg bg-white hover:bg-slate-100 text-[#475467] hover:text-[#101828] transition-colors"
                             title="Sao chép link VietQR gửi phụ huynh"
                           >
                             {copiedToken === inv.publicToken ? (
-                              <Check className="w-4 h-4 text-emerald-400" />
+                              <Check className="w-4 h-4 text-emerald-600" />
                             ) : (
                               <Copy className="w-4 h-4" />
                             )}
@@ -312,7 +420,7 @@ export default function InvoicesPage() {
                           <Link
                             href={`/p/${inv.group.slug}?token=${inv.publicToken}`}
                             target="_blank"
-                            className="p-1.5 border border-[#1E283D] rounded-lg hover:bg-[#182136] text-emerald-400 transition"
+                            className="p-1.5 border border-[#E4E7EC] rounded-lg bg-white hover:bg-slate-100 text-[#2538D9] transition-colors"
                             title="Xem trang thanh toán VietQR"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -326,61 +434,79 @@ export default function InvoicesPage() {
             </table>
           </div>
         ) : (
-          <div className="text-center py-16 text-slate-400 space-y-3">
-            <p className="text-xs">Chưa có hóa đơn nào phù hợp với bộ lọc</p>
+          <div className="text-center py-16 text-[#475467] text-xs space-y-2">
+            <p>Không có hóa đơn học phí nào phù hợp với bộ lọc hiện tại.</p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl transition"
+              className="text-[#2538D9] hover:underline font-bold text-xs"
             >
-              Tạo đợt thu mới
+              + Tạo đợt thu học phí mới
             </button>
           </div>
         )}
       </div>
 
-      {/* Batch Create Invoices Modal */}
+      {/* 5. Create Batch Invoices Modal (Crisp Light Surface) */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
-              <div>
-                <h3 className="text-base font-bold text-white">Tạo đợt thu học phí mới</h3>
-                <p className="text-[11px] text-slate-400">Tự động sinh mã VietQR riêng cho từng học viên trong lớp</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white border border-[#E4E7EC] rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
+                  <CreditCard className="w-4 h-4" />
+                </div>
+                <h3 className="font-extrabold text-base text-[#101828]">Tạo đợt thu học phí mới</h3>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="p-1 text-slate-400 hover:text-[#101828] rounded-lg hover:bg-slate-100 transition-colors"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
-                {formError}
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                <span>{formError}</span>
               </div>
             )}
 
             <form onSubmit={handleCreateBatch} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Chọn Lớp / Nhóm *
+                <label className="block text-xs font-semibold text-[#101828] mb-1.5">
+                  Chọn Lớp học / CLB *
                 </label>
-                <select
-                  value={batchGroupId}
-                  onChange={(e) => setBatchGroupId(e.target.value)}
-                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
-                >
-                  {groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {g.name}
-                    </option>
-                  ))}
-                </select>
+                <FormControl size="small" fullWidth>
+                  <Select
+                    value={batchGroupId}
+                    onChange={(e) => setBatchGroupId(e.target.value)}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '0.75rem',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      bgcolor: '#ffffff',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#E4E7EC',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#2538D9',
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled sx={{ fontSize: '0.8125rem' }}>-- Chọn lớp học / nhóm --</MenuItem>
+                    {groups.map((g) => (
+                      <MenuItem key={g.id} value={g.id} sx={{ fontSize: '0.8125rem' }}>
+                        {g.name} ({formatVND(g.defaultFee)})
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-[#101828] mb-1.5">
                   Tiêu đề đợt thu *
                 </label>
                 <input
@@ -388,47 +514,47 @@ export default function InvoicesPage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ví dụ: Học phí Tháng 11/2026..."
-                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
+                  placeholder="Ví dụ: Học phí Tháng 5/2026..."
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-[#101828] mb-1.5">
                   Phương thức tính phí
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setPricingType('FIXED')}
-                    className={`p-3 rounded-xl border text-left font-medium transition ${
+                    className={`p-3 rounded-xl border text-left font-medium transition-all ${
                       pricingType === 'FIXED'
-                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                        : 'border-[#1E283D] bg-[#111726] text-slate-400 hover:text-white'
+                        ? 'bg-[#2538D9]/10 border-[#2538D9] text-[#2538D9] font-bold shadow-xs'
+                        : 'border-[#E4E7EC] bg-white text-[#475467] hover:bg-slate-50'
                     }`}
                   >
-                    <span className="block font-bold text-xs text-white">Cố định tháng</span>
-                    <span className="text-[11px] text-slate-400">Mức phí đồng đều cho cả lớp</span>
+                    <span className="block font-bold text-xs text-[#101828]">Cố định tháng</span>
+                    <span className="text-[11px] text-[#475467] mt-0.5 block">Mức phí đồng đều cho cả lớp</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setPricingType('PER_SESSION')}
-                    className={`p-3 rounded-xl border text-left font-medium transition ${
+                    className={`p-3 rounded-xl border text-left font-medium transition-all ${
                       pricingType === 'PER_SESSION'
-                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                        : 'border-[#1E283D] bg-[#111726] text-slate-400 hover:text-white'
+                        ? 'bg-[#2538D9]/10 border-[#2538D9] text-[#2538D9] font-bold shadow-xs'
+                        : 'border-[#E4E7EC] bg-white text-[#475467] hover:bg-slate-50'
                     }`}
                   >
-                    <span className="block font-bold text-xs text-white">Theo số buổi điểm danh</span>
-                    <span className="text-[11px] text-slate-400">Nhân với số buổi có mặt thực tế</span>
+                    <span className="block font-bold text-xs text-[#101828]">Theo số buổi điểm danh</span>
+                    <span className="text-[11px] text-[#475467] mt-0.5 block">Tự nhân với số buổi có mặt</span>
                   </button>
                 </div>
               </div>
 
               {pricingType === 'FIXED' ? (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-[#101828] mb-1.5">
                     Số tiền cố định mỗi học viên (VND)
                   </label>
                   <input
@@ -437,13 +563,13 @@ export default function InvoicesPage() {
                     step="10000"
                     value={fixedAmount}
                     onChange={(e) => setFixedAmount(Number(e.target.value))}
-                    className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] tabular-nums font-bold focus:outline-none focus:border-[#2538D9]"
                   />
                 </div>
               ) : (
-                <div className="space-y-3 p-3 bg-[#111726] rounded-xl border border-[#1E283D]">
+                <div className="space-y-3 p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E4E7EC]">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-[#101828] mb-1">
                       Đơn giá mỗi buổi học (VND)
                     </label>
                     <input
@@ -452,27 +578,27 @@ export default function InvoicesPage() {
                       step="5000"
                       value={feePerSession}
                       onChange={(e) => setFeePerSession(Number(e.target.value))}
-                      className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 font-mono"
+                      className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2 bg-white text-[#101828] tabular-nums font-bold focus:outline-none focus:border-[#2538D9]"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Từ ngày</label>
+                      <label className="block text-[11px] font-bold text-[#475467] mb-1">Từ ngày</label>
                       <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full border border-[#1E283D] rounded-xl px-3 py-1.5 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 text-xs"
+                        className="w-full border border-[#E4E7EC] rounded-xl px-3 py-1.5 bg-white text-[#101828] font-medium text-xs focus:outline-none focus:border-[#2538D9]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Đến ngày</label>
+                      <label className="block text-[11px] font-bold text-[#475467] mb-1">Đến ngày</label>
                       <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full border border-[#1E283D] rounded-xl px-3 py-1.5 bg-[#0F1626] text-white focus:outline-none focus:border-emerald-500 text-xs"
+                        className="w-full border border-[#E4E7EC] rounded-xl px-3 py-1.5 bg-white text-[#101828] font-medium text-xs focus:outline-none focus:border-[#2538D9]"
                       />
                     </div>
                   </div>
@@ -480,29 +606,29 @@ export default function InvoicesPage() {
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
                   Hạn nộp học phí
                 </label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E283D]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition"
+                  className="px-4 py-2.5 text-xs font-semibold text-[#475467] hover:text-[#101828] rounded-xl hover:bg-slate-100 transition-colors"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? 'Đang tạo...' : 'Xác nhận tạo đợt thu'}
                 </button>

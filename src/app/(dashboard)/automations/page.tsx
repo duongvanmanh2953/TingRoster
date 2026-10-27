@@ -15,7 +15,8 @@ import {
   ToggleRight,
   RefreshCw,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  X
 } from 'lucide-react';
 
 interface AutomationRuleItem {
@@ -57,7 +58,7 @@ export default function AutomationsPage() {
   }, []);
 
   const handleToggle = async (id: string, currentState: boolean) => {
-    // Optimistic
+    // Optimistic update
     setRules((prev) =>
       prev.map((r) => (r.id === id ? { ...r, isEnabled: !currentState } : r))
     );
@@ -98,20 +99,27 @@ export default function AutomationsPage() {
     e.preventDefault();
     if (!name.trim()) return;
     setIsSubmitting(true);
+
     try {
       const res = await fetch('/api/automations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, trigger, action }),
+        body: JSON.stringify({
+          name: name.trim(),
+          trigger,
+          action,
+        }),
       });
       const data = await res.json();
       if (data.success) {
         setShowCreateModal(false);
         setName('');
         loadRules();
+      } else {
+        alert(data.error || 'Lỗi khi tạo quy tắc');
       }
     } catch {
-      alert('Lỗi tạo quy tắc');
+      alert('Không thể kết nối đến máy chủ');
     } finally {
       setIsSubmitting(false);
     }
@@ -119,14 +127,14 @@ export default function AutomationsPage() {
 
   const renderTriggerLabel = (t: string) => {
     switch (t) {
+      case 'ON_PAYMENT_SUCCESS':
+        return 'Nhận được học phí qua VietQR';
+      case 'ON_ABSENCE_CONSECUTIVE':
+        return 'Học viên vắng 2 buổi liên tiếp';
       case 'ON_UNMATCHED_TRANSACTION':
-        return 'Giao dịch chuyển khoản chưa khớp mã';
-      case 'ON_PAYMENT_DUE':
-        return 'Phiếu thu sắp đến hạn nộp';
-      case 'ON_DAILY_SUMMARY':
-        return 'Định kỳ tổng kết cuối ngày (21:00)';
-      case 'ON_INVOICE_PAID':
-        return 'Phụ huynh đóng học phí thành công';
+        return 'Giao dịch ngân hàng không khớp mã TR';
+      case 'ON_INVOICE_OVERDUE':
+        return 'Học phí quá hạn nộp';
       default:
         return t;
     }
@@ -135,11 +143,11 @@ export default function AutomationsPage() {
   const renderActionLabel = (a: string) => {
     switch (a) {
       case 'TELEGRAM_ALERT':
-        return 'Bắn thông báo tức thì qua Telegram';
-      case 'AUTO_REMINDER':
-        return 'Soạn sẵn tin nhắn nhắc Zalo AI';
-      case 'EMAIL_SUMMARY':
-        return 'Gửi email tổng kết tài chính';
+        return 'Báo động tức thì vào Telegram Quản trị';
+      case 'ZALO_PARENT_REMINDER':
+        return 'Gửi tin nhắn Zalo ZNS nhắc phụ huynh';
+      case 'AUTO_CHARGE_DEBT':
+        return 'Tự động tính phí buổi vắng vào kỳ sau';
       default:
         return a;
     }
@@ -147,68 +155,74 @@ export default function AutomationsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
+      {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+              <Zap className="w-4 h-4" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828]">
               Tự Động Hóa & Thông Báo
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20 uppercase">
               Bot Zalo / Telegram
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#475467] mt-1">
             Thiết lập các kịch bản tự động gửi thông báo, cảnh báo dòng tiền và nhắc nợ học phí
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold rounded-xl shadow-sm shadow-[#2538D9]/25 transition-all"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
+          <Plus className="w-4 h-4" />
           <span>Thêm kịch bản mới</span>
         </button>
       </div>
 
-      {/* Rules Grid */}
+      {/* 2. Rules List */}
       {loading ? (
-        <div className="text-center py-20 text-slate-400 text-xs animate-pulse">Đang tải kịch bản tự động hóa...</div>
+        <div className="text-center py-20 text-[#475467] text-xs animate-pulse font-medium">
+          Đang tải kịch bản tự động hóa...
+        </div>
       ) : rules.length > 0 ? (
         <div className="space-y-3">
           {rules.map((rule) => (
             <div
               key={rule.id}
               className={`p-5 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                rule.isEnabled ? 'ting-card' : 'bg-[#0B0F19]/60 border-[#1A2338] opacity-60'
+                rule.isEnabled ? 'ting-card' : 'bg-white/60 border-[#E4E7EC] opacity-70'
               }`}
             >
               <div className="space-y-1.5 max-w-xl">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-white text-sm">{rule.name}</span>
+                  <span className="font-bold text-[#101828] text-sm">{rule.name}</span>
                   {rule.isEnabled ? (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Đang bật
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#162033] text-slate-400 border border-[#1E283D]">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-[#475467] border border-slate-200">
                       Đã tắt
                     </span>
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#475467]">
                   <span>
-                    ⚡ Khi: <strong className="text-white">{renderTriggerLabel(rule.trigger)}</strong>
+                    ⚡ Khi: <strong className="text-[#101828]">{renderTriggerLabel(rule.trigger)}</strong>
                   </span>
                   <span>
-                    → Hành động: <strong className="text-emerald-400">{renderActionLabel(rule.action)}</strong>
+                    → Hành động: <strong className="text-[#2538D9]">{renderActionLabel(rule.action)}</strong>
                   </span>
                 </div>
 
                 {rule.lastRunAt && (
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-[#475467]">
                     Lần chạy gần nhất: {formatDateTimeVN(rule.lastRunAt)} ({rule.lastRunStatus || 'SUCCESS'})
                   </p>
                 )}
@@ -219,23 +233,23 @@ export default function AutomationsPage() {
                   type="button"
                   disabled={testingId === rule.id}
                   onClick={() => handleTestRun(rule.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#111726] hover:bg-[#182136] text-slate-300 hover:text-white border border-[#1E283D] text-xs font-semibold rounded-xl transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#101828] border border-[#E4E7EC] text-xs font-semibold rounded-xl transition-colors shadow-xs"
                   title="Chạy thử nghiệm ngay lập tức"
                 >
-                  <Play className="w-3.5 h-3.5 text-emerald-400" />
+                  <Play className="w-3.5 h-3.5 text-[#2538D9]" />
                   <span>{testingId === rule.id ? 'Đang chạy...' : 'Chạy thử'}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleToggle(rule.id, rule.isEnabled)}
-                  className="p-1 transition text-emerald-400"
+                  className="p-1 transition"
                   title={rule.isEnabled ? 'Tắt quy tắc này' : 'Bật quy tắc này'}
                 >
                   {rule.isEnabled ? (
-                    <ToggleRight className="w-8 h-8 text-emerald-400" />
+                    <ToggleRight className="w-8 h-8 text-[#2538D9]" />
                   ) : (
-                    <ToggleLeft className="w-8 h-8 text-slate-500" />
+                    <ToggleLeft className="w-8 h-8 text-slate-400" />
                   )}
                 </button>
               </div>
@@ -243,74 +257,90 @@ export default function AutomationsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 ting-card text-xs text-slate-400">
-          Chưa có quy tắc tự động hóa nào.
+        <div className="text-center py-16 ting-card text-xs text-[#475467]">
+          Chưa có quy tắc tự động hóa nào. Bấm &quot;Thêm kịch bản mới&quot; để tạo.
         </div>
       )}
 
-      {/* Create Rule Modal */}
+      {/* 3. Create Automation Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
-              <h3 className="text-base font-bold text-white">Thêm quy tắc tự động hóa</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 text-sm">✕</button>
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E4E7EC] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-[#E4E7EC] pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+                  <Zap className="w-4 h-4" />
+                </div>
+                <h3 className="text-base font-extrabold text-[#101828]">Thêm kịch bản tự động hóa</h3>
+              </div>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="p-1 text-slate-400 hover:text-[#101828] rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
             <form onSubmit={handleCreateRule} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Tên quy tắc *</label>
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                  Tên kịch bản tự động *
+                </label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ví dụ: Báo Telegram khi học sinh đóng tiền..."
-                  className="w-full bg-[#111726] border border-[#1E283D] text-white rounded-xl px-3.5 py-2 focus:outline-none focus:border-emerald-500"
+                  placeholder="Ví dụ: Báo động giao dịch sai mã TR..."
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Điều kiện kích hoạt (Trigger)</label>
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                  Sự kiện kích hoạt (Trigger) *
+                </label>
                 <select
                   value={trigger}
                   onChange={(e) => setTrigger(e.target.value)}
-                  className="w-full text-xs font-medium border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9]"
                 >
-                  <option value="ON_INVOICE_PAID">Khi có học viên đóng đủ tiền</option>
-                  <option value="ON_UNMATCHED_TRANSACTION">Khi có giao dịch chuyển khoản chưa khớp</option>
-                  <option value="ON_PAYMENT_DUE">Khi hóa đơn đến hạn nộp</option>
-                  <option value="ON_DAILY_SUMMARY">Định kỳ tổng kết cuối ngày (21h00)</option>
+                  <option value="ON_UNMATCHED_TRANSACTION">Giao dịch ngân hàng không khớp mã TR</option>
+                  <option value="ON_PAYMENT_SUCCESS">Nhận được học phí qua VietQR thành công</option>
+                  <option value="ON_ABSENCE_CONSECUTIVE">Học viên vắng 2 buổi liên tiếp</option>
+                  <option value="ON_INVOICE_OVERDUE">Học phí quá hạn nộp</option>
                 </select>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Hành động thực hiện (Action)</label>
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                  Hành động thực thi (Action) *
+                </label>
                 <select
                   value={action}
                   onChange={(e) => setAction(e.target.value)}
-                  className="w-full text-xs font-medium border border-[#1E283D] rounded-xl px-3 py-2 bg-[#111726] text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9]"
                 >
-                  <option value="TELEGRAM_ALERT">Gửi tin nhắn Telegram</option>
-                  <option value="AUTO_REMINDER">Soạn sẵn tin nhắn Zalo AI</option>
-                  <option value="EMAIL_SUMMARY">Gửi email tổng hợp</option>
+                  <option value="TELEGRAM_ALERT">Báo động tức thì vào Telegram Quản trị</option>
+                  <option value="ZALO_PARENT_REMINDER">Gửi tin nhắn Zalo ZNS nhắc phụ huynh</option>
+                  <option value="AUTO_CHARGE_DEBT">Tự động tính phí buổi vắng vào kỳ sau</option>
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-[#1E283D]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-3 py-1.5 font-semibold text-slate-400 hover:text-white"
+                  className="px-4 py-2.5 text-xs font-semibold text-[#475467] hover:text-[#101828] rounded-xl hover:bg-slate-100 transition-colors"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] font-bold rounded-xl transition"
+                  className="px-5 py-2.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50"
                 >
-                  Tạo quy tắc
+                  {isSubmitting ? 'Đang tạo...' : 'Lưu kịch bản'}
                 </button>
               </div>
             </form>

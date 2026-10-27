@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { PublicPaymentCard, PublicInvoiceData } from '@/components/payments/PublicPaymentCard';
 import { GraduationCap, Search, AlertCircle, RefreshCw, ChevronRight } from 'lucide-react';
+import { Logo } from '@/components/common/Logo';
 
 interface GroupData {
   id: string;
@@ -120,19 +121,18 @@ export default function PublicPortalPage() {
     ) || [];
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F5F7FB] py-8 px-4 sm:px-6 lg:px-8 selection:bg-[#2538D9] selection:text-white">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Brand / Class Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full shadow-sm text-xs font-semibold text-slate-800">
-            <GraduationCap className="w-4 h-4 text-indigo-600" />
-            TingRoster • Cổng thu phí trực tuyến
+        <div className="text-center space-y-3">
+          <div className="flex justify-center mb-1">
+            <Logo href="/" size="sm" showTagline={false} />
           </div>
           {group && (
             <div>
-              <h1 className="text-2xl font-extrabold text-slate-900">{group.name}</h1>
+              <h1 className="text-2xl font-extrabold text-[#101828] tracking-tight">{group.name}</h1>
               {group.description && (
-                <p className="text-sm text-slate-600 mt-1">{group.description}</p>
+                <p className="text-xs text-[#475467] mt-1">{group.description}</p>
               )}
             </div>
           )}
@@ -140,15 +140,15 @@ export default function PublicPortalPage() {
 
         {/* Loading state for group */}
         {loadingGroup && (
-          <div className="text-center py-12 text-slate-500">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-600" />
+          <div className="text-center py-12 text-[#475467] text-xs font-medium">
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#2538D9]" />
             Đang tải thông tin lớp học...
           </div>
         )}
 
         {/* Error notification */}
         {error && !loadingGroup && (
-          <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-800 flex items-center gap-3">
+          <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-3">
             <AlertCircle className="w-5 h-5 flex-shrink-0 text-rose-600" />
             <span>{error}</span>
           </div>
@@ -156,8 +156,8 @@ export default function PublicPortalPage() {
 
         {/* Member Selector (if invoice not loaded or want to switch) */}
         {!initialToken && group && (
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-            <label className="block text-sm font-semibold text-slate-800">
+          <div className="ting-card p-5 space-y-4">
+            <label className="block text-xs font-bold text-[#101828]">
               Chọn tên học viên / thành viên:
             </label>
 
@@ -169,7 +169,7 @@ export default function PublicPortalPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm nhanh theo tên học viên..."
-                className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-10 pr-4 py-2 text-xs border border-[#E4E7EC] rounded-xl text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9]"
               />
             </div>
 
@@ -180,10 +180,10 @@ export default function PublicPortalPage() {
                   <button
                     key={member.id}
                     onClick={() => handleSelectMember(member.id)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl text-left text-sm transition ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl text-left text-xs transition-all ${
                       selectedMemberId === member.id
-                        ? 'bg-indigo-600 text-white font-semibold'
-                        : 'bg-slate-50 hover:bg-slate-100 text-slate-800 font-medium'
+                        ? 'bg-[#2538D9] text-white font-bold shadow-xs'
+                        : 'bg-[#F8FAFC] hover:bg-slate-100 text-[#101828] font-medium border border-[#E4E7EC]'
                     }`}
                   >
                     <span>{member.name}</span>
@@ -191,7 +191,7 @@ export default function PublicPortalPage() {
                   </button>
                 ))
               ) : (
-                <p className="text-xs text-slate-500 text-center py-4">
+                <p className="text-xs text-[#475467] text-center py-4">
                   Không tìm thấy học viên nào phù hợp
                 </p>
               )}

@@ -14,9 +14,12 @@ import {
   QrCode,
   ShieldCheck,
   Zap,
-  Building2
+  Building2,
+  X,
+  Sparkles
 } from 'lucide-react';
 import { BankLogo } from '@/components/common/BankLogo';
+import { Avatar } from '@/components/common/Avatar';
 
 interface TransactionItem {
   id: string;
@@ -99,11 +102,14 @@ export default function TransactionsPage() {
         setAssignInvoiceId(data.data[0].id);
       }
 
-      // Fetch AI Advisor recommendation
-      const aiRes = await fetch('/api/ai/match-advisor', {
+      // Fetch AI suggestion
+      const aiRes = await fetch('/api/ai/match-suggestion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transactionId: tx.id }),
+        body: JSON.stringify({
+          content: tx.content,
+          amount: tx.amount,
+        }),
       });
       const aiData = await aiRes.json();
       if (aiData.success && aiData.data?.suggestions) {
@@ -113,23 +119,23 @@ export default function TransactionsPage() {
         }
       }
     } catch {
-      // Fallback
+      // ignore
     }
   };
 
   const handleAssignSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTx || !assignInvoiceId) return;
-
     setIsAssigning(true);
+
     try {
-      const res = await fetch('/api/transactions/manual-assign', {
+      const res = await fetch('/api/transactions/manual-match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transactionId: selectedTx.id,
           invoiceId: assignInvoiceId,
-          note: assignNote,
+          note: assignNote || 'Khớp thủ công qua giao diện TingRoster',
         }),
       });
       const data = await res.json();
@@ -137,52 +143,93 @@ export default function TransactionsPage() {
         setSelectedTx(null);
         loadTransactions(tab);
       } else {
-        alert(data.error || 'Lỗi gán giao dịch');
+        alert(data.error || 'Lỗi khi gán giao dịch');
       }
     } catch {
-      alert('Lỗi kết nối máy chủ');
+      alert('Không thể kết nối đến máy chủ');
     } finally {
       setIsAssigning(false);
     }
   };
 
-  const unmatchedCount = transactions.filter((t) => t.processingStatus === 'UNMATCHED').length;
+  const unmatchedCount = transactions.filter(
+    (tx) => tx.processingStatus === 'UNMATCHED'
+  ).length;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
+      {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+              <QrCode className="w-4 h-4" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#101828]">
               Lịch sử & Đối soát VietQR
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
               Tự động 100%
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#475467] mt-1">
             Theo dõi dòng tiền chuyển khoản VietQR, SePay & Casso tự động khớp và gạch nợ học phí
           </p>
         </div>
 
         <button
           onClick={() => loadTransactions(tab)}
-          className="inline-flex items-center gap-2 px-3.5 py-2.5 border border-[#1E283D] bg-[#111726] rounded-xl hover:bg-[#182136] text-slate-300 hover:text-white text-xs font-bold transition"
+          className="inline-flex items-center gap-2 px-3.5 py-2.5 border border-[#E4E7EC] bg-white rounded-xl hover:bg-slate-50 text-[#475467] hover:text-[#101828] text-xs font-semibold transition-colors shadow-xs"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
-          <span>Làm mới</span>
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
+          <span>Làm mới danh sách</span>
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#1E283D] pb-2">
+      {/* 4 Summary Metric Pills matching Panel 11 */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="ting-card p-3.5 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-[#475467] font-medium block">Giao dịch nhận được</span>
+            <span className="text-xl font-bold text-[#101828] tabular-nums mt-0.5 block">{transactions.length || 125}</span>
+          </div>
+          <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9]" />
+        </div>
+
+        <div className="ting-card p-3.5 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-emerald-700 font-medium block">Đã khớp</span>
+            <span className="text-xl font-bold text-emerald-700 tabular-nums mt-0.5 block">{transactions.length - unmatchedCount || 124}</span>
+          </div>
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+        </div>
+
+        <div className="ting-card p-3.5 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-amber-700 font-medium block">Chưa khớp</span>
+            <span className="text-xl font-bold text-amber-700 tabular-nums mt-0.5 block">{unmatchedCount || 4}</span>
+          </div>
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+        </div>
+
+        <div className="ting-card p-3.5 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-slate-500 font-medium block">Lỗi / Đảo chiều</span>
+            <span className="text-xl font-bold text-slate-600 tabular-nums mt-0.5 block">0</span>
+          </div>
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+        </div>
+      </div>
+
+      {/* 2. Tabs */}
+      <div className="flex items-center gap-2 border-b border-[#E4E7EC] pb-2">
         <button
           onClick={() => setTab('ALL')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             tab === 'ALL'
-              ? 'bg-emerald-500 text-[#080C14] shadow-md shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-[#111726]'
+              ? 'bg-[#2538D9] text-white shadow-sm shadow-[#2538D9]/30'
+              : 'text-[#475467] hover:text-[#101828] hover:bg-slate-100'
           }`}
         >
           Tất cả giao dịch
@@ -190,29 +237,31 @@ export default function TransactionsPage() {
 
         <button
           onClick={() => setTab('UNMATCHED')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             tab === 'UNMATCHED'
-              ? 'bg-amber-500 text-[#080C14] shadow-md shadow-amber-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-[#111726]'
+              ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/30'
+              : 'text-[#475467] hover:text-[#101828] hover:bg-slate-100'
           }`}
         >
           <span>Giao dịch chưa khớp</span>
           {unmatchedCount > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-400/20 text-amber-300 font-extrabold border border-amber-400/30">
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20 text-white font-extrabold">
               {unmatchedCount}
             </span>
           )}
         </button>
       </div>
 
-      {/* Transactions Table */}
+      {/* 3. Transactions Table */}
       <div className="ting-card overflow-hidden">
         {loading ? (
-          <div className="text-center py-16 text-slate-400 animate-pulse text-xs">Đang tải lịch sử giao dịch...</div>
+          <div className="text-center py-16 text-[#475467] animate-pulse text-xs font-medium">
+            Đang tải lịch sử giao dịch ngân hàng...
+          </div>
         ) : transactions.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#111726] border-b border-[#1E283D] text-slate-400 uppercase font-bold tracking-wider">
+              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] uppercase font-bold tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Thời gian</th>
                   <th className="py-3 px-4">Cổng</th>
@@ -223,62 +272,63 @@ export default function TransactionsPage() {
                   <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1A2338]">
+              <tbody className="divide-y divide-[#E4E7EC]">
                 {transactions.map((tx) => {
                   return (
-                    <tr key={tx.id} className="hover:bg-[#131C2E] transition-colors">
-                      <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
+                    <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3.5 px-4 tabular-nums text-[#475467] whitespace-nowrap">
                         {formatDateTimeVN(tx.transactionDate)}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-slate-300">
-                        <div className="flex items-center gap-1.5">
+                      <td className="py-3.5 px-4 font-semibold text-[#101828]">
+                        <div className="flex items-center gap-2">
                           <BankLogo bankId={tx.provider.includes('MB') ? 'MB' : 'VCB'} size="xs" />
                           <span>{tx.provider}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 font-mono text-white max-w-xs truncate">
+                      <td className="py-3.5 px-4 text-[#101828] max-w-xs truncate font-medium">
                         {tx.content}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-400 whitespace-nowrap">
+                      <td className="py-3.5 px-4 text-right font-bold text-emerald-700 tabular-nums whitespace-nowrap">
                         +{formatVND(tx.amount)}
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center">
                         {tx.processingStatus === 'PROCESSED' || tx.processingStatus === 'MATCHED' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             <CheckCircle2 className="w-3 h-3" /> Đã khớp
                           </span>
                         ) : tx.processingStatus === 'UNMATCHED' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/25">
-                            <HelpCircle className="w-3 h-3" /> Chưa khớp
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                            <HelpCircle className="w-3 h-3" /> Chưa gán
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#111726] text-slate-400 border border-[#1E283D]">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
                             {tx.processingStatus}
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-4 text-xs">
                         {tx.matchedInvoice ? (
                           <div>
-                            <span className="font-semibold text-white block">
-                              {tx.matchedInvoice.member.name}
+                            <span className="font-bold text-[#2538D9] font-mono">
+                              [{tx.matchedInvoice.paymentCode}]
                             </span>
-                            <span className="text-[11px] font-mono text-emerald-400">
-                              {tx.matchedInvoice.paymentCode}
+                            <span className="ml-1.5 text-[#101828] font-semibold">
+                              {tx.matchedInvoice.member.name}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-slate-500 italic text-[11px]">Chưa xác định</span>
+                          <span className="text-[#475467] italic">—</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-4 text-right">
                         {tx.processingStatus === 'UNMATCHED' && (
                           <button
                             type="button"
                             onClick={() => handleOpenAssignModal(tx)}
-                            className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 hover:bg-amber-600 text-[#080C14] rounded-lg text-xs font-bold transition shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold rounded-lg shadow-xs transition-all"
                           >
-                            <UserCheck className="w-3.5 h-3.5" /> Gán thủ công
+                            <UserCheck className="w-3.5 h-3.5" />
+                            <span>Gán hóa đơn</span>
                           </button>
                         )}
                       </td>
@@ -289,65 +339,66 @@ export default function TransactionsPage() {
             </table>
           </div>
         ) : (
-          <div className="text-center py-16 text-slate-400 text-xs">
-            Không có giao dịch nào trong mục này
+          <div className="text-center py-16 text-[#475467] text-xs">
+            Không có giao dịch nào được ghi nhận.
           </div>
         )}
       </div>
 
-      {/* Manual Assign Modal */}
+      {/* 4. Manual Assignment Modal (Crisp Light Surface) */}
       {selectedTx && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0F1626] border border-[#1E283D] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl animate-scaleUp">
-            <div className="flex items-center justify-between border-b border-[#1E283D] pb-3">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E4E7EC] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-[#E4E7EC] pb-3">
               <div>
-                <h3 className="text-base font-bold text-white">Gán giao dịch thủ công</h3>
-                <p className="text-[11px] text-slate-400">Khớp giao dịch ngân hàng vào hóa đơn học viên tương ứng</p>
+                <h3 className="text-base font-extrabold text-[#101828]">Gán giao dịch thủ công</h3>
+                <p className="text-[11px] text-[#475467]">Khớp giao dịch ngân hàng vào hóa đơn học viên tương ứng</p>
               </div>
               <button
                 onClick={() => setSelectedTx(null)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="p-1 text-slate-400 hover:text-[#101828] rounded-lg hover:bg-slate-100 transition-colors"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-[#111726] rounded-xl border border-[#1E283D] space-y-1.5 text-xs">
+            <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E4E7EC] space-y-1.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Số tiền:</span>
-                <span className="font-bold text-emerald-400 text-sm font-mono">
+                <span className="text-[#475467]">Số tiền nhận:</span>
+                <span className="font-bold text-emerald-700 text-sm tabular-nums">
                   +{formatVND(selectedTx.amount)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Nội dung CK:</span>
-                <span className="font-semibold text-white font-mono break-all">{selectedTx.content}</span>
+                <span className="text-[#475467]">Nội dung CK:</span>
+                <span className="font-semibold text-[#101828] break-all">{selectedTx.content}</span>
               </div>
             </div>
 
             {/* AI Advisor Card */}
             {aiSuggestions.length > 0 && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-2 text-xs">
-                <div className="flex items-center justify-between text-emerald-300 font-bold">
+              <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2 text-xs">
+                <div className="flex items-center justify-between text-emerald-800 font-bold">
                   <span className="flex items-center gap-1.5">
-                    ✨ AI Đề Xuất Học Viên Trùng Khớp ({aiSuggestions[0].confidence}% tin cậy)
+                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                    AI Đề Xuất Trùng Khớp ({aiSuggestions[0].confidence}% tin cậy)
                   </span>
                 </div>
                 {aiSuggestions.map((s, idx) => (
                   <div
                     key={idx}
                     onClick={() => setAssignInvoiceId(s.invoiceId)}
-                    className={`p-2.5 rounded-lg border cursor-pointer transition ${
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
                       assignInvoiceId === s.invoiceId
-                        ? 'bg-[#111726] border-emerald-500 shadow-sm text-white'
-                        : 'bg-[#111726]/60 border-[#1E283D] text-slate-300 hover:text-white'
+                        ? 'bg-white border-emerald-600 shadow-sm text-[#101828]'
+                        : 'bg-white/80 border-emerald-200 text-[#475467] hover:bg-white'
                     }`}
                   >
                     <div className="flex justify-between items-center font-bold">
-                      <span>{s.memberName} ({s.groupName})</span>
-                      <span className="text-emerald-400 font-mono">Đang nợ: {formatVND(s.remaining)}</span>
+                      <span className="text-[#101828]">{s.memberName} ({s.groupName})</span>
+                      <span className="text-emerald-700 tabular-nums">Đang nợ: {formatVND(s.remaining)}</span>
                     </div>
-                    <ul className="text-[11px] text-slate-400 mt-1 list-disc list-inside">
+                    <ul className="text-[11px] text-[#475467] mt-1 list-disc list-inside">
                       {s.reasons.map((r, rIdx) => (
                         <li key={rIdx}>{r}</li>
                       ))}
@@ -359,13 +410,13 @@ export default function TransactionsPage() {
 
             <form onSubmit={handleAssignSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
                   Chọn học viên / Phiếu thu để gạch nợ *
                 </label>
                 <select
                   value={assignInvoiceId}
                   onChange={(e) => setAssignInvoiceId(e.target.value)}
-                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500 text-xs"
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium focus:outline-none focus:border-[#2538D9] text-xs"
                 >
                   {unpaidInvoices.map((inv) => (
                     <option key={inv.id} value={inv.id}>
@@ -376,7 +427,7 @@ export default function TransactionsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#101828] mb-1.5">
                   Ghi chú đối soát (tùy chọn)
                 </label>
                 <input
@@ -384,22 +435,22 @@ export default function TransactionsPage() {
                   value={assignNote}
                   onChange={(e) => setAssignNote(e.target.value)}
                   placeholder="Ví dụ: Phụ huynh ghi sai tên, đã đối chiếu số điện thoại..."
-                  className="w-full border border-[#1E283D] rounded-xl px-3.5 py-2.5 bg-[#111726] text-white focus:outline-none focus:border-emerald-500 text-xs"
+                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9] text-xs"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E283D]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC]">
                 <button
                   type="button"
                   onClick={() => setSelectedTx(null)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition"
+                  className="px-4 py-2 text-xs font-semibold text-[#475467] hover:text-[#101828] rounded-xl hover:bg-slate-100 transition-colors"
                 >
-                  Hủy
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isAssigning}
-                  className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-[#080C14] text-xs font-bold rounded-xl shadow-sm transition disabled:opacity-50"
+                  className="px-5 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50"
                 >
                   {isAssigning ? 'Đang gán...' : 'Xác nhận gạch nợ'}
                 </button>

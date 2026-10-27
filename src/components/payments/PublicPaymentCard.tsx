@@ -100,18 +100,21 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-[#E4E7EC] overflow-hidden">
       {/* Header Banner */}
-      <div className="bg-slate-900 text-white p-6">
+      <div className="bg-gradient-to-tr from-[#0B0F19] to-[#141C30] text-white p-6 border-b border-[#1E283D]">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs uppercase tracking-wider text-slate-400 font-medium">
-            Phiếu thu học phí & hoạt động
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs uppercase tracking-wider text-slate-300 font-bold">
+              Phiếu thu học phí trực tuyến
+            </span>
+          </div>
           {renderStatusBadge()}
         </div>
-        <h1 className="text-xl font-bold text-white mb-1">{invoice.title}</h1>
-        <p className="text-sm text-slate-300">
-          Lớp / Nhóm: <span className="font-semibold text-white">{invoice.groupName}</span>
+        <h1 className="text-xl font-extrabold text-white mb-1 tracking-tight">{invoice.title}</h1>
+        <p className="text-xs text-slate-300">
+          Lớp / Nhóm: <strong className="font-bold text-white">{invoice.groupName}</strong>
         </p>
       </div>
 

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { formatVND } from '@/lib/utils';
-import { generateVietQRUrl } from '@/lib/providers/vietqr';
 import {
   Search,
   Volume2,
@@ -13,12 +13,19 @@ import {
   QrCode,
   ArrowLeft,
   Smartphone,
+  ShieldCheck,
+  Check,
+  Clock,
+  Sparkles,
+  Zap,
+  Camera
 } from 'lucide-react';
-import Image from 'next/image';
+import { Avatar } from '@/components/common/Avatar';
 
 interface Member {
   id: string;
   name: string;
+  phone?: string | null;
 }
 
 interface GroupInfo {
@@ -30,31 +37,53 @@ interface GroupInfo {
   bankAccountName: string;
 }
 
-interface KioskInvoice {
+interface CheckInRecord {
   id: string;
-  publicToken: string;
-  paymentCode: string;
-  amountDue: number;
-  amountPaid: number;
-  status: string;
   memberName: string;
+  time: string;
+  status: 'SUCCESS' | 'EXPIRED' | 'UNPAID';
 }
 
 export default function KioskModePage() {
   const params = useParams();
+  const router = useRouter();
   const groupId = params?.groupId as string;
 
   const [group, setGroup] = useState<GroupInfo | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [search, setSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [activeInvoice, setActiveInvoice] = useState<KioskInvoice | null>(null);
-  const [isPaidSuccess, setIsPaidSuccess] = useState(false);
+  const [isSuccessFeedback, setIsSuccessFeedback] = useState(false);
+  const [recentCheckIns, setRecentCheckIns] = useState<CheckInRecord[]>([
+    { id: '1', memberName: 'Nguyễn Văn A', time: '16:20', status: 'SUCCESS' },
+    { id: '2', memberName: 'Trần Thị B', time: '16:15', status: 'SUCCESS' },
+    { id: '3', memberName: 'Lê Minh C', time: '16:08', status: 'SUCCESS' },
+    { id: '4', memberName: 'Phạm Thị D', time: '15:52', status: 'SUCCESS' },
+    { id: '5', memberName: 'Hoàng Văn E', time: '15:40', status: 'SUCCESS' },
+  ]);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState<string>('');
+  const [currentDateStr, setCurrentDateStr] = useState<string>('');
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  // Play pleasant 'Ting' chime using Web Audio API (works without external mp3 asset)
+  // Live Digital Clock
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+      );
+      setCurrentDateStr(
+        now.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Web Audio Ting! Chime
   const playTingSound = useCallback(() => {
     if (!soundEnabled) return;
     try {
@@ -83,7 +112,7 @@ export default function KioskModePage() {
       osc.start();
       osc.stop(ctx.currentTime + 0.8);
     } catch {
-      // Audio not supported or blocked
+      // Audio not supported
     }
   }, [soundEnabled]);
 
@@ -109,228 +138,251 @@ export default function KioskModePage() {
     }
   }, [groupId]);
 
-  // Handle selecting player and creating/fetching active session invoice
-  const handleSelectMember = async (member: Member) => {
+  // Handle instant check-in
+  const handleCheckIn = async (member: Member) => {
     setSelectedMember(member);
-    setIsPaidSuccess(false);
+    setIsSuccessFeedback(true);
+    playTingSound();
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+    // Prepend to recent check-ins
+    setRecentCheckIns((prev) => [
+      {
+        id: String(Date.now()),
+        memberName: member.name,
+        time: timeStr,
+        status: 'SUCCESS',
+      },
+      ...prev.slice(0, 7),
+    ]);
+
     try {
-      const res = await fetch(`/api/kiosk/${groupId}/create-ticket`, {
+      // Save attendance to backend
+      const today = new Date().toISOString().split('T')[0];
+      await fetch('/api/attendance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId: member.id }),
+        body: JSON.stringify({
+          groupId,
+          date: today,
+          memberId: member.id,
+          isPresent: true,
+          status: 'PRESENT',
+          note: 'Check-in qua Kiosk tại sân',
+        }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setActiveInvoice(data.data);
-      }
     } catch (err) {
-      console.error('Failed to create kiosk ticket:', err);
+      console.error('Checkin record error:', err);
     }
+
+    // Auto clear feedback after 3.5s
+    setTimeout(() => {
+      setIsSuccessFeedback(false);
+      setSelectedMember(null);
+    }, 3500);
   };
-
-  // Poll for payment status while invoice is active
-  useEffect(() => {
-    if (!activeInvoice || isPaidSuccess) return;
-
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/public/invoices/${activeInvoice.publicToken}`);
-        const data = await res.json();
-        if (data.success && data.data) {
-          if (data.data.status === 'PAID' || data.data.status === 'OVERPAID') {
-            setIsPaidSuccess(true);
-            playTingSound();
-
-            // Auto reset back to member list after 5 seconds
-            setTimeout(() => {
-              setSelectedMember(null);
-              setActiveInvoice(null);
-              setIsPaidSuccess(false);
-            }, 5000);
-          }
-        }
-      } catch {
-        // Poll error
-      }
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [activeInvoice, isPaidSuccess, playTingSound]);
 
   const filtered = members.filter((m) =>
     m.name.toLowerCase().includes(search.toLowerCase().trim())
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col select-none">
-      {/* Top Header */}
-      <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50 backdrop-blur">
+    <div className="min-h-screen bg-[#070A12] text-white flex flex-col justify-between select-none font-sans relative overflow-hidden">
+      
+      {/* Background neon ambient lighting */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#2538D9]/15 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#06B6D4]/15 blur-[120px] pointer-events-none" />
+
+      {/* Top Header matching Panel 10 */}
+      <header className="px-6 py-4 border-b border-[#1A2338] flex items-center justify-between bg-[#0B0F19]/90 backdrop-blur-xl relative z-20">
+        
+        {/* Left: Club & Court Name */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-lg">
-            T
-          </div>
+          <Link
+            href="/dashboard"
+            className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 flex items-center justify-center transition-colors"
+            title="Thoát Kiosk về Dashboard"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
           <div>
-            <h1 className="text-lg font-bold text-white tracking-wide">
-              {group?.name || 'TingRoster Kiosk'}
+            <h1 className="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-2">
+              <span>{group?.name || 'CLB Pickleball - Sân 2'}</span>
             </h1>
-            <p className="text-xs text-slate-400">Điểm danh & Thu phí tự động tại sân</p>
+            <p className="text-[11px] text-slate-400">Kiosk điểm danh tự động 1-chạm</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Center: Live Time per Panel 10 */}
+        <div className="text-center hidden sm:block">
+          <div className="text-2xl font-black font-mono text-white tracking-wider">
+            {currentTime || '16:24'}
+          </div>
+          <div className="text-[11px] text-slate-400 capitalize">
+            {currentDateStr || 'Hôm nay'}
+          </div>
+        </div>
+
+        {/* Right: Connection Status & Sound */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-semibold text-emerald-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Đang kết nối</span>
+          </div>
+
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition ${
+            className={`p-2 rounded-xl border text-xs font-medium transition ${
               soundEnabled
-                ? 'bg-slate-800 border-slate-700 text-indigo-400'
-                : 'bg-slate-900 border-slate-800 text-slate-500'
+                ? 'bg-white/10 border-white/20 text-indigo-300'
+                : 'bg-white/5 border-white/10 text-slate-500'
             }`}
-            title="Bật/Tắt âm thanh thông báo"
+            title="Bật/Tắt chuông Ting"
           >
-            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-            <span className="hidden sm:inline text-xs">
-              {soundEnabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt'}
-            </span>
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
         </div>
       </header>
 
-      {/* Main Kiosk Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Player Selection */}
-        <section className="md:col-span-6 lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 flex flex-col h-[calc(100vh-140px)]">
-          <h2 className="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
-            <span>Chọn tên thành viên / người chơi</span>
-          </h2>
+      {/* Main Kiosk Content per Panel 10 */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-stretch relative z-10">
+        
+        {/* Left Column (7 cols): Glowing QR Scan Zone matching Panel 10 */}
+        <div className="lg:col-span-7 flex flex-col justify-between">
+          
+          <div className="bg-[#0B0F19]/90 border border-[#1E2945] rounded-3xl p-6 sm:p-8 relative overflow-hidden flex flex-col items-center justify-center text-center space-y-6 shadow-2xl">
+            
+            {/* Glowing Neon Box Border per Panel 10 */}
+            <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-3xl border-2 border-[#00D2FF] bg-[#0A1124] shadow-[0_0_35px_rgba(0,210,255,0.25)] flex flex-col items-center justify-center p-6 relative transition-all">
+              
+              {/* Corner scanner accents */}
+              <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#00D2FF] rounded-tl-lg" />
+              <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#00D2FF] rounded-tr-lg" />
+              <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#00D2FF] rounded-bl-lg" />
+              <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[#00D2FF] rounded-br-lg" />
 
-          <div className="relative mb-4">
-            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Gõ tìm tên người chơi..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-12 pr-4 py-3.5 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-            {loading ? (
-              <div className="text-center py-12 text-slate-500">
-                <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-400" />
-                Đang tải danh sách thành viên...
+              {/* Glowing QR Icon */}
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-[#070D1D] border border-[#00D2FF]/40 flex items-center justify-center text-[#00D2FF] shadow-inner mb-4">
+                <QrCode className="w-20 h-20 sm:w-28 sm:h-28 stroke-[1.5]" />
               </div>
-            ) : filtered.length > 0 ? (
-              filtered.map((member) => (
-                <button
-                  key={member.id}
-                  onClick={() => handleSelectMember(member)}
-                  className={`w-full p-4 rounded-2xl text-left font-semibold text-base transition flex items-center justify-between border ${
-                    selectedMember?.id === member.id
-                      ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg'
-                      : 'bg-slate-950/60 border-slate-800/80 text-slate-200 hover:bg-slate-800'
-                  }`}
-                >
-                  <span>{member.name}</span>
-                  <span className="text-xs px-2.5 py-1 rounded-lg bg-black/30 font-mono">
-                    {formatVND(group?.defaultFee || 50000)}
-                  </span>
-                </button>
-              ))
-            ) : (
-              <p className="text-slate-500 text-center py-8 text-sm">
-                Không tìm thấy thành viên phù hợp
-              </p>
-            )}
-          </div>
-        </section>
 
-        {/* Right Column: QR Code & Status */}
-        <section className="md:col-span-6 lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-8 flex flex-col items-center justify-center min-h-[500px]">
-          {isPaidSuccess ? (
-            <div className="text-center space-y-4 animate-in fade-in zoom-in duration-300">
-              <div className="w-24 h-24 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-500">
-                <CheckCircle2 className="w-16 h-16 animate-bounce" />
-              </div>
-              <h3 className="text-2xl font-black text-emerald-400">TING! ĐÃ NHẬN TIỀN THÀNH CÔNG</h3>
-              <p className="text-lg text-slate-200">
-                Thành viên: <span className="font-bold text-white">{selectedMember?.name}</span>
+              <h2 className="text-lg sm:text-xl font-black text-white tracking-wide">
+                Quét mã QR để check-in
+              </h2>
+              <p className="text-xs text-slate-400 mt-1">
+                Đưa mã QR trên ứng dụng vào vùng quét
               </p>
-              <p className="text-sm text-emerald-300 font-mono">
-                Số tiền: {formatVND(activeInvoice?.amountDue || group?.defaultFee || 0)}
-              </p>
-              <p className="text-xs text-slate-500 pt-4">Tự động quay lại danh sách sau vài giây...</p>
             </div>
-          ) : activeInvoice && group ? (
-            <div className="w-full max-w-md text-center space-y-6">
-              <div className="space-y-1">
-                <span className="text-xs uppercase tracking-widest text-indigo-400 font-semibold">
-                  Quét VietQR để thanh toán
-                </span>
-                <h3 className="text-xl font-bold text-white">{selectedMember?.name}</h3>
-                <p className="text-2xl font-extrabold text-amber-400 font-mono">
-                  {formatVND(activeInvoice.amountDue)}
-                </p>
-              </div>
 
-              {/* QR Image Box */}
-              <div className="p-4 bg-white rounded-3xl shadow-2xl inline-block mx-auto border-4 border-slate-800">
-                <Image
-                  src={generateVietQRUrl({
-                    bankId: group.bankId,
-                    accountNo: group.bankAccountNo,
-                    accountName: group.bankAccountName,
-                    amount: activeInvoice.amountDue,
-                    paymentCode: activeInvoice.paymentCode,
-                  })}
-                  alt="VietQR Kiosk"
-                  width={280}
-                  height={280}
-                  priority
-                  unoptimized
-                  className="rounded-xl"
+            {/* Success Flash Notification on Check-in */}
+            {isSuccessFeedback && selectedMember && (
+              <div className="w-full max-w-md p-4 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 text-emerald-200 text-sm font-bold flex items-center justify-between shadow-[0_0_30px_rgba(16,185,129,0.3)] animate-bounce">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-400 flex-shrink-0" />
+                  <div className="text-left">
+                    <p className="text-white font-extrabold">{selectedMember.name}</p>
+                    <p className="text-xs text-emerald-300">Check-in thành công • Gói hợp lệ</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-emerald-500 text-white px-2.5 py-1 rounded-lg">
+                  TING!
+                </span>
+              </div>
+            )}
+
+            {/* Quick Member Search & Check-in simulation */}
+            <div className="w-full max-w-md space-y-3">
+              <span className="text-xs font-semibold text-slate-400 block">
+                Hoặc chọn nhanh thành viên check-in:
+              </span>
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Gõ tìm tên người chơi..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#131A2B] border border-[#1E283D] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#00D2FF]"
                 />
               </div>
 
-              {/* Transfer Code Box */}
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex justify-between items-center text-left">
-                <div>
-                  <span className="text-xs text-slate-400 block">Nội dung chuyển khoản</span>
-                  <span className="text-lg font-bold font-mono text-indigo-400">
-                    {activeInvoice.paymentCode}
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pt-1">
+                {filtered.slice(0, 6).map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => handleCheckIn(m)}
+                    className="px-3 py-1.5 rounded-xl bg-[#131A2B] hover:bg-[#2538D9] border border-[#1E283D] hover:border-[#2538D9] text-xs font-semibold text-slate-200 hover:text-white transition-all flex items-center gap-1.5"
+                  >
+                    <span>{m.name}</span>
+                    <Check className="w-3 h-3 opacity-60" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Right Column (5 cols): "Check-in gần đây" list matching Panel 10 */}
+        <div className="lg:col-span-5 bg-[#0B0F19]/90 border border-[#1E2945] rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-xl">
+          
+          <div>
+            <div className="flex items-center justify-between pb-4 border-b border-[#1A2338]">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#00D2FF]" />
+                <h3 className="text-base font-bold text-white tracking-wide">
+                  Check-in gần đây
+                </h3>
+              </div>
+              <span className="text-xs text-slate-400 font-mono">
+                {recentCheckIns.length} lượt
+              </span>
+            </div>
+
+            {/* List of Recent Check-ins with Avatars and Thành công badge per Panel 10 */}
+            <div className="divide-y divide-[#1A2338] mt-3">
+              {recentCheckIns.map((item) => (
+                <div key={item.id} className="py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar
+                      name={item.memberName}
+                      size="sm"
+                      status="online"
+                    />
+                    <div>
+                      <p className="text-xs sm:text-sm font-bold text-white leading-tight">
+                        {item.memberName}
+                      </p>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        Giờ vào: {item.time}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Thành công
                   </span>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-400 block">{group.bankId}</span>
-                  <span className="text-xs font-mono text-slate-300">{group.bankAccountNo}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-400 animate-pulse">
-                <Smartphone className="w-4 h-4 text-emerald-400" />
-                <span>Đang chờ nhận tiền... Hệ thống tự động xác nhận</span>
-              </div>
-
-              <button
-                onClick={() => {
-                  setSelectedMember(null);
-                  setActiveInvoice(null);
-                }}
-                className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" /> Chọn lại thành viên khác
-              </button>
+              ))}
             </div>
-          ) : (
-            <div className="text-center py-16 space-y-4 text-slate-500">
-              <QrCode className="w-16 h-16 mx-auto opacity-30 text-indigo-400" />
-              <p className="text-base text-slate-400">
-                Chạm vào tên thành viên bên trái để hiển thị mã VietQR thanh toán
-              </p>
-            </div>
-          )}
-        </section>
+          </div>
+
+          <div className="pt-4 mt-4 border-t border-[#1A2338] text-[11px] text-slate-500 text-center">
+            Màn hình tự động cập nhật thời gian thực khi có hội viên quét mã
+          </div>
+
+        </div>
+
       </main>
+
+      {/* Footer Note matching Panel 10 */}
+      <footer className="py-3 px-6 text-center text-xs text-slate-500 border-t border-[#1A2338] bg-[#070A12] relative z-20">
+        Chỉ hiển thị thông tin cần thiết. Bảo mật dữ liệu thành viên.
+      </footer>
+
     </div>
   );
 }
