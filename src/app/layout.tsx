@@ -11,7 +11,7 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'TingRoster — Điểm danh một chạm • Thu phí tự động • Đối soát khỏi lo',
+  title: 'TingRoster - Điểm danh một chạm. Thu phí tự động. Đối soát khỏi lo.',
   description: 'Nền tảng quản lý điểm danh và tự động đối soát giao dịch ngân hàng VietQR hàng đầu tại Việt Nam.',
   icons: {
     icon: '/favicon.png',

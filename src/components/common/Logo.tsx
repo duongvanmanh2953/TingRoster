@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 
-interface LogoProps {
-  variant?: 'full' | 'horizontal' | 'mark' | 'icon';
+export interface LogoProps {
+  variant?: 'full' | 'horizontal' | 'mark' | 'icon' | 'stacked';
   theme?: 'light' | 'dark';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   showBadge?: boolean;
@@ -12,45 +12,43 @@ interface LogoProps {
   href?: string;
 }
 
-export function LogoMark({ size = 'md', className = '' }: { size?: LogoProps['size']; className?: string }) {
-  const sizeMap = {
-    xs: 'w-6 h-6',
-    sm: 'w-8 h-8',
-    md: 'w-10 h-10',
-    lg: 'w-12 h-12',
-    xl: 'w-14 h-14',
-  };
-
+export function LogoMark({
+  size = 'md',
+  className = '',
+}: {
+  size?: LogoProps['size'];
+  className?: string;
+}) {
   const pixelMap = {
-    xs: 24,
-    sm: 32,
-    md: 40,
-    lg: 48,
-    xl: 56,
+    xs: 26,
+    sm: 34,
+    md: 42,
+    lg: 52,
+    xl: 64,
   };
 
   const px = pixelMap[size || 'md'];
 
   return (
     <div
-      className={`${sizeMap[size || 'md']} flex-shrink-0 transition-transform duration-200 hover:scale-105 rounded-xl overflow-hidden shadow-md shadow-[#2538D9]/25 border border-[#2538D9]/20 bg-[#0B0F19] relative flex items-center justify-center ${className}`}
+      className={`relative inline-flex items-center justify-center flex-shrink-0 transition-transform duration-200 hover:scale-105 active:scale-95 ${className}`}
       style={{ width: px, height: px }}
     >
-      {/* High-Resolution Creative 3D TingRoster PNG Emblem */}
+      {/* High-Resolution Isolated Transparent 3D TingRoster Emblem */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo.png"
+        src="/logo-icon.png"
         alt="TingRoster"
         width={px}
         height={px}
-        className="w-full h-full object-cover scale-[1.24] transform drop-shadow-md select-none pointer-events-none"
+        className="w-full h-full object-contain filter drop-shadow-sm select-none pointer-events-none"
       />
     </div>
   );
 }
 
 export function Logo({
-  variant = 'full',
+  variant = 'horizontal',
   theme = 'light',
   size = 'md',
   showBadge = false,
@@ -62,58 +60,125 @@ export function Logo({
   const isDark = theme === 'dark';
 
   const textSizeMap = {
-    xs: 'text-sm',
-    sm: 'text-base',
+    xs: 'text-base',
+    sm: 'text-lg',
     md: 'text-xl',
     lg: 'text-2xl',
     xl: 'text-3xl',
   };
 
+  // Stacked variant (emblem on top, text and tagline centered below like original brand mark)
+  if (variant === 'stacked') {
+    const stackedContent = (
+      <div className={`inline-flex flex-col items-center text-center ${className}`}>
+        <LogoMark size={size} className="mb-2" />
+        <div className="flex items-center gap-2">
+          <span
+            className={`font-black tracking-tight ${textSizeMap[size]} leading-tight ${
+              isDark ? 'text-white' : 'text-[#0E2572]'
+            }`}
+          >
+            Ting<span className="text-[#6242E8]">Roster</span>
+          </span>
+          {showBadge && (
+            <span
+              className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
+                isDark
+                  ? 'bg-[#6242E8]/30 text-indigo-200 border border-[#6242E8]/50'
+                  : 'bg-[#6242E8]/10 text-[#6242E8] border border-[#6242E8]/20'
+              }`}
+            >
+              {badgeText}
+            </span>
+          )}
+        </div>
+        {showTagline && (
+          <p
+            className={`text-xs font-medium tracking-tight mt-1.5 ${
+              isDark ? 'text-slate-300' : 'text-[#475467]'
+            }`}
+          >
+            Điểm danh một chạm. Thu phí tự động. Đối soát khỏi lo.
+          </p>
+        )}
+      </div>
+    );
+
+    if (href) {
+      return (
+        <Link
+          href={href}
+          className="inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6242E8] rounded-xl"
+        >
+          {stackedContent}
+        </Link>
+      );
+    }
+    return stackedContent;
+  }
+
+  // Icon / Mark only
+  if (variant === 'icon' || variant === 'mark') {
+    if (href) {
+      return (
+        <Link
+          href={href}
+          className="inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6242E8] rounded-xl"
+        >
+          <LogoMark size={size} className={className} />
+        </Link>
+      );
+    }
+    return <LogoMark size={size} className={className} />;
+  }
+
+  // Horizontal / Full variant (side-by-side)
   const content = (
     <div className={`inline-flex items-center gap-3 ${className}`}>
       <LogoMark size={size} />
 
-      {variant !== 'icon' && variant !== 'mark' && (
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col justify-center">
+        <div className="flex items-center gap-2">
+          <span
+            className={`font-black tracking-tight ${textSizeMap[size]} leading-none ${
+              isDark ? 'text-white' : 'text-[#0E2572]'
+            }`}
+          >
+            Ting<span className="text-[#6242E8]">Roster</span>
+          </span>
+
+          {showBadge && (
             <span
-              className={`font-extrabold tracking-tight ${textSizeMap[size]} ${
-                isDark ? 'text-white' : 'text-[#101828]'
+              className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
+                isDark
+                  ? 'bg-[#6242E8]/30 text-indigo-200 border border-[#6242E8]/50'
+                  : 'bg-[#6242E8]/10 text-[#6242E8] border border-[#6242E8]/20'
               }`}
             >
-              Ting<span className="text-[#2538D9]">Roster</span>
+              {badgeText}
             </span>
-
-            {showBadge && (
-              <span
-                className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
-                  isDark
-                    ? 'bg-[#2538D9]/30 text-indigo-200 border border-[#2538D9]/50'
-                    : 'bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20'
-                }`}
-              >
-                {badgeText}
-              </span>
-            )}
-          </div>
-
-          {showTagline && (
-            <p
-              className={`text-[11px] font-medium leading-none mt-1 ${
-                isDark ? 'text-slate-400' : 'text-[#475467]'
-              }`}
-            >
-              Điểm danh một chạm • Thu phí tự động
-            </p>
           )}
         </div>
-      )}
+
+        {showTagline && (
+          <p
+            className={`text-[11px] font-medium leading-none mt-1 tracking-tight ${
+              isDark ? 'text-slate-400' : 'text-[#475467]'
+            }`}
+          >
+            Điểm danh một chạm. Thu phí tự động. Đối soát khỏi lo.
+          </p>
+        )}
+      </div>
     </div>
   );
 
   if (href) {
     return (
-      <Link href={href} className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2538D9] rounded-xl">
+      <Link
+        href={href}
+        className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6242E8] rounded-xl"
+      >
         {content}
       </Link>
     );
