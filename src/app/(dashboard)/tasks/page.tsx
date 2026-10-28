@@ -13,8 +13,11 @@ import {
   Calendar,
   Tag,
   Trash2,
-  X
+  X,
+  Sparkles,
+  Zap
 } from 'lucide-react';
+import { SpotlightCard } from '@/components/reactbits/SpotlightCard';
 
 interface Task {
   id: string;
@@ -30,9 +33,9 @@ interface Task {
 const INITIAL_TASKS: Task[] = [
   {
     id: '1',
-    title: 'Hoàn thành báo cáo tuần',
+    title: 'Gửi link VietQR thu học phí Toán 12',
     category: 'Quan trọng',
-    tagColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    tagColor: 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-500/30',
     time: '09:00',
     tab: 'today',
     completed: true,
@@ -40,63 +43,45 @@ const INITIAL_TASKS: Task[] = [
   },
   {
     id: '2',
-    title: 'Học bài IELTS',
-    category: 'Học tập',
-    tagColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-    time: '14:00',
+    title: 'Đối soát các giao dịch treo chưa gạch nợ',
+    category: 'Công việc',
+    tagColor: 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border-blue-500/30',
+    time: '11:30',
     tab: 'today',
     completed: false,
   },
   {
     id: '3',
-    title: 'Tập gym',
-    category: 'Sức khỏe',
-    tagColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    time: '18:00',
+    title: 'Chốt chỉ số điện nước dãy trọ phòng 201 - 204',
+    category: 'Quan trọng',
+    tagColor: 'bg-amber-500/15 text-amber-600 dark:text-amber-300 border-amber-500/30',
+    time: '15:00',
     tab: 'today',
     completed: false,
   },
   {
     id: '4',
-    title: 'Đọc sách 30 phút',
-    category: 'Phát triển',
-    tagColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-    time: '20:00',
+    title: 'Điểm danh buổi tập CLB Pickleball chiều',
+    category: 'Sức khỏe',
+    tagColor: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/30',
+    time: '17:30',
     tab: 'today',
     completed: false,
   },
   {
     id: '5',
-    title: 'Làm bài tập toán',
-    category: 'Học tập',
-    tagColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-    time: 'Tối',
-    tab: 'today',
+    title: 'Xuất file bàn giao kế toán tháng 10 (.csv)',
+    category: 'Công việc',
+    tagColor: 'bg-purple-500/15 text-purple-600 dark:text-purple-300 border-purple-500/30',
+    time: '20:00',
+    tab: 'week',
     completed: false,
   },
   {
     id: '6',
-    title: 'Gửi email cho khách hàng',
-    category: 'Công việc',
-    tagColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-    time: '15:00',
-    tab: 'week',
-    completed: false,
-  },
-  {
-    id: '7',
-    title: 'Chuẩn bị bài thuyết trình',
-    category: 'Công việc',
-    tagColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-    time: 'Ngày mai',
-    tab: 'week',
-    completed: false,
-  },
-  {
-    id: '8',
-    title: 'Mua đồ dùng cá nhân',
-    category: 'Cá nhân',
-    tagColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    title: 'Kiểm tra gia hạn gói TingRoster Pro (299k)',
+    category: 'Phát triển',
+    tagColor: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 border-indigo-500/30',
     time: 'Ngày mai',
     tab: 'week',
     completed: false,
@@ -120,25 +105,25 @@ export default function TasksPage() {
     setTasks(tasks.map(t => t.id === id ? { ...t, starred: !t.starred } : t));
   };
 
+  const deleteTask = (id: string) => {
+    setTasks(tasks.filter(t => t.id !== id));
+  };
+
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const categoryColors: Record<Task['category'], string> = {
-      'Quan trọng': 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-      'Học tập': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-      'Sức khỏe': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-      'Phát triển': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-      'Công việc': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
-      'Cá nhân': 'bg-pink-500/20 text-pink-300 border-pink-500/30',
-    };
+    let tagColor = 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border-blue-500/30';
+    if (newCategory === 'Quan trọng') tagColor = 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-500/30';
+    if (newCategory === 'Sức khỏe') tagColor = 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/30';
+    if (newCategory === 'Phát triển') tagColor = 'bg-purple-500/15 text-purple-600 dark:text-purple-300 border-purple-500/30';
 
     const newTask: Task = {
       id: Date.now().toString(),
-      title: newTitle,
+      title: newTitle.trim(),
       category: newCategory,
-      tagColor: categoryColors[newCategory],
-      time: newTime || 'Hôm nay',
+      tagColor,
+      time: newTime || '10:00',
       tab: 'today',
       completed: false,
     };
@@ -150,10 +135,10 @@ export default function TasksPage() {
 
   // Filter tasks
   const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          task.category.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
 
-    if (activeTab === 'all') return true;
     if (activeTab === 'today') return task.tab === 'today';
     if (activeTab === 'week') return task.tab === 'week';
     if (activeTab === 'completed') return task.completed;
@@ -163,215 +148,279 @@ export default function TasksPage() {
   const countToday = tasks.filter(t => t.tab === 'today').length;
   const countWeek = tasks.filter(t => t.tab === 'week').length;
   const countCompleted = tasks.filter(t => t.completed).length;
+  const countStarred = tasks.filter(t => t.starred).length;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      
-      {/* Top Controls (Exact Panel 3 from image) */}
+    <div className="max-w-5xl mx-auto space-y-6 pb-16">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        
-        {/* Search */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm kiếm công việc..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#13182B] border border-indigo-500/20 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-          />
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Quản lý công việc hàng ngày
+            </h1>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#2538D9] text-white uppercase tracking-wider flex items-center gap-1">
+              <Sparkles className="w-3 h-3" />
+              <span>REACTBITS CARDS</span>
+            </span>
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+            Theo dõi danh sách nhắc việc, gạch nợ tự động và các đầu việc vận hành cơ sở.
+          </p>
         </div>
 
-        {/* Add Task Button */}
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all flex-shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1D2DB0] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>Thêm công việc</span>
         </button>
       </div>
 
-      {/* Tabs Filter Bar (Tất cả 8, Hôm nay 5, Tuần này 3, Đã hoàn thành 12) */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-indigo-500/15 pb-4">
-        <button
+      {/* Top 4 Spotlight Metric Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <SpotlightCard
           onClick={() => setActiveTab('all')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'all'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-md shadow-indigo-600/30'
-              : 'bg-[#13182B] text-slate-400 hover:text-white border border-indigo-500/15'
-          }`}
+          spotlightColor="rgba(37, 56, 217, 0.15)"
+          className={`p-4 cursor-pointer border ${activeTab === 'all' ? 'border-[#2538D9] ring-1 ring-[#2538D9]/30' : ''}`}
         >
-          <span>Tất cả</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/20 font-bold">{tasks.length}</span>
-        </button>
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Tổng việc</span>
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-2xl font-black text-slate-900 dark:text-white">{tasks.length}</span>
+            <span className="text-xs font-semibold text-slate-500">việc</span>
+          </div>
+        </SpotlightCard>
 
-        <button
+        <SpotlightCard
           onClick={() => setActiveTab('today')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'today'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-md shadow-indigo-600/30'
-              : 'bg-[#13182B] text-slate-400 hover:text-white border border-indigo-500/15'
-          }`}
+          spotlightColor="rgba(99, 102, 241, 0.15)"
+          className={`p-4 cursor-pointer border ${activeTab === 'today' ? 'border-indigo-500 ring-1 ring-indigo-500/30' : ''}`}
         >
-          <span>Hôm nay</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/30 text-indigo-200 font-bold">{countToday}</span>
-        </button>
+          <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider block">Hôm nay</span>
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{countToday}</span>
+            <span className="text-xs font-semibold text-indigo-400">cần làm</span>
+          </div>
+        </SpotlightCard>
 
-        <button
+        <SpotlightCard
           onClick={() => setActiveTab('week')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'week'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-md shadow-indigo-600/30'
-              : 'bg-[#13182B] text-slate-400 hover:text-white border border-indigo-500/15'
-          }`}
+          spotlightColor="rgba(245, 158, 11, 0.15)"
+          className={`p-4 cursor-pointer border ${activeTab === 'week' ? 'border-amber-500 ring-1 ring-amber-500/30' : ''}`}
         >
-          <span>Tuần này</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/30 text-indigo-200 font-bold">{countWeek}</span>
-        </button>
+          <span className="text-[11px] font-bold text-amber-500 uppercase tracking-wider block">Quan trọng</span>
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-2xl font-black text-amber-600 dark:text-amber-400">{countStarred}</span>
+            <span className="text-xs font-semibold text-amber-500">gắn sao</span>
+          </div>
+        </SpotlightCard>
 
-        <button
+        <SpotlightCard
           onClick={() => setActiveTab('completed')}
-          className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'completed'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-md shadow-indigo-600/30'
-              : 'bg-[#13182B] text-slate-400 hover:text-white border border-indigo-500/15'
-          }`}
+          spotlightColor="rgba(16, 185, 129, 0.15)"
+          className={`p-4 cursor-pointer border ${activeTab === 'completed' ? 'border-emerald-500 ring-1 ring-emerald-500/30' : ''}`}
         >
-          <span>Đã hoàn thành</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/30 text-emerald-200 font-bold">{countCompleted}</span>
-        </button>
+          <span className="text-[11px] font-bold text-emerald-500 uppercase tracking-wider block">Đã xong</span>
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{countCompleted}</span>
+            <span className="text-xs font-semibold text-emerald-500">hoàn thành</span>
+          </div>
+        </SpotlightCard>
       </div>
 
-      {/* Task List (Exact Panel 3 layout) */}
-      <div className="bg-[#12172C]/90 rounded-2xl border border-indigo-500/15 divide-y divide-indigo-500/10 overflow-hidden shadow-xl shadow-indigo-950/40">
+      {/* Search & Tabs Toolbar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="relative w-full sm:w-72">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm theo tên hoặc danh mục..."
+            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#2538D9]"
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+          {[
+            { id: 'all', label: 'Tất cả', count: tasks.length },
+            { id: 'today', label: 'Hôm nay', count: countToday },
+            { id: 'week', label: 'Tuần này', count: countWeek },
+            { id: 'completed', label: 'Đã xong', count: countCompleted },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-[#2538D9] text-white shadow-xs'
+                  : 'bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Task List (Grid of ReactBits Spotlight Cards) */}
+      <div className="space-y-2.5">
         {filteredTasks.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-indigo-400 mx-auto" />
-            <p className="text-sm font-medium">Không tìm thấy công việc nào</p>
+          <div className="p-12 text-center text-slate-400 space-y-2 bg-white dark:bg-[#131C2E] rounded-2xl border border-slate-200 dark:border-white/10">
+            <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
+            <p className="text-sm font-medium">Không có công việc nào cần xử lý!</p>
           </div>
         ) : (
           filteredTasks.map((task) => (
-            <div
+            <SpotlightCard
               key={task.id}
-              className={`p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#18203E]/50 transition-colors ${
-                task.completed ? 'bg-[#0F1426]/50' : ''
+              spotlightColor={task.starred ? 'rgba(245, 158, 11, 0.12)' : 'rgba(37, 56, 217, 0.1)'}
+              className={`p-3.5 sm:p-4 transition-all duration-200 hover:-translate-y-0.5 ${
+                task.completed ? 'opacity-70 bg-slate-50/60 dark:bg-slate-900/40' : ''
               }`}
             >
-              {/* Checkbox & Title */}
-              <div className="flex items-center gap-3.5 min-w-0">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask(task.id)}
-                  className="w-4 h-4 rounded-md border-indigo-500/40 bg-slate-900 text-indigo-500 focus:ring-0 cursor-pointer"
-                />
-                <span
-                  className={`text-xs sm:text-sm font-medium truncate ${
-                    task.completed ? 'line-through text-slate-500' : 'text-slate-100'
-                  }`}
-                >
-                  {task.title}
-                </span>
-              </div>
-
-              {/* Tag, Time, Actions */}
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg border ${task.tagColor}`}>
-                  {task.category}
-                </span>
-
-                <span className="text-xs text-slate-400 font-mono hidden sm:inline">
-                  {task.time}
-                </span>
-
-                <button
-                  onClick={() => toggleStar(task.id)}
-                  className="p-1 text-slate-500 hover:text-amber-400 transition-colors"
-                >
-                  <Star
-                    className={`w-4 h-4 ${
-                      task.starred ? 'text-amber-400 fill-amber-400' : 'text-slate-500'
+              <div className="flex items-center justify-between gap-3">
+                {/* Left: Custom Checkbox & Title */}
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleTask(task.id)}
+                    className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+                      task.completed
+                        ? 'border-emerald-500 bg-emerald-500 text-white'
+                        : 'border-slate-300 dark:border-slate-600 hover:border-[#2538D9]'
                     }`}
-                  />
-                </button>
+                  >
+                    {task.completed && <CheckSquare className="w-3.5 h-3.5 stroke-[3]" />}
+                  </button>
 
-                <button className="p-1 text-slate-500 hover:text-slate-300">
-                  <MoreVertical className="w-4 h-4" />
-                </button>
+                  <span
+                    onClick={() => toggleTask(task.id)}
+                    className={`text-xs sm:text-sm font-medium cursor-pointer truncate ${
+                      task.completed
+                        ? 'line-through text-slate-400 dark:text-slate-500'
+                        : 'text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {task.title}
+                  </span>
+                </div>
+
+                {/* Right: Tag, Time, Star, Delete */}
+                <div className="flex items-center gap-2.5 flex-shrink-0">
+                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${task.tagColor}`}>
+                    {task.category}
+                  </span>
+
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
+                    {task.time}
+                  </span>
+
+                  <button
+                    onClick={() => toggleStar(task.id)}
+                    className="p-1 text-slate-400 hover:text-amber-500 transition-colors"
+                  >
+                    <Star
+                      className={`w-4 h-4 ${
+                        task.starred ? 'text-amber-400 fill-amber-400' : 'text-slate-400'
+                      }`}
+                    />
+                  </button>
+
+                  <button
+                    onClick={() => deleteTask(task.id)}
+                    className="p-1 text-slate-400 hover:text-rose-500 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
+            </SpotlightCard>
           ))
         )}
       </div>
 
       {/* Modal: Thêm công việc mới */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#12172C] border border-indigo-500/30 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-indigo-500/20">
-              <h3 className="text-base font-bold text-white">Thêm công việc mới</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white dark:bg-[#131C2E] rounded-2xl border border-slate-200 dark:border-white/10 p-5 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Thêm công việc mới
+              </h3>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleAddTask} className="space-y-4">
+            <form onSubmit={handleAddTask} className="space-y-3.5">
               <div>
-                <label className="text-xs text-slate-300 font-medium block mb-1">Tên công việc</label>
+                <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
+                  Tên công việc *
+                </label>
                 <input
                   type="text"
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Ví dụ: Ôn tập từ vựng tiếng Anh"
-                  className="w-full px-3 py-2 rounded-xl bg-[#161D38] border border-indigo-500/20 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  placeholder="Ví dụ: Gạch nợ VietQR học phí Toán..."
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#2538D9]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-slate-300 font-medium block mb-1">Nhóm danh mục</label>
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
+                    Danh mục
+                  </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#161D38] border border-indigo-500/20 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#2538D9]"
                   >
+                    <option value="Công việc">Công việc</option>
                     <option value="Quan trọng">Quan trọng</option>
                     <option value="Học tập">Học tập</option>
                     <option value="Sức khỏe">Sức khỏe</option>
                     <option value="Phát triển">Phát triển</option>
-                    <option value="Công việc">Công việc</option>
                     <option value="Cá nhân">Cá nhân</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-300 font-medium block mb-1">Thời gian</label>
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">
+                    Giờ thực hiện
+                  </label>
                   <input
                     type="text"
                     value={newTime}
                     onChange={(e) => setNewTime(e.target.value)}
-                    placeholder="10:00 hoặc Chiều"
-                    className="w-full px-3 py-2 rounded-xl bg-[#161D38] border border-indigo-500/20 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    placeholder="Ví dụ: 10:00 hoặc Hôm nay"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-[#2538D9]"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-xs text-slate-300 hover:bg-slate-700"
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-xs font-semibold text-white shadow-md shadow-indigo-600/30"
+                  className="px-4 py-1.5 rounded-lg bg-[#2538D9] text-white text-xs font-bold hover:bg-[#1D2DB0] shadow-xs"
                 >
                   Lưu công việc
                 </button>
@@ -380,7 +429,6 @@ export default function TasksPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

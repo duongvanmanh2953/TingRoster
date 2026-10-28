@@ -118,6 +118,8 @@ model User {
   automationRules AutomationRule[]
   walletLedgers   WalletLedgerEntry[]
   aiImportJobs    AiImportJob[]
+  memberProfiles  Member[]          @relation("UserMemberProfiles")
+  supportTickets  SupportTicket[]
 
   @@index([email])
   @@index([role])
@@ -149,6 +151,7 @@ model Group {
 model Member {
   id         String       @id @default(cuid())
   groupId    String
+  userId     String?
   name       String
   phone      String?
   parentName String?
@@ -159,11 +162,14 @@ model Member {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
 
-  group       Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  attendances Attendance[]
-  invoices    Invoice[]
+  group              Group                          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user               User?                          @relation("UserMemberProfiles", fields: [userId], references: [id], onDelete: SetNull)
+  attendances        Attendance[]
+  invoices           Invoice[]
+  adjustmentRequests AttendanceAdjustmentRequest[]
 
   @@index([groupId])
+  @@index([userId])
   @@index([name])
 }
 
@@ -378,5 +384,103 @@ model AiImportJob {
 
   @@index([userId])
   @@index([createdAt])
+}
+
+model AttendanceAdjustmentRequest {
+  id              String           @id @default(cuid())
+  memberId        String
+  attendanceId    String?
+  groupId         String
+  date            DateTime         @db.Date
+  requestedStatus AttendanceStatus @default(PRESENT)
+  reason          String
+  status          String           @default("PENDING") // PENDING, APPROVED, REJECTED
+  reviewedBy      String?
+  reviewNote      String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([groupId])
+  @@index([status])
+}
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  ticketCode  String   @unique // e.g. TK-83921
+  userId      String
+  category    String   // BUG, FEATURE, BILLING, GENERAL
+  subject     String
+  description String
+  priority    String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  adminNote   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([ticketCode])
+  @@index([status])
+}
+
+model Conversation {
+  id          String        @id @default(cuid())
+  groupId     String?
+  type        String        @default("GROUP") // ANNOUNCEMENT, GROUP, DIRECT
+  title       String
+  workspaceId String        // Owner user ID
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  messages    ChatMessage[]
+
+  @@index([workspaceId])
+  @@index([groupId])
+  @@index([type])
+}
+
+model ChatMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  senderId       String       // User ID or Member ID
+  senderName     String
+  senderRole     String       // OWNER, MANAGER, MEMBER, ADMIN
+  content        String
+  isAnnouncement Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+model PolicyDocument {
+  id            String             @id @default(cuid())
+  policyType    String             @unique // TERMS, PRIVACY, REFUND, COMMUNITY
+  title         String
+  version       String             // e.g. 2.4
+  summary       String
+  content       String             // Markdown text
+  publishedAt   DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  acceptances   PolicyAcceptance[]
+}
+
+model PolicyAcceptance {
+  id         String   @id @default(cuid())
+  userId     String
+  policyId   String
+  version    String
+  ipAddress  String?
+  acceptedAt DateTime @default(now())
+
+  policy PolicyDocument @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, policyId, version])
+  @@index([userId])
 }
 

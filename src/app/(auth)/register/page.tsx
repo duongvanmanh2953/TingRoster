@@ -12,14 +12,18 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
-  CreditCard
+  CreditCard,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { BankLogo, POPULAR_BANKS } from '@/components/common/BankLogo';
+import { useTheme } from '@/components/theme/ThemeContext';
 
 const VIETNAMESE_BANKS = Object.values(POPULAR_BANKS);
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { isDark, toggleTheme } = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,7 +64,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FB] text-[#101828] flex items-center justify-center p-4 lg:p-8 font-sans selection:bg-[#2538D9] selection:text-white">
+    <div className="min-h-screen bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F8FAFC] flex items-center justify-center p-4 lg:p-8 font-sans selection:bg-[#2538D9] selection:text-white relative">
+      
+      {/* Quick Theme Switcher Floating Top-Right */}
+      <div className="absolute top-4 right-4 z-20">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title={isDark ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
+          className="w-9 h-9 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] shadow-sm text-slate-600 dark:text-slate-300 hover:text-[#2538D9] dark:hover:text-amber-400 flex items-center justify-center transition-all"
+        >
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+        </button>
+      </div>
+
       <div className="w-full max-w-md space-y-6">
         
         {/* Header Branding */}
@@ -74,18 +91,18 @@ export default function RegisterPage() {
               </svg>
             </div>
           </Link>
-          <h1 className="text-2xl font-extrabold text-[#101828] tracking-tight">
+          <h1 className="text-2xl font-extrabold text-[#101828] dark:text-[#F8FAFC] tracking-tight">
             Tạo tài khoản TingRoster
           </h1>
-          <p className="text-xs font-semibold text-[#2538D9]">
+          <p className="text-xs font-semibold text-[#2538D9] dark:text-indigo-400">
             Điểm danh một chạm • Thu phí VietQR tự động
           </p>
         </div>
 
         {/* Register Card */}
-        <div className="ting-card p-6 sm:p-8 space-y-5 shadow-xl">
+        <div className="ting-card p-6 sm:p-8 space-y-5 shadow-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] rounded-2xl">
           {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-semibold flex items-center gap-2">
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-xs text-rose-700 dark:text-rose-300 font-semibold flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-rose-600 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -93,7 +110,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
-              <label className="block text-xs font-bold text-[#101828] mb-1.5">
+              <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                 Họ và tên của bạn *
               </label>
               <div className="relative">
@@ -104,13 +121,13 @@ export default function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="VD: Thầy Nguyễn Văn Minh"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#2538D9] focus:ring-2 focus:ring-[#2538D9]/20 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#101828] mb-1.5">
+              <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                 Email đăng nhập *
               </label>
               <div className="relative">
@@ -121,13 +138,13 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@gmail.com"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#2538D9] focus:ring-2 focus:ring-[#2538D9]/20 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#101828] mb-1.5">
+              <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                 Mật khẩu đăng nhập *
               </label>
               <div className="relative">
@@ -138,12 +155,12 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Tối thiểu 6 ký tự"
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] placeholder-slate-400 focus:outline-none focus:border-[#2538D9] focus:ring-1 focus:ring-[#2538D9] transition-colors font-mono"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#101828] dark:text-[#F8FAFC] placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#2538D9] focus:ring-2 focus:ring-[#2538D9]/20 transition-all font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#101828]"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#101828] dark:hover:text-slate-200"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -152,13 +169,13 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                   Ngân hàng nhận phí
                 </label>
                 <select
                   value={bankId}
                   onChange={(e) => setBankId(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] font-bold focus:outline-none focus:border-[#2538D9]"
+                  className="w-full px-3 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#101828] dark:text-[#F8FAFC] font-bold focus:outline-none focus:border-[#2538D9]"
                 >
                   {VIETNAMESE_BANKS.map((b) => (
                     <option key={b.code} value={b.code}>
@@ -169,7 +186,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                   Số tài khoản (tùy chọn)
                 </label>
                 <input
@@ -177,7 +194,7 @@ export default function RegisterPage() {
                   value={bankAccountNo}
                   onChange={(e) => setBankAccountNo(e.target.value.trim())}
                   placeholder="0987654321"
-                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#101828] font-mono focus:outline-none focus:border-[#2538D9]"
+                  className="w-full px-3 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0F172A] border border-[#CBD5E1] dark:border-[#334155] text-xs text-[#101828] dark:text-[#F8FAFC] font-mono focus:outline-none focus:border-[#2538D9]"
                 />
               </div>
             </div>
@@ -192,10 +209,10 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <div className="pt-2 text-center border-t border-[#E4E7EC]">
-            <p className="text-xs text-[#475467]">
+          <div className="pt-2 text-center border-t border-[#E4E7EC] dark:border-[#1E293B]">
+            <p className="text-xs text-[#475467] dark:text-slate-400">
               Đã có tài khoản?{' '}
-              <Link href="/login" className="text-[#2538D9] hover:underline font-bold">
+              <Link href="/login" className="text-[#2538D9] dark:text-indigo-400 hover:underline font-bold">
                 Đăng nhập ngay
               </Link>
             </p>

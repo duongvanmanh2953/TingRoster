@@ -2,32 +2,45 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type SidebarThemeMode = 'auto' | 'dark' | 'light';
 
 interface ThemeContextType {
   theme: ThemeMode;
   isDark: boolean;
+  sidebarTheme: SidebarThemeMode;
+  isDarkSidebar: boolean;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
+  setSidebarTheme: (mode: SidebarThemeMode) => void;
+  cycleSidebarTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
   isDark: false,
+  sidebarTheme: 'auto',
+  isDarkSidebar: false,
   setTheme: () => {},
   toggleTheme: () => {},
+  setSidebarTheme: () => {},
+  cycleSidebarTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('light');
+  const [sidebarTheme, setSidebarThemeState] = useState<SidebarThemeMode>('auto');
   const [isDark, setIsDark] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const stored = (localStorage.getItem('tingroster-theme') as ThemeMode) || 'light';
-    setThemeState(stored);
-    applyTheme(stored);
+    const storedTheme = (localStorage.getItem('tingroster-theme') as ThemeMode) || 'light';
+    const storedSidebar = (localStorage.getItem('tingroster-sidebar-theme') as SidebarThemeMode) || 'auto';
+    
+    setThemeState(storedTheme);
+    setSidebarThemeState(storedSidebar);
+    applyTheme(storedTheme);
   }, []);
 
   const applyTheme = (mode: ThemeMode) => {
@@ -61,8 +74,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(next);
   };
 
+  const setSidebarTheme = (mode: SidebarThemeMode) => {
+    setSidebarThemeState(mode);
+    localStorage.setItem('tingroster-sidebar-theme', mode);
+  };
+
+  const cycleSidebarTheme = () => {
+    const order: SidebarThemeMode[] = ['auto', 'light', 'dark'];
+    const currentIndex = order.indexOf(sidebarTheme);
+    const nextMode = order[(currentIndex + 1) % order.length];
+    setSidebarTheme(nextMode);
+  };
+
+  // Tính toán màu sidebar dựa trên tùy chọn của người dùng
+  const isDarkSidebar = sidebarTheme === 'dark' ? true : sidebarTheme === 'light' ? false : isDark;
+
   return (
-    <ThemeContext.Provider value={{ theme, isDark, setTheme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        isDark,
+        sidebarTheme,
+        isDarkSidebar,
+        setTheme,
+        toggleTheme,
+        setSidebarTheme,
+        cycleSidebarTheme,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -71,3 +110,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   return useContext(ThemeContext);
 }
+

@@ -620,7 +620,7 @@ export default function AttendancePage() {
             <button
               onClick={handleQuickMarkDate}
               disabled={bulkSaving || members.length === 0}
-              className="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-orange-500/25 flex items-center gap-1.5 disabled:opacity-50"
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition-all shadow-xs flex items-center gap-1.5 disabled:opacity-50"
             >
               {bulkSaving ? (
                 <CircularProgress size={14} color="inherit" />

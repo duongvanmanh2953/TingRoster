@@ -171,89 +171,169 @@ input, textarea, select {
 
 /* Primary dark mode text color for hardcoded dark tokens */
 .dark .text-\[\#101828\],
+.dark .text-\[\#111827\],
 .dark .text-slate-900,
 .dark .text-gray-900,
-.dark .text-neutral-900 {
-  color: #F8FAFC !important;
+.dark .text-neutral-900,
+.dark .dark\:text-slate-900,
+.dark .dark\:text-gray-900,
+.dark .dark\:text-neutral-900,
+.dark .dark\:text-white,
+.dark .dark\:text-\[\#F8FAFC\] {
+  color: #FFFFFF !important;
 }
 
-/* Secondary dark mode text */
+/* Secondary dark mode text: Clean, bright, highly readable */
 .dark .text-\[\#344054\],
 .dark .text-slate-800,
 .dark .text-gray-800,
+.dark .text-neutral-800,
 .dark .text-slate-700,
-.dark .text-gray-700 {
-  color: #E2E8F0 !important;
+.dark .text-gray-700,
+.dark .text-neutral-700,
+.dark .dark\:text-slate-800,
+.dark .dark\:text-slate-700,
+.dark .dark\:text-gray-700,
+.dark .dark\:text-neutral-700 {
+  color: #F1F5F9 !important;
 }
 
-/* Muted / Secondary helper text */
+/* Muted / Secondary helper text: bright Slate-200 / Slate-300 - NEVER dark charcoal */
 .dark .text-\[\#475467\],
 .dark .text-slate-600,
 .dark .text-gray-600,
-.dark .text-slate-500,
-.dark .text-gray-500 {
-  color: #94A3B8 !important;
+.dark .text-neutral-600,
+.dark .dark\:text-slate-600,
+.dark .dark\:text-gray-600,
+.dark .dark\:text-neutral-600 {
+  color: #E2E8F0 !important;
 }
 
+/* Helper text, timestamps, labels: crisp Slate-300 (WCAG AAA > 10:1 contrast) */
 .dark .text-\[\#667085\],
+.dark .text-\[\#64748B\],
+.dark .text-slate-500,
+.dark .text-gray-500,
+.dark .text-neutral-500,
 .dark .text-slate-400,
-.dark .text-gray-400 {
-  color: #94A3B8 !important;
+.dark .text-gray-400,
+.dark .text-neutral-400,
+.dark .dark\:text-slate-500,
+.dark .dark\:text-gray-500,
+.dark .dark\:text-neutral-500,
+.dark .dark\:text-slate-400,
+.dark .dark\:text-gray-400,
+.dark .dark\:text-neutral-400 {
+  color: #CBD5E1 !important;
 }
 
 /* Dark mode surfaces & containers */
-.dark .bg-white {
-  background-color: #111726 !important;
+.dark .bg-white,
+.dark .dark\:bg-slate-900,
+.dark .dark\:bg-\[\#111726\],
+.dark .bg-\[\#111726\] {
+  background-color: #131C2E !important;
 }
 
 .dark .bg-\[\#F5F7FB\],
 .dark .bg-\[\#F8FAFC\],
 .dark .bg-slate-50,
-.dark .bg-gray-50 {
+.dark .bg-gray-50,
+.dark .bg-neutral-50 {
   background-color: #0B0F19 !important;
 }
 
 .dark .bg-slate-100,
-.dark .bg-gray-100 {
+.dark .bg-gray-100,
+.dark .bg-neutral-100 {
   background-color: #1E293B !important;
 }
 
 .dark .bg-slate-200,
-.dark .bg-gray-200 {
+.dark .bg-gray-200,
+.dark .bg-neutral-200 {
   background-color: #334155 !important;
 }
 
-/* Dark mode borders & dividers */
+/* Tinted highlight containers in dark mode */
+.dark [class*="bg-blue-50"],
+.dark [class*="bg-indigo-950"] {
+  background-color: rgba(99, 102, 241, 0.2) !important;
+  color: #E0E7FF !important;
+}
+
+.dark [class*="bg-emerald-50"] {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #D1FAE5 !important;
+}
+
+.dark [class*="bg-amber-50"] {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  color: #FEF3C7 !important;
+}
+
+.dark [class*="bg-rose-50"] {
+  background-color: rgba(244, 63, 94, 0.2) !important;
+  color: #FFE4E6 !important;
+}
+
+/* Dark mode borders & dividers: Distinct, crisp outlines like Linear & Stripe */
 .dark .border-\[\#E4E7EC\],
 .dark .border-\[\#EAECF0\],
 .dark .border-slate-100,
 .dark .border-slate-200,
-.dark .border-gray-200 {
-  border-color: #1E293B !important;
+.dark .border-gray-200,
+.dark .border-neutral-200,
+.dark .border-neutral-300,
+.dark .border-slate-800,
+.dark .border-slate-700,
+.dark .border-\[\#1E293B\],
+.dark .dark\:border-slate-800,
+.dark .dark\:border-slate-700,
+.dark .dark\:border-\[\#1E293B\] {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.dark [class*="border-blue-200"],
+.dark [class*="border-indigo-400"] {
+  border-color: rgba(99, 102, 241, 0.6) !important;
+}
+
+.dark [class*="border-emerald-200"] {
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.dark [class*="border-amber-200"] {
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+.dark [class*="border-rose-200"] {
+  border-color: rgba(244, 63, 94, 0.5) !important;
 }
 
 .dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
 .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
-.dark .divide-\[\#E4E7EC\] > :not([hidden]) ~ :not([hidden]) {
-  border-color: #1E293B !important;
+.dark .divide-neutral-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-\[\#E4E7EC\] > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Dark mode hovers */
 .dark .hover\:bg-slate-50:hover,
 .dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-neutral-50:hover,
 .dark .hover\:bg-gray-50:hover,
 .dark .hover\:bg-gray-100:hover {
   background-color: #1E293B !important;
 }
 
-.dark .hover\:text-\[\#101828\]:hover {
+.dark .hover\:text-\[\#101828\]:hover,
+.dark .hover\:text-slate-900:hover,
+.dark .hover\:text-neutral-900:hover {
   color: #FFFFFF !important;
 }
 
-/* Gradient banner cards */
-.dark .bg-gradient-to-r.from-white {
-  background-image: linear-gradient(to right, #111726, #111726, rgba(30, 41, 59, 0.4)) !important;
-}
 
 /* Form inputs & dropdowns */
 .dark input:not([type="checkbox"]):not([type="radio"]),
@@ -321,7 +401,52 @@ input, textarea, select {
   color: #818CF8 !important;
 }
 
-/* MUI Dark Theme Integration */
+/* MUI Buttons Global Contrast & Aesthetics */
+.MuiButton-contained,
+.MuiButton-containedPrimary {
+  background-color: #2538D9 !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: 0.625rem !important;
+  box-shadow: 0 1px 3px 0 rgba(37, 56, 217, 0.35) !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.MuiButton-contained:hover,
+.MuiButton-containedPrimary:hover {
+  background-color: #1E2DB8 !important;
+  box-shadow: 0 4px 10px -1px rgba(37, 56, 217, 0.45) !important;
+  transform: translateY(-1px);
+}
+
+.MuiButton-outlined {
+  border: 1.5px solid #CBD5E1 !important;
+  color: #1E293B !important;
+  background-color: #FFFFFF !important;
+  border-radius: 0.625rem !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.MuiButton-outlined:hover {
+  border-color: #2538D9 !important;
+  color: #2538D9 !important;
+  background-color: #F8FAFC !important;
+}
+
+.dark .MuiButton-outlined {
+  border: 1.5px solid #334155 !important;
+  color: #F1F5F9 !important;
+  background-color: #1E293B !important;
+}
+
+.dark .MuiButton-outlined:hover {
+  border-color: #4F62FF !important;
+  color: #4F62FF !important;
+  background-color: rgba(79, 98, 255, 0.12) !important;
+}
+
+/* MUI Dark Theme Integration & Crisp Inputs */
 .dark .MuiPaper-root {
   background-color: #111726 !important;
   color: #F8FAFC !important;
@@ -334,13 +459,46 @@ input, textarea, select {
   color: #F8FAFC !important;
 }
 
+.MuiOutlinedInput-root {
+  border-radius: 0.625rem !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #CBD5E1 !important;
+  border-width: 1.5px !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #94A3B8 !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #2538D9 !important;
+  border-width: 2px !important;
+}
+
 .dark .MuiOutlinedInput-root {
   color: #F8FAFC !important;
-  background-color: #0B0F19 !important;
+  background-color: #0F172A !important;
 }
 
 .dark .MuiOutlinedInput-notchedOutline {
-  border-color: #1E293B !important;
+  border-color: #334155 !important;
+  border-width: 1.5px !important;
+}
+
+.dark .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #64748B !important;
+}
+
+.dark .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #4F62FF !important;
+  border-width: 2px !important;
+}
+
+.dark .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 0 0 3px rgba(79, 98, 255, 0.2) !important;
 }
 
 .dark .MuiMenuItem-root {
@@ -354,4 +512,110 @@ input, textarea, select {
 .dark .MuiSelect-select {
   color: #F8FAFC !important;
 }
+
+/* ==========================================================================
+   OFFICIAL PRINT STYLESHEET (QUY CHUẨN IN ẤN VĂN BẢN & CHỨNG TỪ PHÁP LÝ)
+   Tuân thủ quy chuẩn kế toán và văn bản hành chính Việt Nam (Nghị định 30/2020/NĐ-CP)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm 10mm 15mm;
+  }
+
+  /* Reset all dark mode colors completely for printing */
+  html,
+  html.dark,
+  body,
+  .dark body,
+  [data-theme='dark'] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-family: 'Times New Roman', 'Liberation Serif', Times, serif !important;
+    font-size: 12pt !important;
+    line-height: 1.35 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force every single element in print to be crisp black on white, regardless of dark mode */
+  .dark *,
+  [data-theme='dark'] * {
+    color: #000000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  .dark .bg-white,
+  .dark .bg-slate-50,
+  .dark .bg-slate-100,
+  .dark .bg-slate-800,
+  .dark .bg-slate-900,
+  .dark .bg-\[\#111726\],
+  .dark .bg-\[\#0B0F19\],
+  .dark .bg-\[\#131C2E\],
+  .dark [class*="bg-"] {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  /* Hide screen elements */
+  header,
+  nav,
+  aside,
+  footer,
+  button,
+  .no-print,
+  [role="dialog"] > div:first-child,
+  .MuiBackdrop-root,
+  .MuiDialogActions-root {
+    display: none !important;
+  }
+
+  /* Make printable document take full container */
+  .printable-document {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-family: 'Times New Roman', 'Liberation Serif', Times, serif !important;
+  }
+
+  .printable-document * {
+    color: #000000 !important;
+    border-color: #000000 !important;
+    font-family: 'Times New Roman', 'Liberation Serif', Times, serif !important;
+  }
+
+  /* Page breaks control */
+  .avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .page-break {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  /* Clean tables on paper */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #000000 !important;
+    padding: 6px 8px !important;
+    color: #000000 !important;
+  }
+}
+
+
 

@@ -372,8 +372,14 @@ export function AvatarPickerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+    <div
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4 cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-400">

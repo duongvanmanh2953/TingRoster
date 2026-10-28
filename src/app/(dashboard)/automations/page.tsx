@@ -724,8 +724,14 @@ export default function AutomationsPage() {
 
       {/* 4. Create Automation Modal with Unified TingSelect */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="ting-card max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-in zoom-in-95 duration-150">
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div
+            className="ting-card max-w-lg w-full p-6 space-y-5 shadow-2xl relative animate-in zoom-in-95 duration-150 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             
             <div className="flex items-center justify-between border-b border-[#E4E7EC] dark:border-[#1E293B] pb-3">
               <div className="flex items-center gap-2">

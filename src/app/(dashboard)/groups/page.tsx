@@ -22,13 +22,15 @@ import {
   ChevronRight,
   TrendingUp,
   AlertCircle,
-  QrCode
+  QrCode,
+  X,
 } from 'lucide-react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -502,40 +504,55 @@ export default function GroupsPage() {
       {/* 5. Create Group Dialog Modal */}
       <Dialog
         open={showCreateModal}
-        onClose={() => !isSubmitting && setShowCreateModal(false)}
+        onClose={(e, reason) => {
+          if (!isSubmitting) setShowCreateModal(false);
+        }}
         maxWidth="sm"
         fullWidth
         slotProps={{
           paper: {
             sx: {
-              borderRadius: '1.25rem',
-              padding: '8px',
-            }
-          }
+              borderRadius: '1rem',
+              p: 1,
+            },
+          },
         }}
       >
-        <DialogTitle className="flex items-center justify-between pb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
-              <Plus className="w-4 h-4" />
+        <DialogTitle sx={{ pb: 1.5, borderBottom: '1px solid #E4E7EC' }} className="dark:border-[#1E293B]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
+                <Plus className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="font-extrabold text-base text-[#101828] dark:text-[#F8FAFC] block">
+                  Tạo lớp học / CLB mới
+                </span>
+                <span className="text-[11px] text-[#475467] dark:text-slate-400 font-normal">
+                  Thiết lập thông tin và cấu hình học phí tự động
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-base text-[#101828] block">Tạo lớp học / CLB mới</span>
-              <span className="text-[11px] text-[#475467] font-normal">Thiết lập thông tin và cấu hình học phí tự động</span>
-            </div>
+            <IconButton
+              size="small"
+              onClick={() => setShowCreateModal(false)}
+              disabled={isSubmitting}
+            >
+              <X className="w-4 h-4 text-slate-400 hover:text-slate-200" />
+            </IconButton>
           </div>
         </DialogTitle>
 
         <form onSubmit={handleCreateGroup}>
-          <DialogContent className="space-y-4 pt-2">
+          <DialogContent className="space-y-4 pt-3">
             {formError && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-semibold">
                 {formError}
               </div>
             )}
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                 Tên lớp học / CLB <span className="text-rose-500">*</span>
               </label>
               <TextField
@@ -549,7 +566,7 @@ export default function GroupsPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                 Đường dẫn công khai (Slug) <span className="text-rose-500">*</span>
               </label>
               <TextField
@@ -565,7 +582,7 @@ export default function GroupsPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold text-[#101828] block mb-1">
+                <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                   Mô hình quản lý
                 </label>
                 <TextField
@@ -582,7 +599,7 @@ export default function GroupsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#101828] block mb-1">
+                <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                   Chu kỳ thu học phí
                 </label>
                 <TextField
@@ -600,7 +617,7 @@ export default function GroupsPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                 Mức học phí mặc định (VND)
               </label>
               <TextField
@@ -614,7 +631,7 @@ export default function GroupsPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-[#101828] block mb-1">
+              <label className="text-xs font-semibold text-[#101828] dark:text-[#F8FAFC] block mb-1.5">
                 Mô tả ngắn hoặc lịch học
               </label>
               <TextField
@@ -629,12 +646,11 @@ export default function GroupsPage() {
             </div>
           </DialogContent>
 
-          <DialogActions className="p-4 pt-0 gap-2">
+          <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #E4E7EC' }} className="dark:border-[#1E293B]">
             <Button
               variant="outlined"
               onClick={() => setShowCreateModal(false)}
               disabled={isSubmitting}
-              sx={{ color: '#475467', borderColor: '#E4E7EC' }}
             >
               Hủy
             </Button>
@@ -642,7 +658,11 @@ export default function GroupsPage() {
               type="submit"
               variant="contained"
               disabled={isSubmitting}
-              sx={{ backgroundColor: '#2538D9', '&:hover': { backgroundColor: '#1E2DB8' } }}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={16} sx={{ color: '#FFFFFF' }} />
+                ) : null
+              }
             >
               {isSubmitting ? 'Đang tạo...' : 'Tạo lớp học'}
             </Button>

@@ -126,7 +126,7 @@ export default function NotesPage() {
 
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all flex-shrink-0"
+          className="px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-2 transition-all flex-shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Tạo ghi chú</span>
@@ -192,8 +192,14 @@ export default function NotesPage() {
 
       {/* Add Note Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#12172C] border border-indigo-500/30 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setIsAddModalOpen(false)}
+        >
+          <div
+            className="bg-[#12172C] border border-indigo-500/30 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-indigo-500/20">
               <h3 className="text-base font-bold text-white">Tạo ghi chú mới</h3>
               <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-white">
@@ -235,7 +241,7 @@ export default function NotesPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-xs font-semibold text-white shadow-md shadow-indigo-600/30"
+                  className="px-4 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-xs font-semibold text-white shadow-xs"
                 >
                   Lưu ghi chú
                 </button>

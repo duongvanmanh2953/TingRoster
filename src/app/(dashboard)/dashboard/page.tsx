@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { formatVND, formatDateTimeVN } from '@/lib/utils';
+import { formatVND, formatCompactVND, formatDateTimeVN } from '@/lib/utils';
+import { SpotlightCard } from '@/components/reactbits/SpotlightCard';
 import {
   DollarSign,
   TrendingUp,
@@ -25,8 +26,11 @@ import {
   AlertTriangle,
   History,
   Check,
-  ChevronDown,
-  CalendarDays
+  CalendarDays,
+  Inbox,
+  Filter,
+  ArrowDownRight,
+  Receipt
 } from 'lucide-react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -40,6 +44,9 @@ import Alert from '@mui/material/Alert';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import Tooltip from '@mui/material/Tooltip';
+import Paper from '@mui/material/Paper';
+import LinearProgress from '@mui/material/LinearProgress';
 import { BankLogo } from '@/components/common/BankLogo';
 import { Avatar } from '@/components/common/Avatar';
 
@@ -295,126 +302,175 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      {/* 2. Row 1: 4 Key Metric Cards (Doanh thu, Đã thu, Cần phải thu, Tỷ lệ thu) */}
+      {/* 2. Row 1: 4 Key Metric Cards (ReactBits SpotlightCard style, no font-mono) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: Doanh thu */}
-        <div className="ting-card p-5 relative overflow-hidden">
+        {/* Card 1: Tổng phải thu trong kỳ (Accrual Due) */}
+        <SpotlightCard
+          spotlightColor="rgba(37, 56, 217, 0.18)"
+          className="p-5 border-l-4 border-l-[#2538D9]"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Doanh thu ghi nhận</span>
-            <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              1. Tổng phải thu trong kỳ
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center font-bold">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] font-mono font-tnum leading-none">
-              {formatVND(totalRevenue)}
+            <div className="flex items-baseline gap-2">
+              <div className="text-2xl sm:text-[26px] font-black text-slate-900 dark:text-white tracking-tight leading-none">
+                {formatVND(totalRevenue)}
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/10 text-[#2538D9] dark:text-indigo-300">
+                {formatCompactVND(totalRevenue)}
+              </span>
             </div>
             <div className="mt-2.5 flex items-center gap-1.5">
               <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                 <TrendingUp className="w-3 h-3 mr-0.5" />
-                +12% so với tháng trước
+                +12.4% so với kỳ trước
               </span>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
 
-        {/* Card 2: Đã thu */}
-        <div className="ting-card p-5 relative overflow-hidden">
+        {/* Card 2: Đã thu được xác nhận (Cash Collected) */}
+        <SpotlightCard
+          spotlightColor="rgba(16, 185, 129, 0.18)"
+          className="p-5 border-l-4 border-l-emerald-600"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Đã thực thu</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              2. Đã thu được xác nhận
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-[28px] font-bold text-emerald-700 dark:text-emerald-400 font-mono font-tnum leading-none">
-              {formatVND(totalCollected)}
-            </div>
-            <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
-                <TrendingUp className="w-3 h-3 mr-0.5" />
-                +78% so với cùng kỳ
+            <div className="flex items-baseline gap-2">
+              <div className="text-2xl sm:text-[26px] font-black text-emerald-700 dark:text-emerald-400 tracking-tight leading-none">
+                {formatVND(totalCollected)}
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                {formatCompactVND(totalCollected)}
               </span>
             </div>
+            <div className="mt-2.5 flex items-center justify-between text-xs">
+              <span className="text-slate-600 dark:text-slate-300 font-medium">
+                Tỷ lệ thu: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">{collectionRate}%</strong>
+              </span>
+              <span className="text-[10px] text-slate-400">Cash-in Napas 24/7</span>
+            </div>
           </div>
-        </div>
+        </SpotlightCard>
 
-        {/* Card 3: Cần phải thu */}
-        <div className="ting-card p-5 relative overflow-hidden">
+        {/* Card 3: Còn phải thu (Remaining Receivables) */}
+        <SpotlightCard
+          spotlightColor="rgba(245, 158, 11, 0.18)"
+          className="p-5 border-l-4 border-l-amber-500"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Còn phải thu</span>
-            <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              3. Còn phải thu (Dư nợ)
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
               <AlertCircle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-[28px] font-bold text-rose-600 dark:text-rose-400 font-mono font-tnum leading-none">
-              {formatVND(remainingDue)}
-            </div>
-            <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="text-xs text-[#475467] dark:text-slate-400 font-medium">
-                {stats?.unpaidCount || 12} khoản thu chưa hoàn tất
+            <div className="flex items-baseline gap-2">
+              <div className="text-2xl sm:text-[26px] font-black text-amber-700 dark:text-amber-400 tracking-tight leading-none">
+                {formatVND(remainingDue)}
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
+                {formatCompactVND(remainingDue)}
               </span>
             </div>
+            <div className="mt-2.5 flex items-center justify-between text-xs">
+              <span className="text-slate-600 dark:text-slate-300 font-medium">
+                {stats?.unpaidCount || 12} khoản thu chưa hoàn tất
+              </span>
+              <Link href="/invoices?status=UNPAID" className="text-[10px] text-[#2538D9] dark:text-indigo-400 font-bold hover:underline">
+                Xem chi tiết
+              </Link>
+            </div>
           </div>
-        </div>
+        </SpotlightCard>
 
-        {/* Card 4: Tỷ lệ thu */}
-        <div className="ting-card p-5 relative overflow-hidden">
+        {/* Card 4: Quá hạn hoặc cần xử lý (Overdue & Exceptions) */}
+        <SpotlightCard
+          spotlightColor="rgba(244, 63, 94, 0.18)"
+          className="p-5 border-l-4 border-l-rose-600"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#475467] dark:text-slate-400">Tỷ lệ thu phí</span>
-            <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              4. Quá hạn hoặc cần xử lý
+            </span>
+            <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center font-bold">
+              <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl sm:text-[28px] font-bold text-[#2538D9] dark:text-indigo-400 font-mono font-tnum leading-none">
-              {collectionRate}%
-            </div>
-            <div className="mt-2.5">
-              <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
-                <div
-                  className="bg-[#2538D9] h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${Math.min(100, collectionRate)}%` }}
-                />
-              </div>
+            {(() => {
+              const overdueAmt = remainingDue > 0 ? Math.round(remainingDue * 0.42) : 6800000;
+              return (
+                <div className="flex items-baseline gap-2">
+                  <div className="text-2xl sm:text-[26px] font-black text-rose-600 dark:text-rose-400 tracking-tight leading-none">
+                    {formatVND(overdueAmt)}
+                  </div>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-300">
+                    {formatCompactVND(overdueAmt)}
+                  </span>
+                </div>
+              );
+            })()}
+            <div className="mt-2.5 flex items-center justify-between text-xs">
+              <span className="text-rose-600 dark:text-rose-400 font-bold inline-flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
+                4 khoản quá hạn &gt; 7 ngày
+              </span>
+              <span className="text-[10px] text-slate-400">Ưu tiên nhắc</span>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </div>
 
-      {/* 3. Row 2: Charts & Breakdown Row (Doanh thu theo thời gian, Tình trạng các lớp, Sắp đến hạn) */}
+      {/* 3. Row 2: 3 Core Operational Charts per Section 5.1 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
-        {/* Block A: Doanh thu theo thời gian (Span 6 columns) */}
+        {/* Block A: Thu tiền theo thời gian (Span 6 cols) */}
         <div className="lg:col-span-6 ting-card p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
             <div>
-              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Doanh thu theo thời gian</h2>
-              <p className="text-[11px] text-[#475467] dark:text-slate-400">Dòng tiền học phí chuyển khoản thực tế qua VietQR</p>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">A. Dòng tiền thu theo thời gian</h2>
+                <Chip label="VietQR Napas" size="small" sx={{ height: 18, fontSize: '0.625rem', fontWeight: 700, backgroundColor: '#EFF6FF', color: '#2538D9' }} />
+              </div>
+              <p className="text-[11px] text-[#475467] dark:text-slate-400">Tiền học phí / tiền phòng thực nhận vào tài khoản</p>
             </div>
+            
+            {/* Filter Ngày / Tuần / Tháng / Quý */}
             <div className="flex items-center gap-1 bg-[#F5F7FB] dark:bg-slate-900 p-0.5 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] text-[11px]">
-              <button
-                onClick={() => setChartFilter('week')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                  chartFilter === 'week' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-semibold' : 'text-[#475467] dark:text-slate-400'
-                }`}
-              >
-                Tuần này
-              </button>
-              <button
-                onClick={() => setChartFilter('month')}
-                className={`px-2.5 py-1 rounded-md font-medium transition-colors ${
-                  chartFilter === 'month' ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-semibold' : 'text-[#475467] dark:text-slate-400'
-                }`}
-              >
-                Tháng này
-              </button>
+              {(['day', 'week', 'month', 'quarter'] as const).map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setChartFilter(period === 'quarter' ? 'month' : (period as any))}
+                  className={`px-2 py-0.5 rounded font-medium transition-colors ${
+                    (chartFilter === period || (chartFilter === 'month' && period === 'quarter'))
+                      ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-bold'
+                      : 'text-[#475467] dark:text-slate-400'
+                  }`}
+                >
+                  {period === 'day' ? 'Hôm nay' : period === 'week' ? 'Tuần' : period === 'month' ? 'Tháng' : 'Quý'}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Clean Smooth SVG Chart */}
+          {/* Smooth Area/Line Chart with Interactive Tooltip Markers */}
           <div className="py-4">
             <div className="h-44 w-full relative">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
@@ -424,17 +480,14 @@ export default function DashboardPage() {
                     <stop offset="100%" stopColor="#2538D9" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
-                {/* Horizontal reference lines */}
                 <line x1="0" y1="30" x2="400" y2="30" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
                 <line x1="0" y1="70" x2="400" y2="70" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
                 <line x1="0" y1="110" x2="400" y2="110" stroke="#F1F5F9" strokeWidth="1" />
                 
-                {/* Area fill */}
                 <path
                   d="M 0 110 L 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20 L 400 110 Z"
                   fill="url(#revenueGrad)"
                 />
-                {/* Line stroke */}
                 <path
                   d="M 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20"
                   fill="none"
@@ -442,141 +495,162 @@ export default function DashboardPage() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
-                {/* Data points */}
                 <circle cx="0" cy="95" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
                 <circle cx="150" cy="65" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
                 <circle cx="300" cy="45" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
                 <circle cx="400" cy="20" r="4.5" fill="#2538D9" stroke="#FFFFFF" strokeWidth="2" />
               </svg>
-            </div>
-            <div className="flex justify-between text-[11px] text-slate-400 pt-2 px-1 font-mono">
-              <span>14/4</span>
-              <span>17/4</span>
-              <span>20/4</span>
-              <span>23/4</span>
-              <span>Hôm nay</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Block B: Tình trạng các lớp (Span 3 columns) */}
-        <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
-          <div>
-            <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Tình trạng các lớp</h2>
-            <p className="text-[11px] text-[#475467] dark:text-slate-400">Phân bổ tiến độ thu các lớp</p>
-          </div>
-
-          <div className="flex items-center justify-center py-4">
-            <div className="relative w-28 h-28 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                {/* 4 segments */}
-                <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" className="text-slate-100 dark:text-slate-800" strokeWidth="4" />
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#2538D9" strokeWidth="4.5" strokeDasharray="50 100" strokeDashoffset="0" />
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#067647" strokeWidth="4.5" strokeDasharray="25 100" strokeDashoffset="-50" />
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#B54708" strokeWidth="4.5" strokeDasharray="15 100" strokeDashoffset="-75" />
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#B42318" strokeWidth="4.5" strokeDasharray="10 100" strokeDashoffset="-90" />
-              </svg>
-              <div className="absolute text-center">
-                <span className="text-base font-extrabold text-[#101828] dark:text-[#F8FAFC] block">4 lớp</span>
-                <span className="text-[9px] text-[#475467] dark:text-slate-400 uppercase font-bold tracking-wider">Đang chạy</span>
+              {/* Hover Badge info */}
+              <div className="absolute right-0 top-0 bg-[#0B0F19] text-white p-2 rounded-lg shadow-md text-[10px] pointer-events-none">
+                <span className="font-bold text-emerald-400 block">+14.650.000 đ</span>
+                <span className="text-slate-400">24 giao dịch khớp tự động</span>
               </div>
             </div>
-          </div>
-
-          <div className="space-y-1.5 text-xs pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B]">
-            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
-                Đã thu
-              </span>
-              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">3 lớp</span>
-            </div>
-            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#067647]" />
-                Đúng hạn
-              </span>
-              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
-            </div>
-            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#B54708]" />
-                Chờ nộp
-              </span>
-              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
-            </div>
-            <div className="flex items-center justify-between text-[#475467] dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#B42318]" />
-                Còn nợ
-              </span>
-              <span className="font-semibold text-[#101828] dark:text-[#F8FAFC]">1 lớp</span>
+            
+            <div className="flex justify-between text-[11px] text-slate-400 pt-2 px-1 font-mono">
+              <span>Đầu kỳ</span>
+              <span>Giữa kỳ</span>
+              <span>Tuần trước</span>
+              <span>Hôm nay (Đỉnh điểm)</span>
             </div>
           </div>
         </div>
 
-        {/* Block C: Sắp đến hạn (Span 3 columns) */}
+        {/* Block B: Cơ cấu khoản thu (Span 3 cols) */}
         <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Sắp đến hạn</h2>
-              <Clock className="w-4 h-4 text-slate-400" />
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">B. Cơ cấu khoản thu</h2>
+              <span className="text-[10px] font-bold text-slate-400 uppercase">5 trạng thái</span>
             </div>
-            <p className="text-[11px] text-[#475467] dark:text-slate-400">Các đợt thu học phí cần nhắc</p>
+            <p className="text-[11px] text-[#475467] dark:text-slate-400">Phân loại theo tiến độ thanh toán</p>
           </div>
 
-          <div className="space-y-3 my-3">
-            <div className="flex items-center justify-between p-2 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold text-[11px]">
-                  6A
-                </div>
-                <div>
-                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lớp Toán 6A</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 26/04</p>
-                </div>
+          <div className="space-y-2.5 my-3 text-xs">
+            {/* Đã thanh toán */}
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                  Đã thanh toán đủ
+                </span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400">68%</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300">
-                2 ngày
+              <LinearProgress variant="determinate" value={68} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#067647' } }} />
+            </div>
+
+            {/* Thanh toán 1 phần */}
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  Đóng một phần
+                </span>
+                <span className="font-bold text-amber-700 dark:text-amber-400">14%</span>
+              </div>
+              <LinearProgress variant="determinate" value={14} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F59E0B' } }} />
+            </div>
+
+            {/* Chưa thanh toán */}
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  Chưa thanh toán
+                </span>
+                <span className="font-bold text-rose-600 dark:text-rose-400">12%</span>
+              </div>
+              <LinearProgress variant="determinate" value={12} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F43F5E' } }} />
+            </div>
+
+            {/* Quá hạn */}
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-700" />
+                  Quá hạn nợ
+                </span>
+                <span className="font-bold text-red-700 dark:text-red-400">4%</span>
+              </div>
+              <LinearProgress variant="determinate" value={4} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#B42318' } }} />
+            </div>
+
+            {/* Đang xác minh */}
+            <div>
+              <div className="flex justify-between text-[11px] mb-1">
+                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
+                  Đang xác minh (Pending)
+                </span>
+                <span className="font-bold text-[#2538D9] dark:text-indigo-400">2%</span>
+              </div>
+              <LinearProgress variant="determinate" value={2} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#2538D9' } }} />
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 italic">
+            * Lưu ý: Khoản pending KHÔNG tính vào tổng tiền đã thu.
+          </div>
+        </div>
+
+        {/* Block C: Công nợ theo thời gian quá hạn (Span 3 cols) */}
+        <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">C. Phân bổ tuổi nợ</h2>
+              <Clock className="w-4 h-4 text-slate-400" />
+            </div>
+            <p className="text-[11px] text-[#475467] dark:text-slate-400">4 nhóm tuổi nợ loại trừ nhau</p>
+          </div>
+
+          <div className="space-y-2.5 my-3 text-xs">
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-[#101828] dark:text-white block text-xs">Chưa đến hạn</span>
+                <span className="text-[10px] text-slate-400">Hạn nộp còn hiệu lực</span>
+              </div>
+              <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
+                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.58) : 9950000)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-[11px]">
-                  PB
-                </div>
-                <div>
-                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">CLB Pickleball</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 29/04</p>
-                </div>
+            <div className="p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-amber-800 dark:text-amber-300 block text-xs">Quá hạn 1–7 ngày</span>
+                <span className="text-[10px] text-amber-600">Nhắc nợ nhẹ nhàng</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
-                5 ngày
+              <span className="font-mono font-bold text-amber-700 dark:text-amber-300">
+                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.25) : 4200000)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-[11px]">
-                  7A
-                </div>
-                <div>
-                  <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lớp Tiếng Anh 7</p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Hạn: 30/04</p>
-                </div>
+            <div className="p-2.5 rounded-xl bg-orange-50/60 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/40 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-orange-800 dark:text-orange-300 block text-xs">Quá hạn 8–30 ngày</span>
+                <span className="text-[10px] text-orange-600">Cảnh báo nhắc nhở lần 2</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
-                7 ngày
+              <span className="font-mono font-bold text-orange-700 dark:text-orange-300">
+                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.12) : 1800000)}
+              </span>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-rose-800 dark:text-rose-300 block text-xs">Quá hạn &gt;30 ngày</span>
+                <span className="text-[10px] text-rose-600">Nợ khó đòi, cần liên hệ</span>
+              </div>
+              <span className="font-mono font-bold text-rose-700 dark:text-rose-300">
+                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.05) : 800000)}
               </span>
             </div>
           </div>
 
           <Link
-            href="/invoices?status=UNPAID"
+            href="/reports"
             className="text-xs text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold flex items-center justify-between pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B]"
           >
-            <span>Gửi thông báo nhắc phí</span>
+            <span>Mở Báo cáo Tuổi nợ chuyên sâu</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -584,7 +658,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Lịch biểu & Ca dạy hôm nay Widget */}
-      <div className="ting-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-white via-white to-blue-50/40 dark:from-[#111726] dark:via-[#111726] dark:to-blue-950/20">
+      <div className="ting-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800">
         <div className="flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
             <CalendarDays className="w-5 h-5" />
@@ -682,62 +756,64 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Feed 2: Giao dịch cần xử lý */}
-        <div className="ting-card p-5 flex flex-col justify-between">
+        {/* Feed 2: Việc cần xử lý ngay (Action Queue) */}
+        <div className="ting-card p-5 flex flex-col justify-between border-t-2 border-t-amber-500">
           <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-amber-500" />
-              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Giao dịch cần xử lý</h2>
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">D. Việc cần xử lý ngay (Action Queue)</h2>
             </div>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">
-              3 chờ duyệt
+              3 việc chờ
             </span>
           </div>
 
           <div className="divide-y divide-slate-100 dark:divide-[#1E293B] my-2">
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lê Văn D</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lê Văn D (Chuyển thiếu)</p>
                 <div className="flex items-center gap-1 text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">
                   <span className="px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">Thiếu 50.000đ</span>
-                  <span>• 09:43</span>
+                  <span>• Cần xác nhận thu nốt</span>
                 </div>
               </div>
               <div className="text-right">
                 <span className="font-bold text-[#101828] dark:text-[#F8FAFC] tabular-nums block">200.000đ</span>
-                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold">
-                  Khớp thủ công
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-bold">
+                  Khớp thủ công &rarr;
                 </Link>
               </div>
             </div>
 
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Hoàng Thị E</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Hoàng Thị E (Sai cú pháp)</p>
                 <div className="flex items-center gap-1 text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">
-                  <span className="px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">Sai nội dung</span>
-                  <span>• 09:18</span>
+                  <span className="px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60">Quên mã TR</span>
+                  <span>• Chuyển 400.000đ</span>
                 </div>
               </div>
               <div className="text-right">
                 <span className="font-bold text-[#101828] dark:text-[#F8FAFC] tabular-nums block">400.000đ</span>
-                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold">
-                  Gợi ý khớp
+                <Link href="/transactions" className="text-[10px] text-[#2538D9] dark:text-indigo-400 hover:underline font-bold">
+                  Gợi ý gán lớp &rarr;
                 </Link>
               </div>
             </div>
 
             <div className="py-2.5 flex items-center justify-between text-xs">
               <div>
-                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Đỗ Văn F</p>
+                <p className="font-semibold text-[#101828] dark:text-[#F8FAFC]">Lớp Toán 6A (Quá hạn)</p>
                 <div className="flex items-center gap-1 text-[10px] text-rose-700 dark:text-rose-400 mt-0.5">
-                  <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60">Trùng webhook</span>
-                  <span>• 08:35</span>
+                  <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60">4 học viên</span>
+                  <span>• Quá hạn 3 ngày</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-[#101828] dark:text-[#F8FAFC] font-mono block">600.000đ</span>
-                <span className="text-[10px] text-slate-400">Đã chặn</span>
+                <span className="font-bold text-rose-600 dark:text-rose-400 font-mono block">2.400.000đ</span>
+                <Link href="/invoices?status=UNPAID" className="text-[10px] text-rose-600 dark:text-rose-400 hover:underline font-bold">
+                  Gửi Zalo nhắc nợ
+                </Link>
               </div>
             </div>
           </div>
@@ -746,55 +822,55 @@ export default function DashboardPage() {
             href="/transactions"
             className="pt-2 text-xs text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold flex items-center justify-between border-t border-[#E4E7EC] dark:border-[#1E293B]"
           >
-            <span>Mở trang đối soát chi tiết</span>
+            <span>Mở bàn đối soát & xử lý nhanh</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {/* Feed 3: Hoạt động gần đây */}
-        <div className="ting-card p-5 flex flex-col justify-between">
+        {/* Feed 3: Hoạt động gần đây (Recent Activities) */}
+        <div className="ting-card p-5 flex flex-col justify-between border-t-2 border-t-[#2538D9]">
           <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
-            <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">Hoạt động gần đây</h2>
+            <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">E. Hoạt động gần đây</h2>
             <History className="w-4 h-4 text-slate-400" />
           </div>
 
           <div className="divide-y divide-slate-100 dark:divide-[#1E293B] my-2">
-            <div className="py-2.5 flex items-start gap-3 text-xs">
+            <Link href="/invoices" className="py-2.5 flex items-start gap-3 text-xs hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg p-1 transition-colors">
               <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Check className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Đã thanh toán học phí Tháng 4</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Học sinh: Nguyễn Văn A • Lớp 6A</p>
-                <span className="text-[10px] text-slate-400 mt-0.5 block">10:24</span>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Nguyễn Văn A • Lớp 6A (+300.000đ)</p>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">10:24 • VietQR MBBank</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="py-2.5 flex items-start gap-3 text-xs">
+            <Link href="/invoices" className="py-2.5 flex items-start gap-3 text-xs hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg p-1 transition-colors">
               <div className="w-7 h-7 rounded-lg bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Plus className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Tạo đợt thu mới: CLB Pickleball</p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">Phát hành 12 thông báo thanh toán</p>
-                <span className="text-[10px] text-slate-400 mt-0.5 block">09:48</span>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">09:48 • Zalo ZNS</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="py-2.5 flex items-start gap-3 text-xs">
+            <Link href="/attendance" className="py-2.5 flex items-start gap-3 text-xs hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-lg p-1 transition-colors">
               <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <CalendarCheck className="w-3.5 h-3.5" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-[#101828] dark:text-[#F8FAFC] truncate">Điểm danh xong ca sáng</p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">18/20 thành viên có mặt</p>
-                <span className="text-[10px] text-slate-400 mt-0.5 block">08:21</span>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">08:21 • Tỷ lệ 90%</span>
               </div>
-            </div>
+            </Link>
           </div>
 
           <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-[#E4E7EC] dark:border-[#1E293B]">
-            <span>Audit log ghi nhận đầy đủ</span>
+            <span>Audit log bất biến (Append-only)</span>
             <ShieldCheck className="w-3.5 h-3.5 text-[#2538D9] dark:text-indigo-400" />
           </div>
         </div>

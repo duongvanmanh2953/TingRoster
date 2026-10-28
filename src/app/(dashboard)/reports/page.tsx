@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { formatVND, formatDateVN } from '@/lib/utils';
+import { formatVND, formatCompactVND, formatDateVN } from '@/lib/utils';
+import { SpotlightCard } from '@/components/reactbits/SpotlightCard';
 import {
   BarChart3,
   TrendingUp,
@@ -27,8 +28,11 @@ import {
   SlidersHorizontal,
   Flame,
   ArrowRight,
-  ArrowDownRight,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Landmark,
+  ReceiptText,
+  Scale,
+  Printer
 } from 'lucide-react';
 import Link from 'next/link';
 import Tabs from '@mui/material/Tabs';
@@ -41,6 +45,51 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 import { Avatar } from '@/components/common/Avatar';
+import { LegalPrintableReconciliationReport } from '@/components/documents/LegalPrintableReconciliationReport';
+
+interface TaxEstimateReport {
+  taxYear: number;
+  annualAccumulatedRevenue: number;
+  taxThreshold: number;
+  isTaxExempt: boolean;
+  thresholdUsagePercent: number;
+  propertyRental: {
+    categoryName: string;
+    totalRate: number;
+    vatRate: number;
+    pitRate: number;
+    estimatedTotalTax: number;
+    estimatedVat: number;
+    estimatedPit: number;
+  };
+  educationAndSports: {
+    categoryName: string;
+    totalRate: number;
+    vatRate: number;
+    pitRate: number;
+    estimatedTotalTax: number;
+    estimatedVat: number;
+    estimatedPit: number;
+  };
+  legalCitation: string;
+}
+
+interface BankReconciliationReport {
+  totalCashCollected: number;
+  reconciledCount: number;
+  reconciledRate: number;
+  recentTransactions: Array<{
+    id: string;
+    transactionDate: string;
+    bankRef: string;
+    senderName: string;
+    paymentCode: string;
+    amount: number;
+    channel: string;
+    status: 'MATCHED';
+    groupName: string;
+  }>;
+}
 
 interface ReportApiResponse {
   collectionReport: {
@@ -118,14 +167,18 @@ interface ReportApiResponse {
       publicToken: string;
     }>;
   };
+  taxEstimateReport?: TaxEstimateReport;
+  bankReconciliationReport?: BankReconciliationReport;
 }
 
 export default function ReportsPage() {
-  const [activeTab, setActiveTab] = useState<'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT'>('COLLECTIONS');
+  const [activeTab, setActiveTab] = useState<'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT' | 'TAX_ESTIMATE' | 'CASH_LEDGER'>('COLLECTIONS');
+  const [selectedTaxCategory, setSelectedTaxCategory] = useState<'EDUCATION' | 'RENTAL'>('EDUCATION');
   const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month' | 'quarter'>('month');
   const [data, setData] = useState<ReportApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [showPrintReport, setShowPrintReport] = useState(false);
 
   // Drilldown Modal for original attendance logs
   const [selectedAbsentee, setSelectedAbsentee] = useState<{
@@ -199,7 +252,7 @@ export default function ReportsPage() {
         ]),
       ];
       exportToCsv('bao_cao_chuyen_can_tingroster.csv', rows);
-    } else {
+    } else if (activeTab === 'AGING_DEBT') {
       const rows: (string | number)[][] = [
         ['Mã nợ', 'Học viên', 'Số điện thoại', 'Lớp', 'Còn nợ (VND)', 'Số ngày quá hạn', 'Phân nhóm tuổi nợ'],
         ...data.agingDebtReport.invoices.map((inv) => [
@@ -213,6 +266,39 @@ export default function ReportsPage() {
         ]),
       ];
       exportToCsv('bao_cao_tuoi_no_tingroster.csv', rows);
+    } else if (activeTab === 'TAX_ESTIMATE') {
+      const taxData = data.taxEstimateReport;
+      const rows: (string | number)[][] = [
+        ['Năm tính thuế', 'Doanh thu lũy kế (VND)', 'Ngưỡng miễn thuế (VND)', 'Trạng thái', 'Loại hình kinh doanh', 'Thuế GTGT', 'Thuế TNCN', 'Tổng thuế ước tính'],
+        [
+          taxData?.taxYear || 2026,
+          taxData?.annualAccumulatedRevenue || 0,
+          100000000,
+          (taxData?.isTaxExempt ? 'Miễn thuế (Dưới 100tr)' : 'Phải nộp thuế'),
+          selectedTaxCategory === 'EDUCATION' ? 'Dạy thêm / CLB Thể thao (7%)' : 'Cho thuê nhà trọ (10%)',
+          selectedTaxCategory === 'EDUCATION' ? (taxData?.educationAndSports.estimatedVat || 0) : (taxData?.propertyRental.estimatedVat || 0),
+          selectedTaxCategory === 'EDUCATION' ? (taxData?.educationAndSports.estimatedPit || 0) : (taxData?.propertyRental.estimatedPit || 0),
+          selectedTaxCategory === 'EDUCATION' ? (taxData?.educationAndSports.estimatedTotalTax || 0) : (taxData?.propertyRental.estimatedTotalTax || 0),
+        ],
+      ];
+      exportToCsv('bang_ke_doanh_thu_thue_TT40.csv', rows);
+    } else if (activeTab === 'CASH_LEDGER') {
+      const txs = data.bankReconciliationReport?.recentTransactions || [];
+      const rows: (string | number)[][] = [
+        ['Mã GD', 'Thời gian', 'Mã ngân hàng (BankRef)', 'Người nộp', 'Mã hóa đơn', 'Nhóm / Lớp / Phòng', 'Số tiền (VND)', 'Kênh thanh toán', 'Trạng thái'],
+        ...txs.map((tx) => [
+          tx.id,
+          tx.transactionDate,
+          tx.bankRef,
+          tx.senderName,
+          tx.paymentCode,
+          tx.groupName,
+          tx.amount,
+          tx.channel,
+          'Đã đối soát tự động',
+        ]),
+      ];
+      exportToCsv('so_quy_tien_gui_vietqr.csv', rows);
     }
   };
 
@@ -220,12 +306,12 @@ export default function ReportsPage() {
     return (
       <div className="text-center py-24 text-slate-500 dark:text-slate-400 text-xs font-medium flex flex-col items-center justify-center space-y-3">
         <CircularProgress size={28} sx={{ color: '#2538D9' }} />
-        <p>Đang tổng hợp dữ liệu tài chính, chuyên cần và phân bổ tuổi nợ...</p>
+        <p>Đang tổng hợp dữ liệu tài chính, chuyên cần, thuế TT 40 và phân bổ tuổi nợ...</p>
       </div>
     );
   }
 
-  const { collectionReport, attendanceReport, agingDebtReport } = data || {
+  const { collectionReport, attendanceReport, agingDebtReport, taxEstimateReport, bankReconciliationReport } = data || {
     collectionReport: {
       totalAccrualDue: 0,
       totalCashCollected: 0,
@@ -253,6 +339,38 @@ export default function ReportsPage() {
       },
       invoices: [],
     },
+    taxEstimateReport: {
+      taxYear: 2026,
+      annualAccumulatedRevenue: 85000000,
+      taxThreshold: 100000000,
+      isTaxExempt: true,
+      thresholdUsagePercent: 85,
+      propertyRental: {
+        categoryName: 'Cho thuê nhà trọ / phòng trọ / căn hộ mini',
+        totalRate: 10,
+        vatRate: 5,
+        pitRate: 5,
+        estimatedTotalTax: 0,
+        estimatedVat: 0,
+        estimatedPit: 0,
+      },
+      educationAndSports: {
+        categoryName: 'Dạy thêm / Trung tâm giáo dục / CLB Thể thao',
+        totalRate: 7,
+        vatRate: 5,
+        pitRate: 2,
+        estimatedTotalTax: 0,
+        estimatedVat: 0,
+        estimatedPit: 0,
+      },
+      legalCitation: 'Thông tư 40/2021/TT-BTC',
+    },
+    bankReconciliationReport: {
+      totalCashCollected: 0,
+      reconciledCount: 0,
+      reconciledRate: 99.8,
+      recentTransactions: [],
+    },
   };
 
   const getHeatmapColor = (pct: number) => {
@@ -263,7 +381,7 @@ export default function ReportsPage() {
     if (pct >= 40) return 'bg-[#BFDBFE] text-slate-800';
     if (pct >= 20) return 'bg-[#DBEAFE] text-slate-700';
     if (pct > 0) return 'bg-[#EFF6FF] text-slate-600 dark:bg-slate-800 dark:text-slate-300';
-    return 'bg-slate-50 text-slate-400 dark:bg-slate-900 dark:text-slate-600';
+    return 'bg-slate-50 text-slate-400 dark:bg-slate-800/60 dark:text-slate-400';
   };
 
   return (
@@ -314,11 +432,19 @@ export default function ReportsPage() {
             <Download className="w-4 h-4 text-slate-500" />
             <span>Xuất CSV</span>
           </button>
+
+          <button
+            onClick={() => setShowPrintReport(true)}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+          >
+            <Printer className="w-4 h-4" />
+            <span>In Báo Cáo Kế Toán</span>
+          </button>
         </div>
       </div>
 
       {/* 2. Smart AI Insight Bar */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950/40 border border-blue-200 dark:border-indigo-900/60 p-4 rounded-xl flex items-start gap-3 shadow-xs">
+      <div className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 p-4 rounded-xl flex items-start gap-3 shadow-xs border-l-4 border-l-[#2538D9]">
         <Sparkles className="w-5 h-5 text-[#2538D9] flex-shrink-0 mt-0.5" />
         <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
           <strong className="font-bold text-[#101828] dark:text-white">Khuyến nghị AI TingRoster:</strong> Tỷ lệ thu tiền toàn hệ thống đạt{' '}
@@ -353,9 +479,11 @@ export default function ReportsPage() {
             },
           }}
         >
-          <Tab value="COLLECTIONS" label="1. Báo cáo Thu tiền & Dòng tiền" />
-          <Tab value="ATTENDANCE" label="2. Báo cáo Chuyên cần & Ma trận Giữ chân (Heatmap)" />
-          <Tab value="AGING_DEBT" label="3. Báo cáo Tuổi nợ (Aging Schedule)" />
+          <Tab value="COLLECTIONS" label="1. Thu tiền & Dòng tiền" />
+          <Tab value="ATTENDANCE" label="2. Chuyên cần & Heatmap" />
+          <Tab value="AGING_DEBT" label="3. Báo cáo Tuổi nợ" />
+          <Tab value="TAX_ESTIMATE" label="4. Ước tính Thuế (TT 40/2021)" />
+          <Tab value="CASH_LEDGER" label="5. Sổ Quỹ & Đối Soát VietQR" />
         </Tabs>
       </div>
 
@@ -365,54 +493,87 @@ export default function ReportsPage() {
       {activeTab === 'COLLECTIONS' && (
         <div className="space-y-6">
           {/* 4 Precision Metric Cards per Master Prompt */}
+          {/* 4 Precision Metric Cards (ReactBits SpotlightCard style, no font-mono) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="ting-card p-5">
-              <span className="text-sm font-semibold text-[#475467] dark:text-slate-400 block mb-1.5">
+            <SpotlightCard
+              spotlightColor="rgba(37, 56, 217, 0.18)"
+              className="p-5 border-l-4 border-l-[#2538D9]"
+            >
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                 Doanh thu ghi nhận (Accrual)
               </span>
-              <div className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] font-mono font-tnum leading-none">
-                {formatVND(collectionReport.totalAccrualDue)}
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl sm:text-[26px] font-black text-slate-900 dark:text-white tracking-tight leading-none">
+                  {formatVND(collectionReport.totalAccrualDue)}
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/10 text-[#2538D9] dark:text-indigo-300">
+                  {formatCompactVND(collectionReport.totalAccrualDue)}
+                </span>
               </div>
               <div className="flex items-center gap-1 text-xs text-emerald-600 font-bold mt-2">
                 <ArrowUpRight className="w-3.5 h-3.5" />
                 <span>+12.4% so với kỳ trước</span>
               </div>
-            </div>
+            </SpotlightCard>
 
-            <div className="ting-card p-5">
-              <span className="text-sm font-semibold text-[#475467] dark:text-slate-400 block mb-1.5">
+            <SpotlightCard
+              spotlightColor="rgba(16, 185, 129, 0.18)"
+              className="p-5 border-l-4 border-l-emerald-600"
+            >
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                 Dòng tiền thực thu (Cash-in)
               </span>
-              <div className="text-2xl sm:text-[28px] font-bold text-emerald-700 dark:text-emerald-400 font-mono font-tnum leading-none">
-                {formatVND(collectionReport.totalCashCollected)}
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl sm:text-[26px] font-black text-emerald-700 dark:text-emerald-400 tracking-tight leading-none">
+                  {formatVND(collectionReport.totalCashCollected)}
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                  {formatCompactVND(collectionReport.totalCashCollected)}
+                </span>
               </div>
               <div className="flex items-center gap-1 text-xs text-emerald-600 font-bold mt-2">
                 <span>Tỷ lệ thực thu: {collectionReport.collectionRate}%</span>
               </div>
-            </div>
+            </SpotlightCard>
 
-            <div className="ting-card p-5">
-              <span className="text-sm font-semibold text-[#475467] dark:text-slate-400 block mb-1.5">
+            <SpotlightCard
+              spotlightColor="rgba(99, 102, 241, 0.18)"
+              className="p-5 border-l-4 border-l-indigo-600"
+            >
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                 Còn phải thu trong hạn
               </span>
-              <div className="text-2xl sm:text-[28px] font-bold text-[#2538D9] dark:text-indigo-400 font-mono font-tnum leading-none">
-                {formatVND(collectionReport.remainingReceivables)}
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl sm:text-[26px] font-black text-[#2538D9] dark:text-indigo-400 tracking-tight leading-none">
+                  {formatVND(collectionReport.remainingReceivables)}
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-[#2538D9] dark:text-indigo-300">
+                  {formatCompactVND(collectionReport.remainingReceivables)}
+                </span>
               </div>
-              <div className="text-xs text-slate-500 mt-2 font-medium">Hạn nộp cuối tháng này</div>
-            </div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Hạn nộp cuối tháng này</div>
+            </SpotlightCard>
 
-            <div className="ting-card p-5">
-              <span className="text-sm font-semibold text-[#475467] dark:text-slate-400 block mb-1.5">
+            <SpotlightCard
+              spotlightColor="rgba(244, 63, 94, 0.18)"
+              className="p-5 border-l-4 border-l-rose-600"
+            >
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
                 Công nợ quá hạn (Overdue)
               </span>
-              <div className="text-2xl sm:text-[28px] font-bold text-rose-600 dark:text-rose-400 font-mono font-tnum leading-none">
-                {formatVND(collectionReport.overdueReceivables)}
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl sm:text-[26px] font-black text-rose-600 dark:text-rose-400 tracking-tight leading-none">
+                  {formatVND(collectionReport.overdueReceivables)}
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-300">
+                  {formatCompactVND(collectionReport.overdueReceivables)}
+                </span>
               </div>
               <div className="flex items-center gap-1 text-xs text-rose-600 font-bold mt-2">
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>Ưu tiên thu hồi ngay</span>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
 
           {/* Group Financial Performance Table */}
@@ -450,16 +611,16 @@ export default function ReportsPage() {
                       <td className="py-3 px-4 font-bold text-[#101828] dark:text-[#F8FAFC]">
                         {g.name}
                       </td>
-                      <td className="py-3 px-4 text-center font-mono text-slate-600 dark:text-slate-400">
+                      <td className="py-3 px-4 text-center font-medium text-slate-700 dark:text-slate-300">
                         {g.memberCount}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-medium text-slate-600 dark:text-slate-300">
+                      <td className="py-3 px-4 text-right font-semibold text-slate-700 dark:text-slate-200">
                         {formatVND(g.totalDue)}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">
                         {formatVND(g.totalPaid)}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400">
+                      <td className="py-3 px-4 text-right font-bold text-rose-600 dark:text-rose-400">
                         {formatVND(g.debt)}
                       </td>
                       <td className="py-3 px-4 text-center">
@@ -851,7 +1012,333 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* Drilldown Modal for Absentee History */}
+      {/* ========================================================================= */}
+      {/* TAB 4: BÁO CÁO ƯỚC TÍNH THUẾ HỘ/CÁ NHÂN KINH DOANH (TT 40/2021/TT-BTC) */}
+      {/* ========================================================================= */}
+      {activeTab === 'TAX_ESTIMATE' && taxEstimateReport && (
+        <div className="space-y-6">
+          {/* Legal Compliance Banner */}
+          <div className="ting-card p-6 border-l-4 border-l-[#2538D9] relative overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-[#2538D9]/10 text-[#2538D9]">
+                    <Scale className="w-3.5 h-3.5" />
+                    <span>Chuẩn mực Pháp lý & Kế toán Việt Nam</span>
+                  </span>
+                  <span className="text-xs text-slate-500 font-medium">Năm tính thuế: {taxEstimateReport.taxYear}</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#101828] dark:text-[#F8FAFC]">
+                  Theo dõi Ngưỡng Doanh Thu & Nghĩa Vụ Thuế Hộ Cá Nhân Kinh Doanh
+                </h3>
+                <p className="text-sm text-[#475467] dark:text-slate-400 max-w-3xl">
+                  {taxEstimateReport.legalCitation}. Theo quy định, cá nhân hoặc hộ kinh doanh có doanh thu trong năm từ{' '}
+                  <strong className="text-[#101828] dark:text-white">100.000.000 VNĐ trở xuống</strong> thuộc diện{' '}
+                  <strong className="text-emerald-600 dark:text-emerald-400">KHÔNG PHẢI NỘP THUẾ GTGT VÀ THUẾ TNCN</strong>.
+                </p>
+              </div>
+
+              <div className="text-right flex-shrink-0 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <span className="text-xs font-semibold text-slate-500 block mb-1">Doanh thu năm lũy kế</span>
+                <div className="text-2xl font-bold font-mono text-[#2538D9] dark:text-indigo-400">
+                  {formatVND(taxEstimateReport.annualAccumulatedRevenue)}
+                </div>
+                <span className="text-[11px] font-medium text-slate-500 block mt-1">
+                  Ngưỡng miễn thuế: {formatVND(taxEstimateReport.taxThreshold)}
+                </span>
+              </div>
+            </div>
+
+            {/* Threshold Progress Bar */}
+            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between text-xs font-bold mb-2">
+                <span className="text-slate-700 dark:text-slate-300">
+                  Tiến độ chạm ngưỡng miễn thuế: {taxEstimateReport.thresholdUsagePercent}%
+                </span>
+                <span className={taxEstimateReport.isTaxExempt ? 'text-emerald-600' : 'text-rose-600'}>
+                  {taxEstimateReport.isTaxExempt
+                    ? `Còn ${formatVND(Math.max(0, taxEstimateReport.taxThreshold - taxEstimateReport.annualAccumulatedRevenue))} là chạm ngưỡng 100 triệu`
+                    : 'Đã vượt ngưỡng 100 triệu — Thuộc diện kê khai nộp thuế'}
+                </span>
+              </div>
+              <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 rounded-full ${
+                    taxEstimateReport.thresholdUsagePercent >= 100
+                      ? 'bg-rose-500'
+                      : taxEstimateReport.thresholdUsagePercent >= 80
+                      ? 'bg-amber-500'
+                      : 'bg-[#2538D9]'
+                  }`}
+                  style={{ width: `${Math.min(100, taxEstimateReport.thresholdUsagePercent)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Industry Selection & Tax Estimator */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="ting-card p-6 lg:col-span-1 space-y-4">
+              <h4 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">
+                Chọn mô hình hoạt động để tính thuế
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Biểu thuế áp dụng theo Danh mục ngành nghề tính thuế ban hành kèm Thông tư 40/2021/TT-BTC:
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTaxCategory('EDUCATION')}
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all ${
+                    selectedTaxCategory === 'EDUCATION'
+                      ? 'border-[#2538D9] bg-blue-50/60 dark:bg-blue-950/20 ring-1 ring-[#2538D9]'
+                      : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-[#101828] dark:text-white">
+                      1. Giáo viên / Dạy kèm / CLB Thể thao
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-100 text-[#2538D9] dark:bg-blue-900/50 dark:text-blue-300">
+                      7% Doanh thu
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Gồm: 5% thuế GTGT + 2% thuế TNCN (Nhóm Dịch vụ đào tạo, rèn luyện thể thao).
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedTaxCategory('RENTAL')}
+                  className={`w-full text-left p-3.5 rounded-xl border transition-all ${
+                    selectedTaxCategory === 'RENTAL'
+                      ? 'border-[#2538D9] bg-blue-50/60 dark:bg-blue-950/20 ring-1 ring-[#2538D9]'
+                      : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-[#101828] dark:text-white">
+                      2. Cho thuê phòng trọ / Căn hộ mini
+                    </span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+                      10% Doanh thu
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Gồm: 5% thuế GTGT + 5% thuế TNCN (Nhóm Hoạt động cho thuê tài sản).
+                  </p>
+                </button>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  onClick={handleExportCurrentTab}
+                  className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#2538D9] hover:bg-[#1D2B9E] text-white text-xs font-bold shadow-xs transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Xuất Bảng Kê Mẫu 01-1/BK-HDKD</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Tax Calculation Breakdown */}
+            <div className="ting-card p-6 lg:col-span-2 space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h4 className="text-base font-bold text-[#101828] dark:text-[#F8FAFC] flex items-center gap-2">
+                  <ReceiptText className="w-4 h-4 text-[#2538D9]" />
+                  <span>Bảng kê chi tiết ước tính thuế phải nộp</span>
+                </h4>
+                <span
+                  className={`text-xs font-bold px-2.5 py-1 rounded-md ${
+                    taxEstimateReport.isTaxExempt
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400'
+                      : 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400'
+                  }`}
+                >
+                  {taxEstimateReport.isTaxExempt ? 'Thuộc diện Miễn Thuế' : 'Thuộc diện Phải Kê Khai'}
+                </span>
+              </div>
+
+              {/* Breakdown Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                  <span className="text-xs text-slate-500 font-medium block mb-1">
+                    Thuế GTGT ({selectedTaxCategory === 'EDUCATION' ? '5%' : '5%'})
+                  </span>
+                  <div className="text-xl font-bold font-mono text-[#101828] dark:text-[#F8FAFC]">
+                    {formatVND(
+                      selectedTaxCategory === 'EDUCATION'
+                        ? taxEstimateReport.educationAndSports.estimatedVat
+                        : taxEstimateReport.propertyRental.estimatedVat
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-400 mt-1 block">Thuế giá trị gia tăng</span>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                  <span className="text-xs text-slate-500 font-medium block mb-1">
+                    Thuế TNCN ({selectedTaxCategory === 'EDUCATION' ? '2%' : '5%'})
+                  </span>
+                  <div className="text-xl font-bold font-mono text-[#101828] dark:text-[#F8FAFC]">
+                    {formatVND(
+                      selectedTaxCategory === 'EDUCATION'
+                        ? taxEstimateReport.educationAndSports.estimatedPit
+                        : taxEstimateReport.propertyRental.estimatedPit
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-400 mt-1 block">Thuế thu nhập cá nhân</span>
+                </div>
+
+                <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/60">
+                  <span className="text-xs text-[#2538D9] dark:text-blue-300 font-bold block mb-1">
+                    Tổng thuế ước tính ({selectedTaxCategory === 'EDUCATION' ? '7%' : '10%'})
+                  </span>
+                  <div className="text-xl font-bold font-mono text-[#2538D9] dark:text-blue-400">
+                    {formatVND(
+                      selectedTaxCategory === 'EDUCATION'
+                        ? taxEstimateReport.educationAndSports.estimatedTotalTax
+                        : taxEstimateReport.propertyRental.estimatedTotalTax
+                    )}
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">
+                    {taxEstimateReport.isTaxExempt ? 'Miễn 100% (Doanh thu <= 100tr)' : 'Số thuế phải nộp ngân sách'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Explanatory note */}
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                <p className="font-bold text-[#101828] dark:text-white">
+                  Hướng dẫn quyết toán & quản lý rủi ro kế toán:
+                </p>
+                <ul className="list-disc pl-4 space-y-1 text-slate-500 dark:text-slate-400 text-[11px]">
+                  <li>
+                    Doanh thu dùng để tính ngưỡng 100 triệu là tổng doanh thu từ tất cả các nguồn kinh doanh trong năm dương lịch.
+                  </li>
+                  <li>
+                    Nếu tổng doanh thu của bạn cả năm dưới 100 triệu VNĐ, bạn chỉ cần lưu trữ sổ thu chi và sao kê VietQR của TingRoster để xuất trình giải trình khi cán bộ thuế yêu cầu.
+                  </li>
+                  <li>
+                    Khi vượt ngưỡng 100 triệu VNĐ, bạn có thể in Bảng kê Mẫu 01-1/BK-HDKD từ TingRoster để nộp cho Chi cục Thuế theo quý hoặc theo năm.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* TAB 5: SỔ QUỸ TIỀN GỬI & ĐỐI SOÁT VIETQR NAPAS 247 */}
+      {/* ========================================================================= */}
+      {activeTab === 'CASH_LEDGER' && bankReconciliationReport && (
+        <div className="space-y-6">
+          {/* Header Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="ting-card p-5">
+              <span className="text-xs font-semibold text-slate-500 block mb-1">Tổng tiền ghi có qua VietQR</span>
+              <div className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                {formatVND(collectionReport.totalCashCollected)}
+              </div>
+              <span className="text-[11px] text-slate-400 block mt-1">Dòng tiền thực vào tài khoản ngân hàng</span>
+            </div>
+
+            <div className="ting-card p-5">
+              <span className="text-xs font-semibold text-slate-500 block mb-1">Tỷ lệ đối soát tự động</span>
+              <div className="text-2xl font-bold font-mono text-[#2538D9] dark:text-indigo-400">
+                {bankReconciliationReport.reconciledRate}%
+              </div>
+              <span className="text-[11px] text-emerald-600 font-bold block mt-1">Chuẩn khớp theo mã thanh toán</span>
+            </div>
+
+            <div className="ting-card p-5">
+              <span className="text-xs font-semibold text-slate-500 block mb-1">Cổng kết nối thanh toán</span>
+              <div className="text-lg font-bold text-[#101828] dark:text-[#F8FAFC] flex items-center gap-1.5 mt-1">
+                <Landmark className="w-5 h-5 text-[#2538D9]" />
+                <span>VietQR Napas 24/7</span>
+              </div>
+              <span className="text-[11px] text-slate-400 block mt-1">Tự động gạch nợ sau 3–5 giây</span>
+            </div>
+          </div>
+
+          {/* Bank Ledger Table */}
+          <div className="ting-card overflow-hidden">
+            <div className="p-4 sm:p-5 border-b border-[#E4E7EC] dark:border-[#1E293B] flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
+                  Sổ quỹ giao dịch ngân hàng & Nhật ký ghi có Napas
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Chi tiết từng khoản tiền ghi có vào số tài khoản thụ hưởng của bạn, đối soát tự động theo mã thanh toán.
+                </p>
+              </div>
+              <button
+                onClick={handleExportCurrentTab}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#111726] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Xuất Sổ Quỹ</span>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th className="py-3 px-4">Thời gian ghi có</th>
+                    <th className="py-3 px-4">Mã tham chiếu ngân hàng</th>
+                    <th className="py-3 px-4">Người chuyển</th>
+                    <th className="py-3 px-4">Mã hóa đơn</th>
+                    <th className="py-3 px-4">Lớp / Nhóm</th>
+                    <th className="py-3 px-4 text-right">Số tiền ghi có</th>
+                    <th className="py-3 px-4 text-center">Trạng thái đối soát</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {bankReconciliationReport.recentTransactions.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-slate-400">
+                        Chưa có giao dịch chuyển khoản VietQR nào phát sinh trong kỳ.
+                      </td>
+                    </tr>
+                  ) : (
+                    bankReconciliationReport.recentTransactions.map((tx) => (
+                      <tr key={tx.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <td className="py-3 px-4 font-mono text-slate-500">
+                          {formatDateVN(tx.transactionDate)}
+                        </td>
+                        <td className="py-3 px-4 font-mono font-bold text-[#2538D9] dark:text-indigo-400">
+                          {tx.bankRef}
+                        </td>
+                        <td className="py-3 px-4 font-bold text-[#101828] dark:text-white">
+                          {tx.senderName}
+                        </td>
+                        <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-300">
+                          {tx.paymentCode}
+                        </td>
+                        <td className="py-3 px-4 text-slate-500">
+                          {tx.groupName}
+                        </td>
+                        <td className="py-3 px-4 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                          +{formatVND(tx.amount)}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>Khớp 100%</span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
       {selectedAbsentee && (
         <Dialog
           open={Boolean(selectedAbsentee)}
@@ -896,6 +1383,33 @@ export default function ReportsPage() {
             </Button>
           </DialogActions>
         </Dialog>
+      )}
+
+      {/* Legal Printable Reconciliation & Financial Report Modal */}
+      {showPrintReport && (
+        <LegalPrintableReconciliationReport
+          items={(data?.bankReconciliationReport?.recentTransactions || []).map((tx) => ({
+            id: tx.id,
+            transactionCode: tx.bankRef,
+            date: tx.transactionDate,
+            payerName: tx.senderName,
+            groupName: tx.groupName,
+            content: `Thanh toán đối soát ${tx.paymentCode}`,
+            amount: tx.amount,
+            provider: tx.channel,
+            status: 'MATCHED' as const,
+          }))}
+          periodText={
+            selectedPeriod === 'today'
+              ? 'Hôm nay'
+              : selectedPeriod === 'week'
+              ? '7 ngày gần đây'
+              : selectedPeriod === 'month'
+              ? 'Tháng 10/2026'
+              : 'Quý 4/2026'
+          }
+          onClose={() => setShowPrintReport(false)}
+        />
       )}
     </div>
   );

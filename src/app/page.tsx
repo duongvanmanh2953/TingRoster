@@ -464,7 +464,7 @@ export default function HomePage() {
               </div>
 
               {/* Interactive VietQR Webhook Box (Feature 2 Demo) */}
-              <div className="p-3.5 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/40 dark:to-blue-950/40 border border-[#2538D9]/25 space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#F9FAFB] dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <QrCode className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />

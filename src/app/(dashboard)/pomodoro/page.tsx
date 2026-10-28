@@ -68,12 +68,8 @@ export default function PomodoroPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
         {/* Left / Center: Glowing Circular Timer (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col items-center justify-center p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-[#12172C]/90 via-[#0E1224] to-[#0A0D1B] border border-indigo-500/20 backdrop-blur-2xl shadow-2xl relative overflow-hidden min-h-[460px]">
+        <div className="lg:col-span-7 flex flex-col items-center justify-center p-8 sm:p-12 rounded-3xl bg-[#0F172A] border border-slate-800 shadow-xl relative overflow-hidden min-h-[460px]">
           
-          {/* Ambient cosmic glows */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-64 h-32 bg-purple-600/20 rounded-full blur-2xl pointer-events-none" />
-
           {/* Mode Badge */}
           <div className="relative z-10 mb-8">
             <span className="px-4 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-semibold text-xs tracking-wider uppercase">
@@ -118,7 +114,7 @@ export default function PomodoroPage() {
               {/* Play / Pause Button inside ring */}
               <button
                 onClick={toggleTimer}
-                className="mt-4 w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center shadow-lg shadow-indigo-600/40 hover:scale-105 transition-all"
+                className="mt-4 w-12 h-12 rounded-full bg-[#2538D9] hover:bg-[#1E2DB8] text-white flex items-center justify-center shadow-md shadow-[#2538D9]/30 hover:scale-105 transition-all"
               >
                 {isRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
               </button>

@@ -287,35 +287,35 @@ export default function MembersPage() {
       <div className="bg-white dark:bg-[#111726] p-4 rounded-lg border border-[#E4E7EC] dark:border-[#1E293B] shadow-xs">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 divide-y md:divide-y-0 md:divide-x divide-[#E4E7EC] dark:divide-[#1E293B]">
           <div className="px-2 pt-2 md:pt-0">
-            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] tracking-tight block">
               {totalCount}
             </span>
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Tổng học viên</span>
           </div>
 
           <div className="px-2 pt-2 md:pt-0 md:pl-5">
-            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight block">
               {activeCount}
             </span>
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Đang hoạt động</span>
           </div>
 
           <div className="px-2 pt-2 md:pt-0 md:pl-5">
-            <span className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight block">
               {unpaidCount}
             </span>
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Chưa đóng học phí</span>
           </div>
 
           <div className="px-2 pt-2 md:pt-0 md:pl-5">
-            <span className="text-xl sm:text-2xl font-black text-[#2538D9] dark:text-indigo-400 font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-[#2538D9] dark:text-indigo-400 tracking-tight block">
               {paidCount}
             </span>
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Đã nộp đủ</span>
           </div>
 
           <div className="px-2 pt-2 md:pt-0 md:pl-5 col-span-2 md:col-span-1">
-            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] font-mono block">
+            <span className="text-xl sm:text-2xl font-black text-[#101828] dark:text-[#F8FAFC] tracking-tight block">
               94.5%
             </span>
             <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5 block">Chuyên cần bình quân</span>
@@ -520,7 +520,7 @@ export default function MembersPage() {
                       {/* Attendance */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono text-xs font-bold text-[#101828] dark:text-[#F8FAFC]">
+                          <span className="text-xs font-bold text-[#101828] dark:text-[#F8FAFC]">
                             {m._count?.attendances || 18}/20
                           </span>
                           <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 px-1 py-0.5 rounded border border-emerald-200 dark:border-emerald-800/40">

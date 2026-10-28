@@ -16,11 +16,22 @@ import {
   Zap,
   Building2,
   X,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { BankLogo } from '@/components/common/BankLogo';
 import { Avatar } from '@/components/common/Avatar';
 import { TingSelect } from '@/components/common/Select';
+import { TingBadge, TingStatusChip, TingTag } from '@/components/common/Badge';
 
 interface TransactionItem {
   id: string;
@@ -153,116 +164,165 @@ export default function TransactionsPage() {
     }
   };
 
-  const unmatchedCount = transactions.filter(
-    (tx) => tx.processingStatus === 'UNMATCHED'
-  ).length;
+  const unmatchedCount = transactions.filter((t) => t.processingStatus === 'UNMATCHED').length;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      
-      {/* 1. Header Toolbar */}
+      {/* Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
               <QrCode className="w-4 h-4" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#101828]">
-              Lịch sử & Đối soát VietQR
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#101828] dark:text-[#F8FAFC]">
+              Giao dịch & Đối soát VietQR
             </h1>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
-              Tự động 100%
-            </span>
+            <TingTag variantStyle="success" label="Webhook Live" />
           </div>
-          <p className="text-xs sm:text-sm text-[#475467] mt-1">
-            Theo dõi dòng tiền chuyển khoản VietQR, SePay & Casso tự động khớp và gạch nợ học phí
+          <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400 mt-1">
+            Lịch sử biến động số dư ngân hàng theo thời gian thực và tự động gạch nợ hóa đơn
           </p>
         </div>
 
-        <button
-          onClick={() => loadTransactions(tab)}
-          className="inline-flex items-center gap-2 px-3.5 py-2.5 border border-[#E4E7EC] bg-white rounded-xl hover:bg-slate-50 text-[#475467] hover:text-[#101828] text-xs font-semibold transition-colors shadow-xs"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`} />
-          <span>Làm mới danh sách</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Tooltip title="Tải lại giao dịch mới nhất" arrow>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => loadTransactions(tab)}
+              startIcon={
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? 'animate-spin text-[#2538D9]' : ''}`}
+                />
+              }
+              sx={{
+                borderRadius: '0.75rem',
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                borderColor: '#E4E7EC',
+                color: '#475467',
+                '&:hover': { borderColor: '#2538D9', color: '#2538D9' },
+              }}
+            >
+              Làm mới
+            </Button>
+          </Tooltip>
+        </div>
       </div>
 
-      {/* 4 Summary Metric Pills matching Panel 11 */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="ting-card p-3.5 flex items-center justify-between">
           <div>
-            <span className="text-xs text-[#475467] font-medium block">Giao dịch nhận được</span>
-            <span className="text-xl font-bold text-[#101828] tabular-nums mt-0.5 block">{transactions.length || 125}</span>
+            <span className="text-xs text-[#475467] dark:text-slate-400 font-medium block">
+              Tổng số tiền đã nhận
+            </span>
+            <span className="text-xl font-bold text-[#101828] dark:text-[#F8FAFC] tabular-nums mt-0.5 block">
+              {formatVND(transactions.reduce((acc, t) => acc + t.amount, 0))}
+            </span>
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9]" />
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center">
+            <Zap className="w-4 h-4" />
+          </div>
         </div>
 
         <div className="ting-card p-3.5 flex items-center justify-between">
           <div>
-            <span className="text-xs text-emerald-700 font-medium block">Đã khớp</span>
-            <span className="text-xl font-bold text-emerald-700 tabular-nums mt-0.5 block">{transactions.length - unmatchedCount || 124}</span>
+            <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium block">
+              Đã khớp
+            </span>
+            <span className="text-xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums mt-0.5 block">
+              {transactions.length - unmatchedCount || 0}
+            </span>
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          <TingBadge variant="dot" color="success" />
         </div>
 
         <div className="ting-card p-3.5 flex items-center justify-between">
           <div>
-            <span className="text-xs text-amber-700 font-medium block">Chưa khớp</span>
-            <span className="text-xl font-bold text-amber-700 tabular-nums mt-0.5 block">{unmatchedCount || 4}</span>
+            <span className="text-xs text-amber-700 dark:text-amber-400 font-medium block">
+              Chưa khớp
+            </span>
+            <span className="text-xl font-bold text-amber-700 dark:text-amber-400 tabular-nums mt-0.5 block">
+              {unmatchedCount}
+            </span>
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+          {unmatchedCount > 0 ? (
+            <TingBadge pulse variant="dot" />
+          ) : (
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+          )}
         </div>
 
         <div className="ting-card p-3.5 flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-500 font-medium block">Lỗi / Đảo chiều</span>
-            <span className="text-xl font-bold text-slate-600 tabular-nums mt-0.5 block">0</span>
+            <span className="text-xl font-bold text-slate-600 dark:text-slate-300 tabular-nums mt-0.5 block">
+              0
+            </span>
           </div>
-          <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700" />
         </div>
       </div>
 
-      {/* 2. Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#E4E7EC] pb-2">
-        <button
+      {/* Tabs with MUI Badges and Buttons */}
+      <div className="flex items-center gap-2 border-b border-[#E4E7EC] dark:border-[#1E293B] pb-2">
+        <Button
+          size="small"
           onClick={() => setTab('ALL')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            tab === 'ALL'
-              ? 'bg-[#2538D9] text-white shadow-sm shadow-[#2538D9]/30'
-              : 'text-[#475467] hover:text-[#101828] hover:bg-slate-100'
-          }`}
+          sx={{
+            borderRadius: '0.75rem',
+            px: 2,
+            py: 0.75,
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            textTransform: 'none',
+            bgcolor: tab === 'ALL' ? '#2538D9' : 'transparent',
+            color: tab === 'ALL' ? '#FFFFFF' : '#475467',
+            '&:hover': {
+              bgcolor: tab === 'ALL' ? '#1E2DB8' : 'rgba(0,0,0,0.04)',
+            },
+          }}
         >
           Tất cả giao dịch
-        </button>
+        </Button>
 
-        <button
-          onClick={() => setTab('UNMATCHED')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-            tab === 'UNMATCHED'
-              ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/30'
-              : 'text-[#475467] hover:text-[#101828] hover:bg-slate-100'
-          }`}
-        >
-          <span>Giao dịch chưa khớp</span>
-          {unmatchedCount > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20 text-white font-extrabold">
-              {unmatchedCount}
-            </span>
-          )}
-        </button>
+        <TingBadge badgeContent={unmatchedCount} color="warning">
+          <Button
+            size="small"
+            onClick={() => setTab('UNMATCHED')}
+            sx={{
+              borderRadius: '0.75rem',
+              px: 2,
+              py: 0.75,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              textTransform: 'none',
+              bgcolor: tab === 'UNMATCHED' ? '#F59E0B' : 'transparent',
+              color: tab === 'UNMATCHED' ? '#FFFFFF' : '#475467',
+              '&:hover': {
+                bgcolor: tab === 'UNMATCHED' ? '#D97706' : 'rgba(0,0,0,0.04)',
+              },
+            }}
+          >
+            Giao dịch chưa khớp
+          </Button>
+        </TingBadge>
       </div>
 
-      {/* 3. Transactions Table */}
+      {/* Transactions Table with MUI Status Chips */}
       <div className="ting-card overflow-hidden">
         {loading ? (
-          <div className="text-center py-16 text-[#475467] animate-pulse text-xs font-medium">
-            Đang tải lịch sử giao dịch ngân hàng...
+          <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#475467] text-xs font-medium">
+            <CircularProgress size={24} sx={{ color: '#2538D9' }} />
+            <span>Đang tải lịch sử giao dịch ngân hàng...</span>
           </div>
         ) : transactions.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] uppercase font-bold tracking-wider text-[11px]">
+              <thead className="bg-[#F8FAFC] dark:bg-[#111726] border-b border-[#E4E7EC] dark:border-[#1E293B] text-[#475467] dark:text-slate-400 uppercase font-bold tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Thời gian</th>
                   <th className="py-3 px-4">Cổng</th>
@@ -273,38 +333,39 @@ export default function TransactionsPage() {
                   <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E4E7EC]">
+              <tbody className="divide-y divide-[#E4E7EC] dark:divide-[#1E293B]">
                 {transactions.map((tx) => {
                   return (
-                    <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3.5 px-4 tabular-nums text-[#475467] whitespace-nowrap">
+                    <tr
+                      key={tx.id}
+                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                    >
+                      <td className="py-3.5 px-4 tabular-nums text-[#475467] dark:text-slate-400 whitespace-nowrap">
                         {formatDateTimeVN(tx.transactionDate)}
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-[#101828]">
+                      <td className="py-3.5 px-4 font-semibold text-[#101828] dark:text-[#F8FAFC]">
                         <div className="flex items-center gap-2">
-                          <BankLogo bankId={tx.provider.includes('MB') ? 'MB' : 'VCB'} size="xs" />
+                          <BankLogo
+                            bankId={tx.provider.includes('MB') ? 'MB' : 'VCB'}
+                            size="xs"
+                          />
                           <span>{tx.provider}</span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-[#101828] max-w-xs truncate font-medium">
+                      <td className="py-3.5 px-4 text-[#101828] dark:text-[#F8FAFC] max-w-xs truncate font-medium">
                         {tx.content}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-emerald-700 tabular-nums whitespace-nowrap">
+                      <td className="py-3.5 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap">
                         +{formatVND(tx.amount)}
                       </td>
                       <td className="py-3.5 px-4 text-center">
-                        {tx.processingStatus === 'PROCESSED' || tx.processingStatus === 'MATCHED' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3" /> Đã khớp
-                          </span>
+                        {tx.processingStatus === 'PROCESSED' ||
+                        tx.processingStatus === 'MATCHED' ? (
+                          <TingStatusChip status="SUCCESS" label="Đã khớp" />
                         ) : tx.processingStatus === 'UNMATCHED' ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                            <HelpCircle className="w-3 h-3" /> Chưa gán
-                          </span>
+                          <TingStatusChip status="PENDING" label="Chưa gán" />
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-300">
-                            {tx.processingStatus}
-                          </span>
+                          <TingStatusChip status="VOID" label={tx.processingStatus} />
                         )}
                       </td>
                       <td className="py-3.5 px-4 text-xs">
@@ -313,7 +374,7 @@ export default function TransactionsPage() {
                             <span className="font-bold text-[#2538D9] font-mono">
                               [{tx.matchedInvoice.paymentCode}]
                             </span>
-                            <span className="ml-1.5 text-[#101828] font-semibold">
+                            <span className="ml-1.5 text-[#101828] dark:text-[#F8FAFC] font-semibold">
                               {tx.matchedInvoice.member.name}
                             </span>
                           </div>
@@ -323,14 +384,23 @@ export default function TransactionsPage() {
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         {tx.processingStatus === 'UNMATCHED' && (
-                          <button
-                            type="button"
+                          <Button
+                            size="small"
+                            variant="contained"
                             onClick={() => handleOpenAssignModal(tx)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold rounded-lg shadow-xs transition-all"
+                            startIcon={<UserCheck className="w-3.5 h-3.5" />}
+                            sx={{
+                              bgcolor: '#2538D9',
+                              fontSize: '0.6875rem',
+                              fontWeight: 600,
+                              textTransform: 'none',
+                              borderRadius: '0.5rem',
+                              boxShadow: 'none',
+                              '&:hover': { bgcolor: '#1E2DB8' },
+                            }}
                           >
-                            <UserCheck className="w-3.5 h-3.5" />
-                            <span>Gán hóa đơn</span>
-                          </button>
+                            Gán hóa đơn
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -346,70 +416,96 @@ export default function TransactionsPage() {
         )}
       </div>
 
-      {/* 4. Manual Assignment Modal (Crisp Light Surface) */}
-      {selectedTx && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E4E7EC] rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-[#E4E7EC] pb-3">
-              <div>
-                <h3 className="text-base font-extrabold text-[#101828]">Gán giao dịch thủ công</h3>
-                <p className="text-[11px] text-[#475467]">Khớp giao dịch ngân hàng vào hóa đơn học viên tương ứng</p>
-              </div>
-              <button
-                onClick={() => setSelectedTx(null)}
-                className="p-1 text-slate-400 hover:text-[#101828] rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
+      {/* Manual Assignment Modal (Using MUI Dialog and Controls) */}
+      <Dialog
+        open={Boolean(selectedTx)}
+        onClose={() => !isAssigning && setSelectedTx(null)}
+        maxWidth="sm"
+        fullWidth
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: '1rem',
+              p: 1,
+            },
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 1.5, borderBottom: '1px solid #E4E7EC' }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-base font-extrabold text-[#101828] dark:text-[#F8FAFC] block">
+                Gán giao dịch thủ công
+              </span>
+              <span className="text-[11px] text-[#475467] dark:text-slate-400 block font-normal">
+                Khớp giao dịch ngân hàng vào hóa đơn học viên tương ứng
+              </span>
             </div>
+            <IconButton
+              size="small"
+              onClick={() => setSelectedTx(null)}
+              disabled={isAssigning}
+            >
+              <X className="w-4 h-4" />
+            </IconButton>
+          </div>
+        </DialogTitle>
 
-            <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#E4E7EC] space-y-1.5 text-xs">
-              <div className="flex justify-between">
-                <span className="text-[#475467]">Số tiền nhận:</span>
-                <span className="font-bold text-emerald-700 text-sm tabular-nums">
-                  +{formatVND(selectedTx.amount)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#475467]">Nội dung CK:</span>
-                <span className="font-semibold text-[#101828] break-all">{selectedTx.content}</span>
-              </div>
-            </div>
-
-            {/* AI Advisor Card */}
-            {aiSuggestions.length > 0 && (
-              <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2 text-xs">
-                <div className="flex items-center justify-between text-emerald-800 font-bold">
-                  <span className="flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-emerald-600" />
-                    AI Đề Xuất Trùng Khớp ({aiSuggestions[0].confidence}% tin cậy)
+        {selectedTx && (
+          <form onSubmit={handleAssignSubmit}>
+            <DialogContent sx={{ py: 2.5 }} className="space-y-4">
+              <div className="p-3.5 bg-[#F8FAFC] dark:bg-[#0B0F19] rounded-xl border border-[#E4E7EC] dark:border-[#1E293B] space-y-1.5 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-[#475467]">Số tiền nhận:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm tabular-nums">
+                    +{formatVND(selectedTx.amount)}
                   </span>
                 </div>
-                {aiSuggestions.map((s, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => setAssignInvoiceId(s.invoiceId)}
-                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                      assignInvoiceId === s.invoiceId
-                        ? 'bg-white border-emerald-600 shadow-sm text-[#101828]'
-                        : 'bg-white/80 border-emerald-200 text-[#475467] hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center font-bold">
-                      <span className="text-[#101828]">{s.memberName} ({s.groupName})</span>
-                      <span className="text-emerald-700 tabular-nums">Đang nợ: {formatVND(s.remaining)}</span>
-                    </div>
-                    <ul className="text-[11px] text-[#475467] mt-1 list-disc list-inside">
-                      {s.reasons.map((r, rIdx) => (
-                        <li key={rIdx}>{r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                <div className="flex justify-between">
+                  <span className="text-[#475467]">Nội dung CK:</span>
+                  <span className="font-semibold text-[#101828] dark:text-[#F8FAFC] break-all">
+                    {selectedTx.content}
+                  </span>
+                </div>
               </div>
-            )}
 
-            <form onSubmit={handleAssignSubmit} className="space-y-4 text-xs">
+              {/* AI Advisor Card */}
+              {aiSuggestions.length > 0 && (
+                <div className="p-3.5 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-emerald-800 dark:text-emerald-300 font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-emerald-600" />
+                      AI Đề Xuất Trùng Khớp ({aiSuggestions[0].confidence}% tin cậy)
+                    </span>
+                  </div>
+                  {aiSuggestions.map((s, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => setAssignInvoiceId(s.invoiceId)}
+                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                        assignInvoiceId === s.invoiceId
+                          ? 'bg-white dark:bg-[#111726] border-emerald-600 shadow-sm text-[#101828] dark:text-[#F8FAFC]'
+                          : 'bg-white/80 dark:bg-[#111726]/60 border-emerald-200 dark:border-emerald-800 text-[#475467] hover:bg-white'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center font-bold">
+                        <span>
+                          {s.memberName} ({s.groupName})
+                        </span>
+                        <span className="text-emerald-600 tabular-nums">
+                          Còn nợ: {formatVND(s.remaining)}
+                        </span>
+                      </div>
+                      <ul className="text-[11px] text-[#475467] dark:text-slate-400 mt-1 list-disc list-inside">
+                        {s.reasons.map((r, rIdx) => (
+                          <li key={rIdx}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div>
                 <TingSelect
                   label="Chọn học viên / Phiếu thu để gạch nợ"
@@ -420,44 +516,71 @@ export default function TransactionsPage() {
                   containerClassName="w-full"
                   options={unpaidInvoices.map((inv) => ({
                     value: inv.id,
-                    label: `${inv.member.name} — ${inv.title} (Còn nợ: ${formatVND(inv.amountDue - inv.amountPaid)})`,
+                    label: `${inv.member.name} — ${inv.title} (Còn nợ: ${formatVND(
+                      inv.amountDue - inv.amountPaid
+                    )})`,
                   }))}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#101828] mb-1.5">
+                <label className="block text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5">
                   Ghi chú đối soát (tùy chọn)
                 </label>
-                <input
-                  type="text"
+                <TextField
+                  size="small"
+                  fullWidth
                   value={assignNote}
                   onChange={(e) => setAssignNote(e.target.value)}
                   placeholder="Ví dụ: Phụ huynh ghi sai tên, đã đối chiếu số điện thoại..."
-                  className="w-full border border-[#E4E7EC] rounded-xl px-3.5 py-2.5 bg-white text-[#101828] font-medium placeholder-slate-400 focus:outline-none focus:border-[#2538D9] text-xs"
+                  slotProps={{
+                    input: {
+                      sx: { borderRadius: '0.5rem', fontSize: '0.75rem' },
+                    },
+                  }}
                 />
               </div>
+            </DialogContent>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E4E7EC]">
-                <button
-                  type="button"
-                  onClick={() => setSelectedTx(null)}
-                  className="px-4 py-2 text-xs font-semibold text-[#475467] hover:text-[#101828] rounded-xl hover:bg-slate-100 transition-colors"
-                >
-                  Hủy bỏ
-                </button>
-                <button
-                  type="submit"
-                  disabled={isAssigning}
-                  className="px-5 py-2 bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold rounded-xl shadow-sm transition-all disabled:opacity-50"
-                >
-                  {isAssigning ? 'Đang gán...' : 'Xác nhận gạch nợ'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #E4E7EC' }}>
+              <Button
+                onClick={() => setSelectedTx(null)}
+                disabled={isAssigning}
+                sx={{
+                  color: '#475467',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                }}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isAssigning}
+                startIcon={
+                  isAssigning ? (
+                    <CircularProgress size={16} sx={{ color: '#FFFFFF' }} />
+                  ) : null
+                }
+                sx={{
+                  bgcolor: '#2538D9',
+                  color: '#FFFFFF',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  textTransform: 'none',
+                  borderRadius: '0.5rem',
+                  boxShadow: 'none',
+                  '&:hover': { bgcolor: '#1E2DB8', boxShadow: 'none' },
+                }}
+              >
+                {isAssigning ? 'Đang gán...' : 'Xác nhận gạch nợ'}
+              </Button>
+            </DialogActions>
+          </form>
+        )}
+      </Dialog>
     </div>
   );
 }
