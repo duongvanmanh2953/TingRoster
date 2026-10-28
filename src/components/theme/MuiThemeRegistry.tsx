@@ -314,11 +314,15 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { LanguageProvider } from '@/components/i18n/LanguageContext';
+
 export default function MuiThemeRegistry({ children }: { children: React.ReactNode }) {
   return (
     <AppRouterCacheProvider>
       <ThemeProvider>
-        <MuiThemeBridge>{children}</MuiThemeBridge>
+        <LanguageProvider>
+          <MuiThemeBridge>{children}</MuiThemeBridge>
+        </LanguageProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );

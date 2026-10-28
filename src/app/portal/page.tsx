@@ -221,7 +221,7 @@ export default function MemberPortalDashboard() {
       {/* Quick Pay Card (if unpaid invoice exists) */}
       {firstUnpaid && (
         <div className="bg-white dark:bg-[#111726] border-2 border-indigo-200 dark:border-indigo-900/80 rounded-2xl p-5 sm:p-6 shadow-sm">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex flex-col lg:items-center justify-between gap-6">
             <div className="space-y-2 flex-1">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200">
                 <AlertCircle className="w-3.5 h-3.5" />

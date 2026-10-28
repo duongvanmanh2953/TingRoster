@@ -791,7 +791,7 @@ export default function AiAssistantPage() {
                     isResolved ? 'border-emerald-200 bg-emerald-50/20 opacity-75' : 'border-[#E4E7EC] hover:border-slate-300'
                   }`}
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#E4E7EC]">
+                  <div className="flex flex-col lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#E4E7EC]">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-black text-[#101828] bg-slate-100 px-2 py-0.5 rounded">
@@ -821,7 +821,7 @@ export default function AiAssistantPage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="pt-4 flex flex-col lg:items-center lg:justify-between gap-4">
                     <div className="space-y-1.5">
                       <p className="text-xs text-[#475467]">
                         Gợi ý ghép nối với: <strong className="text-[#101828] text-sm">{item.suggestedStudent}</strong> ({item.suggestedClass}) • Mã nợ: <span className="font-mono font-bold text-[#2538D9]">{item.paymentCode}</span>

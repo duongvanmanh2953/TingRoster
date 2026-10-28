@@ -35,6 +35,9 @@ import {
   Printer
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useLanguage } from '@/components/i18n/LanguageContext';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Dialog from '@mui/material/Dialog';
@@ -46,6 +49,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 import { Avatar } from '@/components/common/Avatar';
 import { LegalPrintableReconciliationReport } from '@/components/documents/LegalPrintableReconciliationReport';
+import { AttendanceCalendarHeatmap } from '@/components/attendance/AttendanceCalendarHeatmap';
+import { DateRangeFilter, type DatePeriodPreset } from '@/components/common/DateRangeFilter';
+import TablePagination from '@mui/material/TablePagination';
 
 interface TaxEstimateReport {
   taxYear: number;
@@ -171,10 +177,70 @@ interface ReportApiResponse {
   bankReconciliationReport?: BankReconciliationReport;
 }
 
-export default function ReportsPage() {
-  const [activeTab, setActiveTab] = useState<'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT' | 'TAX_ESTIMATE' | 'CASH_LEDGER'>('COLLECTIONS');
+function getTabFromQuery(param: string | null): 'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT' | 'TAX_ESTIMATE' | 'CASH_LEDGER' {
+  switch (param) {
+    case 'attendance':
+      return 'ATTENDANCE';
+    case 'aging':
+      return 'AGING_DEBT';
+    case 'tax':
+      return 'TAX_ESTIMATE';
+    case 'reconciliation':
+      return 'CASH_LEDGER';
+    case 'cashflow':
+    default:
+      return 'COLLECTIONS';
+  }
+}
+
+function getQueryFromTab(tab: 'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT' | 'TAX_ESTIMATE' | 'CASH_LEDGER'): string {
+  switch (tab) {
+    case 'ATTENDANCE':
+      return 'attendance';
+    case 'AGING_DEBT':
+      return 'aging';
+    case 'TAX_ESTIMATE':
+      return 'tax';
+    case 'CASH_LEDGER':
+      return 'reconciliation';
+    case 'COLLECTIONS':
+    default:
+      return 'cashflow';
+  }
+}
+
+function ReportsPageContent() {
+  const searchParams = useSearchParams();
+  const { t, locale } = useLanguage();
+
+  const tabQuery = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'COLLECTIONS' | 'ATTENDANCE' | 'AGING_DEBT' | 'TAX_ESTIMATE' | 'CASH_LEDGER'>(
+    getTabFromQuery(tabQuery)
+  );
+
+  useEffect(() => {
+    const nextTab = getTabFromQuery(tabQuery);
+    if (nextTab !== activeTab) {
+      setActiveTab(nextTab);
+    }
+  }, [tabQuery]);
+
+  const tabTitles: Record<typeof activeTab, string> = {
+    COLLECTIONS: t('reports.tab_collections'),
+    ATTENDANCE: t('reports.tab_attendance'),
+    AGING_DEBT: t('reports.tab_aging'),
+    TAX_ESTIMATE: t('reports.tab_tax'),
+    CASH_LEDGER: t('reports.tab_cash'),
+  };
+  usePageTitle(`${tabTitles[activeTab]} — ${t('reports.title')}`);
+
   const [selectedTaxCategory, setSelectedTaxCategory] = useState<'EDUCATION' | 'RENTAL'>('EDUCATION');
-  const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month' | 'quarter'>('month');
+  const [selectedPeriod, setSelectedPeriod] = useState<DatePeriodPreset>('month');
+  const [customStartDate, setCustomStartDate] = useState<string>('2026-10-01');
+  const [customEndDate, setCustomEndDate] = useState<string>('2026-10-28');
+  const [attendanceSubView, setAttendanceSubView] = useState<'CALENDAR' | 'COHORT'>('CALENDAR');
+  const [groupTablePage, setGroupTablePage] = useState<number>(0);
+  const [groupTableRowsPerPage, setGroupTableRowsPerPage] = useState<number>(10);
   const [data, setData] = useState<ReportApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
@@ -384,61 +450,63 @@ export default function ReportsPage() {
     return 'bg-slate-50 text-slate-400 dark:bg-slate-800/60 dark:text-slate-400';
   };
 
+  const handleTabChange = (_: React.SyntheticEvent, val: typeof activeTab) => {
+    setActiveTab(val);
+    const newTabParam = getQueryFromTab(val);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', newTabParam);
+      window.history.replaceState(null, '', url.toString());
+    }
+  };
+
   return (
     <div className="space-y-5 max-w-7xl mx-auto pb-12">
       {/* 1. Header Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+      <div className="flex flex-col lg:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#2538D9]/10 text-[#2538D9] flex items-center justify-center font-bold">
               <BarChart3 className="w-5 h-5" />
             </div>
             <h1 className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] leading-tight">
-              Trung tâm Báo cáo & Phân tích
+              {t('reports.title')}
             </h1>
           </div>
           <p className="text-sm text-[#475467] dark:text-slate-400 mt-1">
-            Phân định dòng tiền thực thu vs doanh thu ghi nhận, ma trận duy trì Cohort và kiểm soát 4 nhóm tuổi nợ loại trừ.
+            {t('reports.desc')}
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          {/* Timeframe pill selector */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
-            {[
-              { id: 'today', label: 'Hôm nay' },
-              { id: 'week', label: '7 ngày' },
-              { id: 'month', label: 'Tháng này' },
-              { id: 'quarter', label: 'Quý 4' },
-            ].map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setSelectedPeriod(p.id as any)}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
-                  selectedPeriod === p.id
-                    ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-white shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Reusable Date Range Filter with Presets & Custom Date Picker */}
+          <DateRangeFilter
+            selectedPeriod={selectedPeriod}
+            startDate={customStartDate}
+            endDate={customEndDate}
+            onPeriodChange={(p, s, e) => {
+              setSelectedPeriod(p);
+              if (s) setCustomStartDate(s);
+              if (e) setCustomEndDate(e);
+            }}
+          />
 
           <button
+            type="button"
             onClick={handleExportCurrentTab}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#101828] dark:text-[#F8FAFC] text-sm font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-2 px-3.5 h-9 rounded-xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#101828] dark:text-[#F8FAFC] text-xs font-semibold shadow-xs transition-colors"
           >
             <Download className="w-4 h-4 text-slate-500" />
-            <span>Xuất CSV</span>
+            <span>{t('reports.export_csv')}</span>
           </button>
 
           <button
+            type="button"
             onClick={() => setShowPrintReport(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 h-9 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
           >
             <Printer className="w-4 h-4" />
-            <span>In Báo Cáo Kế Toán</span>
+            <span>{t('reports.print_report')}</span>
           </button>
         </div>
       </div>
@@ -447,17 +515,22 @@ export default function ReportsPage() {
       <div className="bg-white dark:bg-[#111827] border border-[#E5E7EB] dark:border-slate-800 p-4 rounded-xl flex items-start gap-3 shadow-xs border-l-4 border-l-[#2538D9]">
         <Sparkles className="w-5 h-5 text-[#2538D9] flex-shrink-0 mt-0.5" />
         <div className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
-          <strong className="font-bold text-[#101828] dark:text-white">Khuyến nghị AI TingRoster:</strong> Tỷ lệ thu tiền toàn hệ thống đạt{' '}
-          <span className="font-bold text-[#2538D9]">{collectionReport.collectionRate}%</span>. Có{' '}
-          <span className="font-bold text-rose-600">{agingDebtReport.agingSchedule.overdue1to7.count} học viên</span> vừa bước vào khung nợ quá hạn 1–7 ngày. Đề xuất gửi tin nhắn Zalo ZNS trước 10:00 sáng mai để kích hoạt thu nợ tự động.
+          <strong className="font-bold text-[#101828] dark:text-white">
+            {locale === 'en' ? 'TingRoster AI Insight:' : 'Khuyến nghị AI TingRoster:'}
+          </strong>{' '}
+          {locale === 'en' ? 'System collection rate reached ' : 'Tỷ lệ thu tiền toàn hệ thống đạt '}
+          <span className="font-bold text-[#2538D9]">{collectionReport.collectionRate}%</span>.{' '}
+          {locale === 'en' ? 'There are ' : 'Có '}
+          <span className="font-bold text-rose-600">{agingDebtReport.agingSchedule.overdue1to7.count} {locale === 'en' ? 'students' : 'học viên'}</span>{' '}
+          {locale === 'en' ? 'entering 1-7 days overdue debt. Recommended sending Zalo ZNS / SMS reminder before 10:00 AM.' : 'vừa bước vào khung nợ quá hạn 1–7 ngày. Đề xuất gửi tin nhắn Zalo ZNS trước 10:00 sáng mai để kích hoạt thu nợ tự động.'}
         </div>
       </div>
 
-      {/* 3. Navigation Tabs for 3 Core Reports */}
+      {/* 3. Navigation Tabs for 5 Core Reports */}
       <div className="bg-white dark:bg-[#111726] rounded-xl border border-[#E4E7EC] dark:border-[#1E293B] p-1.5 shadow-xs">
         <Tabs
           value={activeTab}
-          onChange={(_, val) => setActiveTab(val)}
+          onChange={handleTabChange}
           sx={{
             minHeight: 44,
             '& .MuiTabs-indicator': {
@@ -479,11 +552,11 @@ export default function ReportsPage() {
             },
           }}
         >
-          <Tab value="COLLECTIONS" label="1. Thu tiền & Dòng tiền" />
-          <Tab value="ATTENDANCE" label="2. Chuyên cần & Heatmap" />
-          <Tab value="AGING_DEBT" label="3. Báo cáo Tuổi nợ" />
-          <Tab value="TAX_ESTIMATE" label="4. Ước tính Thuế (TT 40/2021)" />
-          <Tab value="CASH_LEDGER" label="5. Sổ Quỹ & Đối Soát VietQR" />
+          <Tab value="COLLECTIONS" label={t('reports.tab_collections')} />
+          <Tab value="ATTENDANCE" label={t('reports.tab_attendance')} />
+          <Tab value="AGING_DEBT" label={t('reports.tab_aging')} />
+          <Tab value="TAX_ESTIMATE" label={t('reports.tab_tax')} />
+          <Tab value="CASH_LEDGER" label={t('reports.tab_cash')} />
         </Tabs>
       </div>
 
@@ -493,26 +566,22 @@ export default function ReportsPage() {
       {activeTab === 'COLLECTIONS' && (
         <div className="space-y-6">
           {/* 4 Precision Metric Cards per Master Prompt */}
-          {/* 4 Precision Metric Cards (ReactBits SpotlightCard style, no font-mono) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <SpotlightCard
               spotlightColor="rgba(37, 56, 217, 0.18)"
               className="p-5 border-l-4 border-l-[#2538D9]"
             >
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
-                Doanh thu ghi nhận (Accrual)
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                {locale === 'en' ? 'Accrual Revenue' : 'Doanh thu ghi nhận (Accrual)'}
               </span>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl sm:text-[26px] font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              <div className="flex items-baseline">
+                <div className="text-2xl sm:text-[26px] font-bold text-slate-900 dark:text-white tracking-tight leading-none tabular-nums">
                   {formatVND(collectionReport.totalAccrualDue)}
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/10 text-[#2538D9] dark:text-indigo-300">
-                  {formatCompactVND(collectionReport.totalAccrualDue)}
-                </span>
               </div>
-              <div className="flex items-center gap-1 text-xs text-emerald-600 font-bold mt-2">
+              <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-3">
                 <ArrowUpRight className="w-3.5 h-3.5" />
-                <span>+12.4% so với kỳ trước</span>
+                <span>+12.4% {locale === 'en' ? 'vs last period' : 'so với kỳ trước'}</span>
               </div>
             </SpotlightCard>
 
@@ -520,19 +589,16 @@ export default function ReportsPage() {
               spotlightColor="rgba(16, 185, 129, 0.18)"
               className="p-5 border-l-4 border-l-emerald-600"
             >
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
-                Dòng tiền thực thu (Cash-in)
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                {locale === 'en' ? 'Cash Collected (Cash-in)' : 'Dòng tiền thực thu (Cash-in)'}
               </span>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl sm:text-[26px] font-black text-emerald-700 dark:text-emerald-400 tracking-tight leading-none">
+              <div className="flex items-baseline">
+                <div className="text-2xl sm:text-[26px] font-bold text-emerald-600 dark:text-emerald-400 tracking-tight leading-none tabular-nums">
                   {formatVND(collectionReport.totalCashCollected)}
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                  {formatCompactVND(collectionReport.totalCashCollected)}
-                </span>
               </div>
-              <div className="flex items-center gap-1 text-xs text-emerald-600 font-bold mt-2">
-                <span>Tỷ lệ thực thu: {collectionReport.collectionRate}%</span>
+              <div className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-3">
+                <span>{locale === 'en' ? 'Collection rate:' : 'Tỷ lệ thực thu:'} <strong className="font-semibold">{collectionReport.collectionRate}%</strong></span>
               </div>
             </SpotlightCard>
 
@@ -540,38 +606,34 @@ export default function ReportsPage() {
               spotlightColor="rgba(99, 102, 241, 0.18)"
               className="p-5 border-l-4 border-l-indigo-600"
             >
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
-                Còn phải thu trong hạn
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                {locale === 'en' ? 'Current Receivables' : 'Còn phải thu trong hạn'}
               </span>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl sm:text-[26px] font-black text-[#2538D9] dark:text-indigo-400 tracking-tight leading-none">
+              <div className="flex items-baseline">
+                <div className="text-2xl sm:text-[26px] font-bold text-[#2538D9] dark:text-indigo-400 tracking-tight leading-none tabular-nums">
                   {formatVND(collectionReport.remainingReceivables)}
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-[#2538D9] dark:text-indigo-300">
-                  {formatCompactVND(collectionReport.remainingReceivables)}
-                </span>
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Hạn nộp cuối tháng này</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">
+                {locale === 'en' ? 'Due by end of month' : 'Hạn nộp cuối tháng này'}
+              </div>
             </SpotlightCard>
 
             <SpotlightCard
               spotlightColor="rgba(244, 63, 94, 0.18)"
               className="p-5 border-l-4 border-l-rose-600"
             >
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1.5">
-                Công nợ quá hạn (Overdue)
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
+                {locale === 'en' ? 'Overdue Receivables' : 'Công nợ quá hạn (Overdue)'}
               </span>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl sm:text-[26px] font-black text-rose-600 dark:text-rose-400 tracking-tight leading-none">
+              <div className="flex items-baseline">
+                <div className="text-2xl sm:text-[26px] font-bold text-rose-600 dark:text-rose-400 tracking-tight leading-none tabular-nums">
                   {formatVND(collectionReport.overdueReceivables)}
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-300">
-                  {formatCompactVND(collectionReport.overdueReceivables)}
-                </span>
               </div>
-              <div className="flex items-center gap-1 text-xs text-rose-600 font-bold mt-2">
+              <div className="flex items-center gap-1 text-xs text-rose-600 dark:text-rose-400 font-medium mt-3">
                 <AlertCircle className="w-3.5 h-3.5" />
-                <span>Ưu tiên thu hồi ngay</span>
+                <span>{locale === 'en' ? 'Priority follow-up' : 'Ưu tiên thu hồi ngay'}</span>
               </div>
             </SpotlightCard>
           </div>
@@ -606,7 +668,9 @@ export default function ReportsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E4E7EC] dark:divide-[#1E293B]">
-                  {collectionReport.groupSummaries.map((g) => (
+                  {collectionReport.groupSummaries
+                    .slice(groupTablePage * groupTableRowsPerPage, groupTablePage * groupTableRowsPerPage + groupTableRowsPerPage)
+                    .map((g) => (
                     <tr key={g.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                       <td className="py-3 px-4 font-bold text-[#101828] dark:text-[#F8FAFC]">
                         {g.name}
@@ -649,6 +713,29 @@ export default function ReportsPage() {
                 </tbody>
               </table>
             </div>
+
+            {collectionReport.groupSummaries.length > 5 && (
+              <div className="border-t border-[#E4E7EC] dark:border-[#1E293B] bg-white dark:bg-slate-900/50">
+                <TablePagination
+                  component="div"
+                  count={collectionReport.groupSummaries.length}
+                  page={groupTablePage}
+                  onPageChange={(_, newPage) => setGroupTablePage(newPage)}
+                  rowsPerPage={groupTableRowsPerPage}
+                  onRowsPerPageChange={(e) => {
+                    setGroupTableRowsPerPage(parseInt(e.target.value, 10));
+                    setGroupTablePage(0);
+                  }}
+                  rowsPerPageOptions={[5, 10, 25]}
+                  labelRowsPerPage={locale === 'en' ? 'Rows per page:' : 'Số dòng mỗi trang:'}
+                  sx={{
+                    '.MuiTablePagination-toolbar': { minHeight: 44, fontSize: '0.75rem' },
+                    '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': { fontSize: '0.75rem' },
+                    '.MuiTablePagination-select': { fontSize: '0.75rem' }
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -691,75 +778,119 @@ export default function ReportsPage() {
             </div>
           </div>
 
-          {/* COHORT RETENTION HEATMAP */}
-          <div className="ting-card p-5 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
-              <div>
-                <h3 className="text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
-                  Ma Trận Tỷ Lệ Duy Trì Học Viên (Cohort Retention Heatmap)
-                </h3>
-                <p className="text-xs text-[#475467] dark:text-slate-400 mt-0.5">
-                  Phân tích tỷ lệ tiếp tục theo học qua các tháng (M1 đến M8+) của từng đợt nhập học
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold">
-                <span className="text-slate-500">Thấp</span>
-                <span className="w-3.5 h-3.5 bg-[#EFF6FF] dark:bg-slate-800 border rounded-xs" />
-                <span className="w-3.5 h-3.5 bg-[#93C5FD] rounded-xs" />
-                <span className="w-3.5 h-3.5 bg-[#3B82F6] rounded-xs" />
-                <span className="w-3.5 h-3.5 bg-[#2538D9] rounded-xs" />
-                <span className="text-slate-500">Cao</span>
-              </div>
+          {/* Sub-view switcher between Calendar Heatmap and Cohort Matrix */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#111726] p-3.5 rounded-xl border border-[#E4E7EC] dark:border-[#1E293B] shadow-2xs">
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                {attendanceSubView === 'CALENDAR'
+                  ? 'Giao diện Lịch Chuyên Cần & Heatmap (Interactive Calendar)'
+                  : 'Ma Trận Tỷ Lệ Duy Trì Học Viên (Cohort Retention Heatmap)'}
+              </h4>
+              <p className="text-xs text-slate-500">
+                {attendanceSubView === 'CALENDAR'
+                  ? 'Theo dõi tỷ lệ đi học, số ca học và danh sách vắng từng ngày trên lịch trực quan'
+                  : 'Phân tích tỷ lệ tiếp tục theo học qua các tháng (M1 đến M8+) của từng đợt nhập học'}
+              </p>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-center text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-b border-[#E4E7EC] dark:border-[#1E293B]">
-                    <th className="py-2.5 px-3 text-left font-bold">Đợt Cohort</th>
-                    <th className="py-2.5 px-3 font-bold">Sĩ số</th>
-                    <th className="py-2.5 px-3 font-bold">M1</th>
-                    <th className="py-2.5 px-3 font-bold">M2</th>
-                    <th className="py-2.5 px-3 font-bold">M3</th>
-                    <th className="py-2.5 px-3 font-bold">M4</th>
-                    <th className="py-2.5 px-3 font-bold">M5</th>
-                    <th className="py-2.5 px-3 font-bold">M6</th>
-                    <th className="py-2.5 px-3 font-bold">M7</th>
-                    <th className="py-2.5 px-3 font-bold">M8+</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {attendanceReport.cohortHeatmap.map((row, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="py-2.5 px-3 text-left font-bold text-[#101828] dark:text-[#F8FAFC]">
-                        {row.cohort}
-                      </td>
-                      <td className="py-2.5 px-3 font-mono font-medium text-slate-600 dark:text-slate-400">
-                        {row.total}
-                      </td>
-                      {[row.m1, row.m2, row.m3, row.m4, row.m5, row.m6, row.m7, row.m8].map((val, mIdx) => (
-                        <td key={mIdx} className="p-1">
-                          {val > 0 ? (
-                            <div
-                              className={`py-1.5 px-2 rounded-md font-bold font-mono text-[11px] transition-transform hover:scale-105 ${getHeatmapColor(
-                                val
-                              )}`}
-                            >
-                              {val}%
-                            </div>
-                          ) : (
-                            <div className="py-1.5 px-2 text-slate-300 dark:text-slate-700 font-mono text-[11px]">
-                              —
-                            </div>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setAttendanceSubView('CALENDAR')}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  attendanceSubView === 'CALENDAR'
+                    ? 'bg-white dark:bg-slate-900 text-[#2538D9] dark:text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <span>📅 Lịch Tháng Điểm Danh</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAttendanceSubView('COHORT')}
+                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  attendanceSubView === 'COHORT'
+                    ? 'bg-white dark:bg-slate-900 text-[#2538D9] dark:text-white shadow-xs font-bold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <span>📊 Ma Trận Cohort</span>
+              </button>
             </div>
           </div>
+
+          {attendanceSubView === 'CALENDAR' ? (
+            <AttendanceCalendarHeatmap />
+          ) : (
+            <div className="ting-card p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+                <div>
+                  <h3 className="text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
+                    Ma Trận Tỷ Lệ Duy Trì Học Viên (Cohort Retention Heatmap)
+                  </h3>
+                  <p className="text-xs text-[#475467] dark:text-slate-400 mt-0.5">
+                    Phân tích tỷ lệ tiếp tục theo học qua các tháng (M1 đến M8+) của từng đợt nhập học
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-semibold">
+                  <span className="text-slate-500">Thấp</span>
+                  <span className="w-3.5 h-3.5 bg-[#EFF6FF] dark:bg-slate-800 border rounded-xs" />
+                  <span className="w-3.5 h-3.5 bg-[#93C5FD] rounded-xs" />
+                  <span className="w-3.5 h-3.5 bg-[#3B82F6] rounded-xs" />
+                  <span className="w-3.5 h-3.5 bg-[#2538D9] rounded-xs" />
+                  <span className="text-slate-500">Cao</span>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-center text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+                      <th className="py-2.5 px-3 text-left font-bold">Đợt Cohort</th>
+                      <th className="py-2.5 px-3 font-bold">Sĩ số</th>
+                      <th className="py-2.5 px-3 font-bold">M1</th>
+                      <th className="py-2.5 px-3 font-bold">M2</th>
+                      <th className="py-2.5 px-3 font-bold">M3</th>
+                      <th className="py-2.5 px-3 font-bold">M4</th>
+                      <th className="py-2.5 px-3 font-bold">M5</th>
+                      <th className="py-2.5 px-3 font-bold">M6</th>
+                      <th className="py-2.5 px-3 font-bold">M7</th>
+                      <th className="py-2.5 px-3 font-bold">M8+</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {attendanceReport.cohortHeatmap.map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50">
+                        <td className="py-2.5 px-3 text-left font-bold text-[#101828] dark:text-[#F8FAFC]">
+                          {row.cohort}
+                        </td>
+                        <td className="py-2.5 px-3 font-mono font-medium text-slate-600 dark:text-slate-400">
+                          {row.total}
+                        </td>
+                        {[row.m1, row.m2, row.m3, row.m4, row.m5, row.m6, row.m7, row.m8].map((val, mIdx) => (
+                          <td key={mIdx} className="p-1">
+                            {val > 0 ? (
+                              <div
+                                className={`py-1.5 px-2 rounded-md font-bold font-mono text-[11px] transition-transform hover:scale-105 ${getHeatmapColor(
+                                  val
+                                )}`}
+                              >
+                                {val}%
+                              </div>
+                            ) : (
+                              <div className="py-1.5 px-2 text-slate-300 dark:text-slate-700 font-mono text-[11px]">
+                                —
+                              </div>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {/* Frequent Absentees List */}
           <div className="ting-card overflow-hidden">
@@ -1412,5 +1543,20 @@ export default function ReportsPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function ReportsPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="text-center py-24 text-slate-500 dark:text-slate-400 text-xs font-medium flex flex-col items-center justify-center space-y-3">
+          <CircularProgress size={28} sx={{ color: '#2538D9' }} />
+          <p>Đang chuẩn bị trung tâm báo cáo & phân tích...</p>
+        </div>
+      }
+    >
+      <ReportsPageContent />
+    </React.Suspense>
   );
 }

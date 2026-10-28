@@ -221,11 +221,8 @@ export function AdminSidebar({
           isDarkSidebar ? 'border-slate-800/80' : 'border-slate-200'
         }`}>
           {!collapsed ? (
-            <div className="flex items-center gap-2.5 min-w-0">
-              <Logo variant="horizontal" size="sm" theme={isDarkSidebar ? 'dark' : 'light'} />
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#2538D9] text-white uppercase tracking-wider shrink-0 shadow-xs">
-                ADMIN
-              </span>
+            <div className="flex items-center gap-2 min-w-0">
+              <Logo variant="horizontal" size="sm" theme={isDarkSidebar ? 'dark' : 'light'} showBadge={true} badgeText="ADMIN" />
             </div>
           ) : (
             <div className="mx-auto">

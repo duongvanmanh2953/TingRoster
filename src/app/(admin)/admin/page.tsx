@@ -200,7 +200,10 @@ const MOCK_SUPPORT_TICKETS: SupportTicket[] = [
   },
 ];
 
+import { usePageTitle } from '@/hooks/usePageTitle';
+
 export default function PlatformAdminPage() {
+  usePageTitle('Quản trị Nền tảng (Platform Admin)', 'Platform Admin Console');
   const [activeTab, setActiveTab] = useState<AdminTabKey>('OVERVIEW');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -506,85 +509,91 @@ export default function PlatformAdminPage() {
               </div>
 
               {/* Action Queue */}
-            <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <BadgeAlert className="w-4 h-4 text-amber-600" />
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Hàng đợi Công việc Cần Admin Xử lý (Action Queue)
-                  </h3>
+              <div className="bg-white dark:bg-[#111726] rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <BadgeAlert className="w-4 h-4 text-amber-500" />
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      Hàng đợi Công việc Cần Admin Xử lý (Action Queue)
+                    </h3>
+                  </div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">3 việc cần chú ý</span>
                 </div>
-                <span className="text-xs text-slate-500">3 việc cần chú ý</span>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Card 1: Warning / Pending Top-up */}
+                  <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 space-y-2.5 transition-all hover:border-amber-400">
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80">
+                        Đơn nạp ví PENDING
+                      </span>
+                      <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold">&gt; 30 phút</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                      TOP-20261028-03: CLB Cầu Lông Thủ Đức
+                    </h4>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Đơn nạp 1.000.000 đ chưa thấy webhook xác nhận từ VietQR Techcombank. Cần đối soát thủ công.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('CREDIT_LEDGER')}
+                      className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 hover:underline flex items-center gap-1 pt-1"
+                    >
+                      <span>Mở tab Sổ cái kiểm tra</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Card 2: Neutral / Info Trial Expiry (Clean Slate, no blue-on-blue!) */}
+                  <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 space-y-2.5 transition-all hover:border-indigo-400">
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80">
+                        Trial Sắp hết hạn
+                      </span>
+                      <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold">5 cơ sở (&le; 5 ngày)</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                      Cần gửi thông báo nhắc nạp phí duy trì
+                    </h4>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      5 cơ sở kết thúc dùng thử trong 5 ngày tới. Tự động gửi Zalo ZNS hướng dẫn nạp phí qua VietQR.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('TRIALS')}
+                      className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 hover:underline flex items-center gap-1 pt-1"
+                    >
+                      <span>Xem danh sách Trial</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Card 3: Danger / Ticket */}
+                  <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 space-y-2.5 transition-all hover:border-rose-400">
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/80">
+                        Ticket Hỗ trợ mới
+                      </span>
+                      <span className="text-[11px] text-rose-700 dark:text-rose-400 font-bold">Ưu tiên cao</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                      CLB Thủ Đức: Webhook chưa nhận callback
+                    </h4>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Khách báo quét VietQR xong app chưa tự động tick xanh. Cần test lại đường truyền IPN.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('SUPPORT_TICKETS')}
+                      className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 hover:underline flex items-center gap-1 pt-1"
+                    >
+                      <span>Xử lý ticket ngay</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-xl border border-amber-200/80 bg-amber-50/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
-                      Đơn nạp ví PENDING
-                    </span>
-                    <span className="text-[11px] text-amber-700 font-semibold">&gt; 30 phút</span>
-                  </div>
-                  <h4 className="text-xs font-bold text-slate-900">
-                    TOP-20261028-03: CLB Cầu Lông Thủ Đức
-                  </h4>
-                  <p className="text-[11px] text-slate-600">
-                    Đơn nạp 1.000.000 đ chưa thấy webhook xác nhận từ VietQR Techcombank. Cần đối soát thủ công.
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('CREDIT_LEDGER')}
-                    className="text-xs font-semibold text-[#3344D6] hover:underline flex items-center gap-1 pt-1"
-                  >
-                    Mở tab Sổ cái kiểm tra
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="p-4 rounded-xl border border-blue-200/80 bg-blue-50/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-[#3344D6]">
-                      Trial Sắp hết hạn
-                    </span>
-                    <span className="text-[11px] text-[#3344D6] font-semibold">5 cơ sở (&le; 5 ngày)</span>
-                  </div>
-                  <h4 className="text-xs font-bold text-slate-900">
-                    Cần gửi thông báo nhắc nạp phí duy trì
-                  </h4>
-                  <p className="text-[11px] text-slate-600">
-                    5 cơ sở kết thúc dùng thử trong 5 ngày tới. Tự động gửi Zalo ZNS hướng dẫn nạp phí qua VietQR.
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('TRIALS')}
-                    className="text-xs font-semibold text-[#3344D6] hover:underline flex items-center gap-1 pt-1"
-                  >
-                    Xem danh sách Trial
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="p-4 rounded-xl border border-rose-200/80 bg-rose-50/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
-                      Ticket Hỗ trợ mới
-                    </span>
-                    <span className="text-[11px] text-rose-700 font-semibold">Ưu tiên cao</span>
-                  </div>
-                  <h4 className="text-xs font-bold text-slate-900">
-                    CLB Thủ Đức: Webhook chưa nhận callback
-                  </h4>
-                  <p className="text-[11px] text-slate-600">
-                    Khách báo quét VietQR xong app chưa tự động tick xanh. Cần test lại đường truyền IPN.
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('SUPPORT_TICKETS')}
-                    className="text-xs font-semibold text-[#3344D6] hover:underline flex items-center gap-1 pt-1"
-                  >
-                    Xử lý ticket ngay
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
 
             {/* Growth & Conversion Funnel */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

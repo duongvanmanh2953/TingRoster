@@ -72,19 +72,16 @@ export function Logo({
     const stackedContent = (
       <div className={`inline-flex flex-col items-center text-center ${className}`}>
         <LogoMark size={size} className="mb-2" />
-        <div className="flex items-center gap-2">
-          <span
-            className={`font-black tracking-tight ${textSizeMap[size]} leading-tight ${
-              isDark ? 'text-white' : 'text-[#0E2572]'
-            }`}
-          >
-            Ting<span className="text-[#6242E8]">Roster</span>
+        <div className="flex flex-col items-center">
+          <span className={`font-black tracking-tight ${textSizeMap[size]} leading-tight`}>
+            <span className={!isDark ? 'text-white' : 'text-slate-950'}>Ting</span>
+            <span className="text-[#6242E8] dark:text-[#7C65F8]">Roster</span>
           </span>
-          {showBadge && (
+          {showBadge && badgeText && (
             <span
-              className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
+              className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wider mt-1 ${
                 isDark
-                  ? 'bg-[#6242E8]/30 text-indigo-200 border border-[#6242E8]/50'
+                  ? 'bg-[#6242E8]/25 text-indigo-300 border border-[#6242E8]/40'
                   : 'bg-[#6242E8]/10 text-[#6242E8] border border-[#6242E8]/20'
               }`}
             >
@@ -134,31 +131,28 @@ export function Logo({
 
   // Horizontal / Full variant (side-by-side)
   const content = (
-    <div className={`inline-flex items-center gap-3 ${className}`}>
+    <div className={`inline-flex items-center gap-2.5 ${className}`}>
       <LogoMark size={size} />
 
       <div className="flex flex-col justify-center">
-        <div className="flex items-center gap-2">
-          <span
-            className={`font-black tracking-tight ${textSizeMap[size]} leading-none ${
-              isDark ? 'text-white' : 'text-[#0E2572]'
-            }`}
-          >
-            Ting<span className="text-[#6242E8]">Roster</span>
-          </span>
+        <span className={`font-black tracking-tight ${textSizeMap[size]} leading-none`}>
+          <span className={!isDark ? 'text-white' : 'text-slate-950'}>Ting</span>
+          <span className="text-[#6242E8] dark:text-[#7C65F8]">Roster</span>
+        </span>
 
-          {showBadge && (
+        {showBadge && badgeText && (
+          <div className="flex items-center mt-1">
             <span
-              className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
+              className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wider leading-none ${
                 isDark
-                  ? 'bg-[#6242E8]/30 text-indigo-200 border border-[#6242E8]/50'
+                  ? 'bg-[#6242E8]/25 text-indigo-300 border border-[#6242E8]/40'
                   : 'bg-[#6242E8]/10 text-[#6242E8] border border-[#6242E8]/20'
               }`}
             >
               {badgeText}
             </span>
-          )}
-        </div>
+          </div>
+        )}
 
         {showTagline && (
           <p

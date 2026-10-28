@@ -49,12 +49,21 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 
+import {
+  TrendingUp,
+  Clock,
+  Languages
+} from 'lucide-react';
 import { BankLogo } from '@/components/common/BankLogo';
 import { Logo } from '@/components/common/Logo';
 import { Avatar } from '@/components/common/Avatar';
 import { TingBadge, TingTag } from '@/components/common/Badge';
 import { QuickCreateInvoiceModal } from '@/components/invoices/QuickCreateInvoiceModal';
 import { useTheme } from '@/components/theme/ThemeContext';
+import { useLanguage } from '@/components/i18n/LanguageContext';
+import { usePageTitle } from '@/hooks/usePageTitle';
+import { LanguageSwitch } from '@/components/i18n/LanguageSwitch';
+import { NotificationBellPopover } from '@/components/notifications/NotificationBellPopover';
 
 interface UserData {
   name: string;
@@ -67,6 +76,7 @@ interface UserData {
 interface NavItem {
   href: string;
   label: string;
+  labelEn?: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
   badgeVariant?: 'neutral' | 'success' | 'warning' | 'info' | 'brand';
@@ -77,47 +87,61 @@ interface NavItem {
 
 interface NavSection {
   title: string;
+  titleEn?: string;
   items: NavItem[];
 }
 
 const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Vận hành hằng ngày',
+    titleEn: 'Daily Operations',
     items: [
-      { href: '/dashboard', label: 'Tổng quan', icon: LayoutDashboard },
-      { href: '/attendance', label: 'Điểm danh & Lịch', icon: CalendarCheck, badge: 'Hôm nay', badgeVariant: 'success' },
-      { href: '/members', label: 'Thành viên & Học viên', icon: GraduationCap },
-      { href: '/groups', label: 'Workspace & Lớp', icon: Building2 },
-      { href: '/workflows', label: 'Quy trình quản lý', icon: Workflow },
+      { href: '/dashboard', label: 'Tổng quan', labelEn: 'Overview', icon: LayoutDashboard },
+      { href: '/attendance', label: 'Điểm danh & Lịch', labelEn: 'Attendance & Schedule', icon: CalendarCheck, badge: 'Hôm nay', badgeVariant: 'success' },
+      { href: '/members', label: 'Thành viên & Học viên', labelEn: 'Members & Students', icon: GraduationCap },
+      { href: '/groups', label: 'Workspace & Lớp', labelEn: 'Workspaces & Classes', icon: Building2 },
+      { href: '/workflows', label: 'Quy trình quản lý', labelEn: 'Workflows', icon: Workflow },
     ],
   },
   {
     title: 'Tài chính & Đối soát',
+    titleEn: 'Finance & Payments',
     items: [
-      { href: '/invoices', label: 'Khoản thu & Công nợ', icon: CreditCard },
-      { href: '/transactions', label: 'Giao dịch VietQR', icon: QrCode, live: true },
-      { href: '/documents', label: 'Hóa đơn & Chứng từ', icon: Receipt },
-      { href: '/reports', label: 'Báo cáo & Phân tích', icon: BarChart3 },
-      { href: '/export', label: 'Xuất sổ sách', icon: Download },
+      { href: '/invoices', label: 'Khoản thu & Công nợ', labelEn: 'Invoices & Receivables', icon: CreditCard },
+      { href: '/transactions', label: 'Giao dịch VietQR', labelEn: 'VietQR Transactions', icon: QrCode, live: true },
+      { href: '/documents', label: 'Hóa đơn & Chứng từ', labelEn: 'Receipts & Documents', icon: Receipt },
+    ],
+  },
+  {
+    title: 'Trung tâm Báo cáo & Phân tích',
+    titleEn: 'Reports & Analytics Center',
+    items: [
+      { href: '/reports', label: 'Tổng quan báo cáo', labelEn: 'Report Overview', icon: BarChart3 },
+      { href: '/reports?tab=cashflow', label: 'Thu tiền & Dòng tiền', labelEn: 'Cash Flow & Collections', icon: TrendingUp },
+      { href: '/reports?tab=attendance', label: 'Chuyên cần & Heatmap', labelEn: 'Attendance & Heatmap', icon: CalendarCheck },
+      { href: '/reports?tab=aging', label: 'Báo cáo Tuổi nợ', labelEn: 'Receivable Aging', icon: Clock },
+      { href: '/export', label: 'Xuất sổ sách', labelEn: 'Data Export', icon: Download },
     ],
   },
   {
     title: 'Hệ thống & Công cụ',
+    titleEn: 'System & Tools',
     items: [
-      { href: '/automations', label: 'AI & Tự động hóa', icon: Sparkles },
-      { href: '/billing', label: 'Gói cước & Số dư', icon: Wallet, billingOnly: true },
-      { href: '/notifications', label: 'Thông báo', icon: Bell },
-      { href: '/help', label: 'Trợ giúp & Hướng dẫn', icon: HelpCircle },
-      { href: '/settings', label: 'Cài đặt hệ thống', icon: Settings },
+      { href: '/automations', label: 'AI & Tự động hóa', labelEn: 'AI & Automations', icon: Sparkles },
+      { href: '/billing', label: 'Gói cước & Số dư', labelEn: 'Billing & Subscriptions', icon: Wallet, billingOnly: true },
+      { href: '/notifications', label: 'Thông báo', labelEn: 'Notifications', icon: Bell },
+      { href: '/help', label: 'Trợ giúp & Hướng dẫn', labelEn: 'Help & Guides', icon: HelpCircle },
+      { href: '/settings', label: 'Cài đặt hệ thống', labelEn: 'Settings', icon: Settings },
     ],
   },
   {
     title: 'Cổng liên kết & Mở rộng',
+    titleEn: 'Portals & Ecosystem',
     items: [
-      { href: '/portal', label: 'Cổng Học Viên (Portal)', icon: Users2, badge: 'Học viên', badgeVariant: 'neutral' },
-      { href: '/admin', label: 'Platform Admin', icon: ShieldCheck },
-      { href: '/kiosk', label: 'Kiosk quét QR tại sân', icon: Tv, external: true },
-      { href: '/legal', label: 'Điều khoản & Hoàn phí', icon: FileText },
+      { href: '/portal', label: 'Cổng Học Viên (Portal)', labelEn: 'Member Portal', icon: Users2, badge: 'Học viên', badgeVariant: 'neutral' },
+      { href: '/admin', label: 'Platform Admin', labelEn: 'Platform Admin', icon: ShieldCheck },
+      { href: '/kiosk', label: 'Kiosk quét QR tại sân', labelEn: 'QR Kiosk Check-in', icon: Tv, external: true },
+      { href: '/legal', label: 'Điều khoản & Hoàn phí', labelEn: 'Terms & Policies', icon: FileText },
     ],
   },
 ];
@@ -130,6 +154,28 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { isDark, toggleTheme, sidebarTheme, isDarkSidebar, cycleSidebarTheme } = useTheme();
+  const { locale, t } = useLanguage();
+
+  const getPageTitle = (path: string, loc: string): string => {
+    if (path === '/dashboard') return loc === 'en' ? 'Dashboard' : 'Tổng quan';
+    if (path.startsWith('/attendance')) return loc === 'en' ? 'Attendance & Schedule' : 'Điểm danh & Lịch';
+    if (path.startsWith('/members')) return loc === 'en' ? 'Members & Students' : 'Thành viên & Học viên';
+    if (path.startsWith('/groups')) return loc === 'en' ? 'Workspaces & Classes' : 'Workspace & Lớp';
+    if (path.startsWith('/workflows')) return loc === 'en' ? 'Workflows' : 'Quy trình quản lý';
+    if (path.startsWith('/invoices')) return loc === 'en' ? 'Invoices & Receivables' : 'Khoản thu & Công nợ';
+    if (path.startsWith('/transactions')) return loc === 'en' ? 'Transactions & VietQR' : 'Giao dịch VietQR';
+    if (path.startsWith('/documents')) return loc === 'en' ? 'Receipts & Documents' : 'Hóa đơn & Chứng từ';
+    if (path.startsWith('/reports')) return loc === 'en' ? 'Reports & Analytics Center' : 'Trung tâm Báo cáo & Phân tích';
+    if (path.startsWith('/export')) return loc === 'en' ? 'Data Export' : 'Xuất sổ sách';
+    if (path.startsWith('/automations')) return loc === 'en' ? 'Automations & AI' : 'Tự động hóa & AI';
+    if (path.startsWith('/billing')) return loc === 'en' ? 'Billing & Subscriptions' : 'Gói cước & Số dư';
+    if (path.startsWith('/notifications')) return loc === 'en' ? 'Notifications' : 'Trung tâm Thông báo';
+    if (path.startsWith('/help')) return loc === 'en' ? 'Help & Guides' : 'Trợ giúp & Hướng dẫn';
+    if (path.startsWith('/settings')) return loc === 'en' ? 'Settings' : 'Cài đặt hệ thống';
+    return 'TingRoster';
+  };
+
+  usePageTitle(getPageTitle(pathname, 'vi'), getPageTitle(pathname, 'en'));
 
   const [userData, setUserData] = useState<UserData>({
     name: 'Nguyễn Văn Minh',
@@ -195,7 +241,7 @@ export default function DashboardLayout({
           <div className={`px-2 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider ${
             isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
           }`}>
-            {section.title}
+            {locale === 'en' && section.titleEn ? section.titleEn : section.title}
           </div>
           {section.items
             .filter((item) => {
@@ -210,6 +256,7 @@ export default function DashboardLayout({
               const isActive =
                 pathname === item.href ||
                 (item.href !== '/dashboard' && pathname.startsWith(item.href));
+              const label = locale === 'en' && item.labelEn ? item.labelEn : item.label;
               return (
                 <Link
                   key={item.href}
@@ -226,7 +273,7 @@ export default function DashboardLayout({
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`} />
-                    <span className="truncate">{item.label}</span>
+                    <span className="truncate">{label}</span>
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     {item.badge && (
@@ -363,7 +410,7 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* Mobile Drawer (Using MUI Drawer) */}
+      {/* Mobile Drawer (Synchronized with isDarkSidebar) */}
       <Drawer
         anchor="left"
         open={mobileMenuOpen}
@@ -372,31 +419,37 @@ export default function DashboardLayout({
           paper: {
             sx: {
               width: 280,
-              backgroundColor: '#0B0F19',
-              borderRight: '1px solid #1B2333',
-              color: '#FFFFFF',
+              backgroundColor: isDarkSidebar ? '#0B0F19' : '#FFFFFF',
+              borderRight: isDarkSidebar ? '1px solid #1B2333' : '1px solid #E4E7EC',
+              color: isDarkSidebar ? '#FFFFFF' : '#101828',
               display: 'flex',
               flexDirection: 'column',
             },
           },
         }}
       >
-        <div className="h-16 flex items-center justify-between px-5 border-b border-[#1B2333]">
-          <Logo href="/dashboard" theme="dark" size="sm" showBadge={true} badgeText="PRO" />
+        <div className={`h-16 flex items-center justify-between px-5 border-b ${
+          isDarkSidebar ? 'border-[#1B2333]' : 'border-[#E4E7EC]'
+        }`}>
+          <Logo href="/dashboard" theme={isDarkSidebar ? 'dark' : 'light'} size="sm" showBadge={true} badgeText="PRO" />
           <IconButton
             size="small"
             onClick={() => setMobileMenuOpen(false)}
-            sx={{ color: '#94A3B8', '&:hover': { color: '#FFFFFF' } }}
+            sx={{ color: isDarkSidebar ? '#94A3B8' : '#64748B', '&:hover': { color: isDarkSidebar ? '#FFFFFF' : '#101828' } }}
           >
             <X className="w-5 h-5" />
           </IconButton>
         </div>
 
         <div className="p-3">
-          <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#131A2B] border border-[#1E283D] text-[11px]">
+          <div className={`flex items-center justify-between px-3 py-2 rounded-lg text-[11px] border ${
+            isDarkSidebar
+              ? 'bg-[#131A2B] border-[#1E283D] text-slate-200'
+              : 'bg-slate-50 border-slate-200 text-slate-700'
+          }`}>
             <div className="flex items-center gap-2 min-w-0">
               <BankLogo bankId={userData.bankId} size="xs" />
-              <span className="font-semibold text-slate-200 truncate">
+              <span className={`font-semibold truncate ${isDarkSidebar ? 'text-slate-200' : 'text-slate-800'}`}>
                 {userData.bankId} • {userData.bankAccountNo}
               </span>
             </div>
@@ -413,8 +466,12 @@ export default function DashboardLayout({
 
         {renderNavLinks(() => setMobileMenuOpen(false))}
 
-        <div className="p-3 border-t border-[#1B2333] bg-[#0A0D17]">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-[#131A2B] border border-[#1E283D]">
+        <div className={`p-3 border-t ${
+          isDarkSidebar ? 'border-[#1B2333] bg-[#0A0D17]' : 'border-[#E4E7EC] bg-slate-50'
+        }`}>
+          <div className={`flex items-center justify-between p-2 rounded-lg border ${
+            isDarkSidebar ? 'bg-[#131A2B] border-[#1E283D]' : 'bg-white border-slate-200 shadow-2xs'
+          }`}>
             <div className="flex items-center gap-2.5 min-w-0">
               <Avatar
                 name={userData.name}
@@ -424,8 +481,8 @@ export default function DashboardLayout({
                 status="online"
               />
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-white truncate">{userData.name}</p>
-                <p className="text-[10px] text-slate-400 truncate">{userData.email}</p>
+                <p className={`text-xs font-semibold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>{userData.name}</p>
+                <p className={`text-[10px] truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`}>{userData.email}</p>
               </div>
             </div>
 
@@ -485,6 +542,7 @@ export default function DashboardLayout({
                 ) : null
               }
               sx={{
+                height: 36,
                 borderRadius: '0.5rem',
                 fontSize: '0.75rem',
                 bgcolor: isDark ? '#111726' : '#F8FAFC',
@@ -504,6 +562,12 @@ export default function DashboardLayout({
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* National Flag Language Select */}
+            <LanguageSwitch variant="select" />
+
+            {/* Notification Bell Popover */}
+            <NotificationBellPopover />
+
             {/* Dark Mode Toggle with MUI Tooltip & IconButton */}
             <Tooltip
               title={isDark ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
@@ -541,13 +605,13 @@ export default function DashboardLayout({
                 fontSize: '0.75rem',
                 textTransform: 'none',
                 px: 2,
-                py: 0.85,
-                borderRadius: '0.625rem',
+                height: 36,
+                borderRadius: '0.5rem',
                 boxShadow: '0 2px 8px rgba(37, 56, 217, 0.35)',
                 '&:hover': { bgcolor: '#1E2DB8' },
               }}
             >
-              Tạo hóa đơn
+              {t('common.create_invoice', 'Tạo hóa đơn')}
             </Button>
 
             {/* VietQR Live Transactions with MUI TingBadge */}
@@ -596,7 +660,7 @@ export default function DashboardLayout({
                 aria-controls={profileOpen ? 'profile-dropdown-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={profileOpen ? 'true' : undefined}
-                className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none border border-transparent hover:border-[#E4E7EC] dark:hover:border-[#1E293B]"
+                className="h-9 flex items-center gap-2 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all focus:outline-none shadow-2xs cursor-pointer"
               >
                 <Avatar
                   name={userData.name}

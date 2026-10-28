@@ -41,6 +41,7 @@ import FormControl from '@mui/material/FormControl';
 import Tooltip from '@mui/material/Tooltip';
 import { Avatar } from '@/components/common/Avatar';
 import { TingSelect } from '@/components/common/Select';
+import { AttendanceCalendarHeatmap } from '@/components/attendance/AttendanceCalendarHeatmap';
 
 interface GroupOption {
   id: string;
@@ -71,7 +72,7 @@ export default function AttendancePage() {
   
   // Range view: 14 days (2 weeks) or 7 days (1 week) matching Skolaro Image 2
   const [rangeMode, setRangeMode] = useState<'2_WEEKS' | '1_WEEK'>('2_WEEKS');
-  const [viewType, setViewType] = useState<'MATRIX' | 'SINGLE_DAY'>('MATRIX');
+  const [viewType, setViewType] = useState<'CALENDAR' | 'MATRIX'>('CALENDAR');
   
   // Base anchor date (start of current week)
   const [anchorDate, setAnchorDate] = useState<string>(() => {
@@ -490,11 +491,60 @@ export default function AttendancePage() {
         </div>
       </div>
 
+      {/* View Switcher: Calendar Heatmap vs Matrix */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setViewType('CALENDAR')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              viewType === 'CALENDAR'
+                ? 'bg-white dark:bg-slate-900 text-[#2538D9] dark:text-indigo-400 shadow-xs border border-slate-200/80 dark:border-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <CalendarDays className="w-4 h-4" />
+            <span>Lịch Tháng Điểm Danh (Calendar)</span>
+          </button>
+          <button
+            onClick={() => setViewType('MATRIX')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              viewType === 'MATRIX'
+                ? 'bg-white dark:bg-slate-900 text-[#2538D9] dark:text-indigo-400 shadow-xs border border-slate-200/80 dark:border-slate-700'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <TableIcon className="w-4 h-4" />
+            <span>Ma Trận Đa Ngày (Matrix 14 ngày)</span>
+          </button>
+        </div>
+
+        <div className="text-xs text-slate-500 dark:text-slate-400 px-3 py-1 font-medium hidden md:block">
+          {viewType === 'CALENDAR' ? 'Chế độ xem lịch trực quan, nhấp vào từng ngày để xem sĩ số & học sinh vắng' : 'Chế độ ghi nhận nhanh cho toàn bộ học sinh theo ngày'}
+        </div>
+      </div>
+
+      {viewType === 'CALENDAR' ? (
+        <AttendanceCalendarHeatmap
+          groupOptions={[
+            { id: 'all', name: 'Tất cả các lớp & câu lạc bộ' },
+            ...groups.map((g) => ({ id: g.id, name: g.name })),
+          ]}
+          selectedGroupId={selectedGroupId || 'all'}
+          onSelectGroup={(id) => {
+            if (id === 'all') {
+              if (groups.length > 0) setSelectedGroupId(groups[0].id);
+            } else {
+              setSelectedGroupId(id);
+            }
+          }}
+        />
+      ) : (
+        <>
       {/* 3. Skolaro Filter & Fast-Mark Bar (matching Image 2) */}
       <div className="ting-card p-4 space-y-4">
         
         {/* Row 1: Group Select + Range Select + Date Navigation */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex flex-col lg:items-center justify-between gap-4">
           
           <div className="flex flex-wrap items-center gap-3">
             {/* Show Range: 2 weeks / 1 week */}
@@ -920,6 +970,8 @@ export default function AttendancePage() {
         </div>
 
       </div>
+      </>
+      )}
 
       {/* 5. Add Member Dialog Modal */}
       <Dialog

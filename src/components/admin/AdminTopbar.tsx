@@ -21,6 +21,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { useTheme } from '@/components/theme/ThemeContext';
+import { LanguageSwitch } from '@/components/i18n/LanguageSwitch';
+import { NotificationBellPopover } from '@/components/notifications/NotificationBellPopover';
 
 interface AdminTopbarProps {
   activeTab: AdminTabKey;
@@ -189,10 +191,9 @@ export function AdminTopbar({
 
         {/* Right Controls */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Global Search Button */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-medium transition-all shadow-xs"
+            className="h-9 flex items-center gap-2 px-2.5 sm:px-3 rounded-lg border border-[#E5E7EB] dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs text-slate-500 dark:text-slate-400 transition-all shadow-2xs"
           >
             <Search className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Tìm kiếm toàn hệ thống...</span>
@@ -202,7 +203,7 @@ export function AdminTopbar({
           </button>
 
           {/* Webhook SLA Status */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>SLA 99.98%</span>
           </div>
@@ -211,16 +212,22 @@ export function AdminTopbar({
           <button
             onClick={onCheckGateways}
             disabled={isCheckingGateways}
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all shadow-xs"
+            className="hidden xl:flex items-center gap-1.5 px-3 h-9 rounded-lg border border-[#E5E7EB] dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all shadow-2xs"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
             <span>{isCheckingGateways ? 'Đang kiểm tra...' : 'Kiểm tra Gateways'}</span>
           </button>
 
+          {/* Language Switcher with Flags */}
+          <LanguageSwitch variant="select" />
+
+          {/* Notification Bell Popover */}
+          <NotificationBellPopover />
+
           {/* Theme & Sidebar Controls */}
           <button
             onClick={cycleSidebarTheme}
-            className="p-2 rounded-lg border border-[#E5E7EB] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-xs"
+            className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#E5E7EB] dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-2xs"
             title={`Kiểu Sidebar: ${sidebarTheme === 'auto' ? 'Tự động' : sidebarTheme === 'light' ? 'Sáng' : 'Tối'} (Bấm để đổi)`}
           >
             <Palette className="w-4 h-4 text-[#2538D9]" />
@@ -228,7 +235,7 @@ export function AdminTopbar({
 
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg border border-[#E5E7EB] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-xs"
+            className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#E5E7EB] dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-2xs"
             title={isDark ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
@@ -238,7 +245,7 @@ export function AdminTopbar({
           <button
             onClick={onRefreshData}
             disabled={isRefreshing}
-            className="p-2 rounded-lg border border-[#E5E7EB] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-xs"
+            className="w-9 h-9 flex items-center justify-center rounded-lg border border-[#E5E7EB] dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all shadow-2xs"
             title="Tải lại dữ liệu"
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#2538D9]' : ''}`} />

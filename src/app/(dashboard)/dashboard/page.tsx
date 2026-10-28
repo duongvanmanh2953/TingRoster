@@ -213,7 +213,7 @@ export default function DashboardPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* 1. Header Row — Greeting & Action Controls (per 00-overview.png Screen 3) */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+      <div className="flex flex-col lg:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] leading-tight">
