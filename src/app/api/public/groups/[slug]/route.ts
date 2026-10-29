@@ -20,6 +20,7 @@ export async function GET(
         name: true,
         slug: true,
         description: true,
+        logoUrl: true,
         publicPortalEnabled: true,
         isActive: true,
         user: {
@@ -27,6 +28,8 @@ export async function GET(
             bankId: true,
             bankAccountNo: true,
             bankAccountName: true,
+            logoUrl: true,
+            name: true,
           },
         },
         members: {
@@ -54,6 +57,8 @@ export async function GET(
         name: group.name,
         slug: group.slug,
         description: group.description,
+        logoUrl: group.logoUrl,
+        workspaceLogoUrl: group.user.logoUrl,
         bank: group.user,
         members: group.members,
       },

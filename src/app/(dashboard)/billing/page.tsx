@@ -452,34 +452,37 @@ export default function BillingWalletPage() {
           </div>
 
           {/* ENTERPRISE PLAN */}
-          <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="bg-white rounded-2xl border-2 border-[#6D5CE8] p-6 shadow-sm relative flex flex-col justify-between space-y-4">
+            <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold uppercase tracking-wider">
+              Đa cơ sở & Chuỗi
+            </span>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <h4 className="font-bold text-base text-neutral-900">Gói ENTERPRISE</h4>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700">
-                  Đa cơ sở
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-[#6D5CE8]">
+                  Cao cấp
                 </span>
               </div>
-              <div className="text-2xl font-bold font-mono text-neutral-900">
-                799.000 đ <span className="text-xs font-normal text-neutral-400">/ tháng</span>
+              <div className="text-2xl font-bold font-mono text-[#6D5CE8]">
+                599.000 đ <span className="text-xs font-normal text-neutral-400">/ tháng</span>
               </div>
               <p className="text-xs text-neutral-500 leading-relaxed">
                 Dành cho CLB thể thao lớn, chuỗi chung cư mini và trung tâm nhiều chi nhánh.
               </p>
-              <div className="space-y-2 pt-3 border-t border-neutral-100 text-xs text-neutral-600">
-                <div className="flex items-center gap-2 text-neutral-700">✓ Không giới hạn thành viên</div>
-                <div className="flex items-center gap-2 text-neutral-700">✓ Tên miền phụ & thương hiệu riêng</div>
-                <div className="flex items-center gap-2 text-neutral-700">✓ Tích hợp Zalo ZNS Official</div>
-                <div className="flex items-center gap-2 text-neutral-700">✓ Hỗ trợ kỹ thuật 24/7 riêng biệt</div>
+              <div className="space-y-2 pt-3 border-t border-neutral-100 text-xs text-neutral-700">
+                <div className="flex items-center gap-2 font-semibold">✓ Không giới hạn thành viên & không gian</div>
+                <div className="flex items-center gap-2 font-semibold">✓ Tên miền phụ & thương hiệu riêng</div>
+                <div className="flex items-center gap-2 font-semibold">✓ Tích hợp Zalo ZNS Official</div>
+                <div className="flex items-center gap-2 font-semibold">✓ Hỗ trợ kỹ thuật 24/7 riêng biệt</div>
               </div>
             </div>
 
             <button
-              onClick={() => handleOpenBuyPlan('ENTERPRISE', 799000)}
-              className="w-full py-2.5 rounded-xl border border-neutral-300 hover:border-[#3344D6] hover:bg-neutral-50 text-neutral-900 text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+              onClick={() => handleOpenBuyPlan('ENTERPRISE', 599000)}
+              className="w-full py-2.5 rounded-xl bg-[#6D5CE8] hover:bg-[#5B4BD8] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
             >
               <QrCode size={16} />
-              <span>Quét VietQR mua gói VIP</span>
+              <span>Quét VietQR mua gói ENTERPRISE</span>
             </button>
           </div>
         </div>

@@ -49,6 +49,7 @@ import { Avatar, AvatarGroup } from '@/components/common/Avatar';
 import { BankLogo, POPULAR_BANKS } from '@/components/common/BankLogo';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { formatVND } from '@/lib/utils';
+import { LandingMotionProvider } from '@/components/landing/LandingMotionProvider';
 
 interface DemoStudent {
   id: string;
@@ -185,7 +186,8 @@ export default function HomePage() {
   const moneyRecoveredPerMonth = Math.round(memberCount * 45000);
 
   return (
-    <div className="min-h-screen bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F1F5F9] flex flex-col font-sans selection:bg-[#2538D9] selection:text-white transition-colors duration-200">
+    <LandingMotionProvider>
+      <div className="min-h-screen bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F1F5F9] flex flex-col font-sans selection:bg-[#2538D9] selection:text-white transition-colors duration-200">
       
       {/* Top Banner / Announcement Bar */}
       <div className="bg-[#0B0F19] dark:bg-[#060911] text-white text-xs py-2 px-4 text-center border-b border-[#1E283D] flex items-center justify-center gap-2 flex-wrap">
@@ -272,12 +274,12 @@ export default function HomePage() {
           
           {/* Left Column: Headlines & High-Converting CTAs */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
+            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
               <span className="w-2 h-2 rounded-full bg-[#2538D9] animate-pulse" />
               <span>Nền tảng Điểm danh & Thu phí tự động số 1</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.12]">
+            <h1 className="hero-headline text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.12]">
               Quản lý gọn hơn. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2538D9] via-[#4353EB] to-[#6D5CE8]">
                 Thu phí rõ ràng.
@@ -285,12 +287,12 @@ export default function HomePage() {
               Đối soát dễ dàng.
             </h1>
 
-            <p className="text-sm sm:text-base text-[#475467] dark:text-slate-300 leading-relaxed">
+            <p className="hero-subtext text-sm sm:text-base text-[#475467] dark:text-slate-300 leading-relaxed">
               Nền tảng SaaS toàn diện quản lý hoạt động, thành viên, điểm danh một chạm, hóa đơn tự động và đối soát giao dịch VietQR Napas 24/7. Phù hợp cho <strong className="text-[#101828] dark:text-white">Giáo dục & Lớp học</strong>, <strong className="text-[#101828] dark:text-white">CLB Thể thao (Pickleball/Cầu lông/Gym)</strong> và <strong className="text-[#101828] dark:text-white">Căn hộ dịch vụ & Nhà trọ</strong>.
             </p>
 
             {/* Direct Dual CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <div className="hero-cta-buttons flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={handleInstantDemoLogin}
@@ -357,7 +359,7 @@ export default function HomePage() {
           </div>
 
           {/* Right Column: Hero Visual — Interactive Mockup Canvas */}
-          <div className="lg:col-span-7 relative">
+          <div className="hero-device-suite lg:col-span-7 relative">
             
             {/* Ambient Glows */}
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-[#2538D9]/15 rounded-full blur-3xl pointer-events-none" />
@@ -1365,24 +1367,27 @@ export default function HomePage() {
           </div>
 
           {/* Enterprise */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-6 lg:p-8 flex flex-col justify-between">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-[#6D5CE8] p-6 lg:p-8 relative shadow-lg flex flex-col justify-between">
+            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold">
+              Đa cơ sở & Chuỗi
+            </div>
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase">Trung tâm & Chuỗi</span>
+              <span className="text-xs font-bold text-[#6D5CE8] dark:text-violet-400 uppercase">Doanh nghiệp (Enterprise)</span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black text-[#101828] dark:text-white">499.000 đ</span>
                 <span className="text-xs text-[#475467] dark:text-slate-400">/tháng</span>
               </div>
               <p className="text-xs text-[#475467] dark:text-slate-400">Cho trung tâm nhiều cơ sở, chuỗi sân thể thao hoặc tòa nhà.</p>
               <div className="border-t border-[#E4E7EC] dark:border-slate-700 pt-4 space-y-2 text-xs text-[#475467] dark:text-slate-300">
-                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Không giới hạn số lượng thành viên</span></div>
-                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Phân quyền nhiều giáo viên & trợ giảng</span></div>
-                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Tự động gửi tin nhắn Zalo ZNS</span></div>
-                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /><span>Hỗ trợ kỹ thuật ưu tiên 24/7</span></div>
+                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#6D5CE8]" /><span>Không giới hạn số lượng thành viên</span></div>
+                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#6D5CE8]" /><span>Phân quyền nhiều giáo viên & trợ giảng</span></div>
+                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#6D5CE8]" /><span>Tự động gửi tin nhắn Zalo ZNS</span></div>
+                <div className="flex items-center gap-2"><Check className="w-4 h-4 text-[#6D5CE8]" /><span>Hỗ trợ kỹ thuật ưu tiên 24/7</span></div>
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white flex items-center justify-center">
-                Liên hệ tư vấn
+              <Link href="/onboarding" className="w-full py-2.5 rounded-xl bg-[#6D5CE8] hover:bg-[#5B4BD8] text-xs font-bold text-white flex items-center justify-center shadow-md shadow-[#6D5CE8]/20 transition-all">
+                Đăng ký gói Enterprise
               </Link>
             </div>
           </div>
@@ -1469,6 +1474,7 @@ export default function HomePage() {
         </div>
       </footer>
 
-    </div>
+      </div>
+    </LandingMotionProvider>
   );
 }

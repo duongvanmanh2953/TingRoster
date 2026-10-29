@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar } from '@/components/common/Avatar';
+import { SmartBackButton } from '@/components/common/SmartBackButton';
 
 interface MemberDetails {
   id: string;
@@ -157,14 +158,9 @@ export default function MemberDetailPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       
-      {/* Top Breadcrumb */}
-      <div>
-        <Link
-          href="/members"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#475467] hover:text-[#2538D9] transition-colors mb-3"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Trở về Danh sách học viên
-        </Link>
+      {/* Top Smart Back Button */}
+      <div className="flex items-center gap-2">
+        <SmartBackButton fallbackUrl="/members" label="Danh sách thành viên" />
       </div>
 
       {/* Profile Header Card matching Panel 7 */}

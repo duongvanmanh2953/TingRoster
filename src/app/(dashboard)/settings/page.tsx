@@ -20,6 +20,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import { BankLogo, POPULAR_BANKS } from '@/components/common/BankLogo';
+import { LogoCustomizer } from '@/components/common/LogoCustomizer';
 
 const VIETNAMESE_BANKS = Object.values(POPULAR_BANKS);
 
@@ -29,6 +30,7 @@ export default function SettingsPage() {
   const [bankId, setBankId] = useState('MB');
   const [bankAccountNo, setBankAccountNo] = useState('0987654321');
   const [bankAccountName, setBankAccountName] = useState('NGUYEN VAN MINH');
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -44,6 +46,7 @@ export default function SettingsPage() {
           setBankId(data.data.bankId || 'MB');
           setBankAccountNo(data.data.bankAccountNo || '');
           setBankAccountName(data.data.bankAccountName || '');
+          setLogoUrl(data.data.logoUrl || null);
         }
       })
       .finally(() => setLoading(false));
@@ -63,6 +66,7 @@ export default function SettingsPage() {
           bankId,
           bankAccountNo,
           bankAccountName,
+          logoUrl,
         }),
       });
       const data = await res.json();
@@ -76,6 +80,19 @@ export default function SettingsPage() {
       alert('Lỗi kết nối máy chủ');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogoUpdated = async (newUrl: string | null) => {
+    setLogoUrl(newUrl);
+    try {
+      await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logoUrl: newUrl }),
+      });
+    } catch {
+      // quiet update
     }
   };
 
@@ -218,6 +235,14 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* Workspace Brand Logo Customizer */}
+        <LogoCustomizer
+          currentLogoUrl={logoUrl}
+          title="Logo Workspace / Cơ sở đào tạo"
+          description="Tùy chỉnh logo thương hiệu hiển thị trên toàn bộ Sidebar, Header, Phiếu thu và Cổng thanh toán phụ huynh. Tự động tương thích với logo nền trong suốt, logo vuông hoặc chữ nhật ngang."
+          onLogoUpdated={handleLogoUpdated}
+        />
 
         {/* User Profile Card */}
         <div className="ting-card p-6 space-y-4">

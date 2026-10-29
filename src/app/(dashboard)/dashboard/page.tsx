@@ -30,7 +30,8 @@ import {
   Inbox,
   Filter,
   ArrowDownRight,
-  Receipt
+  Receipt,
+  Layers,
 } from 'lucide-react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -59,6 +60,8 @@ import {
 } from 'recharts';
 import { BankLogo } from '@/components/common/BankLogo';
 import { Avatar } from '@/components/common/Avatar';
+import { SpaceCard, SpaceItem } from '@/components/spaces/SpaceCard';
+import { CreateSpaceWizardModal } from '@/components/spaces/CreateSpaceWizardModal';
 
 interface DashboardStats {
   timeframe?: string;
@@ -161,18 +164,35 @@ export default function DashboardPage() {
     }
   }, [chartFilter]);
 
+  const [spaces, setSpaces] = useState<SpaceItem[]>([]);
+  const [showCreateWizard, setShowCreateWizard] = useState(false);
+
+  const loadSpaces = useCallback(async () => {
+    try {
+      const res = await fetch('/api/groups');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setSpaces(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   useEffect(() => {
     fetchStats();
+    loadSpaces();
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [fetchStats]);
+  }, [fetchStats, loadSpaces]);
 
   const handleRefresh = () => {
     setRefreshing(true);
     fetchStats();
+    loadSpaces();
   };
 
   const handleChartFilterChange = (filter: 'day' | 'week' | 'month' | 'quarter') => {
@@ -361,8 +381,8 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
               1. Tổng phải thu trong kỳ
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center font-bold">
-              <DollarSign className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-[#2538D9] dark:text-blue-300 flex items-center justify-center font-bold shadow-2xs">
+              <DollarSign className="w-4 h-4 stroke-[2.5]" />
             </div>
           </div>
           <div className="mt-3">
@@ -392,8 +412,8 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
               2. Đã thu được xác nhận
             </span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold shadow-2xs">
+              <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
             </div>
           </div>
           <div className="mt-3">
@@ -423,8 +443,8 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
               3. Còn phải thu (Dư nợ)
             </span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
-              <AlertCircle className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold shadow-2xs">
+              <AlertCircle className="w-4 h-4 stroke-[2.5]" />
             </div>
           </div>
           <div className="mt-3">
@@ -456,8 +476,8 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
               4. Quá hạn hoặc cần xử lý
             </span>
-            <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center font-bold">
-              <AlertTriangle className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold shadow-2xs">
+              <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
             </div>
           </div>
           <div className="mt-3">
@@ -483,6 +503,66 @@ export default function DashboardPage() {
             </div>
           </div>
         </SpotlightCard>
+      </div>
+
+      {/* Multi-Space Management Section */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <Layers className="w-5 h-5 text-blue-600" />
+              <span>Không gian & Khu vực Quản lý ({spaces.length})</span>
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Quản lý độc lập từng lớp học, câu lạc bộ, tòa nhà hoặc cơ sở với module và màu sắc riêng
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/groups"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 inline-flex items-center gap-1"
+            >
+              <span>Xem tất cả không gian</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setShowCreateWizard(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-xs cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Tạo không gian</span>
+            </button>
+          </div>
+        </div>
+
+        {spaces.length === 0 ? (
+          <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-500 space-y-3">
+            <Layers className="w-8 h-8 text-slate-400 mx-auto" />
+            <p className="font-semibold text-slate-700 dark:text-slate-300">Chưa có không gian nào.</p>
+            <button
+              type="button"
+              onClick={() => setShowCreateWizard(true)}
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Khởi tạo không gian đầu tiên</span>
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {spaces.slice(0, 3).map((space) => (
+              <SpaceCard
+                key={space.id}
+                space={space}
+                onUpdate={(up) => setSpaces((prev) => prev.map((s) => s.id === up.id ? { ...s, ...up } : s))}
+                onDelete={(id) => setSpaces((prev) => prev.filter((s) => s.id !== id))}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 3. Row 2: 3 Core Operational Charts per Section 5.1 */}
@@ -1049,6 +1129,17 @@ export default function DashboardPage() {
           </DialogActions>
         </form>
       </Dialog>
+
+      {/* Create Space Wizard Modal */}
+      {showCreateWizard && (
+        <CreateSpaceWizardModal
+          open={showCreateWizard}
+          onClose={() => setShowCreateWizard(false)}
+          onSuccess={(newSpace) => {
+            setSpaces((prev) => [newSpace, ...prev]);
+          }}
+        />
+      )}
 
     </div>
   );

@@ -5,14 +5,14 @@ import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 
 export const ROUTE_TITLES: Record<string, { vi: string; en: string }> = {
-  '/dashboard': { vi: 'Tổng quan Vận hành', en: 'Operations Overview' },
-  '/attendance': { vi: 'Điểm danh & Chuyên cần', en: 'Attendance Tracking' },
-  '/members': { vi: 'Danh sách Thành viên', en: 'Members Directory' },
-  '/groups': { vi: 'Lớp học & Phòng trọ', en: 'Groups & Workspaces' },
-  '/workflows': { vi: 'Quy trình Vận hành', en: 'Workflows & Policies' },
-  '/invoices': { vi: 'Khoản thu & Công nợ', en: 'Invoices & Receivables' },
-  '/transactions': { vi: 'Giao dịch & Đối soát VietQR', en: 'VietQR Transactions' },
-  '/reports': { vi: 'Trung tâm Báo cáo & Phân tích', en: 'Reports & Analytics Center' },
+  '/dashboard': { vi: 'Tổng quan', en: 'Dashboard' },
+  '/attendance': { vi: 'Lịch & Điểm danh', en: 'Attendance Tracking' },
+  '/members': { vi: 'Thành viên', en: 'Members' },
+  '/groups': { vi: 'Không gian của tôi', en: 'My Spaces' },
+  '/workflows': { vi: 'Quy trình vận hành', en: 'Workflows & Policies' },
+  '/invoices': { vi: 'Khoản thu', en: 'Collections' },
+  '/transactions': { vi: 'Giao dịch VietQR', en: 'VietQR Transactions' },
+  '/reports': { vi: 'Tổng quan báo cáo', en: 'Reports Overview' },
   '/billing': { vi: 'Gói cước & Subscription', en: 'Billing & Plans' },
   '/automations': { vi: 'AI & Tự động hóa', en: 'AI & Automations' },
   '/notifications': { vi: 'Trung tâm Thông báo', en: 'Notifications' },

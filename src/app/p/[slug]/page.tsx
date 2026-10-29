@@ -5,12 +5,15 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { PublicPaymentCard, PublicInvoiceData } from '@/components/payments/PublicPaymentCard';
 import { GraduationCap, Search, AlertCircle, RefreshCw, ChevronRight } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
+import { ZaloShareButton } from '@/components/common/ZaloShareButton';
 
 interface GroupData {
   id: string;
   name: string;
   slug: string;
   description?: string;
+  logoUrl?: string | null;
+  workspaceLogoUrl?: string | null;
   members: Array<{ id: string; name: string }>;
 }
 
@@ -125,8 +128,39 @@ export default function PublicPortalPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Brand / Class Header */}
         <div className="text-center space-y-3">
-          <div className="flex justify-center mb-1">
-            <Logo href="/" size="sm" showTagline={false} />
+          <div className="flex items-center justify-between gap-4 mb-2">
+            <div className="flex items-center gap-3">
+              {group?.logoUrl ? (
+                <div className="h-10 max-w-[140px] flex items-center justify-start overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={group.logoUrl}
+                    alt={group.name}
+                    className="h-full w-auto max-w-[140px] object-contain select-none"
+                  />
+                </div>
+              ) : group?.workspaceLogoUrl ? (
+                <div className="h-10 max-w-[140px] flex items-center justify-start overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={group.workspaceLogoUrl}
+                    alt="Workspace Logo"
+                    className="h-full w-auto max-w-[140px] object-contain select-none"
+                  />
+                </div>
+              ) : (
+                <Logo href="/" size="sm" showTagline={false} />
+              )}
+            </div>
+
+            {group && (
+              <ZaloShareButton
+                shareUrl={`/p/${group.slug}`}
+                title={`Cổng tra cứu học phí & điểm danh - ${group.name}`}
+                description={`Tra cứu phiếu thu và đóng phí trực tuyến qua VietQR Napas 24/7`}
+                variant="pill"
+              />
+            )}
           </div>
           {group && (
             <div>

@@ -10,12 +10,14 @@ datasource db {
 enum PlanType {
   FREE
   PRO
+  ENTERPRISE
 }
 
 enum GroupType {
   CLASS
   SPORTS_CLUB
   RENTAL
+  GENERAL
 }
 
 enum BillingCycle {
@@ -105,6 +107,8 @@ model User {
   bankId          String         @default("MB")
   bankAccountNo   String         @default("0987654321")
   bankAccountName String         @default("NGUYEN VAN A")
+  logoUrl         String?        // Custom workspace brand logo
+  avatarUrl       String?        // Custom owner avatar
   planType        PlanType       @default(FREE)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -123,6 +127,7 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@index([name])
 }
 
 model Group {
@@ -130,10 +135,14 @@ model Group {
   userId              String
   name                String
   slug                String       @unique
+  code                String?      @unique // Unique space identifier e.g. TR-8921
   description         String?
+  logoUrl             String?      // Custom group/space logo
+  themeColor          String?      @default("#2538D9") // Custom space accent color
+  enabledModules      String?      @default("members,attendance,invoices,reports") // Comma-separated list of enabled modules
   defaultFee          Int          @default(0) // VND integer
   billingCycle        BillingCycle @default(MONTHLY)
-  groupType           GroupType    @default(CLASS)
+  groupType           GroupType    @default(GENERAL)
   isActive            Boolean      @default(true)
   publicPortalEnabled Boolean      @default(true)
   createdAt           DateTime     @default(now())
@@ -146,6 +155,7 @@ model Group {
 
   @@index([userId])
   @@index([slug])
+  @@index([code])
 }
 
 model Member {
@@ -171,6 +181,7 @@ model Member {
   @@index([groupId])
   @@index([userId])
   @@index([name])
+  @@index([phone])
 }
 
 model Attendance {

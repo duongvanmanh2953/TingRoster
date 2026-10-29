@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { ChevronRight, BarChart3, Download, Printer } from 'lucide-react';
 import { DateRangeFilter, type DatePeriodPreset } from '@/components/common/DateRangeFilter';
 
+import { SmartBackButton } from '@/components/common/SmartBackButton';
+
 interface ReportHeaderProps {
   title: string;
   description: string;
@@ -34,24 +36,28 @@ export function ReportHeader({
 }: ReportHeaderProps) {
   return (
     <div className="space-y-4 pb-4 border-b border-[#E4E7EC] dark:border-[#1E293B]">
-      {/* 1. Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-        <Link href="/dashboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">
-          Trang chủ
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
-        <Link href="/reports" className="hover:text-slate-900 dark:hover:text-white transition-colors">
-          Trung tâm Báo cáo
-        </Link>
-        {currentBreadcrumb !== 'Tổng quan' && (
-          <>
-            <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
-            <span className="font-semibold text-[#2538D9] dark:text-indigo-400">
-              {currentBreadcrumb}
-            </span>
-          </>
-        )}
-      </nav>
+      {/* 1. Smart Back & Breadcrumbs */}
+      <div className="flex items-center gap-3">
+        <SmartBackButton fallbackUrl="/reports" label="Trung tâm Báo cáo" />
+
+        <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+          <Link href="/dashboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+            Trang chủ
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
+          <Link href="/reports" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+            Trung tâm Báo cáo
+          </Link>
+          {currentBreadcrumb !== 'Tổng quan' && (
+            <>
+              <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
+              <span className="font-semibold text-[#2538D9] dark:text-indigo-400">
+                {currentBreadcrumb}
+              </span>
+            </>
+          )}
+        </nav>
+      </div>
 
       {/* 2. Title & Description */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

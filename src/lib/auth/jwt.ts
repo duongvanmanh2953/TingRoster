@@ -52,6 +52,8 @@ export async function getServerSession() {
         bankId: true,
         bankAccountNo: true,
         bankAccountName: true,
+        logoUrl: true,
+        avatarUrl: true,
         planType: true,
         createdAt: true,
       },

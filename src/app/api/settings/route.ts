@@ -10,6 +10,8 @@ const SettingsSchema = z.object({
   bankId: z.string().min(2).optional(),
   bankAccountNo: z.string().min(6).optional(),
   bankAccountName: z.string().min(2).optional(),
+  logoUrl: z.string().nullable().optional(),
+  avatarUrl: z.string().nullable().optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -27,6 +29,8 @@ export async function GET(req: NextRequest) {
       bankId: true,
       bankAccountNo: true,
       bankAccountName: true,
+      logoUrl: true,
+      avatarUrl: true,
       planType: true,
     },
   });
@@ -44,14 +48,17 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const parsed = SettingsSchema.parse(body);
 
+    const updateData: any = {};
+    if (parsed.name !== undefined) updateData.name = parsed.name?.trim();
+    if (parsed.bankId !== undefined) updateData.bankId = parsed.bankId?.trim().toUpperCase();
+    if (parsed.bankAccountNo !== undefined) updateData.bankAccountNo = parsed.bankAccountNo?.trim();
+    if (parsed.bankAccountName !== undefined) updateData.bankAccountName = parsed.bankAccountName?.trim().toUpperCase();
+    if (parsed.logoUrl !== undefined) updateData.logoUrl = parsed.logoUrl;
+    if (parsed.avatarUrl !== undefined) updateData.avatarUrl = parsed.avatarUrl;
+
     const updated = await prisma.user.update({
       where: { id: userId },
-      data: {
-        name: parsed.name?.trim(),
-        bankId: parsed.bankId?.trim().toUpperCase(),
-        bankAccountNo: parsed.bankAccountNo?.trim(),
-        bankAccountName: parsed.bankAccountName?.trim().toUpperCase(),
-      },
+      data: updateData,
       select: {
         id: true,
         email: true,
@@ -59,6 +66,8 @@ export async function PATCH(req: NextRequest) {
         bankId: true,
         bankAccountNo: true,
         bankAccountName: true,
+        logoUrl: true,
+        avatarUrl: true,
       },
     });
 

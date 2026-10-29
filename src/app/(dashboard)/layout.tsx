@@ -33,9 +33,10 @@ import {
   Receipt,
   Download,
   Workflow,
-  FileText,
   Palette,
-  Layers
+  Layers,
+  ArrowLeft,
+  ArrowRightLeft
 } from 'lucide-react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -57,6 +58,8 @@ import {
 import { BankLogo } from '@/components/common/BankLogo';
 import { Logo } from '@/components/common/Logo';
 import { Avatar } from '@/components/common/Avatar';
+import { SpaceAvatar } from '@/components/common/SpaceAvatar';
+import { parseEnabledModules } from '@/lib/spaces/constants';
 import { TingBadge, TingTag } from '@/components/common/Badge';
 import { QuickCreateInvoiceModal } from '@/components/invoices/QuickCreateInvoiceModal';
 import { useTheme } from '@/components/theme/ThemeContext';
@@ -71,6 +74,7 @@ interface UserData {
   role?: string;
   bankId?: string;
   bankAccountNo?: string;
+  logoUrl?: string;
 }
 
 interface NavSubItem {
@@ -124,12 +128,12 @@ const NAV_CATEGORIES: NavCategory[] = [
     items: [
       {
         id: 'management',
-        label: 'Quản lý không gian',
-        labelEn: 'Workspace & Operations',
+        label: 'Quản lý',
+        labelEn: 'Management',
         icon: Building2,
         subItems: [
-          { href: '/groups', label: 'Không gian & Lớp học', labelEn: 'Workspaces & Classes' },
-          { href: '/members', label: 'Thành viên & Học viên', labelEn: 'Members & Students' },
+          { href: '/groups', label: 'Không gian của tôi', labelEn: 'My Spaces' },
+          { href: '/members', label: 'Thành viên', labelEn: 'Members' },
           { href: '/attendance', label: 'Lịch & Điểm danh', labelEn: 'Attendance & Schedule', badge: 'Hôm nay', badgeVariant: 'success' },
           { href: '/workflows', label: 'Quy trình vận hành', labelEn: 'Workflows & Rules' },
         ],
@@ -142,11 +146,11 @@ const NAV_CATEGORIES: NavCategory[] = [
     items: [
       {
         id: 'finance',
-        label: 'Tài chính VietQR',
-        labelEn: 'Finance & Payments',
+        label: 'Tài chính',
+        labelEn: 'Finance',
         icon: CreditCard,
         subItems: [
-          { href: '/invoices', label: 'Khoản thu & Công nợ', labelEn: 'Invoices & Receivables' },
+          { href: '/invoices', label: 'Khoản thu', labelEn: 'Collections' },
           { href: '/transactions', label: 'Giao dịch VietQR', labelEn: 'VietQR Transactions', live: true },
           { href: '/documents', label: 'Hóa đơn & Chứng từ', labelEn: 'Receipts & Documents' },
         ],
@@ -159,16 +163,16 @@ const NAV_CATEGORIES: NavCategory[] = [
     items: [
       {
         id: 'reports',
-        label: 'Trung tâm Báo cáo',
-        labelEn: 'Reports Center',
+        label: 'Tổng quan báo cáo',
+        labelEn: 'Reports Overview',
         icon: BarChart3,
         subItems: [
           { href: '/reports', label: 'Tổng quan báo cáo', labelEn: 'Report Overview' },
-          { href: '/reports/cashflow', label: 'Báo cáo khoản thu', labelEn: 'Collections & Cash Flow' },
-          { href: '/reports/aging', label: 'Báo cáo công nợ & tuổi nợ', labelEn: 'Debt & Aging Schedule' },
-          { href: '/reports/attendance', label: 'Báo cáo điểm danh', labelEn: 'Attendance & Rosters' },
+          { href: '/reports/cashflow', label: 'Báo cáo khoản thu', labelEn: 'Collections Report' },
+          { href: '/reports/aging', label: 'Báo cáo công nợ', labelEn: 'Debt & Receivables' },
+          { href: '/reports/attendance', label: 'Báo cáo điểm danh', labelEn: 'Attendance Analytics' },
           { href: '/reports/tax', label: 'Báo cáo thuế TT 40', labelEn: 'Tax Estimate TT 40' },
-          { href: '/reports/reconciliation', label: 'Báo cáo đối soát VietQR', labelEn: 'VietQR Reconciliation' },
+          { href: '/reports/reconciliation', label: 'Báo cáo đối soát', labelEn: 'VietQR Reconciliation' },
           { href: '/export', label: 'Xuất sổ sách kế toán', labelEn: 'Data Export' },
         ],
       },
@@ -235,25 +239,60 @@ export default function DashboardLayout({
   const { isDark, toggleTheme, isDarkSidebar } = useTheme();
   const { locale, t } = useLanguage();
 
+  const spaceMatch = pathname.match(/^\/groups\/([^/]+)/);
+  const currentSpaceId = spaceMatch && spaceMatch[1] !== 'groups' && spaceMatch[1] !== 'new' ? spaceMatch[1] : null;
+
+  const [activeSpace, setActiveSpace] = useState<{
+    id: string;
+    name: string;
+    slug: string;
+    code?: string | null;
+    logoUrl?: string | null;
+    themeColor?: string | null;
+    enabledModules?: string | null;
+    groupType?: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!currentSpaceId) {
+      setActiveSpace(null);
+      return;
+    }
+    fetch(`/api/groups/${currentSpaceId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.success && data.data) {
+          setActiveSpace(data.data);
+        }
+      })
+      .catch(() => {});
+  }, [currentSpaceId]);
+
   const getPageTitle = (path: string, loc: string): string => {
     if (path === '/dashboard') return loc === 'en' ? 'Dashboard' : 'Tổng quan';
-    if (path.startsWith('/attendance')) return loc === 'en' ? 'Attendance & Schedule' : 'Điểm danh & Lịch';
-    if (path.startsWith('/members')) return loc === 'en' ? 'Members & Students' : 'Thành viên & Học viên';
-    if (path.startsWith('/groups')) return loc === 'en' ? 'Workspaces & Classes' : 'Workspace & Lớp';
-    if (path.startsWith('/workflows')) return loc === 'en' ? 'Workflows' : 'Quy trình quản lý';
-    if (path.startsWith('/invoices')) return loc === 'en' ? 'Invoices & Receivables' : 'Khoản thu & Công nợ';
+    if (path === '/groups') return loc === 'en' ? 'My Spaces' : 'Không gian của tôi';
+    if (path.startsWith('/groups/')) {
+      const spaceTitle = activeSpace?.name || (loc === 'en' ? 'Space' : 'Không gian');
+      if (path.endsWith('/members')) return `${spaceTitle} • ${loc === 'en' ? 'Members' : 'Thành viên'}`;
+      if (path.endsWith('/settings')) return `${spaceTitle} • ${loc === 'en' ? 'Space Info' : 'Thông tin không gian'}`;
+      return `${spaceTitle} • ${loc === 'en' ? 'Overview' : 'Tổng quan'}`;
+    }
+    if (path.startsWith('/attendance')) return loc === 'en' ? 'Attendance & Schedule' : 'Lịch & Điểm danh';
+    if (path.startsWith('/members')) return loc === 'en' ? 'Members' : 'Thành viên';
+    if (path.startsWith('/workflows')) return loc === 'en' ? 'Workflows' : 'Quy trình vận hành';
+    if (path.startsWith('/invoices')) return loc === 'en' ? 'Collections' : 'Khoản thu';
     if (path.startsWith('/transactions')) return loc === 'en' ? 'Transactions & VietQR' : 'Giao dịch VietQR';
     if (path.startsWith('/documents')) return loc === 'en' ? 'Receipts & Documents' : 'Hóa đơn & Chứng từ';
-    if (path === '/reports') return loc === 'en' ? 'Reports Overview' : 'Tổng quan Báo cáo';
-    if (path.startsWith('/reports/cashflow')) return loc === 'en' ? 'Collections & Cash Flow' : 'Báo cáo Khoản thu & Dòng tiền';
-    if (path.startsWith('/reports/aging')) return loc === 'en' ? 'Debt & Aging Schedule' : 'Báo cáo Tuổi nợ & Công nợ';
-    if (path.startsWith('/reports/attendance')) return loc === 'en' ? 'Attendance Analytics' : 'Báo cáo Điểm danh & Chuyên cần';
-    if (path.startsWith('/reports/tax')) return loc === 'en' ? 'Tax Estimate TT 40' : 'Báo cáo Thuế TT 40';
-    if (path.startsWith('/reports/reconciliation')) return loc === 'en' ? 'VietQR Reconciliation' : 'Báo cáo Đối soát VietQR';
-    if (path.startsWith('/reports')) return loc === 'en' ? 'Reports Center' : 'Trung tâm Báo cáo';
-    if (path.startsWith('/export')) return loc === 'en' ? 'Data Export' : 'Xuất sổ sách';
-    if (path.startsWith('/automations')) return loc === 'en' ? 'Automations & AI' : 'Tự động hóa & AI';
-    if (path.startsWith('/ai-assistant')) return loc === 'en' ? 'AI Assistant' : 'Trợ lý AI';
+    if (path === '/reports') return loc === 'en' ? 'Reports Overview' : 'Tổng quan báo cáo';
+    if (path.startsWith('/reports/cashflow')) return loc === 'en' ? 'Collections Report' : 'Báo cáo khoản thu';
+    if (path.startsWith('/reports/aging')) return loc === 'en' ? 'Debt & Receivables' : 'Báo cáo công nợ';
+    if (path.startsWith('/reports/attendance')) return loc === 'en' ? 'Attendance Analytics' : 'Báo cáo điểm danh';
+    if (path.startsWith('/reports/tax')) return loc === 'en' ? 'Tax Estimate TT 40' : 'Báo cáo thuế TT 40';
+    if (path.startsWith('/reports/reconciliation')) return loc === 'en' ? 'VietQR Reconciliation' : 'Báo cáo đối soát';
+    if (path.startsWith('/reports')) return loc === 'en' ? 'Reports Center' : 'Tổng quan báo cáo';
+    if (path.startsWith('/export')) return loc === 'en' ? 'Data Export' : 'Xuất sổ sách kế toán';
+    if (path.startsWith('/automations')) return loc === 'en' ? 'Automations & AI' : 'Tự động hóa thông minh';
+    if (path.startsWith('/ai-assistant')) return loc === 'en' ? 'AI Assistant' : 'Trợ lý AI TingRoster';
     if (path.startsWith('/billing')) return loc === 'en' ? 'Billing & Subscriptions' : 'Gói cước & Số dư';
     if (path.startsWith('/notifications')) return loc === 'en' ? 'Notifications' : 'Trung tâm Thông báo';
     if (path.startsWith('/help')) return loc === 'en' ? 'Help & Guides' : 'Trợ giúp & Hướng dẫn';
@@ -327,6 +366,7 @@ export default function DashboardLayout({
             role: 'Giáo viên / Admin',
             bankId: data.data.bankId || 'MB',
             bankAccountNo: data.data.bankAccountNo || '0987654321',
+            logoUrl: data.data.logoUrl || undefined,
           });
         }
       })
@@ -356,7 +396,299 @@ export default function DashboardLayout({
     setProfileAnchorEl(null);
   };
 
-  const renderNavLinks = (closeDrawer?: () => void) => (
+  const renderNavLinks = (closeDrawer?: () => void) => {
+    // LEVEL 2: CONTEXTUAL SPACE NAVIGATION (When inside a specific space)
+    if (currentSpaceId) {
+      const spaceModules = parseEnabledModules(activeSpace?.enabledModules);
+      const themeColor = activeSpace?.themeColor || '#2538D9';
+      const spaceCode = activeSpace?.code || (activeSpace?.slug ? `TR-${activeSpace.slug.toUpperCase().slice(0, 4)}` : '');
+
+      return (
+        <nav className="flex-1 px-3 space-y-3 overflow-y-auto pb-4">
+          {/* Quay lại cấp 1 */}
+          <div className="pt-1">
+            <Link
+              href="/groups"
+              onClick={closeDrawer}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                isDarkSidebar
+                  ? 'text-slate-300 hover:text-white bg-white/[0.05] hover:bg-white/[0.1]'
+                  : 'text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200'
+              }`}
+            >
+              <ArrowLeft className="w-4 h-4 text-slate-400" />
+              <span>← Không gian của tôi</span>
+            </Link>
+          </div>
+
+          {/* Active Space Identity Card */}
+          <div className={`p-2.5 rounded-2xl border transition-all ${
+            isDarkSidebar
+              ? 'bg-[#131A2B] border-[#1E283D]'
+              : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <SpaceAvatar
+                name={activeSpace?.name || 'Không gian'}
+                logoUrl={activeSpace?.logoUrl}
+                themeColor={themeColor}
+                enabledModules={activeSpace?.enabledModules}
+                groupType={activeSpace?.groupType}
+                size="sm"
+              />
+              <div className="min-w-0 flex-1">
+                <p className={`text-xs font-bold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>
+                  {activeSpace?.name || 'Đang tải...'}
+                </p>
+                <p className="text-[10px] font-mono text-slate-400 truncate">
+                  {spaceCode}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Space Context Categories */}
+          <div className="space-y-3.5">
+            {/* TỔNG QUAN */}
+            <div className="space-y-1">
+              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Tổng quan
+              </div>
+              <Link
+                href={`/groups/${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">Bảng điều khiển</span>
+              </Link>
+            </div>
+
+            {/* QUẢN LÝ */}
+            <div className="space-y-1">
+              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Quản lý
+              </div>
+
+              {spaceModules.includes('members') && (
+                <Link
+                  href={`/groups/${currentSpaceId}/members`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/members`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Users2 className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">Thành viên</span>
+                </Link>
+              )}
+
+              {spaceModules.includes('attendance') && (
+                <Link
+                  href={`/attendance?groupId=${currentSpaceId}`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname.startsWith('/attendance')
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <CalendarCheck className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">Lịch & Điểm danh</span>
+                </Link>
+              )}
+            </div>
+
+            {/* TÀI CHÍNH */}
+            <div className="space-y-1">
+              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Tài chính
+              </div>
+
+              {spaceModules.includes('invoices') && (
+                <Link
+                  href={`/invoices?groupId=${currentSpaceId}`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname.startsWith('/invoices')
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <CreditCard className="w-4 h-4 flex-shrink-0" />
+                  <span className="truncate">Khoản thu</span>
+                </Link>
+              )}
+
+              <Link
+                href={`/transactions?groupId=${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname.startsWith('/transactions')
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <ArrowRightLeft className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">Giao dịch VietQR</span>
+              </Link>
+            </div>
+
+            {/* BÁO CÁO */}
+            <div className="space-y-1">
+              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Báo cáo
+              </div>
+
+              <Link
+                href={`/reports?groupId=${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  pathname === '/reports'
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">Tổng quan báo cáo</span>
+              </Link>
+
+              <Link
+                href={`/reports/cashflow?groupId=${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  pathname.startsWith('/reports/cashflow')
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">Báo cáo khoản thu</span>
+              </Link>
+
+              <Link
+                href={`/reports/aging?groupId=${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  pathname.startsWith('/reports/aging')
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Receipt className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">Báo cáo công nợ</span>
+              </Link>
+
+              {spaceModules.includes('attendance') && (
+                <Link
+                  href={`/reports/attendance?groupId=${currentSpaceId}`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    pathname.startsWith('/reports/attendance')
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <CalendarCheck className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="truncate">Báo cáo điểm danh</span>
+                </Link>
+              )}
+
+              <Link
+                href={`/reports/reconciliation?groupId=${currentSpaceId}`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  pathname.startsWith('/reports/reconciliation')
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">Báo cáo đối soát</span>
+              </Link>
+            </div>
+
+            {/* CÀI ĐẶT KHÔNG GIAN */}
+            <div className="space-y-1">
+              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Cài đặt
+              </div>
+
+              <Link
+                href={`/groups/${currentSpaceId}/settings`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/settings`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Settings className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">Thông tin không gian</span>
+              </Link>
+
+              {activeSpace?.slug && (
+                <Link
+                  href={`/p/${activeSpace.slug}`}
+                  target="_blank"
+                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    isDarkSidebar
+                      ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">Cổng tra cứu (Portal)</span>
+                  </div>
+                </Link>
+              )}
+            </div>
+          </div>
+        </nav>
+      );
+    }
+
+    // LEVEL 1: GLOBAL GENERAL NAVIGATION
+    return (
     <nav className="flex-1 px-3 space-y-3.5 overflow-y-auto pb-4">
       {NAV_CATEGORIES.map((category) => (
         <div key={category.title} className="space-y-1">
@@ -493,7 +825,8 @@ export default function DashboardLayout({
         </div>
       ))}
     </nav>
-  );
+    );
+  };
 
   return (
     <div className="h-screen w-full overflow-hidden bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F8FAFC] flex flex-col md:flex-row font-sans selection:bg-[#2538D9] selection:text-white">
@@ -507,7 +840,23 @@ export default function DashboardLayout({
         <div className={`h-16 flex-shrink-0 flex items-center px-5 gap-3 border-b ${
           isDarkSidebar ? 'border-[#1B2333]/80' : 'border-[#E4E7EC]'
         }`}>
-          <Logo href="/dashboard" theme={isDarkSidebar ? 'dark' : 'light'} size="sm" showBadge={true} badgeText="PRO" />
+          {userData.logoUrl ? (
+            <Link href="/dashboard" className="flex items-center gap-2.5 focus:outline-none">
+              <div className="h-9 max-w-[140px] flex items-center justify-start overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={userData.logoUrl}
+                  alt="Workspace Logo"
+                  className="h-full w-auto max-w-[140px] object-contain select-none"
+                />
+              </div>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20 uppercase">
+                PRO
+              </span>
+            </Link>
+          ) : (
+            <Logo href="/dashboard" theme={isDarkSidebar ? 'dark' : 'light'} size="sm" showBadge={true} badgeText="PRO" />
+          )}
         </div>
 
         {/* Bank Connection Pill with Logo & MUI Tag */}
@@ -588,7 +937,23 @@ export default function DashboardLayout({
         <div className={`h-16 flex items-center justify-between px-5 border-b ${
           isDarkSidebar ? 'border-[#1B2333]' : 'border-[#E4E7EC]'
         }`}>
-          <Logo href="/dashboard" theme={isDarkSidebar ? 'dark' : 'light'} size="sm" showBadge={true} badgeText="PRO" />
+          {userData.logoUrl ? (
+            <Link href="/dashboard" className="flex items-center gap-2 focus:outline-none">
+              <div className="h-8 max-w-[130px] flex items-center justify-start overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={userData.logoUrl}
+                  alt="Workspace Logo"
+                  className="h-full w-auto max-w-[130px] object-contain select-none"
+                />
+              </div>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] border border-[#2538D9]/20 uppercase">
+                PRO
+              </span>
+            </Link>
+          ) : (
+            <Logo href="/dashboard" theme={isDarkSidebar ? 'dark' : 'light'} size="sm" showBadge={true} badgeText="PRO" />
+          )}
           <IconButton
             size="small"
             onClick={() => setMobileMenuOpen(false)}
@@ -939,11 +1304,11 @@ export default function DashboardLayout({
         <Link
           href="/groups"
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === '/groups' ? 'text-[#2538D9] font-bold' : 'text-slate-500'
+            pathname.startsWith('/groups') ? 'text-[#2538D9] font-bold' : 'text-slate-500'
           }`}
         >
-          <Users2 className="w-5 h-5" />
-          <span>Lớp & CLB</span>
+          <Layers className="w-5 h-5" />
+          <span>Không gian</span>
         </Link>
       </div>
 
