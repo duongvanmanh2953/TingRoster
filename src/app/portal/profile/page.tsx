@@ -15,6 +15,7 @@ import {
   Lock,
   ExternalLink
 } from 'lucide-react';
+import Switch from '@mui/material/Switch';
 
 export default function MemberProfilePage() {
   const [user, setUser] = useState<{ id: string; name: string; email: string; role: string } | null>(null);
@@ -133,37 +134,41 @@ export default function MemberProfilePage() {
           </h2>
 
           <div className="space-y-3 text-xs">
-            <label className="flex items-center justify-between p-3.5 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] hover:bg-slate-50/50 cursor-pointer">
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors shadow-2xs">
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-slate-500" />
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-4 h-4" />
+                </div>
                 <div>
-                  <span className="font-bold text-slate-800 dark:text-white block">Email thông báo học phí</span>
-                  <span className="text-[11px] text-slate-400">Nhận bảng kê chi tiết và mã VietQR qua email định kỳ</span>
+                  <span className="font-bold text-slate-900 dark:text-white block text-xs sm:text-sm">Email thông báo học phí</span>
+                  <span className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-normal">Nhận bảng kê chi tiết và mã VietQR qua email định kỳ</span>
                 </div>
               </div>
-              <input
-                type="checkbox"
+              <Switch
                 checked={notifyEmail}
                 onChange={(e) => setNotifyEmail(e.target.checked)}
-                className="w-4 h-4 rounded text-[#2538D9] focus:ring-[#2538D9]"
+                color="primary"
+                aria-label="Bật nhận thông báo học phí qua email"
               />
-            </label>
+            </div>
 
-            <label className="flex items-center justify-between p-3.5 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] hover:bg-slate-50/50 cursor-pointer">
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors shadow-2xs">
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-4 h-4" />
+                </div>
                 <div>
-                  <span className="font-bold text-slate-800 dark:text-white block">Tin nhắn Zalo ZNS</span>
-                  <span className="text-[11px] text-slate-400">Nhận tin báo xác nhận đã nộp học phí tức thì</span>
+                  <span className="font-bold text-slate-900 dark:text-white block text-xs sm:text-sm">Tin nhắn Zalo ZNS</span>
+                  <span className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-normal">Nhận tin báo xác nhận đã nộp học phí tức thì</span>
                 </div>
               </div>
-              <input
-                type="checkbox"
+              <Switch
                 checked={notifyZalo}
                 onChange={(e) => setNotifyZalo(e.target.checked)}
-                className="w-4 h-4 rounded text-[#2538D9] focus:ring-[#2538D9]"
+                color="primary"
+                aria-label="Bật nhận tin nhắn Zalo ZNS"
               />
-            </label>
+            </div>
           </div>
         </div>
 

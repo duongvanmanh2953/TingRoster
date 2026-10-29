@@ -791,7 +791,7 @@ export default function AiAssistantPage() {
                     isResolved ? 'border-emerald-200 bg-emerald-50/20 opacity-75' : 'border-[#E4E7EC] hover:border-slate-300'
                   }`}
                 >
-                  <div className="flex flex-col lg:items-center lg:justify-between gap-4 pb-4 border-b border-[#E4E7EC]">
+                  <div className="flex flex-col lg:justify-between gap-4 pb-4 border-b border-[#E4E7EC]">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs font-black text-[#101828] bg-slate-100 px-2 py-0.5 rounded">

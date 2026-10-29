@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Zap,
@@ -211,10 +212,7 @@ export default function HomePage() {
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-7 text-xs font-semibold text-[#475467] dark:text-slate-300">
             <a href="#tinh-nang" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Tính năng</a>
-            <a href="#trai-nghiem-live" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9] animate-ping" />
-              <span>Dùng thử Live</span>
-            </a>
+            <a href="#da-thiet-bi" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Đa thiết bị</a>
             <a href="#doi-tuong" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Đối tượng</a>
             <a href="#roi-calculator" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Tính tiết kiệm</a>
             <a href="#bang-gia" className="hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors">Bảng giá</a>
@@ -280,15 +278,15 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.12]">
-              Điểm danh một chạm. <br />
+              Quản lý gọn hơn. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2538D9] via-[#4353EB] to-[#6D5CE8]">
-                Thu phí tự động.
+                Thu phí rõ ràng.
               </span> <br />
-              Đối soát khỏi lo.
+              Đối soát dễ dàng.
             </h1>
 
             <p className="text-sm sm:text-base text-[#475467] dark:text-slate-300 leading-relaxed">
-              Giải pháp toàn diện cho <strong className="text-[#101828] dark:text-white">Giáo viên dạy thêm</strong>, <strong className="text-[#101828] dark:text-white">CLB Thể thao (Pickleball/Cầu lông)</strong> và <strong className="text-[#101828] dark:text-white">Chủ nhà trọ mini</strong>. Tự động gạch nợ tức thì bằng VietQR Napas 24/7 trực tiếp vào tài khoản ngân hàng của bạn.
+              Nền tảng SaaS toàn diện quản lý hoạt động, thành viên, điểm danh một chạm, hóa đơn tự động và đối soát giao dịch VietQR Napas 24/7. Phù hợp cho <strong className="text-[#101828] dark:text-white">Giáo dục & Lớp học</strong>, <strong className="text-[#101828] dark:text-white">CLB Thể thao (Pickleball/Cầu lông/Gym)</strong> và <strong className="text-[#101828] dark:text-white">Căn hộ dịch vụ & Nhà trọ</strong>.
             </p>
 
             {/* Direct Dual CTAs */}
@@ -606,6 +604,186 @@ export default function HomePage() {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* Multi-Device SaaS Ecosystem Showcase */}
+      <section id="da-thiet-bi" className="py-16 lg:py-24 bg-gradient-to-b from-[#F5F7FB] via-white to-[#F5F7FB] dark:from-[#0B0F19] dark:via-slate-900 dark:to-[#0B0F19] border-b border-[#E4E7EC] dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
+              <Laptop className="w-3.5 h-3.5" />
+              <span>Hệ sinh thái Đa thiết bị Đồng bộ Thời gian thực</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
+              Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile
+            </h2>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-300 leading-relaxed">
+              Dù bạn đang ngồi phân tích tài chính tại văn phòng, giáo viên mang tablet ra sân bóng, đặt kiosk tự phục vụ tại quầy lễ tân, hay phụ huynh xem công nợ trên smartphone — dữ liệu luôn chuẩn xác từng mili-giây.
+            </p>
+          </div>
+
+          {/* Primary Multi-Device Composition Banner */}
+          <div className="relative rounded-3xl overflow-hidden border border-[#E4E7EC] dark:border-slate-700 shadow-2xl bg-white dark:bg-slate-800 group">
+            <div className="relative w-full h-[320px] sm:h-[460px] lg:h-[540px]">
+              <Image
+                src="/images/multidevice-suite.jpg"
+                alt="TingRoster trên hệ sinh thái đa thiết bị: Màn hình máy tính lớn, Máy tính bảng, Kiosk check-in và Điện thoại thông minh"
+                fill
+                priority={false}
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                className="object-cover object-center group-hover:scale-[1.01] transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19]/90 via-[#0B0F19]/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                <div className="max-w-2xl space-y-2">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white inline-block uppercase tracking-wider">
+                    Đồng bộ 2 chiều tức thì
+                  </span>
+                  <h3 className="text-xl sm:text-3xl font-black text-white">
+                    Một tài khoản duy nhất — Vận hành toàn bộ cơ sở
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 sm:line-clamp-none">
+                    Thay đổi danh sách học sinh trên máy tính, dữ liệu xuất hiện ngay trên tablet của trợ giảng và màn hình kiosk ở quầy đón tiếp mà không cần bấm F5.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Badge Bar below Hero Banner */}
+            <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200 dark:divide-slate-700 border-t border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm">
+              <div className="p-4 flex items-center gap-3">
+                <Laptop className="w-5 h-5 text-[#2538D9] dark:text-indigo-400 flex-shrink-0" />
+                <div>
+                  <span className="text-xs font-bold text-[#101828] dark:text-white block">Desktop Dashboard</span>
+                  <span className="text-[10px] text-[#475467] dark:text-slate-400">Báo cáo & Đối soát chuyên sâu</span>
+                </div>
+              </div>
+              <div className="p-4 flex items-center gap-3">
+                <Layers className="w-5 h-5 text-violet-600 dark:text-violet-400 flex-shrink-0" />
+                <div>
+                  <span className="text-xs font-bold text-[#101828] dark:text-white block">Tablet Quản lý</span>
+                  <span className="text-[10px] text-[#475467] dark:text-slate-400">Điểm danh hiện trường di động</span>
+                </div>
+              </div>
+              <div className="p-4 flex items-center gap-3">
+                <Tv className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                <div>
+                  <span className="text-xs font-bold text-[#101828] dark:text-white block">Kiosk Quầy Lễ Tân</span>
+                  <span className="text-[10px] text-[#475467] dark:text-slate-400">Hội viên tự check-in 1 giây</span>
+                </div>
+              </div>
+              <div className="p-4 flex items-center gap-3">
+                <Smartphone className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                <div>
+                  <span className="text-xs font-bold text-[#101828] dark:text-white block">Mobile Web & VietQR</span>
+                  <span className="text-[10px] text-[#475467] dark:text-slate-400">Thanh toán Napas 24/7 trực tiếp</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 Detailed Lifestyle Context Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* Context 1: Tablet in Action */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 overflow-hidden shadow-md flex flex-col hover:shadow-xl transition-all">
+              <div className="relative w-full h-56 sm:h-64">
+                <Image
+                  src="/images/tablet-manager.jpg"
+                  alt="Người quản lý trung tâm hoặc huấn luyện viên đang cầm máy tính bảng iPad thao tác điểm danh và quản lý hội viên trên TingRoster"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-center"
+                />
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#2538D9] text-white text-[10px] font-bold shadow">
+                  iPad & Máy tính bảng
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <h4 className="text-base font-bold text-[#101828] dark:text-white">
+                    Quản lý hiện trường không cần giấy tờ
+                  </h4>
+                  <p className="text-xs text-[#475467] dark:text-slate-300 leading-relaxed">
+                    Giáo viên đứng tại lớp học, HLV đi quanh sân pickleball hay quản lý nhà trọ đi từng tầng: mọi thao tác điểm danh, ghi nhận vắng nghỉ hoặc chốt số điện nước đều hoàn tất bằng những cú chạm trực quan.
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs font-bold text-[#2538D9] dark:text-indigo-400">
+                  <span>Hỗ trợ cả offline & online</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* Context 2: Kiosk Check-in */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 overflow-hidden shadow-md flex flex-col hover:shadow-xl transition-all">
+              <div className="relative w-full h-56 sm:h-64">
+                <Image
+                  src="/images/kiosk-checkin.jpg"
+                  alt="Quầy lễ tân trung tâm thể thao với máy tính bảng kiosk đặt trên bàn, thành viên đưa điện thoại quét mã QR check-in"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-center"
+                />
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-emerald-600 text-white text-[10px] font-bold shadow">
+                  Kiosk Quét QR Tự Phục Vụ
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <h4 className="text-base font-bold text-[#101828] dark:text-white">
+                    Đón tiếp tự động — Giảm 80% áp lực lễ tân
+                  </h4>
+                  <p className="text-xs text-[#475467] dark:text-slate-300 leading-relaxed">
+                    Đặt một chiếc tablet tại cửa ra vào sân hoặc bàn tiếp đón. Học viên tự quét mã cá nhân để điểm danh. Màn hình phát âm thanh chào đón, thông báo số buổi còn lại và cảnh báo nếu có học phí quá hạn.
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                  <Link href="/kiosk" className="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1">
+                    <span>Mở màn hình Kiosk demo</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <Tv className="w-4 h-4 text-emerald-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* Context 3: Mobile VietQR */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 overflow-hidden shadow-md flex flex-col hover:shadow-xl transition-all">
+              <div className="relative w-full h-56 sm:h-64">
+                <Image
+                  src="/images/mobile-vietqr.jpg"
+                  alt="Điện thoại thông minh hiển thị mã VietQR động của TingRoster và thông báo giao dịch thành công"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover object-center"
+                />
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-amber-600 text-white text-[10px] font-bold shadow">
+                  Cổng Thành Viên & VietQR
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <h4 className="text-base font-bold text-[#101828] dark:text-white">
+                    Thanh toán Napas 24/7 không cần tải app
+                  </h4>
+                  <p className="text-xs text-[#475467] dark:text-slate-300 leading-relaxed">
+                    Phụ huynh & người chơi nhận link qua tin nhắn Zalo hoặc SMS. Mở trực tiếp trên trình duyệt di động với mã QR động tạo sẵn nội dung. Chuyển khoản xong là gạch nợ tự động trong 0.2 giây.
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                  <Link href="/p/demo" className="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1">
+                    <span>Xem thử Cổng phụ huynh</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                  <Smartphone className="w-4 h-4 text-amber-600" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -992,6 +1170,132 @@ export default function HomePage() {
           <p className="text-[11px] text-[#475467] dark:text-slate-500 max-w-xl mx-auto">
             Học viên & khách hàng quét mã từ app ngân hàng bất kỳ. Tiền chuyển về 100% thẳng tài khoản chính chủ của bạn.
           </p>
+        </div>
+      </section>
+
+      {/* 3-Step Implementation Workflow */}
+      <section className="py-16 bg-[#F5F7FB] dark:bg-[#060911] border-b border-[#E4E7EC] dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Quy trình đơn giản</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
+              Bắt đầu vận hành chỉ trong 3 phút
+            </h2>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">
+              Không cần cài đặt phức tạp, không cần thiết bị chuyên dụng đắt tiền.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            
+            {/* Step 1 */}
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-800 border border-[#E4E7EC] dark:border-slate-700 shadow-md relative">
+              <span className="text-5xl font-black text-[#2538D9]/15 dark:text-indigo-400/20 absolute top-4 right-6 select-none">
+                01
+              </span>
+              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center mb-6">
+                <Building2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">Tạo Workspace & Thành viên</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Thiết lập tên lớp học, CLB thể thao hoặc khu nhà trọ. Nhập danh sách thành viên bằng file Excel có sẵn hoặc thêm nhanh trên điện thoại.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-800 border border-[#E4E7EC] dark:border-slate-700 shadow-md relative">
+              <span className="text-5xl font-black text-[#2538D9]/15 dark:text-indigo-400/20 absolute top-4 right-6 select-none">
+                02
+              </span>
+              <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950/80 text-[#6D5CE8] dark:text-violet-400 flex items-center justify-center mb-6">
+                <CalendarCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">Điểm danh hoặc Chốt số</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Điểm danh 1 chạm vào đầu buổi, mở kiosk tự phục vụ tại quầy, hoặc nhập số điện nước. Hệ thống tự động tính học phí và chi phí chính xác từng buổi.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-800 border border-[#E4E7EC] dark:border-slate-700 shadow-md relative">
+              <span className="text-5xl font-black text-[#2538D9]/15 dark:text-indigo-400/20 absolute top-4 right-6 select-none">
+                03
+              </span>
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-[#101828] dark:text-white mb-2">VietQR Tự gạch nợ 24/7</h3>
+              <p className="text-xs text-[#475467] dark:text-slate-400 leading-relaxed">
+                Gửi mã VietQR có sẵn số tiền và nội dung cho phụ huynh/hội viên. Tiền về thẳng tài khoản bạn, hệ thống đối soát gạch nợ tự động trong 0.2 giây.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* Role-Based Permissions & Enterprise-Grade Financial Security */}
+      <section className="py-16 bg-white dark:bg-slate-900 border-b border-[#E4E7EC] dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Bảo mật & Phân quyền</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
+              An toàn tài chính & Phân quyền chặt chẽ
+            </h2>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400">
+              Thiết kế theo chuẩn Zero-Custody: TingRoster không bao giờ giữ tiền, không trung gian ví điện tử.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Role: Owner */}
+            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white">Chủ sở hữu (Owner)</span>
+                <ShieldCheck className="w-5 h-5 text-[#2538D9]" />
+              </div>
+              <h4 className="text-sm font-bold text-[#101828] dark:text-white">Toàn quyền Quản trị & Tài chính</h4>
+              <ul className="space-y-1.5 text-xs text-[#475467] dark:text-slate-300">
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Cấu hình tài khoản ngân hàng nhận tiền</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Xem toàn bộ dòng tiền, nợ đọng & báo cáo thuế</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Mời và phân quyền giáo viên / nhân viên</span></li>
+              </ul>
+            </div>
+
+            {/* Role: Staff / Teacher */}
+            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-violet-600 text-white">Giáo viên / Nhân viên (Staff)</span>
+                <Users2 className="w-5 h-5 text-violet-600" />
+              </div>
+              <h4 className="text-sm font-bold text-[#101828] dark:text-white">Vận hành Hiện trường & Điểm danh</h4>
+              <ul className="space-y-1.5 text-xs text-[#475467] dark:text-slate-300">
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Điểm danh sĩ số lớp & ghi chú học viên</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Không truy cập doanh thu tổng hoặc ngân hàng</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Thao tác nhanh trên máy tính bảng hoặc di động</span></li>
+              </ul>
+            </div>
+
+            {/* Role: Member / Parent */}
+            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-600 text-white">Thành viên / Phụ huynh (Portal)</span>
+                <Lock className="w-5 h-5 text-emerald-600" />
+              </div>
+              <h4 className="text-sm font-bold text-[#101828] dark:text-white">Cổng Tra cứu Minh bạch Riêng tư</h4>
+              <ul className="space-y-1.5 text-xs text-[#475467] dark:text-slate-300">
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Mã token ngẫu nhiên an toàn, không lộ danh bạ</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Xem chuyên cần, lịch sử đóng và mã VietQR</span></li>
+                <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /><span>Không xem thông tin hoặc công nợ của người khác</span></li>
+              </ul>
+            </div>
+
+          </div>
+
         </div>
       </section>
 

@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import Switch from '@mui/material/Switch';
 import { TingSelect } from '@/components/common/Select';
 
 interface AutomationRuleItem {
@@ -700,18 +701,12 @@ export default function AutomationsPage() {
                   <span>{testingId === rule.id ? 'Đang chạy...' : 'Chạy thử'}</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => handleToggle(rule.id, rule.isEnabled)}
-                  className="text-slate-400 hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors"
-                  title={rule.isEnabled ? 'Tắt quy trình' : 'Bật quy trình'}
-                >
-                  {rule.isEnabled ? (
-                    <ToggleRight className="w-7 h-7 text-[#2538D9] dark:text-indigo-400" />
-                  ) : (
-                    <ToggleLeft className="w-7 h-7 text-slate-300 dark:text-slate-600" />
-                  )}
-                </button>
+                <Switch
+                  checked={rule.isEnabled}
+                  onChange={() => handleToggle(rule.id, rule.isEnabled)}
+                  color="primary"
+                  aria-label={rule.isEnabled ? `Tắt kịch bản ${rule.name}` : `Bật kịch bản ${rule.name}`}
+                />
               </div>
             </div>
           ))

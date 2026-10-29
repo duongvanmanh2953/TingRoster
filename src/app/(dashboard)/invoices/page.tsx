@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatVND, formatCompactVND, formatDateVN } from '@/lib/utils';
 import { QuickCreateInvoiceModal } from '@/components/invoices/QuickCreateInvoiceModal';
+import { InvoiceExcelModal, exportInvoicesToExcel } from '@/components/invoices/InvoiceExcelModal';
 import {
   CreditCard,
   Plus,
@@ -15,6 +16,9 @@ import {
   AlertCircle,
   X,
   Layers,
+  FileSpreadsheet,
+  Download,
+  Upload,
 } from 'lucide-react';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -72,6 +76,7 @@ export default function InvoicesPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   // Bulk creation form states
@@ -227,7 +232,46 @@ export default function InvoicesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outlined"
+            onClick={() => exportInvoicesToExcel({ invoices })}
+            disabled={invoices.length === 0}
+            startIcon={<Download className="w-4 h-4" />}
+            sx={{
+              fontWeight: 600,
+              fontSize: '0.8125rem',
+              textTransform: 'none',
+              px: 2,
+              py: 0.85,
+              borderRadius: '0.75rem',
+              borderColor: '#CBD5E1',
+              color: 'text.primary',
+              '&:hover': { borderColor: '#94A3B8', bgcolor: 'action.hover' },
+            }}
+          >
+            Xuất Excel ({invoices.length})
+          </Button>
+
+          <Button
+            variant="outlined"
+            onClick={() => setShowExcelModal(true)}
+            startIcon={<Upload className="w-4 h-4 text-[#2538D9]" />}
+            sx={{
+              fontWeight: 600,
+              fontSize: '0.8125rem',
+              textTransform: 'none',
+              px: 2,
+              py: 0.85,
+              borderRadius: '0.75rem',
+              borderColor: '#2538D9',
+              color: '#2538D9',
+              '&:hover': { borderColor: '#1E2DB8', bgcolor: 'rgba(37, 56, 217, 0.04)' },
+            }}
+          >
+            Nhập Excel
+          </Button>
+
           <Button
             variant="contained"
             onClick={() => setShowCreateModal(true)}
@@ -238,7 +282,7 @@ export default function InvoicesPage() {
               fontSize: '0.8125rem',
               textTransform: 'none',
               px: 2,
-              py: 1,
+              py: 0.85,
               borderRadius: '0.75rem',
               boxShadow: 'none',
               '&:hover': { bgcolor: '#1E2DB8', boxShadow: 'none' },
@@ -510,6 +554,14 @@ export default function InvoicesPage() {
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSuccess={loadInvoices}
+      />
+
+      {/* 6. Excel Batch Import & Validation Modal */}
+      <InvoiceExcelModal
+        open={showExcelModal}
+        onClose={() => setShowExcelModal(false)}
+        onSuccess={loadInvoices}
+        groups={groups}
       />
     </div>
   );

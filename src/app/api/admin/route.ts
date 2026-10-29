@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 import { getUserIdFromRequest } from '@/lib/auth/jwt';
-import { PlanType } from '@prisma/client';
+import { PlanType, Role } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +11,19 @@ export async function GET(req: NextRequest) {
   const userId = getUserIdFromRequest(req);
   if (!userId) {
     return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+
+  // Strict Platform Admin Authorization Check
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true, email: true },
+  });
+
+  if (!currentUser || currentUser.role !== Role.ADMIN) {
+    return NextResponse.json(
+      { success: false, error: 'Truy cập bị từ chối: Yêu cầu quyền Platform Admin' },
+      { status: 403 }
+    );
   }
 
   try {
@@ -55,15 +70,15 @@ export async function GET(req: NextRequest) {
         },
       },
       orderBy: { createdAt: 'desc' },
-      take: 20,
+      take: 50,
     });
 
     const now = new Date();
 
-    const tenants = users.map((u, index) => {
+    const tenants = users.map((u) => {
       const totalMembers = u.groups.reduce((acc, g) => acc + (g._count.members || 0), 0);
       const groupType = u.groups[0]?.groupType || 'CLASS';
-      
+
       let primaryType = 'GIÁO VIÊN / TRUNG TÂM';
       if (groupType === 'RENTAL') {
         primaryType = 'CHỦ PHÒNG TRỌ';
@@ -71,12 +86,12 @@ export async function GET(req: NextRequest) {
         primaryType = 'CHỦ CLB THỂ THAO';
       }
 
-      // Tính toán 30-day free trial
+      // 30-day free trial calculation
       const createdAtDate = new Date(u.createdAt);
       const trialDurationDays = 30;
       const trialEndsAt = new Date(createdAtDate.getTime() + trialDurationDays * 24 * 60 * 60 * 1000);
       const diffDays = Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      
+
       let trialStatus: 'TRIAL_ACTIVE' | 'TRIAL_EXPIRING' | 'CONVERTED' | 'EXPIRED' = 'TRIAL_ACTIVE';
       let trialDaysLeft = Math.max(0, diffDays);
 
@@ -108,61 +123,59 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    // System audit logs
+    // Real system audit logs from database
     const auditLogs = await prisma.auditLog.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 15,
+      take: 25,
+      include: {
+        user: { select: { name: true, email: true, role: true } },
+      },
     });
+
+    // Real support tickets count
+    const [openTicketsCount, totalTicketsCount] = await Promise.all([
+      prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
+      prisma.supportTicket.count(),
+    ]);
+
+    // Active tenants (users with groups or invoices)
+    const activeTenantsCount = users.filter((u) => u._count.groups > 0 || u._count.invoices > 0).length;
 
     return NextResponse.json({
       success: true,
       data: {
         stats: {
-          totalTenants: Math.max(usersCount, 142),
-          activeTenants: Math.max(usersCount, 138),
-          totalGroups: Math.max(groupsCount, 320),
-          totalMembers: Math.max(membersCount, 4820),
-          systemGmv: transactionsAgg._sum.amount || 4280000000,
-          platformFloat: 38600000,
-          mrr: 68500000,
+          totalTenants: usersCount,
+          activeTenants: Math.max(activeTenantsCount, 1),
+          totalGroups: groupsCount,
+          totalMembers: membersCount,
+          systemGmv: transactionsAgg._sum.amount || 0,
+          platformFloat: users.reduce((sum, u) => sum + u.serviceBalance, 0),
+          mrr: users.filter((u) => u.planType === PlanType.PRO).length * 199000,
           webhookSuccessRate: 99.98,
+          openTickets: openTicketsCount,
+          totalTickets: totalTicketsCount,
           trialStats: {
-            activeTrials: Math.max(12, Math.round(usersCount * 0.45)),
-            expiringTrials: 5,
-            convertedPaid: Math.max(18, Math.round(usersCount * 0.35)),
-            conversionRate: 34.2, // 34.2% chuyển đổi từ trial sang nạp tiền duy trì
+            activeTrials: tenants.filter((t) => t.trialStatus === 'TRIAL_ACTIVE').length,
+            expiringTrials: tenants.filter((t) => t.trialStatus === 'TRIAL_EXPIRING').length,
+            convertedPaid: tenants.filter((t) => t.trialStatus === 'CONVERTED').length,
+            conversionRate: usersCount > 0
+              ? Math.round((tenants.filter((t) => t.trialStatus === 'CONVERTED').length / usersCount) * 100)
+              : 0,
           },
         },
         tenants,
-        auditLogs: auditLogs.length > 0 ? auditLogs : [
-          {
-            id: 'audit_01',
-            action: 'WEBHOOK_PROCESSED',
-            entityType: 'TRANSACTION',
-            entityId: 'MB_8492019',
-            details: '{"amount": 500000, "status": "MATCHED", "latencyMs": 142}',
-            ipAddress: '14.225.212.18',
-            createdAt: new Date(Date.now() - 5 * 60000).toISOString(),
-          },
-          {
-            id: 'audit_02',
-            action: 'TENANT_TOPUP',
-            entityType: 'WALLET',
-            entityId: 'WALLET_9981',
-            details: '{"amount": 200000, "method": "VIETQR_NAPAS"}',
-            ipAddress: '113.161.74.88',
-            createdAt: new Date(Date.now() - 25 * 60000).toISOString(),
-          },
-          {
-            id: 'audit_03',
-            action: 'SECURITY_LOGIN',
-            entityType: 'USER',
-            entityId: userId,
-            details: '{"method": "PASSWORD", "userAgent": "Chrome 122 Windows"}',
-            ipAddress: '127.0.0.1',
-            createdAt: new Date(Date.now() - 50 * 60000).toISOString(),
-          },
-        ],
+        auditLogs: auditLogs.map((log) => ({
+          id: log.id,
+          action: log.action,
+          entityType: log.entityType,
+          entityId: log.entityId,
+          details: log.details,
+          ipAddress: log.ipAddress || '127.0.0.1',
+          createdAt: log.createdAt.toISOString(),
+          userName: log.user?.name || 'Hệ thống',
+          userEmail: log.user?.email || 'system@tingroster.vn',
+        })),
         gateways: [
           { name: 'SePay Webhook Gateway', status: 'ONLINE', latencyMs: 142, uptime: '99.99%' },
           { name: 'Casso VietQR Gateway', status: 'ONLINE', latencyMs: 165, uptime: '99.95%' },
@@ -183,10 +196,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
   }
 
+  // Strict Platform Admin Authorization Check
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true, email: true },
+  });
+
+  if (!currentUser || currentUser.role !== Role.ADMIN) {
+    return NextResponse.json(
+      { success: false, error: 'Truy cập bị từ chối: Yêu cầu quyền Platform Admin' },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { action, tenantId, amount, reason } = body;
 
+    // 1. Credit platform service balance
     if (action === 'CREDIT_BALANCE') {
       const parsedAmount = parseInt(amount, 10);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -200,13 +227,30 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      // Atomic Wallet ledger entry
+      await prisma.walletLedgerEntry.create({
+        data: {
+          userId: tenantId,
+          amount: parsedAmount,
+          balanceAfter: updatedUser.serviceBalance,
+          type: 'TOPUP',
+          description: reason || 'Nạp số dư dịch vụ từ Platform Admin',
+          referenceId: `ADMIN_${userId}`,
+        },
+      });
+
+      // Audit log
       await prisma.auditLog.create({
         data: {
           userId,
           action: 'ADMIN_CREDIT_ADJUSTMENT',
           entityType: 'USER_WALLET',
           entityId: tenantId,
-          details: JSON.stringify({ amount: parsedAmount, reason: reason || 'Nạp số dư dịch vụ từ Admin' }),
+          details: JSON.stringify({
+            amount: parsedAmount,
+            reason: reason || 'Nạp số dư dịch vụ từ Platform Admin',
+            balanceAfter: updatedUser.serviceBalance,
+          }),
           ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
         },
       });
@@ -220,8 +264,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // 2. Extend trial
     if (action === 'EXTEND_TRIAL') {
-      // Gia hạn thêm 30 ngày dùng thử (ghi nhận audit log)
       await prisma.auditLog.create({
         data: {
           userId,
@@ -239,10 +283,53 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // 3. Secure Temporary Password Reset
+    if (action === 'RESET_PASSWORD') {
+      const tenant = await prisma.user.findUnique({
+        where: { id: tenantId },
+        select: { id: true, email: true, name: true },
+      });
+
+      if (!tenant) {
+        return NextResponse.json({ success: false, error: 'Không tìm thấy tài khoản người dùng' }, { status: 404 });
+      }
+
+      // Generate secure 10-char random temporary password
+      const tempPassword = `TR@${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: { passwordHash },
+      });
+
+      // Audit Log - NEVER logs the password plaintext!
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'ADMIN_PASSWORD_RESET',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({
+            targetEmail: tenant.email,
+            reason: reason || 'Cấp lại mật khẩu tạm thời theo yêu cầu người dùng',
+          }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          temporaryPassword: tempPassword,
+          message: `Đã cấp mật khẩu tạm thời thành công cho ${tenant.email}. Mật khẩu chỉ hiển thị một lần duy nhất này.`,
+        },
+      });
+    }
+
     return NextResponse.json({ success: false, error: 'Action không được hỗ trợ' }, { status: 400 });
   } catch (err: any) {
     console.error('Admin POST action error:', err);
     return NextResponse.json({ success: false, error: err.message || 'Lỗi thực thi tác vụ Admin' }, { status: 500 });
   }
 }
-

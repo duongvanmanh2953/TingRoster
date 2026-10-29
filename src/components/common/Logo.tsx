@@ -74,7 +74,7 @@ export function Logo({
         <LogoMark size={size} className="mb-2" />
         <div className="flex flex-col items-center">
           <span className={`font-black tracking-tight ${textSizeMap[size]} leading-tight`}>
-            <span className={!isDark ? 'text-white' : 'text-slate-950'}>Ting</span>
+            <span className={isDark ? 'text-[rgb(65 104 255)]' : 'text-white'}>Ting</span>
             <span className="text-[#6242E8] dark:text-[#7C65F8]">Roster</span>
           </span>
           {showBadge && badgeText && (
@@ -136,7 +136,7 @@ export function Logo({
 
       <div className="flex flex-col justify-center">
         <span className={`font-black tracking-tight ${textSizeMap[size]} leading-none`}>
-          <span className={!isDark ? 'text-white' : 'text-slate-950'}>Ting</span>
+          <span className={isDark ? 'text-[rgb(65 104 255)]' : 'text-white'}>Ting</span>
           <span className="text-[#6242E8] dark:text-[#7C65F8]">Roster</span>
         </span>
 

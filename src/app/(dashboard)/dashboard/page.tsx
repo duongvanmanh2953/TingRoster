@@ -47,10 +47,21 @@ import FormControl from '@mui/material/FormControl';
 import Tooltip from '@mui/material/Tooltip';
 import Paper from '@mui/material/Paper';
 import LinearProgress from '@mui/material/LinearProgress';
+import Skeleton from '@mui/material/Skeleton';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  CartesianGrid,
+} from 'recharts';
 import { BankLogo } from '@/components/common/BankLogo';
 import { Avatar } from '@/components/common/Avatar';
 
 interface DashboardStats {
+  timeframe?: string;
   totalDue: number;
   totalPaid: number;
   remaining: number;
@@ -58,8 +69,18 @@ interface DashboardStats {
   unpaidCount: number;
   partialCount: number;
   paidCount: number;
+  overdueCount?: number;
+  overdueAmount?: number;
   todayAttendeesCount: number;
   unmatchedCount: number;
+  trend?: Array<{ label: string; amount: number; count: number }>;
+  breakdown?: {
+    paid: { count: number; amount: number; percent: number };
+    partial: { count: number; amount: number; percent: number };
+    unpaid: { count: number; amount: number; percent: number };
+    overdue: { count: number; amount: number; percent: number };
+  };
+  comparison?: { percentage: number; isPositive: boolean };
   recentTransactions: Array<{
     id: string;
     amount: number;
@@ -88,7 +109,7 @@ export default function DashboardPage() {
   const prev2MonthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 2, 1);
   const prev2MonthStr = `Tháng ${prev2MonthDate.getMonth() + 1}/${prev2MonthDate.getFullYear()}`;
   const [selectedPeriod, setSelectedPeriod] = useState(currentMonthStr);
-  const [chartFilter, setChartFilter] = useState<'week' | 'month'>('month');
+  const [chartFilter, setChartFilter] = useState<'day' | 'week' | 'month' | 'quarter'>('month');
 
   // Formatted Vietnamese Date string
   const formattedTodayVN = new Intl.DateTimeFormat('vi-VN', {
@@ -106,31 +127,57 @@ export default function DashboardPage() {
   const [simLoading, setSimLoading] = useState(false);
   const [simSuccess, setSimSuccess] = useState<string | null>(null);
 
-  const fetchStats = useCallback(async () => {
+  const [chartLoading, setChartLoading] = useState(false);
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+
+  const fetchStats = useCallback(async (timeframeParam?: 'day' | 'week' | 'month' | 'quarter') => {
+    const tf = timeframeParam || chartFilter;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       setError(null);
-      const res = await fetch('/api/dashboard/summary');
+      setChartLoading(true);
+      const res = await fetch(`/api/dashboard/summary?timeframe=${tf}`, {
+        signal: controller.signal,
+      });
       const data = await res.json();
       if (data.success) {
         setStats(data.data);
       } else {
         setError(data.error || 'Không thể tải dữ liệu tổng quan');
       }
-    } catch {
-      setError('Lỗi kết nối máy chủ');
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        setError('Lỗi kết nối máy chủ');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
+      setChartLoading(false);
     }
-  }, []);
+  }, [chartFilter]);
 
   useEffect(() => {
     fetchStats();
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [fetchStats]);
 
   const handleRefresh = () => {
     setRefreshing(true);
     fetchStats();
+  };
+
+  const handleChartFilterChange = (filter: 'day' | 'week' | 'month' | 'quarter') => {
+    setChartFilter(filter);
+    fetchStats(filter);
   };
 
   const handleSimulatePayment = async (e: React.FormEvent) => {
@@ -213,7 +260,7 @@ export default function DashboardPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* 1. Header Row — Greeting & Action Controls (per 00-overview.png Screen 3) */}
-      <div className="flex flex-col lg:items-center justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
+      <div className="flex flex-col justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-[28px] font-bold text-[#101828] dark:text-[#F8FAFC] leading-tight">
@@ -457,11 +504,11 @@ export default function DashboardPage() {
               {(['day', 'week', 'month', 'quarter'] as const).map((period) => (
                 <button
                   key={period}
-                  onClick={() => setChartFilter(period === 'quarter' ? 'month' : (period as any))}
+                  onClick={() => handleChartFilterChange(period)}
                   className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                    (chartFilter === period || (chartFilter === 'month' && period === 'quarter'))
+                    chartFilter === period
                       ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-indigo-400 shadow-xs font-bold'
-                      : 'text-[#475467] dark:text-slate-400'
+                      : 'text-[#475467] dark:text-slate-400 hover:text-slate-900'
                   }`}
                 >
                   {period === 'day' ? 'Hôm nay' : period === 'week' ? 'Tuần' : period === 'month' ? 'Tháng' : 'Quý'}
@@ -470,59 +517,84 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Smooth Area/Line Chart with Interactive Tooltip Markers */}
+          {/* Dynamic Recharts AreaChart with Real Database Aggregations */}
           <div className="py-4">
-            <div className="h-44 w-full relative">
-              <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2538D9" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#2538D9" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <line x1="0" y1="30" x2="400" y2="30" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="0" y1="70" x2="400" y2="70" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="0" y1="110" x2="400" y2="110" stroke="#F1F5F9" strokeWidth="1" />
-                
-                <path
-                  d="M 0 110 L 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20 L 400 110 Z"
-                  fill="url(#revenueGrad)"
-                />
-                <path
-                  d="M 0 95 C 60 85, 100 90, 150 65 C 200 40, 240 70, 300 45 C 350 25, 380 35, 400 20"
-                  fill="none"
-                  stroke="#2538D9"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-                <circle cx="0" cy="95" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
-                <circle cx="150" cy="65" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
-                <circle cx="300" cy="45" r="3.5" fill="#FFFFFF" stroke="#2538D9" strokeWidth="2" />
-                <circle cx="400" cy="20" r="4.5" fill="#2538D9" stroke="#FFFFFF" strokeWidth="2" />
-              </svg>
-
-              {/* Hover Badge info */}
-              <div className="absolute right-0 top-0 bg-[#0B0F19] text-white p-2 rounded-lg shadow-md text-[10px] pointer-events-none">
-                <span className="font-bold text-emerald-400 block">+14.650.000 đ</span>
-                <span className="text-slate-400">24 giao dịch khớp tự động</span>
+            {chartLoading ? (
+              <div className="h-44 w-full flex items-center justify-center bg-slate-50/50 dark:bg-slate-900/30 rounded-xl">
+                <CircularProgress size={24} sx={{ color: '#2538D9' }} />
               </div>
-            </div>
+            ) : !stats?.trend || stats.trend.every((t) => t.amount === 0) ? (
+              <div className="h-44 w-full flex flex-col items-center justify-center text-center p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-400">
+                <Receipt className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-1" />
+                <span className="font-semibold text-slate-600 dark:text-slate-400">Chưa có giao dịch Napas trong kỳ này</span>
+                <span className="text-[11px] text-slate-400 mt-0.5">Tiền chuyển khoản VietQR sẽ được tự động vẽ biểu đồ tại đây</span>
+              </div>
+            ) : (
+              <div className="h-44 w-full relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={stats.trend} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="dashboardRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#2538D9" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#2538D9" stopOpacity={0.0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                    <XAxis
+                      dataKey="label"
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 11, fill: '#94A3B8' }}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 10, fill: '#94A3B8' }}
+                      tickFormatter={(val) => formatCompactVND(val)}
+                    />
+                    <RechartsTooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const dataPoint = payload[0].payload;
+                          return (
+                            <div className="bg-[#0B0F19] text-white p-2.5 rounded-xl shadow-xl text-xs space-y-1">
+                              <span className="font-semibold text-slate-400 block text-[10px]">{dataPoint.label}</span>
+                              <span className="font-bold text-emerald-400 block text-sm">+{formatVND(dataPoint.amount)}</span>
+                              <span className="text-slate-400 text-[10px] block">{dataPoint.count} giao dịch khớp tự động</span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#2538D9"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#dashboardRevenueGrad)"
+                      activeDot={{ r: 5, fill: '#2538D9', stroke: '#FFFFFF', strokeWidth: 2 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
             
             <div className="flex justify-between text-[11px] text-slate-400 pt-2 px-1 font-mono">
-              <span>Đầu kỳ</span>
-              <span>Giữa kỳ</span>
-              <span>Tuần trước</span>
-              <span>Hôm nay (Đỉnh điểm)</span>
+              <span>Đầu kỳ ({chartFilter})</span>
+              <span>Đỉnh điểm thu tiền</span>
+              <span>Cuối kỳ</span>
             </div>
           </div>
         </div>
 
-        {/* Block B: Cơ cấu khoản thu (Span 3 cols) */}
+        {/* Block B: Cơ cấu khoản thu (Real database percentages) */}
         <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">B. Cơ cấu khoản thu</h2>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">5 trạng thái</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Dữ liệu thật</span>
             </div>
             <p className="text-[11px] text-[#475467] dark:text-slate-400">Phân loại theo tiến độ thanh toán</p>
           </div>
@@ -535,9 +607,15 @@ export default function DashboardPage() {
                   <span className="w-2 h-2 rounded-full bg-emerald-600" />
                   Đã thanh toán đủ
                 </span>
-                <span className="font-bold text-emerald-700 dark:text-emerald-400">68%</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                  {stats?.breakdown?.paid.percent ?? 0}%
+                </span>
               </div>
-              <LinearProgress variant="determinate" value={68} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#067647' } }} />
+              <LinearProgress
+                variant="determinate"
+                value={stats?.breakdown?.paid.percent ?? 0}
+                sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#067647' } }}
+              />
             </div>
 
             {/* Thanh toán 1 phần */}
@@ -547,9 +625,15 @@ export default function DashboardPage() {
                   <span className="w-2 h-2 rounded-full bg-amber-500" />
                   Đóng một phần
                 </span>
-                <span className="font-bold text-amber-700 dark:text-amber-400">14%</span>
+                <span className="font-bold text-amber-700 dark:text-amber-400">
+                  {stats?.breakdown?.partial.percent ?? 0}%
+                </span>
               </div>
-              <LinearProgress variant="determinate" value={14} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F59E0B' } }} />
+              <LinearProgress
+                variant="determinate"
+                value={stats?.breakdown?.partial.percent ?? 0}
+                sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F59E0B' } }}
+              />
             </div>
 
             {/* Chưa thanh toán */}
@@ -559,9 +643,15 @@ export default function DashboardPage() {
                   <span className="w-2 h-2 rounded-full bg-rose-500" />
                   Chưa thanh toán
                 </span>
-                <span className="font-bold text-rose-600 dark:text-rose-400">12%</span>
+                <span className="font-bold text-rose-600 dark:text-rose-400">
+                  {stats?.breakdown?.unpaid.percent ?? 0}%
+                </span>
               </div>
-              <LinearProgress variant="determinate" value={12} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F43F5E' } }} />
+              <LinearProgress
+                variant="determinate"
+                value={stats?.breakdown?.unpaid.percent ?? 0}
+                sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#F43F5E' } }}
+              />
             </div>
 
             {/* Quá hạn */}
@@ -571,26 +661,20 @@ export default function DashboardPage() {
                   <span className="w-2 h-2 rounded-full bg-red-700" />
                   Quá hạn nợ
                 </span>
-                <span className="font-bold text-red-700 dark:text-red-400">4%</span>
-              </div>
-              <LinearProgress variant="determinate" value={4} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#B42318' } }} />
-            </div>
-
-            {/* Đang xác minh */}
-            <div>
-              <div className="flex justify-between text-[11px] mb-1">
-                <span className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#2538D9]" />
-                  Đang xác minh (Pending)
+                <span className="font-bold text-red-700 dark:text-red-400">
+                  {stats?.breakdown?.overdue.percent ?? 0}%
                 </span>
-                <span className="font-bold text-[#2538D9] dark:text-indigo-400">2%</span>
               </div>
-              <LinearProgress variant="determinate" value={2} sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#2538D9' } }} />
+              <LinearProgress
+                variant="determinate"
+                value={stats?.breakdown?.overdue.percent ?? 0}
+                sx={{ height: 6, borderRadius: 3, backgroundColor: '#E2E8F0', '& .MuiLinearProgress-bar': { backgroundColor: '#B42318' } }}
+              />
             </div>
           </div>
 
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 italic">
-            * Lưu ý: Khoản pending KHÔNG tính vào tổng tiền đã thu.
+            * Dữ liệu đồng bộ trực tiếp với sổ quỹ hóa đơn.
           </div>
         </div>
 
@@ -598,56 +682,36 @@ export default function DashboardPage() {
         <div className="lg:col-span-3 ting-card p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">C. Phân bổ tuổi nợ</h2>
+              <h2 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">C. Phân bổ công nợ</h2>
               <Clock className="w-4 h-4 text-slate-400" />
             </div>
-            <p className="text-[11px] text-[#475467] dark:text-slate-400">4 nhóm tuổi nợ loại trừ nhau</p>
+            <p className="text-[11px] text-[#475467] dark:text-slate-400">Tình trạng thu hồi nợ thực tế</p>
           </div>
 
           <div className="space-y-2.5 my-3 text-xs">
             <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
               <div>
-                <span className="font-bold text-[#101828] dark:text-white block text-xs">Chưa đến hạn</span>
-                <span className="text-[10px] text-slate-400">Hạn nộp còn hiệu lực</span>
+                <span className="font-bold text-[#101828] dark:text-white block text-xs">Còn nợ trong hạn</span>
+                <span className="text-[10px] text-slate-400">{stats?.unpaidCount ?? 0} khoản chưa nộp</span>
               </div>
               <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
-                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.58) : 9950000)}
-              </span>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 flex items-center justify-between">
-              <div>
-                <span className="font-bold text-amber-800 dark:text-amber-300 block text-xs">Quá hạn 1–7 ngày</span>
-                <span className="text-[10px] text-amber-600">Nhắc nợ nhẹ nhàng</span>
-              </div>
-              <span className="font-mono font-bold text-amber-700 dark:text-amber-300">
-                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.25) : 4200000)}
-              </span>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-orange-50/60 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/40 flex items-center justify-between">
-              <div>
-                <span className="font-bold text-orange-800 dark:text-orange-300 block text-xs">Quá hạn 8–30 ngày</span>
-                <span className="text-[10px] text-orange-600">Cảnh báo nhắc nhở lần 2</span>
-              </div>
-              <span className="font-mono font-bold text-orange-700 dark:text-orange-300">
-                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.12) : 1800000)}
+                {formatVND(Math.max(0, (stats?.remaining ?? 0) - (stats?.overdueAmount ?? 0)))}
               </span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 flex items-center justify-between">
               <div>
-                <span className="font-bold text-rose-800 dark:text-rose-300 block text-xs">Quá hạn &gt;30 ngày</span>
-                <span className="text-[10px] text-rose-600">Nợ khó đòi, cần liên hệ</span>
+                <span className="font-bold text-rose-800 dark:text-rose-300 block text-xs">Tổng nợ quá hạn</span>
+                <span className="text-[10px] text-rose-600">{stats?.overdueCount ?? 0} khoản quá hạn</span>
               </div>
               <span className="font-mono font-bold text-rose-700 dark:text-rose-300">
-                {formatVND(remainingDue > 0 ? Math.round(remainingDue * 0.05) : 800000)}
+                {formatVND(stats?.overdueAmount ?? 0)}
               </span>
             </div>
           </div>
 
           <Link
-            href="/reports"
+            href="/reports/aging"
             className="text-xs text-[#2538D9] dark:text-indigo-400 hover:underline font-semibold flex items-center justify-between pt-2 border-t border-[#E4E7EC] dark:border-[#1E293B]"
           >
             <span>Mở Báo cáo Tuổi nợ chuyên sâu</span>

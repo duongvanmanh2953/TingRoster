@@ -544,7 +544,7 @@ export default function AttendancePage() {
       <div className="ting-card p-4 space-y-4">
         
         {/* Row 1: Group Select + Range Select + Date Navigation */}
-        <div className="flex flex-col lg:items-center justify-between gap-4">
+        <div className="flex flex-col justify-between gap-4">
           
           <div className="flex flex-wrap items-center gap-3">
             {/* Show Range: 2 weeks / 1 week */}

@@ -73,8 +73,19 @@ interface UserData {
   bankAccountNo?: string;
 }
 
-interface NavItem {
+interface NavSubItem {
   href: string;
+  label: string;
+  labelEn?: string;
+  badge?: string;
+  badgeVariant?: 'neutral' | 'success' | 'warning' | 'info' | 'brand';
+  live?: boolean;
+  external?: boolean;
+}
+
+interface NavGroupItem {
+  id: string;
+  href?: string;
   label: string;
   labelEn?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -82,66 +93,134 @@ interface NavItem {
   badgeVariant?: 'neutral' | 'success' | 'warning' | 'info' | 'brand';
   live?: boolean;
   billingOnly?: boolean;
+  adminOnly?: boolean;
   external?: boolean;
+  subItems?: NavSubItem[];
 }
 
-interface NavSection {
+interface NavCategory {
   title: string;
   titleEn?: string;
-  items: NavItem[];
+  items: NavGroupItem[];
 }
 
-const NAV_SECTIONS: NavSection[] = [
+const NAV_CATEGORIES: NavCategory[] = [
   {
-    title: 'Vận hành hằng ngày',
-    titleEn: 'Daily Operations',
+    title: 'Tổng quan',
+    titleEn: 'Overview',
     items: [
-      { href: '/dashboard', label: 'Tổng quan', labelEn: 'Overview', icon: LayoutDashboard },
-      { href: '/attendance', label: 'Điểm danh & Lịch', labelEn: 'Attendance & Schedule', icon: CalendarCheck, badge: 'Hôm nay', badgeVariant: 'success' },
-      { href: '/members', label: 'Thành viên & Học viên', labelEn: 'Members & Students', icon: GraduationCap },
-      { href: '/groups', label: 'Workspace & Lớp', labelEn: 'Workspaces & Classes', icon: Building2 },
-      { href: '/workflows', label: 'Quy trình quản lý', labelEn: 'Workflows', icon: Workflow },
+      {
+        id: 'overview',
+        href: '/dashboard',
+        label: 'Bảng điều khiển',
+        labelEn: 'Dashboard',
+        icon: LayoutDashboard,
+      },
     ],
   },
   {
-    title: 'Tài chính & Đối soát',
+    title: 'Vận hành & Quản lý',
+    titleEn: 'Operations & Management',
+    items: [
+      {
+        id: 'management',
+        label: 'Quản lý không gian',
+        labelEn: 'Workspace & Operations',
+        icon: Building2,
+        subItems: [
+          { href: '/groups', label: 'Không gian & Lớp học', labelEn: 'Workspaces & Classes' },
+          { href: '/members', label: 'Thành viên & Học viên', labelEn: 'Members & Students' },
+          { href: '/attendance', label: 'Lịch & Điểm danh', labelEn: 'Attendance & Schedule', badge: 'Hôm nay', badgeVariant: 'success' },
+          { href: '/workflows', label: 'Quy trình vận hành', labelEn: 'Workflows & Rules' },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Tài chính & Thu phí',
     titleEn: 'Finance & Payments',
     items: [
-      { href: '/invoices', label: 'Khoản thu & Công nợ', labelEn: 'Invoices & Receivables', icon: CreditCard },
-      { href: '/transactions', label: 'Giao dịch VietQR', labelEn: 'VietQR Transactions', icon: QrCode, live: true },
-      { href: '/documents', label: 'Hóa đơn & Chứng từ', labelEn: 'Receipts & Documents', icon: Receipt },
+      {
+        id: 'finance',
+        label: 'Tài chính VietQR',
+        labelEn: 'Finance & Payments',
+        icon: CreditCard,
+        subItems: [
+          { href: '/invoices', label: 'Khoản thu & Công nợ', labelEn: 'Invoices & Receivables' },
+          { href: '/transactions', label: 'Giao dịch VietQR', labelEn: 'VietQR Transactions', live: true },
+          { href: '/documents', label: 'Hóa đơn & Chứng từ', labelEn: 'Receipts & Documents' },
+        ],
+      },
     ],
   },
   {
-    title: 'Trung tâm Báo cáo & Phân tích',
-    titleEn: 'Reports & Analytics Center',
+    title: 'Báo cáo & Phân tích',
+    titleEn: 'Reports & Analytics',
     items: [
-      { href: '/reports', label: 'Tổng quan báo cáo', labelEn: 'Report Overview', icon: BarChart3 },
-      { href: '/reports?tab=cashflow', label: 'Thu tiền & Dòng tiền', labelEn: 'Cash Flow & Collections', icon: TrendingUp },
-      { href: '/reports?tab=attendance', label: 'Chuyên cần & Heatmap', labelEn: 'Attendance & Heatmap', icon: CalendarCheck },
-      { href: '/reports?tab=aging', label: 'Báo cáo Tuổi nợ', labelEn: 'Receivable Aging', icon: Clock },
-      { href: '/export', label: 'Xuất sổ sách', labelEn: 'Data Export', icon: Download },
+      {
+        id: 'reports',
+        label: 'Trung tâm Báo cáo',
+        labelEn: 'Reports Center',
+        icon: BarChart3,
+        subItems: [
+          { href: '/reports', label: 'Tổng quan báo cáo', labelEn: 'Report Overview' },
+          { href: '/reports/cashflow', label: 'Báo cáo khoản thu', labelEn: 'Collections & Cash Flow' },
+          { href: '/reports/aging', label: 'Báo cáo công nợ & tuổi nợ', labelEn: 'Debt & Aging Schedule' },
+          { href: '/reports/attendance', label: 'Báo cáo điểm danh', labelEn: 'Attendance & Rosters' },
+          { href: '/reports/tax', label: 'Báo cáo thuế TT 40', labelEn: 'Tax Estimate TT 40' },
+          { href: '/reports/reconciliation', label: 'Báo cáo đối soát VietQR', labelEn: 'VietQR Reconciliation' },
+          { href: '/export', label: 'Xuất sổ sách kế toán', labelEn: 'Data Export' },
+        ],
+      },
     ],
   },
   {
-    title: 'Hệ thống & Công cụ',
-    titleEn: 'System & Tools',
+    title: 'Tự động hóa & AI',
+    titleEn: 'Automations & AI',
     items: [
-      { href: '/automations', label: 'AI & Tự động hóa', labelEn: 'AI & Automations', icon: Sparkles },
-      { href: '/billing', label: 'Gói cước & Số dư', labelEn: 'Billing & Subscriptions', icon: Wallet, billingOnly: true },
-      { href: '/notifications', label: 'Thông báo', labelEn: 'Notifications', icon: Bell },
-      { href: '/help', label: 'Trợ giúp & Hướng dẫn', labelEn: 'Help & Guides', icon: HelpCircle },
-      { href: '/settings', label: 'Cài đặt hệ thống', labelEn: 'Settings', icon: Settings },
+      {
+        id: 'automations',
+        label: 'Tự động hóa thông minh',
+        labelEn: 'Automations & AI',
+        icon: Sparkles,
+        subItems: [
+          { href: '/automations', label: 'Kịch bản & Quy tắc', labelEn: 'Automated Rules' },
+          { href: '/ai-assistant', label: 'Trợ lý AI TingRoster', labelEn: 'AI Assistant', badge: 'AI', badgeVariant: 'brand' },
+        ],
+      },
     ],
   },
   {
-    title: 'Cổng liên kết & Mở rộng',
-    titleEn: 'Portals & Ecosystem',
+    title: 'Giao tiếp',
+    titleEn: 'Communication',
     items: [
-      { href: '/portal', label: 'Cổng Học Viên (Portal)', labelEn: 'Member Portal', icon: Users2, badge: 'Học viên', badgeVariant: 'neutral' },
-      { href: '/admin', label: 'Platform Admin', labelEn: 'Platform Admin', icon: ShieldCheck },
-      { href: '/kiosk', label: 'Kiosk quét QR tại sân', labelEn: 'QR Kiosk Check-in', icon: Tv, external: true },
-      { href: '/legal', label: 'Điều khoản & Hoàn phí', labelEn: 'Terms & Policies', icon: FileText },
+      {
+        id: 'notifications',
+        href: '/notifications',
+        label: 'Trung tâm Thông báo',
+        labelEn: 'Notifications',
+        icon: Bell,
+      },
+    ],
+  },
+  {
+    title: 'Cấu hình & Mở rộng',
+    titleEn: 'Settings & Portals',
+    items: [
+      {
+        id: 'settings',
+        label: 'Cấu hình & Hệ thống',
+        labelEn: 'Settings & Ecosystem',
+        icon: Settings,
+        subItems: [
+          { href: '/settings', label: 'Cài đặt workspace & VietQR', labelEn: 'Settings' },
+          { href: '/billing', label: 'Gói cước & Số dư', labelEn: 'Billing & Subscriptions' },
+          { href: '/help', label: 'Trợ giúp & Hướng dẫn', labelEn: 'Help & Guides' },
+          { href: '/portal', label: 'Cổng Học Viên (Portal)', labelEn: 'Member Portal', badge: 'Học viên', badgeVariant: 'neutral' },
+          { href: '/kiosk', label: 'Kiosk quét QR tại sân', labelEn: 'QR Kiosk Check-in', external: true },
+          { href: '/admin', label: 'Platform Admin', labelEn: 'Platform Admin' },
+        ],
+      },
     ],
   },
 ];
@@ -153,7 +232,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isDark, toggleTheme, sidebarTheme, isDarkSidebar, cycleSidebarTheme } = useTheme();
+  const { isDark, toggleTheme, isDarkSidebar } = useTheme();
   const { locale, t } = useLanguage();
 
   const getPageTitle = (path: string, loc: string): string => {
@@ -165,9 +244,16 @@ export default function DashboardLayout({
     if (path.startsWith('/invoices')) return loc === 'en' ? 'Invoices & Receivables' : 'Khoản thu & Công nợ';
     if (path.startsWith('/transactions')) return loc === 'en' ? 'Transactions & VietQR' : 'Giao dịch VietQR';
     if (path.startsWith('/documents')) return loc === 'en' ? 'Receipts & Documents' : 'Hóa đơn & Chứng từ';
-    if (path.startsWith('/reports')) return loc === 'en' ? 'Reports & Analytics Center' : 'Trung tâm Báo cáo & Phân tích';
+    if (path === '/reports') return loc === 'en' ? 'Reports Overview' : 'Tổng quan Báo cáo';
+    if (path.startsWith('/reports/cashflow')) return loc === 'en' ? 'Collections & Cash Flow' : 'Báo cáo Khoản thu & Dòng tiền';
+    if (path.startsWith('/reports/aging')) return loc === 'en' ? 'Debt & Aging Schedule' : 'Báo cáo Tuổi nợ & Công nợ';
+    if (path.startsWith('/reports/attendance')) return loc === 'en' ? 'Attendance Analytics' : 'Báo cáo Điểm danh & Chuyên cần';
+    if (path.startsWith('/reports/tax')) return loc === 'en' ? 'Tax Estimate TT 40' : 'Báo cáo Thuế TT 40';
+    if (path.startsWith('/reports/reconciliation')) return loc === 'en' ? 'VietQR Reconciliation' : 'Báo cáo Đối soát VietQR';
+    if (path.startsWith('/reports')) return loc === 'en' ? 'Reports Center' : 'Trung tâm Báo cáo';
     if (path.startsWith('/export')) return loc === 'en' ? 'Data Export' : 'Xuất sổ sách';
     if (path.startsWith('/automations')) return loc === 'en' ? 'Automations & AI' : 'Tự động hóa & AI';
+    if (path.startsWith('/ai-assistant')) return loc === 'en' ? 'AI Assistant' : 'Trợ lý AI';
     if (path.startsWith('/billing')) return loc === 'en' ? 'Billing & Subscriptions' : 'Gói cước & Số dư';
     if (path.startsWith('/notifications')) return loc === 'en' ? 'Notifications' : 'Trung tâm Thông báo';
     if (path.startsWith('/help')) return loc === 'en' ? 'Help & Guides' : 'Trợ giúp & Hướng dẫn';
@@ -190,6 +276,42 @@ export default function DashboardLayout({
   const profileOpen = Boolean(profileAnchorEl);
   const [searchQuery, setSearchQuery] = useState('');
   const [quickCreateOpen, setQuickCreateOpen] = useState(false);
+
+  // Manage expandable submenus
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    management: true,
+    finance: true,
+    reports: true,
+    automations: false,
+    settings: false,
+  });
+
+  const toggleGroupExpand = (groupId: string) => {
+    setExpandedGroups((prev) => ({
+      ...prev,
+      [groupId]: !prev[groupId],
+    }));
+  };
+
+  // Auto-expand group containing current route
+  useEffect(() => {
+    for (const cat of NAV_CATEGORIES) {
+      for (const item of cat.items) {
+        if (item.subItems) {
+          const hasActiveChild = item.subItems.some((sub) => {
+            const subBase = sub.href.split('?')[0];
+            return pathname === subBase || (subBase !== '/' && pathname.startsWith(subBase));
+          });
+          if (hasActiveChild) {
+            setExpandedGroups((prev) => ({
+              ...prev,
+              [item.id]: true,
+            }));
+          }
+        }
+      }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -235,61 +357,137 @@ export default function DashboardLayout({
   };
 
   const renderNavLinks = (closeDrawer?: () => void) => (
-    <nav className="flex-1 px-3 space-y-4 overflow-y-auto pb-4">
-      {NAV_SECTIONS.map((section, idx) => (
-        <div key={section.title} className="space-y-1">
-          <div className={`px-2 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider ${
+    <nav className="flex-1 px-3 space-y-3.5 overflow-y-auto pb-4">
+      {NAV_CATEGORIES.map((category) => (
+        <div key={category.title} className="space-y-1">
+          <div className={`px-2 pt-2 pb-0.5 text-[10px] font-bold uppercase tracking-wider ${
             isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
           }`}>
-            {locale === 'en' && section.titleEn ? section.titleEn : section.title}
+            {locale === 'en' && category.titleEn ? category.titleEn : category.title}
           </div>
-          {section.items
+          {category.items
             .filter((item) => {
-              if (item.billingOnly) {
-                const isRestrictedStaff = userData.role === 'Staff' || userData.role === 'Nhân viên';
-                return !isRestrictedStaff;
+              if (item.adminOnly && userData.role !== 'ADMIN' && userData.role !== 'Admin') {
+                return false;
+              }
+              if (item.billingOnly && (userData.role === 'Staff' || userData.role === 'Nhân viên')) {
+                return false;
               }
               return true;
             })
             .map((item) => {
               const Icon = item.icon;
-              const isActive =
-                pathname === item.href ||
-                (item.href !== '/dashboard' && pathname.startsWith(item.href));
+              const hasSubmenu = Boolean(item.subItems && item.subItems.length > 0);
+              const isExpanded = expandedGroups[item.id] ?? false;
+
+              // If has no submenu, standard single link
+              if (!hasSubmenu && item.href) {
+                const isActive = pathname === item.href;
+                const label = locale === 'en' && item.labelEn ? item.labelEn : item.label;
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    onClick={closeDrawer}
+                    className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                      isActive
+                        ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                        : isDarkSidebar
+                        ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`} />
+                      <span className="truncate">{label}</span>
+                    </div>
+                    {item.live && !isActive && <TingBadge pulse variant="dot" />}
+                  </Link>
+                );
+              }
+
+              // Group with Submenu
+              const isChildActive = (item.subItems || []).some((sub) => {
+                const subBase = sub.href.split('?')[0];
+                return pathname === subBase || (subBase !== '/' && pathname.startsWith(subBase));
+              });
               const label = locale === 'en' && item.labelEn ? item.labelEn : item.label;
+
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  target={item.external ? '_blank' : undefined}
-                  onClick={closeDrawer}
-                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                    isActive
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
-                      : isDarkSidebar
-                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`} />
-                    <span className="truncate">{label}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    {item.badge && (
-                      <TingTag
-                        label={item.badge}
-                        variantStyle={isActive ? 'neutral' : (item.badgeVariant || 'success')}
-                      />
-                    )}
-                    {item.live && !isActive && (
-                      <TingBadge pulse variant="dot" />
-                    )}
-                    {item.external && (
-                      <ExternalLink className="w-3 h-3 text-slate-400" />
-                    )}
-                  </div>
-                </Link>
+                <div key={item.id} className="space-y-0.5">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroupExpand(item.id)}
+                    aria-expanded={isExpanded}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      isChildActive
+                        ? isDarkSidebar
+                          ? 'text-white bg-white/[0.05]'
+                          : 'text-[#2538D9] bg-indigo-50/60 dark:bg-indigo-950/20'
+                        : isDarkSidebar
+                        ? 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${
+                        isChildActive
+                          ? 'text-[#2538D9] dark:text-indigo-400'
+                          : isDarkSidebar
+                          ? 'text-slate-400'
+                          : 'text-slate-500'
+                      }`} />
+                      <span className="truncate">{label}</span>
+                    </div>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 flex-shrink-0 text-slate-400 transition-transform duration-200 ${
+                        isExpanded ? 'rotate-0' : '-rotate-90'
+                      }`}
+                    />
+                  </button>
+
+                  {/* Submenu items */}
+                  {isExpanded && item.subItems && (
+                    <div className="pl-6 pr-1 space-y-0.5 py-0.5 border-l-2 border-slate-200 dark:border-slate-800 ml-3.5 my-1">
+                      {item.subItems.map((sub) => {
+                        const subBase = sub.href.split('?')[0];
+                        const isActive = subBase === '/reports'
+                          ? pathname === '/reports'
+                          : pathname === subBase || (subBase !== '/' && pathname.startsWith(`${subBase}/`));
+                        const subLabel = locale === 'en' && sub.labelEn ? sub.labelEn : sub.label;
+
+                        return (
+                          <Link
+                            key={sub.href}
+                            href={sub.href}
+                            target={sub.external ? '_blank' : undefined}
+                            onClick={closeDrawer}
+                            className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[11.5px] transition-all ${
+                              isActive
+                                ? 'bg-[#2538D9] text-white font-bold shadow-xs'
+                                : isDarkSidebar
+                                ? 'text-slate-400 hover:text-white hover:bg-white/[0.06] font-medium'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                            }`}
+                          >
+                            <span className="truncate">{subLabel}</span>
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              {sub.badge && (
+                                <TingTag
+                                  label={sub.badge}
+                                  variantStyle={isActive ? 'neutral' : (sub.badgeVariant || 'success')}
+                                />
+                              )}
+                              {sub.live && !isActive && <TingBadge pulse variant="dot" />}
+                              {sub.external && <ExternalLink className="w-3 h-3 text-slate-400" />}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
         </div>
@@ -336,10 +534,10 @@ export default function DashboardLayout({
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation Links with real submenus */}
         {renderNavLinks()}
 
-        {/* User Profile & Footer Actions */}
+        {/* User Profile Footer (Cleaned: Single Source of Truth for Global Actions) */}
         <div className={`p-3 border-t ${
           isDarkSidebar ? 'border-[#1B2333] bg-[#0A0D17]' : 'border-[#E4E7EC] bg-slate-50'
         }`}>
@@ -362,50 +560,9 @@ export default function DashboardLayout({
               </div>
             </div>
 
-            <div className="flex items-center gap-0.5">
-              <Tooltip
-                title={`Kiểu Sidebar: ${sidebarTheme === 'auto' ? 'Tự động' : sidebarTheme === 'light' ? 'Sáng' : 'Tối'} (Bấm để đổi)`}
-                arrow
-              >
-                <IconButton
-                  size="small"
-                  onClick={cycleSidebarTheme}
-                  sx={{
-                    color: isDarkSidebar ? '#94A3B8' : '#64748B',
-                    '&:hover': { color: '#2538D9', bgcolor: isDarkSidebar ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' },
-                  }}
-                >
-                  <Palette className="w-4 h-4" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={isDark ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối'}
-                arrow
-              >
-                <IconButton
-                  size="small"
-                  onClick={toggleTheme}
-                  sx={{
-                    color: isDarkSidebar ? '#94A3B8' : '#64748B',
-                    '&:hover': { color: '#F59E0B', bgcolor: isDarkSidebar ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' },
-                  }}
-                >
-                  {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Đăng xuất" arrow>
-                <IconButton
-                  size="small"
-                  onClick={handleLogout}
-                  sx={{
-                    color: isDarkSidebar ? '#94A3B8' : '#64748B',
-                    '&:hover': { color: '#F43F5E', bgcolor: 'rgba(244, 63, 94, 0.1)' },
-                  }}
-                >
-                  <LogOut className="w-4 h-4" />
-                </IconButton>
-              </Tooltip>
-            </div>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 border border-[#2538D9]/20 uppercase flex-shrink-0">
+              PRO
+            </span>
           </div>
         </div>
       </aside>
@@ -486,13 +643,9 @@ export default function DashboardLayout({
               </div>
             </div>
 
-            <IconButton
-              size="small"
-              onClick={handleLogout}
-              sx={{ color: '#F43F5E', '&:hover': { bgcolor: 'rgba(244, 63, 94, 0.1)' } }}
-            >
-              <LogOut className="w-4 h-4" />
-            </IconButton>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 border border-[#2538D9]/20 uppercase flex-shrink-0">
+              PRO
+            </span>
           </div>
         </div>
       </Drawer>
@@ -621,6 +774,7 @@ export default function DashboardLayout({
                 href="/transactions"
                 size="small"
                 sx={{
+                  display: { xs: 'none', md: 'inline-flex' },
                   width: 36,
                   height: 36,
                   borderRadius: '0.5rem',
@@ -641,6 +795,7 @@ export default function DashboardLayout({
                 href="/settings"
                 size="small"
                 sx={{
+                  display: { xs: 'none', md: 'inline-flex' },
                   width: 36,
                   height: 36,
                   borderRadius: '0.5rem',

@@ -19,6 +19,7 @@ import {
   Layers,
   Sliders
 } from 'lucide-react';
+import Switch from '@mui/material/Switch';
 
 interface WorkflowTemplate {
   id: string;
@@ -232,54 +233,51 @@ export default function WorkflowsPage() {
           </div>
 
           {/* Rule 2: Partial payment */}
-          <div className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] space-y-2">
-            <span className="font-bold text-slate-800 dark:text-white block">Chính sách thanh toán từng phần</span>
-            <p className="text-slate-500 text-[11px]">Cho phép học viên/khách nộp trước một phần tiền cọc hoặc học phí đợt 1.</p>
-            <label className="flex items-center gap-2 pt-1 cursor-pointer">
-              <input
-                type="checkbox"
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors shadow-2xs">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="font-bold text-slate-900 dark:text-white block text-xs sm:text-sm">Chính sách thanh toán từng phần</span>
+                <p className="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">Cho phép học viên/khách nộp trước một phần tiền cọc hoặc học phí đợt 1.</p>
+              </div>
+              <Switch
                 checked={partialPayment}
                 onChange={(e) => setPartialPayment(e.target.checked)}
-                className="w-4 h-4 rounded text-[#2538D9]"
+                color="primary"
+                aria-label="Kích hoạt thanh toán linh hoạt nhiều đợt"
               />
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                Kích hoạt thanh toán linh hoạt nhiều đợt
-              </span>
-            </label>
+            </div>
           </div>
 
           {/* Rule 3: Auto reminder channel */}
-          <div className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] space-y-2">
-            <span className="font-bold text-slate-800 dark:text-white block">Gửi biên nhận tự động khi đối soát thành công</span>
-            <p className="text-slate-500 text-[11px]">Ngay khi tài khoản ngân hàng nhận tiền khớp mã TR, gửi xác nhận tức thì.</p>
-            <label className="flex items-center gap-2 pt-1 cursor-pointer">
-              <input
-                type="checkbox"
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors shadow-2xs">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="font-bold text-slate-900 dark:text-white block text-xs sm:text-sm">Gửi biên nhận tự động khi đối soát thành công</span>
+                <p className="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">Ngay khi tài khoản ngân hàng nhận tiền khớp mã TR, gửi xác nhận tức thì qua Email & Bảng tin.</p>
+              </div>
+              <Switch
                 checked={autoReminder}
                 onChange={(e) => setAutoReminder(e.target.checked)}
-                className="w-4 h-4 rounded text-[#2538D9]"
+                color="primary"
+                aria-label="Tự động gửi biên nhận qua Email & Bảng tin"
               />
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                Tự động gửi biên nhận qua Email & Bảng tin
-              </span>
-            </label>
+            </div>
           </div>
 
           {/* Rule 4: Telegram alert */}
-          <div className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] space-y-2">
-            <span className="font-bold text-slate-800 dark:text-white block">Cảnh báo giao dịch pending hoặc sai cú pháp</span>
-            <p className="text-slate-500 text-[11px]">Báo ngay vào Telegram của Giáo viên/Chủ cơ sở nếu phụ huynh chuyển sai nội dung.</p>
-            <label className="flex items-center gap-2 pt-1 cursor-pointer">
-              <input
-                type="checkbox"
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors shadow-2xs">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="font-bold text-slate-900 dark:text-white block text-xs sm:text-sm">Cảnh báo giao dịch pending hoặc sai cú pháp</span>
+                <p className="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">Báo ngay vào Telegram của Giáo viên/Chủ cơ sở nếu phụ huynh chuyển sai nội dung.</p>
+              </div>
+              <Switch
                 checked={telegramAlert}
                 onChange={(e) => setTelegramAlert(e.target.checked)}
-                className="w-4 h-4 rounded text-[#2538D9]"
+                color="primary"
+                aria-label="Nhận cảnh báo sai lệch qua Bot Telegram"
               />
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
-                Nhận cảnh báo sai lệch qua Bot Telegram
-              </span>
-            </label>
+            </div>
           </div>
         </div>
       </div>

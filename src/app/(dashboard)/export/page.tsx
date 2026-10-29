@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import { formatVND, formatDateVN } from '@/lib/utils';
 import {
   Download,
@@ -80,36 +81,80 @@ export default function ExportCenterPage() {
 
   const currentReport = REPORT_TYPES.find((r) => r.id === selectedReportId)!;
 
-  const handleExportDownload = () => {
+  const handleExportDownload = async () => {
     setDownloading(true);
 
-    setTimeout(() => {
-      // Create CSV mock content and download
-      let csvContent = '\uFEFF' + currentReport.sampleHeaders.join(',') + '\n';
-
+    try {
       if (selectedReportId === 'ACCOUNTING_HANDOVER') {
-        csvContent += 'TR-2026-10-001,INV-101,2026-10-28 09:15,Nguyễn Văn An,Học phí Toán 12 T10,1200000,SeABank,FT262981023910,Đã đối soát 100%\n';
-        csvContent += 'TR-2026-10-002,INV-102,2026-10-28 08:40,Trần Thị Thu Hà,Tiền phòng 201 T10,3850000,MBBank,MB262980041289,Đã đối soát 100%\n';
-        csvContent += 'TR-2026-10-003,INV-103,2026-10-27 19:30,Lê Hoàng Nam,Gia hạn thẻ tập CLB,600000,Vietcombank,VCB262970912441,Đã đối soát 100%\n';
+        const res = await fetch('/api/transactions?limit=200');
+        const data = await res.json();
+        const txList = data.success && Array.isArray(data.data) ? data.data : [];
+
+        const exportData = txList.map((tx: any) => ({
+          'Mã giao dịch': tx.id,
+          'Mã khoản thu': tx.paymentCode || '—',
+          'Ngày ghi nhận': tx.transactionDate ? new Date(tx.transactionDate).toLocaleString('vi-VN') : '—',
+          'Người nộp': tx.senderName || '—',
+          'Nội dung': tx.description || '—',
+          'Số tiền (VND)': tx.amount,
+          'Ngân hàng nhận': tx.bankId || 'MB',
+          'Bank Ref': tx.providerTransactionId || tx.id,
+          'Trạng thái đối soát': tx.processingStatus === 'MATCHED' ? 'Đã đối soát 100%' : 'Chờ kiểm tra',
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(exportData.length > 0 ? exportData : [{ 'Thông báo': 'Chưa có giao dịch phát sinh' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'SoGiaoDich');
+        XLSX.writeFile(wb, `TingRoster_BanGiao_KeToan_${timeRange}.${exportFormat.toLowerCase()}`);
       } else if (selectedReportId === 'DEBT_AGING_REPORT') {
-        csvContent += 'INV-104,Phạm Thị Lan,0903123456,Lớp Toán 11,1200000,0,1200000,2026-10-20,8 ngày quá hạn\n';
-        csvContent += 'INV-105,Hoàng Đức Long,0912345678,Phòng 304,3500000,1000000,2500000,2026-10-15,13 ngày quá hạn\n';
+        const res = await fetch('/api/invoices');
+        const data = await res.json();
+        const invList = data.success && Array.isArray(data.data) ? data.data : [];
+
+        const exportData = invList.map((inv: any) => {
+          const debt = Math.max(0, inv.amountDue - inv.amountPaid);
+          return {
+            'Mã hóa đơn': inv.paymentCode,
+            'Họ tên': inv.member?.name || '—',
+            'Số điện thoại': inv.member?.phone ? `'${inv.member.phone}` : '—',
+            'Workspace': inv.group?.name || '—',
+            'Số tiền phải thu': inv.amountDue,
+            'Đã trả': inv.amountPaid,
+            'Còn thiếu': debt,
+            'Hạn thanh toán': inv.dueDate ? inv.dueDate.split('T')[0] : '—',
+            'Trạng thái': inv.status === 'PAID' ? 'Đã thu đủ' : inv.status === 'PARTIAL' ? 'Đóng thiếu' : 'Chưa đóng',
+          };
+        });
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(exportData.length > 0 ? exportData : [{ 'Thông báo': 'Chưa có dữ liệu công nợ' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'TongHopCongNo');
+        XLSX.writeFile(wb, `TingRoster_BaoCao_CongNo_${timeRange}.${exportFormat.toLowerCase()}`);
       } else {
-        csvContent += 'MEM-001,Nguyễn Văn An,0901234567,an.nguyen@example.com,Lớp Toán 12,2026-09-01,Đang hoạt động\n';
-        csvContent += 'MEM-002,Trần Thu Hà,0909876543,ha.tran@example.com,Phòng 201,2026-08-15,Đang thuê\n';
+        const res = await fetch('/api/members');
+        const data = await res.json();
+        const memberList = data.success && Array.isArray(data.data) ? data.data : [];
+
+        const exportData = memberList.map((m: any) => ({
+          'Mã định danh': m.id,
+          'Họ tên': m.name,
+          'Số điện thoại': m.phone ? `'${m.phone}` : '—',
+          'Email': m.email || '—',
+          'Workspace': m.group?.name || '—',
+          'Ngày tham gia': m.createdAt ? m.createdAt.split('T')[0] : '—',
+          'Trạng thái hoạt động': m.status === 'ACTIVE' ? 'Đang hoạt động' : 'Tạm nghỉ',
+        }));
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(exportData.length > 0 ? exportData : [{ 'Thông báo': 'Chưa có thành viên' }]);
+        XLSX.utils.book_append_sheet(wb, ws, 'DanhBaThanhVien');
+        XLSX.writeFile(wb, `TingRoster_DanhBa_${selectedReportId}_${timeRange}.${exportFormat.toLowerCase()}`);
       }
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `TingRoster_${selectedReportId}_${timeRange}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
+    } catch (err) {
+      console.error('Export download error:', err);
+    } finally {
       setDownloading(false);
-    }, 1200);
+    }
   };
 
   return (

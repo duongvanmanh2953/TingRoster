@@ -9,6 +9,7 @@ import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { UserDirectoryTab } from '@/components/admin/UserDirectoryTab';
 import { ClassesAndRentalsTab } from '@/components/admin/ClassesAndRentalsTab';
 import { FinancialOperationsTab } from '@/components/admin/FinancialOperationsTab';
+import { SupportTicketsTab } from '@/components/admin/SupportTicketsTab';
 import {
   ShieldCheck,
   Building2,
@@ -222,6 +223,34 @@ export default function PlatformAdminPage() {
   const [creditReason, setCreditReason] = useState('Thưởng số dư trải nghiệm đợt dùng thử');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [healthChecking, setHealthChecking] = useState(false);
+  const [tempPasswordModalOpen, setTempPasswordModalOpen] = useState(false);
+  const [tempPasswordResult, setTempPasswordResult] = useState<string | null>(null);
+
+  const handleResetTenantPassword = async (tenant: any) => {
+    if (!confirm(`Bạn có chắc chắn muốn cấp lại mật khẩu tạm thời cho ${tenant.email}?`)) return;
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'RESET_PASSWORD',
+          tenantId: tenant.id,
+          reason: 'Platform Admin cấp lại mật khẩu tạm thời an toàn',
+        }),
+      });
+      const resData = await res.json();
+      if (resData.success && resData.data?.temporaryPassword) {
+        setSelectedTenant(tenant);
+        setTempPasswordResult(resData.data.temporaryPassword);
+        setTempPasswordModalOpen(true);
+        setToastMessage(`Đã cấp mật khẩu tạm thời cho ${tenant.email}`);
+      } else {
+        alert(resData.error || 'Lỗi khi cấp mật khẩu');
+      }
+    } catch {
+      alert('Không thể kết nối máy chủ');
+    }
+  };
 
   const loadAdminData = () => {
     setLoading(true);
@@ -882,6 +911,14 @@ export default function PlatformAdminPage() {
                           >
                             + Ví
                           </button>
+                          <button
+                            onClick={() => handleResetTenantPassword(t)}
+                            className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-semibold text-slate-700 transition-colors flex items-center gap-1"
+                            title="Cấp mật khẩu tạm thời an toàn"
+                          >
+                            <Key className="w-3 h-3 text-slate-500" />
+                            <span>Đổi MK</span>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -1252,6 +1289,13 @@ export default function PlatformAdminPage() {
         )}
 
         {/* ========================================================================= */}
+        {/* TAB: SUPPORT & DISPUTE TICKETS */}
+        {/* ========================================================================= */}
+        {activeTab === 'SUPPORT_TICKETS' && (
+          <SupportTicketsTab />
+        )}
+
+        {/* ========================================================================= */}
         {/* TAB 7: SYSTEM & PLATFORM CONFIGURATION (CẤU HÌNH CÁC PHẦN) */}
         {/* ========================================================================= */}
         {activeTab === 'CONFIG' && (
@@ -1437,6 +1481,48 @@ export default function PlatformAdminPage() {
           >
             + Nạp ví cơ sở này
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Temporary Password Dialog */}
+      <Dialog
+        open={tempPasswordModalOpen}
+        onClose={() => setTempPasswordModalOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        slotProps={{
+          paper: { sx: { borderRadius: '1rem', padding: '16px' } },
+        }}
+      >
+        <DialogTitle className="pb-2">
+          <span className="font-bold text-base text-slate-900 block">Mật khẩu Tạm thời Mới</span>
+          <span className="text-xs text-slate-500 font-normal">{selectedTenant?.email}</span>
+        </DialogTitle>
+        <DialogContent className="space-y-3 pt-2 text-xs">
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 leading-relaxed">
+            <strong>Bảo mật:</strong> Mật khẩu này được tạo ngẫu nhiên và mã hóa một chiều bằng bcrypt trong database.
+            Mật khẩu dưới đây chỉ hiển thị <strong>một lần duy nhất</strong> trên màn hình này. Hãy copy và gửi trực tiếp cho chủ cơ sở, yêu cầu đổi sau lần đăng nhập đầu tiên.
+          </div>
+
+          <div className="p-3.5 bg-slate-900 text-white rounded-xl flex items-center justify-between font-mono text-base font-bold tracking-wider">
+            <span>{tempPasswordResult}</span>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => {
+                if (tempPasswordResult) {
+                  navigator.clipboard.writeText(tempPasswordResult);
+                  alert('Đã sao chép mật khẩu tạm thời vào clipboard!');
+                }
+              }}
+              sx={{ backgroundColor: '#2538D9', textTransform: 'none', fontSize: '11px' }}
+            >
+              Sao chép
+            </Button>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTempPasswordModalOpen(false)}>Đã lưu và đóng</Button>
         </DialogActions>
       </Dialog>
 
