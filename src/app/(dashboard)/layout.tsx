@@ -829,7 +829,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F8FAFC] flex flex-col md:flex-row font-sans selection:bg-[#2538D9] selection:text-white">
+    <div className="h-screen w-full overflow-hidden ambient-loang-bg text-[#101828] dark:text-[#F8FAFC] flex flex-col md:flex-row font-sans selection:bg-[#2538D9] selection:text-white">
       {/* Desktop Sidebar (Independent Scroll) */}
       <aside className={`hidden md:flex flex-col w-64 h-screen flex-shrink-0 transition-colors duration-200 relative z-20 overflow-hidden ${
         isDarkSidebar

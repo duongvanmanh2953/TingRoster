@@ -98,13 +98,13 @@ export default function MySpacesPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="w-full space-y-6 pb-12">
       {/* 2.1. Header trang */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <SmartBackButton fallbackUrl="/dashboard" label="Tổng quan" />
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
               Không gian của tôi
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -126,7 +126,7 @@ export default function MySpacesPage() {
           <button
             type="button"
             onClick={() => setShowCreateWizard(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Tạo không gian</span>
@@ -137,14 +137,14 @@ export default function MySpacesPage() {
       {/* 2.2. Thống kê tổng hợp */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 flex items-center gap-3.5 shadow-2xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
             <Layers className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
               Không gian đang hoạt động
             </span>
-            <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+            <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
               {totalActiveSpaces} <span className="text-xs font-normal text-slate-400">khu vực</span>
             </span>
           </div>
@@ -155,10 +155,10 @@ export default function MySpacesPage() {
             <Users2 className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
               Tổng lượt thành viên
             </span>
-            <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+            <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
               {totalMemberships} <span className="text-xs font-normal text-slate-400">thành viên</span>
             </span>
           </div>
@@ -169,10 +169,10 @@ export default function MySpacesPage() {
             <Receipt className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
               Hóa đơn & khoản thu
             </span>
-            <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+            <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
               {totalInvoices} <span className="text-xs font-normal text-slate-400">bản ghi</span>
             </span>
           </div>
@@ -187,10 +187,10 @@ export default function MySpacesPage() {
             <AlertCircle className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
               Cần chú ý / thiết lập
             </span>
-            <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
+            <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
               {spacesNeedingAttention} <span className="text-xs font-normal text-slate-400">chưa có thành viên</span>
             </span>
           </div>
@@ -342,7 +342,7 @@ export default function MySpacesPage() {
         </div>
       ) : (
         /* 2.3. Danh sách không gian (Grid or List Mode) */
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5' : 'space-y-3'}>
+        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5' : 'space-y-3.5'}>
           {processedSpaces.map((space) => (
             <SpaceCard
               key={space.id}

@@ -247,7 +247,7 @@ export default function MembersPage() {
   const paidCount = totalCount - unpaidCount;
 
   return (
-    <div className="space-y-5 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-5 pb-12">
       {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div>

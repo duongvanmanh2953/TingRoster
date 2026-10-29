@@ -418,7 +418,7 @@ export default function AutomationsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 font-sans">
+    <div className="w-full space-y-6 pb-12 font-sans">
       
       {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-[#E4E7EC] dark:border-[#1E293B]">

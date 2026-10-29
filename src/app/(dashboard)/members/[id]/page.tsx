@@ -156,7 +156,7 @@ export default function MemberDetailPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 pb-12">
       
       {/* Top Smart Back Button */}
       <div className="flex items-center gap-2">

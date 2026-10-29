@@ -105,7 +105,7 @@ export default function TaxEstimateReportPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-6 pb-12">
       {/* 1. Header with Breadcrumbs & Date Filter */}
       <ReportHeader
         title="Báo cáo Ước tính Thuế Thông tư 40/2021/TT-BTC"

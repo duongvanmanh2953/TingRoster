@@ -202,7 +202,7 @@ export default function CalendarPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 pb-12">
       
       {/* 1. Header Toolbar with Material UI Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

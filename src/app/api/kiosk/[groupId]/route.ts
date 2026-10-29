@@ -15,6 +15,8 @@ export async function GET(
       include: {
         user: {
           select: {
+            name: true,
+            email: true,
             bankId: true,
             bankAccountNo: true,
             bankAccountName: true,
@@ -22,7 +24,7 @@ export async function GET(
         },
         members: {
           where: { status: 'ACTIVE' },
-          select: { id: true, name: true },
+          select: { id: true, name: true, phone: true },
           orderBy: { name: 'asc' },
         },
       },
@@ -38,10 +40,17 @@ export async function GET(
         group: {
           id: group.id,
           name: group.name,
+          slug: group.slug,
+          code: group.code,
+          description: group.description,
+          logoUrl: group.logoUrl,
+          themeColor: group.themeColor,
+          groupType: group.groupType,
           defaultFee: group.defaultFee,
           bankId: group.user.bankId,
           bankAccountNo: group.user.bankAccountNo,
           bankAccountName: group.user.bankAccountName,
+          supportContact: group.user.email,
         },
         members: group.members,
       },

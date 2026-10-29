@@ -90,7 +90,7 @@ export default function ReconciliationReportPage() {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-6 pb-12">
       {/* 1. Header with Breadcrumbs & Action Toolbar */}
       <ReportHeader
         title="Báo cáo Đối soát & Sổ quỹ VietQR Napas"

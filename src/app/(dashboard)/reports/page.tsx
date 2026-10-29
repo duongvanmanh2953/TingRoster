@@ -104,7 +104,7 @@ export default function ReportsOverviewPage() {
   );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-6 pb-12">
       {/* 1. Header with Breadcrumbs & Action Controls */}
       <ReportHeader
         title="Trung tâm Báo cáo & Phân tích"

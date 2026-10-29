@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
+import { FacebookLogo, ZaloLogo } from '@/components/common/BrandLogos';
 
 interface ShareSpaceModalProps {
   space: {
@@ -175,11 +176,9 @@ export function ShareSpaceModal({
               <button
                 type="button"
                 onClick={handleShareZalo}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400 bg-white dark:bg-slate-800 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 bg-white dark:bg-slate-800 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs hover:shadow-sm"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#0068FF] text-white flex items-center justify-center font-black text-xs">
-                  Zalo
-                </div>
+                <ZaloLogo size={32} />
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Gửi Zalo</span>
               </button>
 
@@ -187,11 +186,9 @@ export function ShareSpaceModal({
               <button
                 type="button"
                 onClick={handleShareFacebook}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-400 bg-white dark:bg-slate-800 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-600 bg-white dark:bg-slate-800 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs hover:shadow-sm"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center font-black text-xs">
-                  FB
-                </div>
+                <FacebookLogo size={32} />
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Facebook</span>
               </button>
 

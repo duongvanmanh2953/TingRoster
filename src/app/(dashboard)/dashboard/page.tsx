@@ -277,7 +277,7 @@ export default function DashboardPage() {
   const collectionRate = stats?.collectionRate || Math.round((totalCollected / totalRevenue) * 100) || 67.5;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 pb-12">
       
       {/* 1. Header Row — Greeting & Action Controls (per 00-overview.png Screen 3) */}
       <div className="flex flex-col justify-between gap-4 pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
@@ -378,24 +378,24 @@ export default function DashboardPage() {
           className="p-5 border-l-4 border-l-[#2538D9]"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               1. Tổng phải thu trong kỳ
             </span>
-            <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-[#2538D9] dark:text-blue-300 flex items-center justify-center font-bold shadow-2xs">
-              <DollarSign className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-[#2538D9] dark:text-blue-300 flex items-center justify-center font-semibold shadow-2xs">
+              <DollarSign className="w-4 h-4 stroke-[2.2]" />
             </div>
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-2">
-              <div className="text-2xl sm:text-[26px] font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              <div className="text-2xl sm:text-[25px] font-bold text-slate-900 dark:text-white tracking-tight leading-none tabular-nums">
                 {formatVND(totalRevenue)}
               </div>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-500/10 text-[#2538D9] dark:text-indigo-300">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-500/10 text-[#2538D9] dark:text-indigo-300">
                 {formatCompactVND(totalRevenue)}
               </span>
             </div>
             <div className="mt-2.5 flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                 <TrendingUp className="w-3 h-3 mr-0.5" />
                 +12.4% so với kỳ trước
               </span>
@@ -409,25 +409,25 @@ export default function DashboardPage() {
           className="p-5 border-l-4 border-l-emerald-600"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               2. Đã thu được xác nhận
             </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold shadow-2xs">
-              <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-semibold shadow-2xs">
+              <CheckCircle2 className="w-4 h-4 stroke-[2.2]" />
             </div>
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-2">
-              <div className="text-2xl sm:text-[26px] font-black text-emerald-700 dark:text-emerald-400 tracking-tight leading-none">
+              <div className="text-2xl sm:text-[25px] font-bold text-emerald-700 dark:text-emerald-400 tracking-tight leading-none tabular-nums">
                 {formatVND(totalCollected)}
               </div>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
                 {formatCompactVND(totalCollected)}
               </span>
             </div>
             <div className="mt-2.5 flex items-center justify-between text-xs">
               <span className="text-slate-600 dark:text-slate-300 font-medium">
-                Tỷ lệ thu: <strong className="text-emerald-700 dark:text-emerald-400 font-bold">{collectionRate}%</strong>
+                Tỷ lệ thu: <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">{collectionRate}%</strong>
               </span>
               <span className="text-[10px] text-slate-400">Cash-in Napas 24/7</span>
             </div>
@@ -440,19 +440,19 @@ export default function DashboardPage() {
           className="p-5 border-l-4 border-l-amber-500"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               3. Còn phải thu (Dư nợ)
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold shadow-2xs">
-              <AlertCircle className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 flex items-center justify-center font-semibold shadow-2xs">
+              <AlertCircle className="w-4 h-4 stroke-[2.2]" />
             </div>
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-2">
-              <div className="text-2xl sm:text-[26px] font-black text-amber-700 dark:text-amber-400 tracking-tight leading-none">
+              <div className="text-2xl sm:text-[25px] font-bold text-amber-700 dark:text-amber-400 tracking-tight leading-none tabular-nums">
                 {formatVND(remainingDue)}
               </div>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300">
                 {formatCompactVND(remainingDue)}
               </span>
             </div>
@@ -460,7 +460,7 @@ export default function DashboardPage() {
               <span className="text-slate-600 dark:text-slate-300 font-medium">
                 {stats?.unpaidCount || 12} khoản thu chưa hoàn tất
               </span>
-              <Link href="/invoices?status=UNPAID" className="text-[10px] text-[#2538D9] dark:text-indigo-400 font-bold hover:underline">
+              <Link href="/invoices?status=UNPAID" className="text-[10px] text-[#2538D9] dark:text-indigo-400 font-semibold hover:underline">
                 Xem chi tiết
               </Link>
             </div>
@@ -473,11 +473,11 @@ export default function DashboardPage() {
           className="p-5 border-l-4 border-l-rose-600"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               4. Quá hạn hoặc cần xử lý
             </span>
-            <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold shadow-2xs">
-              <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
+            <div className="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 flex items-center justify-center font-semibold shadow-2xs">
+              <AlertTriangle className="w-4 h-4 stroke-[2.2]" />
             </div>
           </div>
           <div className="mt-3">
@@ -485,17 +485,17 @@ export default function DashboardPage() {
               const overdueAmt = remainingDue > 0 ? Math.round(remainingDue * 0.42) : 6800000;
               return (
                 <div className="flex items-baseline gap-2">
-                  <div className="text-2xl sm:text-[26px] font-black text-rose-600 dark:text-rose-400 tracking-tight leading-none">
+                  <div className="text-2xl sm:text-[25px] font-bold text-rose-600 dark:text-rose-400 tracking-tight leading-none tabular-nums">
                     {formatVND(overdueAmt)}
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-300">
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-300">
                     {formatCompactVND(overdueAmt)}
                   </span>
                 </div>
               );
             })()}
             <div className="mt-2.5 flex items-center justify-between text-xs">
-              <span className="text-rose-600 dark:text-rose-400 font-bold inline-flex items-center gap-1">
+              <span className="text-rose-600 dark:text-rose-400 font-medium inline-flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping" />
                 4 khoản quá hạn &gt; 7 ngày
               </span>
@@ -509,7 +509,7 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Layers className="w-5 h-5 text-blue-600" />
               <span>Không gian & Khu vực Quản lý ({spaces.length})</span>
             </h2>

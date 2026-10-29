@@ -6,6 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
+import { ZaloLogo } from '@/components/common/BrandLogos';
 
 interface ZaloShareProps {
   shareUrl: string;
@@ -81,12 +82,11 @@ export function ZaloShareButton({
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className={`p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[#0068FF] hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 transition-colors ${className}`}
+          className={`p-1.5 rounded-xl hover:opacity-90 transition-all ${className}`}
           title="Chia sẻ Zalo"
           aria-label="Chia sẻ liên kết qua Zalo"
         >
-          {/* Zalo Icon Badge */}
-          <span className="font-black text-xs tracking-tighter font-sans">Zalo</span>
+          <ZaloLogo size={24} />
         </button>
       ) : variant === 'pill' ? (
         <button
@@ -94,16 +94,16 @@ export function ZaloShareButton({
           onClick={() => setModalOpen(true)}
           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0068FF]/10 hover:bg-[#0068FF]/20 text-[#0068FF] text-[11px] font-bold border border-[#0068FF]/25 transition-all ${className}`}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#0068FF] animate-pulse" />
+          <ZaloLogo size={14} />
           <span>Zalo</span>
         </button>
       ) : (
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0068FF] hover:bg-[#0057D9] text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] active:scale-[0.99] ${className}`}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0068FF] hover:bg-[#0057D9] text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.01] active:scale-[0.99] ${className}`}
         >
-          <span className="font-black text-xs font-sans tracking-tight">Zalo</span>
+          <ZaloLogo size={18} />
           <span>{buttonText}</span>
         </button>
       )}
@@ -126,10 +126,8 @@ export function ZaloShareButton({
       >
         <DialogTitle sx={{ pb: 1, pt: 1.5, px: 2 }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-[#0068FF] text-white flex items-center justify-center font-black text-xs shadow-xs">
-                Zalo
-              </div>
+            <div className="flex items-center gap-2.5">
+              <ZaloLogo size={32} />
               <div>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
                   Chia sẻ qua Zalo

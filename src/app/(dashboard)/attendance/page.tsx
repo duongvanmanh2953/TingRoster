@@ -385,7 +385,7 @@ export default function AttendancePage() {
   const overallRate = totalRecorded > 0 ? Math.round((overallPresentCount / totalRecorded) * 100) : 92;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 pb-12">
       
       {/* 1. Header Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
