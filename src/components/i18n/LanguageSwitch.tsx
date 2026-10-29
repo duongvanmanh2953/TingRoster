@@ -31,9 +31,6 @@ export function LanguageSwitch({ variant = 'select', className = '' }: LanguageS
         aria-label="Chọn ngôn ngữ / Select language"
         renderValue={(selected) => (
           <div className="flex items-center gap-1.5 leading-none select-none">
-            <span className="text-base leading-none" role="img" aria-label={selected === 'vi' ? 'Việt Nam' : 'United Kingdom'}>
-              {selected === 'vi' ? '🇻🇳' : '🇬🇧'}
-            </span>
             {!isCompact && (
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 hidden sm:inline leading-none">
                 {selected === 'vi' ? 'Tiếng Việt' : 'English'}
@@ -101,11 +98,9 @@ export function LanguageSwitch({ variant = 'select', className = '' }: LanguageS
         }}
       >
         <MenuItem value="vi">
-          <span className="text-base mr-1.5" role="img" aria-label="Việt Nam">🇻🇳</span>
           <span>Tiếng Việt</span>
         </MenuItem>
         <MenuItem value="en">
-          <span className="text-base mr-1.5" role="img" aria-label="United Kingdom">🇬🇧</span>
           <span>English</span>
         </MenuItem>
       </Select>
