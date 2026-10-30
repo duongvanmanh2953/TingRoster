@@ -60,7 +60,7 @@ export function ReportHeader({
       </div>
 
       {/* 2. Title & Description */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#2538D9]/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center font-bold flex-shrink-0 mt-0.5">
             <Icon className="w-5 h-5" />
