@@ -1029,7 +1029,7 @@ export default function DashboardLayout({
           <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[11px] border transition-all ${
             isDarkSidebar
               ? 'bg-[#131A2B] border-[#1E283D] text-slate-100 shadow-inner'
-              : 'bg-indigo-50/70 border-indigo-200/90 text-slate-900 shadow-2xs'
+              : 'bg-black-50/70 border-black-200/90 text-slate-900 shadow-2xs'
           }`}>
             <div className="flex items-center gap-2 min-w-0">
               <BankLogo bankId={userData.bankId} size="xs" />
@@ -1132,7 +1132,7 @@ export default function DashboardLayout({
           <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[11px] border transition-all ${
             isDarkSidebar
               ? 'bg-[#131A2B] border-[#1E283D] text-slate-100 shadow-inner'
-              : 'bg-indigo-50/70 border-indigo-200/90 text-slate-900 shadow-2xs'
+              : 'bg-black-50/70 border-black-200/90 text-slate-900 shadow-2xs'
           }`}>
             <div className="flex items-center gap-2 min-w-0">
               <BankLogo bankId={userData.bankId} size="xs" />
