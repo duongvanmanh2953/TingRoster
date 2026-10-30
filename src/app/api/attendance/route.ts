@@ -6,12 +6,32 @@ import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
+function normalizeAttendanceStatus(rawStatus?: string, isPresent?: boolean): AttendanceStatus {
+  if (!rawStatus) {
+    return isPresent === false ? AttendanceStatus.ABSENT_CHARGED : AttendanceStatus.PRESENT;
+  }
+  const clean = rawStatus.toUpperCase().trim();
+  if (clean === 'PRESENT' || clean === 'CO_MAT' || clean === 'LATE' || clean === 'DI_TRE') {
+    return AttendanceStatus.PRESENT;
+  }
+  if (clean === 'ABSENT' || clean === 'ABSENT_CHARGED' || clean === 'VANG' || clean === 'VANG_CO_PHEP_CO_PHI') {
+    return AttendanceStatus.ABSENT_CHARGED;
+  }
+  if (clean === 'EXCUSED' || clean === 'ABSENT_EXCUSED' || clean === 'NGHI_PHEP' || clean === 'VANG_CO_PHEP') {
+    return AttendanceStatus.ABSENT_EXCUSED;
+  }
+  if (clean === 'MAKEUP' || clean === 'HOC_BU') {
+    return AttendanceStatus.MAKEUP;
+  }
+  return isPresent === false ? AttendanceStatus.ABSENT_CHARGED : AttendanceStatus.PRESENT;
+}
+
 const UpsertAttendanceSchema = z.object({
   groupId: z.string().min(1),
   memberId: z.string().min(1),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Định dạng ngày YYYY-MM-DD'),
-  isPresent: z.boolean(),
-  status: z.nativeEnum(AttendanceStatus).default(AttendanceStatus.PRESENT),
+  date: z.string(),
+  isPresent: z.boolean().optional(),
+  status: z.string().optional(),
   note: z.string().optional().nullable(),
 });
 
@@ -79,6 +99,12 @@ export async function POST(req: NextRequest) {
     }
 
     const date = new Date(parsed.date);
+    if (isNaN(date.getTime())) {
+      return NextResponse.json({ success: false, error: 'Định dạng ngày không hợp lệ' }, { status: 400 });
+    }
+
+    const isPresent = typeof parsed.isPresent === 'boolean' ? parsed.isPresent : true;
+    const status = normalizeAttendanceStatus(parsed.status, isPresent);
 
     const attendance = await prisma.attendance.upsert({
       where: {
@@ -89,16 +115,16 @@ export async function POST(req: NextRequest) {
         },
       },
       update: {
-        isPresent: parsed.isPresent,
-        status: parsed.status,
+        isPresent,
+        status,
         note: parsed.note,
       },
       create: {
         groupId: parsed.groupId,
         memberId: parsed.memberId,
         date,
-        isPresent: parsed.isPresent,
-        status: parsed.status,
+        isPresent,
+        status,
         note: parsed.note,
       },
     });

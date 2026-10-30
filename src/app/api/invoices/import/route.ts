@@ -24,6 +24,17 @@ const ImportPayloadSchema = z.object({
   groupId: z.string().optional(),
 });
 
+export async function GET(req: NextRequest) {
+  const userId = getUserIdFromRequest(req);
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+  return NextResponse.json({
+    success: true,
+    message: 'Invoice Import API sẵn sàng. Gửi POST với { rows: [...], dryRun?: boolean, groupId?: string }',
+  });
+}
+
 export async function POST(req: NextRequest) {
   const userId = getUserIdFromRequest(req);
   if (!userId) {

@@ -15,6 +15,7 @@ async function main() {
       bankId: 'MB',
       bankAccountNo: '0987654321',
       bankAccountName: 'NGUYEN VAN TUAN',
+      role: 'ADMIN',
     },
     create: {
       email: 'demo@tingroster.vn',
@@ -24,6 +25,7 @@ async function main() {
       bankAccountNo: '0987654321',
       bankAccountName: 'NGUYEN VAN TUAN',
       planType: 'PRO',
+      role: 'ADMIN',
     },
   });
 

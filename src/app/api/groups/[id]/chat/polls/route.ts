@@ -1,8 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/db/prisma';
 import { getUserIdFromRequest } from '@/lib/auth/jwt';
 import { ChatService } from '@/server/services/chat.service';
 
 export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const userId = getUserIdFromRequest(req);
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+
+  const auth = await ChatService.verifyMembership(params.id, userId);
+  if (!auth.allowed) {
+    return NextResponse.json({ success: false, error: auth.reason || 'Không có quyền truy cập' }, { status: 403 });
+  }
+
+  const polls = await prisma.groupPoll.findMany({
+    where: { conversationId: auth.conversationId },
+    include: {
+      options: {
+        include: {
+          _count: { select: { votes: true } },
+        },
+      },
+      votes: {
+        where: { userId },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return NextResponse.json({ success: true, data: polls });
+}
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const userId = getUserIdFromRequest(req);

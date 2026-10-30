@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ActionType, ContextType } from '@/lib/qr/actionEngine';
+import { ZaloLogo } from '@/components/common/BrandLogos';
 
 interface GroupInfo {
   id: string;
@@ -202,11 +203,11 @@ export default function KioskActionDisplayPage() {
   // Fullscreen toggle
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(() => { });
       setIsFullscreen(true);
     } else {
       if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
+        document.exitFullscreen().catch(() => { });
         setIsFullscreen(false);
       }
     }
@@ -538,13 +539,24 @@ export default function KioskActionDisplayPage() {
                   </div>
 
                   {/* Clear User Instructions */}
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <p className="text-sm font-extrabold text-blue-300">
                       👉 Mở TingRoster trên điện thoại ➡️ Chọn &quot;Quét QR&quot;
                     </p>
-                    <p className="text-xs text-slate-400">
-                      Hoặc dùng camera điện thoại quét trực tiếp mã bên trên.
-                    </p>
+                    <div className="flex items-center justify-center gap-2 text-xs text-slate-300 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700/80">
+                        <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Camera điện thoại</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700/80">
+                        <ZaloLogo size={14} className="rounded" />
+                        <span>Quét Zalo</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700/80">
+                        <CreditCard className="w-3.5 h-3.5 text-blue-400" />
+                        <span>App Ngân hàng</span>
+                      </span>
+                    </div>
                   </div>
 
                   {/* Manual Backup Code */}
@@ -559,7 +571,7 @@ export default function KioskActionDisplayPage() {
             </div>
 
             {/* Bottom Controls Bar: Expiry, Idle Timer, Refresh, Back */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-md mx-auto pt-2 text-xs text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-lg mx-auto pt-2 text-xs text-slate-400">
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-blue-400" />

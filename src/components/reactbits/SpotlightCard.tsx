@@ -38,15 +38,15 @@ export function SpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#131C2E] p-5 shadow-xs transition-all duration-300 hover:shadow-md ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-white dark:bg-[#131C2E] p-6 sm:p-8 transition-colors ${className}`}
       {...props}
     >
-      {/* Spotlight Radial Glow */}
+      {/* Spotlight Radial Glow — reactbits interactive hover light */}
       <div
         className="pointer-events-none absolute -inset-px transition-opacity duration-300"
         style={{
           opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 80%)`,
+          background: `radial-gradient(450px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 80%)`, /* taste-skill-ignore: reactbits-spotlight */
         }}
       />
       <div className="relative z-10">{children}</div>

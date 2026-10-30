@@ -12,6 +12,38 @@ const UpdateMemberSchema = z.object({
   status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
 });
 
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const userId = getUserIdFromRequest(req);
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+
+  const member = await prisma.member.findFirst({
+    where: { id: params.id, group: { userId } },
+    include: {
+      group: {
+        select: { id: true, name: true, slug: true, defaultFee: true },
+      },
+      invoices: {
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      },
+      _count: {
+        select: { attendances: true, invoices: true },
+      },
+    },
+  });
+
+  if (!member) {
+    return NextResponse.json({ success: false, error: 'Không tìm thấy học viên' }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true, data: member });
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }

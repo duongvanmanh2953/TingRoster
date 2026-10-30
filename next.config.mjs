@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "img.vietqr.io",
       },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
 };

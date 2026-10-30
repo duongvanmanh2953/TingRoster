@@ -38,6 +38,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Switch from '@mui/material/Switch';
 import { TingSelect } from '@/components/common/Select';
+import { ZaloLogo } from '@/components/common/BrandLogos';
 
 interface AutomationRuleItem {
   id: string;
@@ -377,7 +378,7 @@ export default function AutomationsPage() {
       case 'settle':
         return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
       case 'zalo':
-        return <Smartphone className="w-4 h-4 text-blue-500" />;
+        return <ZaloLogo size={16} className="rounded-md" />;
       case 'sound':
         return <Volume2 className="w-4 h-4 text-purple-500" />;
       case 'calendar':

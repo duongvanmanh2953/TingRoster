@@ -18,6 +18,42 @@ const BulkCreateInvoiceSchema = z.object({
   dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
+export async function GET(req: NextRequest) {
+  const userId = getUserIdFromRequest(req);
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
+  }
+
+  const groupId = req.nextUrl.searchParams.get('groupId');
+  if (!groupId) {
+    return NextResponse.json({
+      success: true,
+      message: 'Bulk Create Invoice API sẵn sàng. Vui lòng gửi POST với payload { groupId, title, pricingType, ... }',
+    });
+  }
+
+  const group = await prisma.group.findFirst({
+    where: { id: groupId, userId },
+    select: { id: true, name: true, defaultFee: true, billingCycle: true },
+  });
+
+  if (!group) {
+    return NextResponse.json({ success: false, error: 'Không tìm thấy nhóm' }, { status: 404 });
+  }
+
+  const activeMembersCount = await prisma.member.count({
+    where: { groupId, status: 'ACTIVE' },
+  });
+
+  return NextResponse.json({
+    success: true,
+    data: {
+      group,
+      activeMembersCount,
+    },
+  });
+}
+
 export async function POST(req: NextRequest) {
   const userId = getUserIdFromRequest(req);
   if (!userId) {
