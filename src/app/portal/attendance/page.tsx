@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ResolvedAction } from '@/lib/qr/actionEngine';
+import { TingDatePicker } from '@/components/common/DatePicker';
+import { TingSelect } from '@/components/common/Select';
 
 interface AttendanceRecord {
   id: string;
@@ -447,26 +449,29 @@ function MemberAttendanceContent() {
             <form onSubmit={handleSubmitAdjustment} className="space-y-3.5 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Ngày diễn ra buổi học</label>
-                <input
-                  type="date"
-                  required
+                <TingDatePicker
                   value={adjDate}
-                  onChange={(e) => setAdjDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#CBD5E1] dark:border-[#334155] bg-slate-50 dark:bg-[#0B0F19]"
+                  onChange={(val) => setAdjDate(val)}
+                  sizeVariant="sm"
+                  className="w-full"
+                  containerClassName="w-full"
+                  placeholder="Chọn ngày học"
                 />
               </div>
 
               <div>
                 <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Trạng thái thực tế</label>
-                <select
+                <TingSelect
                   value={adjStatus}
                   onChange={(e) => setAdjStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#CBD5E1] dark:border-[#334155] bg-slate-50 dark:bg-[#0B0F19]"
-                >
-                  <option value="PRESENT">Có mặt (Bị điểm danh vắng nhầm)</option>
-                  <option value="ABSENT_EXCUSED">Nghỉ có phép (Đã gửi đơn xin phép)</option>
-                  <option value="MAKEUP">Đã học bù sang ca khác</option>
-                </select>
+                  options={[
+                    { value: 'PRESENT', label: 'Có mặt (Bị điểm danh vắng nhầm)' },
+                    { value: 'ABSENT_EXCUSED', label: 'Nghỉ có phép (Đã gửi đơn xin phép)' },
+                    { value: 'MAKEUP', label: 'Đã học bù sang ca khác' },
+                  ]}
+                  size="small"
+                  fullWidth
+                />
               </div>
 
               <div>

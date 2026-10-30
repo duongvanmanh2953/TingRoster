@@ -4,6 +4,9 @@ import React, { useMemo } from 'react';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { vi } from 'date-fns/locale';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
 function MuiThemeBridge({ children }: { children: React.ReactNode }) {
@@ -45,7 +48,7 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
       },
       typography: {
         fontFamily:
-          "'__Be_Vietnam_Pro_0df554', var(--font-be-vietnam-pro), 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          "var(--font-be-vietnam-pro), 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         button: {
           textTransform: 'none',
           fontWeight: 600,
@@ -309,7 +312,9 @@ function MuiThemeBridge({ children }: { children: React.ReactNode }) {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
+        {children}
+      </LocalizationProvider>
     </MuiThemeProvider>
   );
 }

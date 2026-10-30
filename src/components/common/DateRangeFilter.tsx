@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Calendar, ChevronDown, Check, X, SlidersHorizontal } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import { TingDatePicker } from './DatePicker';
 
 export type DatePeriodPreset = 'today' | 'week' | 'month' | 'quarter' | 'custom';
 
@@ -63,7 +64,7 @@ export function DateRangeFilter({
               onClick={() => handleSelectPreset(p.id)}
               className={`px-3 py-1.5 rounded-lg transition-all ${
                 isActive
-                  ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-white shadow-xs font-bold'
+                  ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-blue-400 shadow-xs font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -77,7 +78,7 @@ export function DateRangeFilter({
           onClick={() => setShowCustomRange(!showCustomRange)}
           className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
             showCustomRange || selectedPeriod === 'custom'
-              ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-white shadow-xs font-bold'
+              ? 'bg-white dark:bg-[#111726] text-[#2538D9] dark:text-blue-400 shadow-xs font-bold'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
@@ -88,31 +89,31 @@ export function DateRangeFilter({
 
       {/* Custom Date Range Picker Strip */}
       {showCustomRange && (
-        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-slate-800 shadow-sm animate-in fade-in duration-150">
+        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-slate-800 shadow-xs animate-in fade-in duration-150">
           <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
             <span className="text-[11px] font-semibold text-slate-400">{locale === 'en' ? 'From:' : 'Từ:'}</span>
-            <input
-              type="date"
+            <TingDatePicker
               value={customStart}
-              onChange={(e) => setCustomStart(e.target.value)}
-              className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#2538D9]"
+              onChange={(val) => setCustomStart(val)}
+              sizeVariant="sm"
+              placeholder={locale === 'en' ? 'Start date' : 'Từ ngày'}
             />
           </div>
 
           <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
             <span className="text-[11px] font-semibold text-slate-400">{locale === 'en' ? 'To:' : 'Đến:'}</span>
-            <input
-              type="date"
+            <TingDatePicker
               value={customEnd}
-              onChange={(e) => setCustomEnd(e.target.value)}
-              className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-[#2538D9]"
+              onChange={(val) => setCustomEnd(val)}
+              sizeVariant="sm"
+              placeholder={locale === 'en' ? 'End date' : 'Đến ngày'}
             />
           </div>
 
           <button
             type="button"
             onClick={handleApplyCustom}
-            className="h-8 px-3 rounded-lg bg-[#2538D9] text-white hover:bg-[#1E2DB8] text-xs font-bold transition-colors"
+            className="h-[38px] px-3.5 rounded-lg bg-[#2538D9] text-white hover:bg-[#1E2DB8] text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             {locale === 'en' ? 'Apply' : 'Áp dụng'}
           </button>

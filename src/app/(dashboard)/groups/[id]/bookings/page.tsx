@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { formatVND } from '@/lib/utils';
+import { TingDatePicker } from '@/components/common/DatePicker';
+import { TingSelect } from '@/components/common/Select';
 
 interface BookingItem {
   id: string;
@@ -208,11 +210,11 @@ export default function SpaceBookingsPage() {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
-          <input
-            type="date"
+          <TingDatePicker
             value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white"
+            onChange={(val) => setDate(val)}
+            sizeVariant="sm"
+            placeholder="Chọn ngày đặt sân"
           />
 
           <button
@@ -404,16 +406,18 @@ export default function SpaceBookingsPage() {
                   <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Chọn sân
                   </label>
-                  <select
+                  <TingSelect
                     value={formData.courtName}
                     onChange={(e) => setFormData({ ...formData, courtName: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
-                  >
-                    <option value="Sân Pickleball 1">Sân Pickleball 1</option>
-                    <option value="Sân Pickleball 2">Sân Pickleball 2</option>
-                    <option value="Sân Cầu lông VIP A">Sân Cầu lông VIP A</option>
-                    <option value="Sân Bóng đá Mini">Sân Bóng đá Mini</option>
-                  </select>
+                    options={[
+                      { value: 'Sân Pickleball 1', label: 'Sân Pickleball 1' },
+                      { value: 'Sân Pickleball 2', label: 'Sân Pickleball 2' },
+                      { value: 'Sân Cầu lông VIP A', label: 'Sân Cầu lông VIP A' },
+                      { value: 'Sân Bóng đá Mini', label: 'Sân Bóng đá Mini' },
+                    ]}
+                    size="small"
+                    className="w-full font-bold"
+                  />
                 </div>
               </div>
 

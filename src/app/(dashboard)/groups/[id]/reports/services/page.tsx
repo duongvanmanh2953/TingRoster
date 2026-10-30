@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { formatVND } from '@/lib/utils';
+import { TingSelect } from '@/components/common/Select';
 
 interface ServiceItem {
   id: string;
@@ -255,18 +256,22 @@ export default function SpaceServicesReportPage() {
 
         <div className="flex items-center gap-2">
           <Filter className="w-3.5 h-3.5 text-slate-400" />
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
-          >
-            <option value="ALL">Tất cả danh mục</option>
-            <option value="RENTAL">Cho thuê / Căn hộ</option>
-            <option value="SPORTS">Sân bãi / Thể thao</option>
-            <option value="EDUCATION">Giáo dục / Khóa học</option>
-            <option value="UTILITY">Tiện ích / Điện nước</option>
-            <option value="GENERAL">Chung</option>
-          </select>
+          <div className="w-48">
+            <TingSelect
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              options={[
+                { value: 'ALL', label: 'Tất cả danh mục' },
+                { value: 'RENTAL', label: 'Cho thuê / Căn hộ' },
+                { value: 'SPORTS', label: 'Sân bãi / Thể thao' },
+                { value: 'EDUCATION', label: 'Giáo dục / Khóa học' },
+                { value: 'UTILITY', label: 'Tiện ích / Điện nước' },
+                { value: 'GENERAL', label: 'Chung' },
+              ]}
+              size="small"
+              className="w-full text-xs font-bold"
+            />
+          </div>
         </div>
       </div>
 

@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { ElectronicSignatureModal } from '@/components/contracts/ElectronicSignatureModal';
+import { TingSelect } from '@/components/common/Select';
 
 type TabKey = 'contracts' | 'templates' | 'ocr' | 'temporary-accounts' | 'clauses' | 'pricing-history';
 
@@ -549,17 +550,21 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-bold"
-              >
-                <option value="ALL">Mọi trạng thái</option>
-                <option value="DRAFT">Dự thảo</option>
-                <option value="PENDING_SIGNATURE">Chờ ký</option>
-                <option value="ACTIVE">Có hiệu lực</option>
-                <option value="EXPIRED">Hết hạn</option>
-              </select>
+              <div className="w-44">
+                <TingSelect
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  options={[
+                    { value: 'ALL', label: 'Mọi trạng thái' },
+                    { value: 'DRAFT', label: 'Dự thảo' },
+                    { value: 'PENDING_SIGNATURE', label: 'Chờ ký' },
+                    { value: 'ACTIVE', label: 'Có hiệu lực' },
+                    { value: 'EXPIRED', label: 'Hết hạn' },
+                  ]}
+                  size="small"
+                  className="w-full text-xs font-bold"
+                />
+              </div>
 
               <button
                 onClick={() => setCreateContractModalOpen(true)}
@@ -1087,16 +1092,18 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
                   <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Loại hợp đồng:
                   </label>
-                  <select
+                  <TingSelect
                     value={newType}
                     onChange={(e) => setNewType(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium"
-                  >
-                    <option value="RENTAL">Thuê nhà / Phòng trọ</option>
-                    <option value="EDUCATION">Giáo dục / Khóa học</option>
-                    <option value="SPORTS">Thể thao / Hội viên</option>
-                    <option value="GENERAL">Thỏa thuận chung</option>
-                  </select>
+                    options={[
+                      { value: 'RENTAL', label: 'Thuê nhà / Phòng trọ' },
+                      { value: 'EDUCATION', label: 'Giáo dục / Khóa học' },
+                      { value: 'SPORTS', label: 'Thể thao / Hội viên' },
+                      { value: 'GENERAL', label: 'Thỏa thuận chung' },
+                    ]}
+                    size="small"
+                    className="w-full font-medium"
+                  />
                 </div>
                 <div>
                   <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
@@ -1221,14 +1228,16 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
                 <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Vai trò trong không gian:
                 </label>
-                <select
+                <TingSelect
                   value={tempRole}
                   onChange={(e) => setTempRole(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium"
-                >
-                  <option value="MEMBER">Học viên / Khách thuê (Member)</option>
-                  <option value="TEACHER">Giáo viên phụ giảng (Teacher)</option>
-                </select>
+                  options={[
+                    { value: 'MEMBER', label: 'Học viên / Khách thuê (Member)' },
+                    { value: 'TEACHER', label: 'Giáo viên phụ giảng (Teacher)' },
+                  ]}
+                  size="small"
+                  className="w-full font-medium"
+                />
               </div>
 
               <div className="pt-2 flex justify-end gap-2">

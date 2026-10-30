@@ -18,6 +18,7 @@ import {
 import { SpaceCard, SpaceItem } from '@/components/spaces/SpaceCard';
 import { CreateSpaceWizardModal } from '@/components/spaces/CreateSpaceWizardModal';
 import { SmartBackButton } from '@/components/common/SmartBackButton';
+import { TingSelect } from '@/components/common/Select';
 
 export default function MySpacesPage() {
   const [spaces, setSpaces] = useState<SpaceItem[]>([]);
@@ -251,17 +252,18 @@ export default function MySpacesPage() {
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-            <select
+          <div className="w-44">
+            <TingSelect
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-transparent text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none cursor-pointer"
-            >
-              <option value="newest">Mới nhất</option>
-              <option value="name">Tên A-Z</option>
-              <option value="members">Nhiều thành viên nhất</option>
-            </select>
+              options={[
+                { value: 'newest', label: 'Mới nhất' },
+                { value: 'name', label: 'Tên A-Z' },
+                { value: 'members', label: 'Nhiều thành viên' },
+              ]}
+              size="small"
+              className="w-full text-xs font-bold"
+            />
           </div>
 
           {/* Grid / List View Toggle */}

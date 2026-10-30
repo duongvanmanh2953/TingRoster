@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { formatVND } from '@/lib/utils';
+import { TingDatePicker } from '@/components/common/DatePicker';
+import { TingSelect } from '@/components/common/Select';
 
 export default function SpaceSportsReportPage() {
   const params = useParams();
@@ -138,11 +140,11 @@ export default function SpaceSportsReportPage() {
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
-          <input
-            type="date"
+          <TingDatePicker
             value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white"
+            onChange={(val) => setDate(val)}
+            sizeVariant="sm"
+            placeholder="Chọn ngày báo cáo"
           />
 
           <button
@@ -219,18 +221,18 @@ export default function SpaceSportsReportPage() {
       <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Lọc theo sân:</span>
-          <select
-            value={courtFilter}
-            onChange={(e) => setCourtFilter(e.target.value)}
-            className="px-3 py-1.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-slate-900 dark:text-white"
-          >
-            <option value="ALL">Tất cả các sân ({bookings.length})</option>
-            {courts.map((court) => (
-              <option key={court} value={court}>
-                {court}
-              </option>
-            ))}
-          </select>
+          <div className="w-56">
+            <TingSelect
+              value={courtFilter}
+              onChange={(e) => setCourtFilter(e.target.value)}
+              options={[
+                { value: 'ALL', label: `Tất cả các sân (${bookings.length})` },
+                ...courts.map((court) => ({ value: court, label: court })),
+              ]}
+              size="small"
+              className="w-full text-xs font-bold"
+            />
+          </div>
         </div>
 
         <p className="text-xs font-bold text-slate-500">

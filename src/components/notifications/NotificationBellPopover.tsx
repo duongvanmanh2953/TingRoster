@@ -213,7 +213,7 @@ export function NotificationBellPopover() {
                     className={`p-3.5 transition-colors cursor-pointer flex gap-3 ${
                       item.isRead
                         ? 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40 opacity-75'
-                        : 'bg-indigo-50/30 dark:bg-indigo-950/20 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40'
+                        : 'bg-indigo-50/30 dark:bg-indigo-950/20 hover:bg-[rgb(70 0 241 / 27%)] dark:hover:bg-indigo-950/40'
                     }`}
                   >
                     <div

@@ -1,94 +1,229 @@
 'use client';
 
 import React, { forwardRef } from 'react';
+import {
+  FormControl,
+  Select as MuiSelect,
+  MenuItem,
+  FormHelperText,
+  SelectChangeEvent,
+  InputAdornment,
+} from '@mui/material';
 import { ChevronDown } from 'lucide-react';
+import { useTheme } from '@/components/theme/ThemeContext';
 
 export interface TingSelectOption {
   value: string;
   label: string;
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
-export interface TingSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface TingSelectProps {
   label?: string;
+  value?: string | number;
+  defaultValue?: string | number;
   options?: TingSelectOption[];
+  children?: React.ReactNode;
   icon?: React.ReactNode;
   sizeVariant?: 'sm' | 'md';
+  size?: 'small' | 'medium';
   error?: string;
+  className?: string;
   containerClassName?: string;
+  disabled?: boolean;
+  name?: string;
+  required?: boolean;
+  placeholder?: string;
+  fullWidth?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export const TingSelect = forwardRef<HTMLSelectElement, TingSelectProps>(
+export const TingSelect = forwardRef<HTMLDivElement, TingSelectProps>(
   (
     {
       label,
+      value,
+      defaultValue,
       options,
       children,
       icon,
-      sizeVariant = 'sm',
+      sizeVariant,
+      size = 'small',
       error,
       className = '',
       containerClassName = '',
-      disabled,
+      disabled = false,
+      name,
+      required = false,
+      placeholder,
+      fullWidth = false,
+      onChange,
       ...props
     },
     ref
   ) => {
-    const isSm = sizeVariant === 'sm';
+    const { isDark } = useTheme();
+    const isSm = sizeVariant ? sizeVariant === 'sm' : size === 'small';
+
+    const handleChange = (e: SelectChangeEvent<unknown>) => {
+      if (onChange) {
+        const syntheticEvent = {
+          target: {
+            value: String(e.target.value),
+            name: e.target.name || name,
+          },
+          currentTarget: {
+            value: String(e.target.value),
+            name: e.target.name || name,
+          },
+          preventDefault: () => {},
+          stopPropagation: () => {},
+        } as unknown as React.ChangeEvent<HTMLSelectElement>;
+        onChange(syntheticEvent);
+      }
+    };
 
     return (
-      <div className={`relative inline-flex flex-col ${containerClassName}`}>
+      <div className={`relative inline-flex flex-col ${containerClassName} ${fullWidth ? 'w-full' : ''}`} ref={ref}>
         {label && (
           <label className="text-xs font-bold text-[#101828] dark:text-[#F8FAFC] mb-1.5 flex items-center gap-1">
             {label}
-            {props.required && <span className="text-rose-500">*</span>}
+            {required && <span className="text-rose-500">*</span>}
           </label>
         )}
 
-        <div className="relative inline-flex items-center w-full">
-          {icon && (
-            <div className="absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none flex items-center justify-center">
-              {icon}
-            </div>
-          )}
-
-          <select
-            ref={ref}
-            disabled={disabled}
-            className={`
-              w-full appearance-none rounded-lg font-medium transition-all
-              bg-white dark:bg-[#111726] 
-              border text-[#101828] dark:text-[#F8FAFC]
-              ${error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : 'border-[#E4E7EC] dark:border-[#1E293B] hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#2538D9] focus:ring-[#2538D9]/20'}
-              focus:outline-none focus:ring-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${isSm ? 'h-9 text-xs pl-3 pr-8' : 'h-10 text-xs sm:text-sm pl-3.5 pr-9'}
-              ${icon ? (isSm ? 'pl-8' : 'pl-9') : ''}
-              ${className}
-            `}
+        <FormControl
+          size={isSm ? 'small' : 'medium'}
+          error={!!error}
+          disabled={disabled}
+          fullWidth={fullWidth}
+          className={className}
+        >
+          <MuiSelect
+            value={value !== undefined ? String(value) : defaultValue !== undefined ? String(defaultValue) : ''}
+            onChange={(e: any) => handleChange(e)}
+            name={name}
+            displayEmpty={!!placeholder}
+            IconComponent={() => (
+              <ChevronDown className="w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none mr-2.5" />
+            )}
+            startAdornment={
+              icon ? (
+                <InputAdornment position="start" sx={{ ml: 1, mr: -0.5 }}>
+                  <span className="text-slate-400 dark:text-slate-500 flex items-center justify-center">
+                    {icon}
+                  </span>
+                </InputAdornment>
+              ) : null
+            }
+            sx={{
+              height: isSm ? 38 : 44,
+              fontSize: isSm ? '0.8125rem' : '0.875rem',
+              fontWeight: 500,
+              backgroundColor: isDark ? '#111726' : '#FFFFFF',
+              color: isDark ? '#F8FAFC' : '#101828',
+              borderRadius: '0.625rem',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: error
+                  ? '#F43F5E'
+                  : isDark
+                  ? '#1E293B'
+                  : '#E4E7EC',
+                borderWidth: '1.5px',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: error
+                  ? '#F43F5E'
+                  : isDark
+                  ? '#334155'
+                  : '#CBD5E1',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#2538D9 !important',
+                borderWidth: '2px',
+              },
+              '&.Mui-focused': {
+                boxShadow: '0 0 0 3px rgba(37, 56, 217, 0.15)',
+              },
+              '& .MuiSelect-select': {
+                paddingTop: isSm ? '8px' : '10px',
+                paddingBottom: isSm ? '8px' : '10px',
+                paddingLeft: icon ? '8px' : '12px',
+                paddingRight: '32px !important',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              },
+            }}
+            MenuProps={{
+              slotProps: {
+                paper: {
+                  sx: {
+                    borderRadius: '0.75rem',
+                    border: isDark ? '1px solid #1E293B' : '1px solid #E4E7EC',
+                    backgroundColor: isDark ? '#111726' : '#FFFFFF',
+                    color: isDark ? '#F8FAFC' : '#101828',
+                    boxShadow: isDark
+                      ? '0 10px 25px -5px rgba(0, 0, 0, 0.6)'
+                      : '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                    mt: 0.5,
+                    maxHeight: 280,
+                    '& .MuiList-root': {
+                      padding: '4px',
+                    },
+                    '& .MuiMenuItem-root': {
+                      borderRadius: '0.5rem',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      padding: '8px 12px',
+                      margin: '2px 0',
+                      transition: 'all 0.15s ease-in-out',
+                      '&:hover': {
+                        backgroundColor: isDark
+                          ? 'rgba(255, 255, 255, 0.08)'
+                          : '#F1F5F9',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: isDark
+                          ? 'rgba(37, 56, 217, 0.25)'
+                          : 'rgba(37, 56, 217, 0.08)',
+                        color: isDark ? '#60A5FA' : '#2538D9',
+                        fontWeight: 700,
+                        '&:hover': {
+                          backgroundColor: isDark
+                            ? 'rgba(37, 56, 217, 0.35)'
+                            : 'rgba(37, 56, 217, 0.14)',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            }}
             {...props}
           >
+            {placeholder && (
+              <MenuItem value="" disabled sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+                {placeholder}
+              </MenuItem>
+            )}
+
             {options
-              ? options.map((opt) => (
-                  <option
-                    key={opt.value}
-                    value={opt.value}
-                    disabled={opt.disabled}
-                    className="bg-white dark:bg-[#111726] text-[#101828] dark:text-[#F8FAFC] py-1.5"
-                  >
+              ? options.map((opt: TingSelectOption) => (
+                  <MenuItem key={opt.value} value={opt.value} disabled={opt.disabled}>
+                    {opt.icon && <span className="mr-2 inline-flex items-center">{opt.icon}</span>}
                     {opt.label}
-                  </option>
+                  </MenuItem>
                 ))
               : children}
-          </select>
-
-          <div className="absolute right-2.5 pointer-events-none text-slate-400 dark:text-slate-500 flex items-center justify-center">
-            <ChevronDown className="w-3.5 h-3.5 stroke-[2.2]" />
-          </div>
-        </div>
+          </MuiSelect>
+        </FormControl>
 
         {error && (
-          <p className="text-[11px] font-medium text-rose-500 mt-1">{error}</p>
+          <FormHelperText error sx={{ fontSize: '0.75rem', fontWeight: 500, mt: 0.5 }}>
+            {error}
+          </FormHelperText>
         )}
       </div>
     );
