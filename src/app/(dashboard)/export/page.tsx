@@ -166,9 +166,6 @@ export default function ExportCenterPage() {
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Trung tâm Xuất Báo cáo & Bàn giao Kế toán
             </h1>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#3344D6] text-white uppercase tracking-wider">
-              EXPORT CENTER
-            </span>
           </div>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
             Kết xuất dữ liệu có cấu trúc phục vụ lưu trữ nội bộ, đối soát ngân hàng và bàn giao cho nhân viên kế toán.

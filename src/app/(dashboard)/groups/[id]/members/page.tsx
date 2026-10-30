@@ -11,11 +11,13 @@ import {
   RefreshCw,
   Trash2,
   Phone,
-  UserCheck
+  UserCheck,
+  FileSpreadsheet
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { SmartBackButton } from '@/components/common/SmartBackButton';
 import { CommunityMemberSearchModal } from '@/components/groups/CommunityMemberSearchModal';
+import { ExcelStudentImportModal } from '@/components/members/ExcelStudentImportModal';
 
 interface GroupDetail {
   id: string;
@@ -42,11 +44,26 @@ export default function SpaceMembersPage() {
   const [group, setGroup] = useState<GroupDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<'MEMBERS' | 'JOIN_REQUESTS'>('MEMBERS');
+
+  // Join requests state
+  const [joinRequests, setJoinRequests] = useState<Array<{
+    id: string;
+    userName: string;
+    userEmail?: string | null;
+    userPhone?: string | null;
+    message?: string | null;
+    status: string;
+    createdAt: string;
+  }>>([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [processingRequestId, setProcessingRequestId] = useState<string | null>(null);
 
   // Modals state
   const [showAddMember, setShowAddMember] = useState(false);
   const [showCommunitySearch, setShowCommunitySearch] = useState(false);
   const [showImportAi, setShowImportAi] = useState(false);
+  const [showExcelImport, setShowExcelImport] = useState(false);
 
   // Add member simple state
   const [newMemberName, setNewMemberName] = useState('');
@@ -58,6 +75,21 @@ export default function SpaceMembersPage() {
   const [importText, setImportText] = useState('');
   const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const [aiPreviewData, setAiPreviewData] = useState<any>(null);
+
+  const loadJoinRequests = useCallback(async () => {
+    try {
+      setLoadingRequests(true);
+      const res = await fetch(`/api/groups/${groupId}/join-requests`);
+      const data = await res.json();
+      if (data.success && data.data) {
+        setJoinRequests(data.data);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingRequests(false);
+    }
+  }, [groupId]);
 
   const loadGroup = useCallback(async () => {
     try {
@@ -75,8 +107,35 @@ export default function SpaceMembersPage() {
   }, [groupId]);
 
   useEffect(() => {
-    if (groupId) loadGroup();
-  }, [groupId, loadGroup]);
+    if (groupId) {
+      loadGroup();
+      loadJoinRequests();
+    }
+  }, [groupId, loadGroup, loadJoinRequests]);
+
+  const handleReviewJoinRequest = async (requestId: string, action: 'APPROVE' | 'REJECT') => {
+    try {
+      setProcessingRequestId(requestId);
+      const res = await fetch(`/api/groups/${groupId}/join-requests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId, action }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadJoinRequests();
+        if (action === 'APPROVE') {
+          loadGroup();
+        }
+      } else {
+        alert(data.error || 'Lỗi khi xử lý yêu cầu');
+      }
+    } catch {
+      alert('Lỗi kết nối máy chủ');
+    } finally {
+      setProcessingRequestId(null);
+    }
+  };
 
   const filteredMembers = useMemo(() => {
     if (!group?.members) return [];
@@ -219,18 +278,54 @@ export default function SpaceMembersPage() {
         activeSection="members"
       />
 
-      {/* Action and Filter Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
-        <div className="relative flex-1 min-w-[220px]">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm theo tên thành viên, số điện thoại..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-600/30"
-          />
-        </div>
+      {/* Segmented Sub Tabs: Members vs Join Requests */}
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab('MEMBERS')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'MEMBERS'
+              ? 'bg-[#2538D9] text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <Users2 className="w-4 h-4" />
+          <span>Thành viên chính thức ({group.members.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('JOIN_REQUESTS')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            activeTab === 'JOIN_REQUESTS'
+              ? 'bg-[#2538D9] text-white shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <UserCheck className="w-4 h-4" />
+          <span>Yêu cầu tham gia chờ duyệt</span>
+          {joinRequests.filter((r) => r.status === 'PENDING').length > 0 && (
+            <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-extrabold animate-pulse">
+              {joinRequests.filter((r) => r.status === 'PENDING').length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === 'MEMBERS' ? (
+        <>
+          {/* Action and Filter Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
+            <div className="relative flex-1 min-w-[220px]">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Tìm theo tên thành viên, số điện thoại..."
+                className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-600/30"
+              />
+            </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -240,6 +335,15 @@ export default function SpaceMembersPage() {
           >
             <Search className="w-3.5 h-3.5" />
             <span>Tìm từ cộng đồng</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowExcelImport(true)}
+            className="px-3 py-1.5 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-950/40 text-[#2538D9] dark:text-blue-300 text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Nhập Excel</span>
           </button>
 
           <button
@@ -318,8 +422,121 @@ export default function SpaceMembersPage() {
           </div>
         )}
       </div>
+        </>
+      ) : (
+        /* JOIN REQUESTS REVIEW TAB */
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xs space-y-4 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                Yêu Cầu Tham Gia Quét Từ Mã QR
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Danh sách người dùng đã quét mã Action QR hoặc nhập link lời mời đang chờ bạn phê duyệt.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={loadJoinRequests}
+              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 transition inline-flex items-center gap-1.5"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingRequests ? 'animate-spin' : ''}`} />
+              <span>Làm mới</span>
+            </button>
+          </div>
 
-      {/* Add Member Simple Modal */}
+          {loadingRequests ? (
+            <div className="py-12 text-center text-slate-400 text-xs">
+              <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-blue-600" />
+              <span>Đang tải danh sách yêu cầu...</span>
+            </div>
+          ) : joinRequests.length === 0 ? (
+            <div className="p-10 text-center text-slate-400 text-xs space-y-2">
+              <UserCheck className="w-8 h-8 text-slate-300 mx-auto" />
+              <p className="font-semibold text-slate-600 dark:text-slate-300">
+                Không có yêu cầu tham gia nào đang chờ duyệt.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                Khi học viên quét Action QR &quot;Tham gia không gian&quot;, yêu cầu sẽ xuất hiện tại đây.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                    <th className="py-3 px-4 font-bold">Người xin tham gia</th>
+                    <th className="py-3 px-4 font-bold">Số điện thoại / Email</th>
+                    <th className="py-3 px-4 font-bold">Lời nhắn</th>
+                    <th className="py-3 px-4 font-bold">Thời gian</th>
+                    <th className="py-3 px-4 font-bold">Trạng thái</th>
+                    <th className="py-3 px-4 text-right font-bold">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {joinRequests.map((req) => (
+                    <tr key={req.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                      <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
+                        {req.userName}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono">
+                        {req.userPhone || req.userEmail || '—'}
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
+                        {req.message || '—'}
+                      </td>
+                      <td className="py-3 px-4 text-slate-400 font-mono">
+                        {new Date(req.createdAt).toLocaleDateString('vi-VN')}
+                      </td>
+                      <td className="py-3 px-4">
+                        {req.status === 'PENDING' && (
+                          <span className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200 text-[10px] font-bold">
+                            Chờ duyệt
+                          </span>
+                        )}
+                        {req.status === 'APPROVED' && (
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 text-[10px] font-bold">
+                            Đã duyệt
+                          </span>
+                        )}
+                        {req.status === 'REJECTED' && (
+                          <span className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 text-[10px] font-bold">
+                            Từ chối
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        {req.status === 'PENDING' ? (
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              disabled={processingRequestId === req.id}
+                              onClick={() => handleReviewJoinRequest(req.id, 'APPROVE')}
+                              className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-[11px] font-bold shadow-2xs transition cursor-pointer"
+                            >
+                              Duyệt
+                            </button>
+                            <button
+                              type="button"
+                              disabled={processingRequestId === req.id}
+                              onClick={() => handleReviewJoinRequest(req.id, 'REJECT')}
+                              className="px-2.5 py-1 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 text-[11px] font-semibold transition cursor-pointer"
+                            >
+                              Từ chối
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 text-[11px]">Đã xử lý</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
       {showAddMember && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
@@ -456,6 +673,17 @@ export default function SpaceMembersPage() {
           groupId={group.id}
           groupName={group.name}
           onMembersAdded={() => loadGroup()}
+        />
+      )}
+
+      {/* Excel Student Import Modal */}
+      {showExcelImport && (
+        <ExcelStudentImportModal
+          open={showExcelImport}
+          onClose={() => setShowExcelImport(false)}
+          groupId={group.id}
+          groupName={group.name}
+          onSuccess={() => loadGroup()}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { PublicPaymentCard, PublicInvoiceData } from '@/components/payments/PublicPaymentCard';
 import { GraduationCap, Search, AlertCircle, RefreshCw, ChevronRight } from 'lucide-react';
@@ -17,7 +17,7 @@ interface GroupData {
   members: Array<{ id: string; name: string }>;
 }
 
-export default function PublicPortalPage() {
+function PublicPortalContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const slug = params?.slug as string;
@@ -254,12 +254,20 @@ export default function PublicPortalPage() {
                 }}
                 className="text-xs font-semibold text-slate-500 hover:text-slate-800 underline transition"
               >
-                ← Chọn học viên khác
+                Chọn học viên khác
               </button>
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+export default function PublicPortalPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-400">Đang tải trang thanh toán...</div>}>
+      <PublicPortalContent />
+    </Suspense>
   );
 }

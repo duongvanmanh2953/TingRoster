@@ -274,16 +274,9 @@ export default function HomePage() {
           
           {/* Left Column: Headlines & High-Converting CTAs */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
-              <span className="w-2 h-2 rounded-full bg-[#2538D9] animate-pulse" />
-              <span>Nền tảng Điểm danh & Thu phí tự động số 1</span>
-            </div>
-
-            <h1 className="hero-headline text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.12]">
+            <h1 className="hero-headline text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-tight leading-[1.15]">
               Quản lý gọn hơn. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2538D9] via-[#4353EB] to-[#6D5CE8]">
-                Thu phí rõ ràng.
-              </span> <br />
+              Thu phí rõ ràng. <br />
               Đối soát dễ dàng.
             </h1>
 
@@ -297,28 +290,28 @@ export default function HomePage() {
                 type="button"
                 onClick={handleInstantDemoLogin}
                 disabled={isDemoLoggingIn}
-                className="px-6 py-3.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#2538D9]/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
+                className="px-6 py-3.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#2538D9]/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] cursor-pointer whitespace-nowrap"
               >
                 {isDemoLoggingIn ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Đang khởi tạo phiên demo...</span>
+                    <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
+                    <span>Đang khởi tạo...</span>
                   </>
                 ) : (
                   <>
-                    <Zap className="w-4 h-4 fill-current text-yellow-300" />
-                    <span>Vào Dashboard ngay (Demo 1-Click)</span>
-                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                    <Zap className="w-4 h-4 fill-current text-yellow-300 shrink-0" />
+                    <span>Trải nghiệm Demo ngay</span>
+                    <ArrowRight className="w-4 h-4 stroke-[2.5] shrink-0" />
                   </>
                 )}
               </button>
 
               <Link
                 href="/login"
-                className="px-5 py-3.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-[#E4E7EC] dark:border-slate-700 text-[#101828] dark:text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2"
+                className="px-5 py-3.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-[#E4E7EC] dark:border-slate-700 text-[#101828] dark:text-white font-bold text-xs sm:text-sm shadow-xs transition-all flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <LogIn className="w-4 h-4 text-[#2538D9] dark:text-indigo-400" />
-                <span>Đăng nhập tài khoản</span>
+                <LogIn className="w-4 h-4 text-[#2538D9] dark:text-indigo-400 shrink-0" />
+                <span>Đăng nhập</span>
               </Link>
             </div>
 
@@ -550,7 +543,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-10 space-y-2">
-            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Tính năng cốt lõi</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828] dark:text-white tracking-tight">
               Tất cả những gì bạn cần để vận hành thảnh thơi
             </h2>
@@ -614,10 +606,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2538D9]/10 dark:bg-[#2538D9]/20 border border-[#2538D9]/20 text-xs font-bold text-[#2538D9] dark:text-indigo-300">
-              <Laptop className="w-3.5 h-3.5" />
-              <span>Hệ sinh thái Đa thiết bị Đồng bộ Thời gian thực</span>
-            </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
               Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile
             </h2>
@@ -639,7 +627,7 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19]/90 via-[#0B0F19]/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
                 <div className="max-w-2xl space-y-2">
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white inline-block uppercase tracking-wider">
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white inline-block">
                     Đồng bộ 2 chiều tức thì
                   </span>
                   <h3 className="text-xl sm:text-3xl font-black text-white">
@@ -792,7 +780,6 @@ export default function HomePage() {
       {/* 3 Industry Personas Deep-Dive (Interactive Tabs) */}
       <section id="doi-tuong" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-          <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Đối tượng sử dụng</span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
             Tối ưu hóa chuyên sâu cho từng mô hình
           </h2>
@@ -1061,7 +1048,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-indigo-400 tracking-wider uppercase">Tính toán hiệu quả đầu tư</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               TingRoster giúp bạn tiết kiệm bao nhiêu?
             </h2>
@@ -1138,10 +1124,10 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleInstantDemoLogin}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#2538D9] to-[#6D5CE8] hover:from-[#1E2DB8] hover:to-[#5B4BD8] text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#2538D9]/25 transition-all flex items-center justify-center gap-2 mx-auto cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#2538D9] to-[#6D5CE8] hover:from-[#1E2DB8] hover:to-[#5B4BD8] text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#2538D9]/25 transition-all flex items-center justify-center gap-2 mx-auto cursor-pointer whitespace-nowrap"
               >
-                <Zap className="w-4 h-4 fill-current text-yellow-300" />
-                <span>Bắt đầu tiết kiệm thời gian ngay hôm nay (Dùng thử miễn phí)</span>
+                <Zap className="w-4 h-4 fill-current text-yellow-300 shrink-0" />
+                <span>Trải nghiệm dùng thử miễn phí</span>
               </button>
             </div>
 
@@ -1153,7 +1139,7 @@ export default function HomePage() {
       {/* Supported Bank Network Showcase */}
       <section className="py-12 bg-white dark:bg-slate-900 border-b border-[#E4E7EC] dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <p className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase tracking-wider">
+          <p className="text-xs font-semibold text-[#475467] dark:text-slate-400">
             Tương thích trực tiếp với hệ sinh thái ngân hàng Napas 24/7 & Ví điện tử
           </p>
           
@@ -1180,7 +1166,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Quy trình đơn giản</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
               Bắt đầu vận hành chỉ trong 3 phút
             </h2>
@@ -1243,7 +1228,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Bảo mật & Phân quyền</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
               An toàn tài chính & Phân quyền chặt chẽ
             </h2>
@@ -1257,7 +1241,7 @@ export default function HomePage() {
             {/* Role: Owner */}
             <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white">Chủ sở hữu (Owner)</span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-[#2538D9] text-white">Chủ sở hữu</span>
                 <ShieldCheck className="w-5 h-5 text-[#2538D9]" />
               </div>
               <h4 className="text-sm font-bold text-[#101828] dark:text-white">Toàn quyền Quản trị & Tài chính</h4>
@@ -1271,7 +1255,7 @@ export default function HomePage() {
             {/* Role: Staff / Teacher */}
             <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-violet-600 text-white">Giáo viên / Nhân viên (Staff)</span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-violet-600 text-white">Giáo viên & Nhân viên</span>
                 <Users2 className="w-5 h-5 text-violet-600" />
               </div>
               <h4 className="text-sm font-bold text-[#101828] dark:text-white">Vận hành Hiện trường & Điểm danh</h4>
@@ -1285,7 +1269,7 @@ export default function HomePage() {
             {/* Role: Member / Parent */}
             <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-600 text-white">Thành viên / Phụ huynh (Portal)</span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-600 text-white">Phụ huynh & Học viên</span>
                 <Lock className="w-5 h-5 text-emerald-600" />
               </div>
               <h4 className="text-sm font-bold text-[#101828] dark:text-white">Cổng Tra cứu Minh bạch Riêng tư</h4>
@@ -1304,7 +1288,6 @@ export default function HomePage() {
       {/* Pricing / Bảng giá minh bạch */}
       <section id="bang-gia" className="py-16 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 tracking-wider uppercase">Bảng giá minh bạch</span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-[#101828] dark:text-white tracking-tight">
             Gói dịch vụ phù hợp mọi quy mô
           </h2>
@@ -1318,7 +1301,7 @@ export default function HomePage() {
           {/* Free Starter */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-[#E4E7EC] dark:border-slate-700 p-6 lg:p-8 flex flex-col justify-between">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#475467] dark:text-slate-400 uppercase">Khởi đầu</span>
+              <span className="text-xs font-bold text-[#475467] dark:text-slate-400">Gói Khởi đầu</span>
               <h3 className="text-2xl font-black text-[#101828] dark:text-white">Miễn phí</h3>
               <p className="text-xs text-[#475467] dark:text-slate-400">Cho giáo viên mới hoặc nhóm hoạt động dưới 25 thành viên.</p>
               <div className="border-t border-[#E4E7EC] dark:border-slate-700 pt-4 space-y-2 text-xs text-[#475467] dark:text-slate-300">
@@ -1329,7 +1312,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white flex items-center justify-center">
+              <Link href="/onboarding" className="w-full py-2.5 rounded-xl border border-[#E4E7EC] dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold text-[#101828] dark:text-white flex items-center justify-center whitespace-nowrap">
                 Bắt đầu ngay
               </Link>
             </div>
@@ -1337,11 +1320,11 @@ export default function HomePage() {
 
           {/* Pro Plan */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-[#2538D9] p-6 lg:p-8 relative shadow-xl flex flex-col justify-between">
-            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#2538D9] text-white text-[10px] font-bold">
+            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#2538D9] text-white text-[10px] font-bold whitespace-nowrap">
               Khuyên dùng
             </div>
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 uppercase">Chuyên nghiệp (Pro)</span>
+              <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400">Gói Chuyên nghiệp</span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black text-[#101828] dark:text-white">199.000 đ</span>
                 <span className="text-xs text-[#475467] dark:text-slate-400">/tháng</span>
@@ -1359,7 +1342,7 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleInstantDemoLogin}
-                className="w-full py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold flex items-center justify-center shadow-md shadow-[#2538D9]/25 cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold flex items-center justify-center shadow-md shadow-[#2538D9]/25 cursor-pointer whitespace-nowrap"
               >
                 Dùng thử Pro 14 ngày
               </button>
@@ -1368,11 +1351,11 @@ export default function HomePage() {
 
           {/* Enterprise */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-[#6D5CE8] p-6 lg:p-8 relative shadow-lg flex flex-col justify-between">
-            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold">
+            <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold whitespace-nowrap">
               Đa cơ sở & Chuỗi
             </div>
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#6D5CE8] dark:text-violet-400 uppercase">Doanh nghiệp (Enterprise)</span>
+              <span className="text-xs font-bold text-[#6D5CE8] dark:text-violet-400">Gói Doanh nghiệp</span>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black text-[#101828] dark:text-white">499.000 đ</span>
                 <span className="text-xs text-[#475467] dark:text-slate-400">/tháng</span>
@@ -1386,7 +1369,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="pt-6">
-              <Link href="/onboarding" className="w-full py-2.5 rounded-xl bg-[#6D5CE8] hover:bg-[#5B4BD8] text-xs font-bold text-white flex items-center justify-center shadow-md shadow-[#6D5CE8]/20 transition-all">
+              <Link href="/onboarding" className="w-full py-2.5 rounded-xl bg-[#6D5CE8] hover:bg-[#5B4BD8] text-xs font-bold text-white flex items-center justify-center shadow-md shadow-[#6D5CE8]/20 transition-all whitespace-nowrap">
                 Đăng ký gói Enterprise
               </Link>
             </div>

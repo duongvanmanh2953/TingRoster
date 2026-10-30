@@ -144,7 +144,7 @@ export default function WorkflowsPage() {
 
       {/* Template Selector Cards */}
       <div className="space-y-2">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Chọn mẫu quy trình khởi đầu (Template)</h2>
+        <h2 className="text-xs font-semibold text-slate-500 dark:text-slate-400">Chọn mẫu quy trình mẫu</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {templates.map((tpl) => {
             const isSelected = selectedTemplate === tpl.id;

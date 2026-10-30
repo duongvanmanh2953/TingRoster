@@ -14,7 +14,8 @@ import {
   BarChart3,
   ArrowRightLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  FileText
 } from 'lucide-react';
 import { SpaceNavHeader } from '@/components/spaces/SpaceNavHeader';
 import { parseEnabledModules } from '@/lib/spaces/constants';
@@ -196,6 +197,24 @@ export default function SpaceDashboardPage() {
               <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
             </Link>
           )}
+
+          <Link
+            href={`/groups/${group.id}/contracts`}
+            className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all flex items-center justify-between group shadow-2xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                  Hợp Đồng & Chữ Ký Điện Tử
+                </span>
+                <span className="text-[10px] text-slate-400">Xuất Word & số hóa OCR</span>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+          </Link>
 
           <Link
             href={`/groups/${group.id}/settings`}

@@ -24,8 +24,10 @@ import {
   Check,
   ChevronLeft,
   Smile,
-  Edit2
+  Edit2,
+  FileSpreadsheet
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -37,6 +39,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Menu from '@mui/material/Menu';
 import { Avatar, AvatarPickerModal, GenderType, AgeGroupType } from '@/components/common/Avatar';
 import { TingSelect } from '@/components/common/Select';
+import { ExcelStudentImportModal } from '@/components/members/ExcelStudentImportModal';
 
 interface MemberItem {
   id: string;
@@ -97,6 +100,9 @@ export default function MembersPage() {
 
   // Selection
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
+
+  // Excel Bulk Import Modal
+  const [showExcelImport, setShowExcelImport] = useState(false);
 
   // Action Menu
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -246,6 +252,33 @@ export default function MembersPage() {
   }).length;
   const paidCount = totalCount - unpaidCount;
 
+  // Real Excel Export Handler
+  const handleExportExcel = () => {
+    if (members.length === 0) {
+      alert('Chưa có học viên nào để xuất Excel');
+      return;
+    }
+    const exportData = members.map((m, idx) => ({
+      'STT': idx + 1,
+      'Mã học viên': `TR-MEMBER-${m.id}`,
+      'Họ và tên': m.name,
+      'Số điện thoại': m.phone || '—',
+      'Người giám hộ / Phụ huynh': m.parentName || '—',
+      'Không gian / Lớp học': m.group.name,
+      'Trạng thái': m.status === 'ACTIVE' ? 'Đang hoạt động' : 'Tạm ngưng',
+      'Tình trạng học phí': m.invoices?.[0]?.status === 'PAID'
+        ? 'Đã đóng'
+        : m.invoices?.[0]?.status === 'PARTIAL'
+        ? 'Đóng thiếu'
+        : 'Chưa đóng',
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'DanhSachHocVien');
+    worksheet['!cols'] = [{ wch: 6 }, { wch: 22 }, { wch: 24 }, { wch: 16 }, { wch: 26 }, { wch: 24 }, { wch: 16 }, { wch: 18 }];
+    XLSX.writeFile(workbook, `TingRoster_Danh_Sach_Hoc_Vien_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   return (
     <div className="w-full space-y-5 pb-12">
       {/* 1. Header Toolbar */}
@@ -266,16 +299,27 @@ export default function MembersPage() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => alert('Đã xuất danh sách thành viên ra file Excel!')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-[#101828] dark:text-[#F8FAFC] shadow-xs"
+            type="button"
+            onClick={handleExportExcel}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-[#101828] dark:text-[#F8FAFC] shadow-xs cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>Xuất Excel</span>
           </button>
 
           <button
+            type="button"
+            onClick={() => setShowExcelImport(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100/60 text-xs font-bold text-[#2538D9] dark:text-blue-300 shadow-xs cursor-pointer"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Nhập Excel</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-xs transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm học viên</span>
@@ -392,7 +436,7 @@ export default function MembersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E4E7EC] dark:border-[#1E293B] text-slate-600 dark:text-slate-400 font-bold text-[11px] uppercase tracking-wider">
+              <thead className="bg-[#F8FAFC] dark:bg-slate-800/60 border-b border-[#E4E7EC] dark:border-[#1E293B] text-slate-600 dark:text-slate-400 font-semibold text-xs">
                 <tr>
                   <th className="py-3 px-4 w-10">
                     <input
@@ -722,6 +766,23 @@ export default function MembersPage() {
           currentGender={(editingMember.gender as GenderType) || 'OTHER'}
           currentAgeGroup={(editingMember.ageGroup as AgeGroupType) || 'TEEN'}
           onSelect={handleUpdateAvatarForMember}
+        />
+      )}
+
+      {/* 7. Excel Student Bulk Import Modal */}
+      {showExcelImport && (
+        <ExcelStudentImportModal
+          open={showExcelImport}
+          onClose={() => setShowExcelImport(false)}
+          groupId={selectedGroupId || targetGroupId || groups[0]?.id || ''}
+          groupName={
+            groups.find((g) => g.id === (selectedGroupId || targetGroupId))?.name ||
+            groups[0]?.name ||
+            'Không gian hiện tại'
+          }
+          onSuccess={() => {
+            loadMembers();
+          }}
         />
       )}
     </div>

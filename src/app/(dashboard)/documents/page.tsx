@@ -124,9 +124,6 @@ export default function DocumentCenterPage() {
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Hóa đơn, Chứng từ & Biên nhận
             </h1>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#3344D6] text-white uppercase tracking-wider">
-              Document Center
-            </span>
           </div>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
             Quản lý tập trung các biên nhận thu tiền nội bộ, đối soát giao dịch và kết nối nhà cung cấp hóa đơn điện tử.

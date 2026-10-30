@@ -553,8 +553,8 @@ export default function PlatformAdminPage() {
                   {/* Card 1: Warning / Pending Top-up */}
                   <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 space-y-2.5 transition-all hover:border-amber-400">
                     <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80">
-                        Đơn nạp ví PENDING
+                      <span className="inline-flex items-center whitespace-nowrap select-none px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80">
+                        Đơn nạp ví chờ duyệt
                       </span>
                       <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold">&gt; 30 phút</span>
                     </div>
@@ -574,11 +574,11 @@ export default function PlatformAdminPage() {
                     </button>
                   </div>
 
-                  {/* Card 2: Neutral / Info Trial Expiry (Clean Slate, no blue-on-blue!) */}
+                  {/* Card 2: Neutral / Info Trial Expiry */}
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 space-y-2.5 transition-all hover:border-indigo-400">
                     <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80">
-                        Trial Sắp hết hạn
+                      <span className="inline-flex items-center whitespace-nowrap select-none px-2 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80">
+                        Dùng thử sắp hết hạn
                       </span>
                       <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold">5 cơ sở (&le; 5 ngày)</span>
                     </div>
@@ -593,7 +593,7 @@ export default function PlatformAdminPage() {
                       onClick={() => setActiveTab('TRIALS')}
                       className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 hover:underline flex items-center gap-1 pt-1"
                     >
-                      <span>Xem danh sách Trial</span>
+                      <span>Xem danh sách dùng thử</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -601,8 +601,8 @@ export default function PlatformAdminPage() {
                   {/* Card 3: Danger / Ticket */}
                   <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 space-y-2.5 transition-all hover:border-rose-400">
                     <div className="flex items-center justify-between">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/80">
-                        Ticket Hỗ trợ mới
+                      <span className="inline-flex items-center whitespace-nowrap select-none px-2 py-0.5 rounded-md text-xs font-semibold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/80">
+                        Yêu cầu hỗ trợ mới
                       </span>
                       <span className="text-[11px] text-rose-700 dark:text-rose-400 font-bold">Ưu tiên cao</span>
                     </div>

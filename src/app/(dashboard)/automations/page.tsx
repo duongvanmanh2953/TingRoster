@@ -455,17 +455,13 @@ export default function AutomationsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E4E7EC] dark:border-[#1E293B]">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase text-[#2538D9] dark:text-indigo-400 tracking-wider flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5" />
-                Interactive Workflow Canvas
-              </span>
-              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                {activePipeline.steps.length} Nodes
+              <h2 className="text-base sm:text-lg font-bold text-[#101828] dark:text-[#F8FAFC]">
+                {activePipeline.name}
+              </h2>
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                {activePipeline.steps.length} bước
               </span>
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-[#101828] dark:text-[#F8FAFC]">
-              {activePipeline.name}
-            </h2>
             <p className="text-xs text-[#475467] dark:text-slate-400 max-w-2xl leading-relaxed">
               {activePipeline.desc}
             </p>
@@ -523,7 +519,7 @@ export default function AutomationsPage() {
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2.5">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        <span className="inline-flex items-center whitespace-nowrap select-none text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                           {step.badge}
                         </span>
 
@@ -633,7 +629,7 @@ export default function AutomationsPage() {
       {/* 3. Managed Rules List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <h3 className="text-xs font-bold uppercase text-[#101828] dark:text-[#F8FAFC] tracking-wider">
+          <h3 className="text-xs font-bold text-[#101828] dark:text-[#F8FAFC]">
             Danh sách kịch bản đang vận hành ({rules.length})
           </h3>
           <button

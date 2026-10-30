@@ -100,7 +100,7 @@ export function LegalPrintableReconciliationReport({
             {/* National Header / Facility Header */}
             <div className="grid grid-cols-12 gap-2 pb-4 border-b border-slate-300 print:border-black text-xs">
               <div className="col-span-6 space-y-0.5">
-                <div className="font-bold uppercase tracking-wider text-[13px]">{facilityName}</div>
+                <div className="font-bold uppercase text-[13px]">{facilityName}</div>
                 <div>Đơn vị: Bộ phận Quản lý & Thu học phí / Tiền phòng</div>
                 <div>Địa chỉ: Hà Nội / TP. Hồ Chí Minh</div>
               </div>
@@ -116,7 +116,7 @@ export function LegalPrintableReconciliationReport({
 
             {/* Report Title */}
             <div className="text-center py-5 space-y-1">
-              <h1 className="text-xl font-bold uppercase tracking-wide">{reportTitle}</h1>
+              <h1 className="text-xl font-bold uppercase">{reportTitle}</h1>
               <div className="text-xs font-semibold font-sans text-slate-700 print:text-black">
                 Kỳ đối soát: {periodText} (Từ ngày 01/{month}/{year} đến ngày {day}/{month}/{year})
               </div>

@@ -286,7 +286,7 @@ export function AttendanceCalendarHeatmap({
       {/* 2. Monthly Quick KPI Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E4E7EC] dark:bg-[#1E293B] border-b border-[#E4E7EC] dark:border-[#1E293B]">
         <div className="bg-white dark:bg-[#111726] p-3 text-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
             {locale === 'en' ? 'Average Attendance' : 'Tỷ lệ Chuyên cần'}
           </span>
           <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
@@ -295,7 +295,7 @@ export function AttendanceCalendarHeatmap({
         </div>
 
         <div className="bg-white dark:bg-[#111726] p-3 text-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
             {locale === 'en' ? 'Conducted Sessions' : 'Số buổi đã dạy'}
           </span>
           <span className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
@@ -304,7 +304,7 @@ export function AttendanceCalendarHeatmap({
         </div>
 
         <div className="bg-white dark:bg-[#111726] p-3 text-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
             {locale === 'en' ? 'Total Check-ins' : 'Lượt có mặt'}
           </span>
           <span className="text-xl font-bold text-[#2538D9] dark:text-indigo-400 tabular-nums">
@@ -313,7 +313,7 @@ export function AttendanceCalendarHeatmap({
         </div>
 
         <div className="bg-white dark:bg-[#111726] p-3 text-center">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
             {locale === 'en' ? 'Total Absences' : 'Tổng lượt vắng'}
           </span>
           <span className="text-xl font-bold text-rose-600 dark:text-rose-400 tabular-nums">
@@ -329,7 +329,7 @@ export function AttendanceCalendarHeatmap({
           {weekHeaders.map((w, idx) => (
             <div
               key={idx}
-              className={`py-1.5 text-xs font-bold uppercase tracking-wider ${
+              className={`py-1.5 text-xs font-semibold ${
                 idx >= 5 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'
               }`}
             >
@@ -511,7 +511,7 @@ export function AttendanceCalendarHeatmap({
 
                     {sess.absentees.length > 0 ? (
                       <div>
-                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-1.5">
+                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 block mb-1.5">
                           Danh sách học viên vắng:
                         </span>
                         <div className="space-y-1.5">

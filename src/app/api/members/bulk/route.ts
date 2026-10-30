@@ -8,12 +8,15 @@ export const dynamic = 'force-dynamic';
 
 const BulkImportSchema = z.object({
   groupId: z.string().min(1, 'Thiếu nhóm học viên'),
-  fileName: z.string().default('ai_ocr_import.xlsx'),
+  fileName: z.string().default('excel_import.xlsx'),
+  action: z.enum(['PREVIEW', 'COMMIT']).default('COMMIT'),
+  isAiOcr: z.boolean().default(false),
   members: z.array(
     z.object({
       name: z.string().min(1, 'Tên không được để trống'),
       phone: z.string().optional().nullable(),
       parentName: z.string().optional().nullable(),
+      note: z.string().optional().nullable(),
     })
   ).min(1, 'Danh sách học viên rỗng'),
 });
@@ -37,58 +40,138 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Không tìm thấy nhóm học viên' }, { status: 404 });
     }
 
+    // Query existing members in this group to identify duplicates
+    const existingMembers = await prisma.member.findMany({
+      where: { groupId: parsed.groupId },
+      select: { id: true, name: true, phone: true },
+    });
+
+    const existingPhones = new Set(
+      existingMembers.map((m) => m.phone).filter((p): p is string => Boolean(p))
+    );
+    const existingNames = new Set(existingMembers.map((m) => m.name.toLowerCase().trim()));
+
+    // Analyze rows for duplicate detection
+    const seenBatchPhones = new Set<string>();
+    const analyzedRows = parsed.members.map((m, idx) => {
+      const trimmedName = m.name.trim();
+      const trimmedPhone = m.phone?.trim() || null;
+      const issues: string[] = [];
+
+      if (!trimmedName || trimmedName.length < 2) {
+        issues.push('Tên học viên quá ngắn hoặc để trống');
+      }
+
+      let isDuplicate = false;
+      if (trimmedPhone) {
+        if (existingPhones.has(trimmedPhone)) {
+          isDuplicate = true;
+          issues.push(`Số điện thoại ${trimmedPhone} đã tồn tại trong nhóm`);
+        } else if (seenBatchPhones.has(trimmedPhone)) {
+          isDuplicate = true;
+          issues.push(`Số điện thoại ${trimmedPhone} trùng lặp trong file tải lên`);
+        } else {
+          seenBatchPhones.add(trimmedPhone);
+        }
+      } else if (existingNames.has(trimmedName.toLowerCase())) {
+        isDuplicate = true;
+        issues.push(`Học viên tên "${trimmedName}" đã có trong nhóm`);
+      }
+
+      return {
+        index: idx + 1,
+        name: trimmedName,
+        phone: trimmedPhone,
+        parentName: m.parentName?.trim() || null,
+        note: m.note?.trim() || null,
+        isValid: issues.length === 0,
+        isDuplicate,
+        errors: issues,
+      };
+    });
+
+    const validRows = analyzedRows.filter((r) => r.isValid);
+    const duplicateRows = analyzedRows.filter((r) => r.isDuplicate);
+    const errorRows = analyzedRows.filter((r) => !r.isValid && !r.isDuplicate);
+
+    // If PREVIEW mode: do not mutate database, return validated report
+    if (parsed.action === 'PREVIEW') {
+      return NextResponse.json({
+        success: true,
+        data: {
+          action: 'PREVIEW',
+          groupName: group.name,
+          totalCount: analyzedRows.length,
+          validCount: validRows.length,
+          duplicateCount: duplicateRows.length,
+          errorCount: errorRows.length,
+          estimatedCost: parsed.isAiOcr ? 500 : 0,
+          rows: analyzedRows,
+        },
+      });
+    }
+
+    // COMMIT mode: Idempotently insert valid rows
+    if (validRows.length === 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'Không có học viên hợp lệ nào để nhập (tất cả đều lỗi hoặc đã tồn tại)',
+      }, { status: 400 });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { serviceBalance: true },
     });
 
     const currentBalance = user?.serviceBalance ?? 100000;
-    const ocrCost = 500; // 500đ / lần trích xuất AI OCR
+    // Standard Excel is FREE (0đ). Only AI OCR charges 500đ.
+    const ocrCost = parsed.isAiOcr ? 500 : 0;
     const newBalance = Math.max(0, currentBalance - ocrCost);
 
-    // Atomic transaction: create members, deduct wallet, record ledger, record import job
     const result = await prisma.$transaction(async (tx) => {
       // 1. Create members
       const createdMembers = await Promise.all(
-        parsed.members.map((m) =>
+        validRows.map((m) =>
           tx.member.create({
             data: {
               groupId: parsed.groupId,
-              name: m.name.trim(),
-              phone: m.phone?.trim() || null,
-              parentName: m.parentName?.trim() || null,
+              name: m.name,
+              phone: m.phone,
+              parentName: m.parentName,
             },
           })
         )
       );
 
-      // 2. Update service balance
-      await tx.user.update({
-        where: { id: userId },
-        data: { serviceBalance: newBalance },
-      });
+      // 2. Only if AI OCR: deduct wallet and record ledger
+      if (ocrCost > 0) {
+        await tx.user.update({
+          where: { id: userId },
+          data: { serviceBalance: newBalance },
+        });
 
-      // 3. Create wallet ledger entry
-      await tx.walletLedgerEntry.create({
-        data: {
-          userId,
-          amount: -ocrCost,
-          balanceAfter: newBalance,
-          type: LedgerType.USAGE_AI_OCR,
-          description: `Phí AI OCR trích xuất danh sách: ${parsed.fileName} (${parsed.members.length} thành viên)`,
-          metadata: JSON.stringify({ groupId: parsed.groupId, count: parsed.members.length }),
-        },
-      });
+        await tx.walletLedgerEntry.create({
+          data: {
+            userId,
+            amount: -ocrCost,
+            balanceAfter: newBalance,
+            type: LedgerType.USAGE_AI_OCR,
+            description: `Phí AI OCR trích xuất danh sách: ${parsed.fileName} (${parsed.members.length} thành viên)`,
+            metadata: JSON.stringify({ groupId: parsed.groupId, count: parsed.members.length }),
+          },
+        });
+      }
 
-      // 4. Create AiImportJob
+      // 3. Create AiImportJob record for audit history
       const job = await tx.aiImportJob.create({
         data: {
           userId,
           fileName: parsed.fileName,
-          fileType: parsed.fileName.endsWith('.csv') ? 'CSV' : parsed.fileName.endsWith('.xlsx') ? 'EXCEL' : 'IMAGE',
+          fileType: parsed.fileName.endsWith('.csv') ? 'CSV' : 'EXCEL',
           extractedCount: parsed.members.length,
-          confidenceScore: 97,
-          rawResult: JSON.stringify(parsed.members),
+          confidenceScore: 100,
+          rawResult: JSON.stringify(validRows.map((r) => ({ name: r.name, phone: r.phone }))),
           targetGroupId: parsed.groupId,
           status: 'COMPLETED',
         },
@@ -96,9 +179,16 @@ export async function POST(req: NextRequest) {
 
       return {
         importedCount: createdMembers.length,
+        skippedCount: duplicateRows.length + errorRows.length,
         groupName: group.name,
         jobId: job.id,
         balanceAfter: newBalance,
+        createdMembers: createdMembers.map((m) => ({
+          id: m.id,
+          name: m.name,
+          phone: m.phone,
+          code: `TR-MEMBER-${m.id.slice(-6).toUpperCase()}`,
+        })),
       };
     });
 

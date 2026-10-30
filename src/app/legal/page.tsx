@@ -317,7 +317,7 @@ function LegalContent() {
           {/* Left Navigation: Table of Contents & Zero-Custody Badge */}
           <div className="lg:col-span-1 space-y-4">
             <div className="bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-[#1E293B] rounded-2xl p-4 shadow-xs sticky top-24">
-              <h2 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <h2 className="text-xs font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-[#2538D9]" />
                 <span>Mục Lục Văn Bản</span>
               </h2>

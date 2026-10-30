@@ -239,7 +239,7 @@ export function PaymentStatusDonutChart({
           <span className="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums leading-none">
             {collectionRate}%
           </span>
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mt-1">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
             Đã thu đủ
           </span>
         </div>

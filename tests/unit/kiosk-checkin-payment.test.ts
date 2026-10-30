@@ -37,12 +37,12 @@ describe('Kiosk Check-in & Self-Service Payment Business Logic', () => {
     expect(remainingDue).toBe(300000);
 
     // Policy 1: ALLOW_ALL_NOTIFY_DUE -> can check in, shows due
-    const policy1 = 'ALLOW_ALL_NOTIFY_DUE';
+    const policy1: string = 'ALLOW_ALL_NOTIFY_DUE';
     const isBlocked1 = policy1 === 'REQUIRE_PAYMENT_BLOCK' && remainingDue > 0;
     expect(isBlocked1).toBe(false);
 
     // Policy 2: REQUIRE_PAYMENT_BLOCK -> blocked until paid
-    const policy2 = 'REQUIRE_PAYMENT_BLOCK';
+    const policy2: string = 'REQUIRE_PAYMENT_BLOCK';
     const isBlocked2 = policy2 === 'REQUIRE_PAYMENT_BLOCK' && remainingDue > 0;
     expect(isBlocked2).toBe(true);
   });

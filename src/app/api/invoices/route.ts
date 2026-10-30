@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
     include: {
       member: { select: { id: true, name: true, phone: true } },
       group: { select: { id: true, name: true, slug: true } },
+      lineItems: true,
     },
     orderBy: { createdAt: 'desc' },
     take: 100,
@@ -92,6 +93,15 @@ export async function POST(req: NextRequest) {
     const paymentCode = await generateUniquePaymentCode();
     const dueDateTime = parsed.dueDate ? new Date(parsed.dueDate) : new Date(Date.now() + 7 * 86400000);
 
+    // Backend verification of amountDue if line items are supplied
+    let finalAmountDue = parsed.amountDue;
+    if (parsed.lineItems && parsed.lineItems.length > 0) {
+      const lineItemsSum = parsed.lineItems.reduce((acc, it) => acc + (it.total || (it.qty * it.unitPrice - (it.discount || 0))), 0);
+      if (lineItemsSum > 0) {
+        finalAmountDue = lineItemsSum;
+      }
+    }
+
     const metadataObj: Record<string, unknown> = {};
     if (parsed.lineItems && parsed.lineItems.length > 0) {
       metadataObj.lineItems = parsed.lineItems;
@@ -108,16 +118,27 @@ export async function POST(req: NextRequest) {
         groupId: parsed.groupId,
         memberId: parsed.memberId,
         title: parsed.title,
-        amountDue: parsed.amountDue,
+        amountDue: finalAmountDue,
         amountPaid: 0,
         paymentCode,
         dueDate: dueDateTime,
         status: 'UNPAID',
         metadata: Object.keys(metadataObj).length > 0 ? JSON.stringify(metadataObj) : null,
+        lineItems: parsed.lineItems && parsed.lineItems.length > 0 ? {
+          create: parsed.lineItems.map((item) => ({
+            title: item.name,
+            quantity: item.qty,
+            unit: item.unit || 'mục',
+            unitPrice: item.unitPrice,
+            amount: item.total || (item.qty * item.unitPrice - (item.discount || 0)),
+            metadata: (item.note || item.discount) ? JSON.stringify({ note: item.note, discount: item.discount || 0 }) : null,
+          })),
+        } : undefined,
       },
       include: {
         member: { select: { id: true, name: true, phone: true } },
         group: { select: { id: true, name: true, slug: true } },
+        lineItems: true,
       },
     });
 

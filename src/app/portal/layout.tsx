@@ -21,7 +21,11 @@ import {
   ChevronRight,
   ShieldCheck,
   GraduationCap,
-  Sparkles
+  Sparkles,
+  QrCode,
+  KeyRound,
+  Camera,
+  Clock
 } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
 import { Avatar } from '@/components/common/Avatar';
@@ -53,15 +57,21 @@ const PORTAL_NAV_SECTIONS: NavSection[] = [
     titleEn: 'Learning & Schedule',
     items: [
       { labelVi: 'Tổng quan học tập', labelEn: 'Overview', href: '/portal', icon: LayoutDashboard },
-      { labelVi: 'Lớp học & Phòng trọ', labelEn: 'Classes & Rooms', href: '/portal/groups', icon: Users2 },
+      { labelVi: 'Quét mã QR', labelEn: 'Scan Action QR', href: '/portal/scan', icon: Camera, badge: 'Camera' },
+      { labelVi: 'Mã QR của tôi', labelEn: 'My QR Code', href: '/portal/qr', icon: QrCode },
+      { labelVi: 'Không gian & Nhóm của tôi', labelEn: 'My Spaces & Groups', href: '/portal/groups', icon: Users2 },
+      { labelVi: 'Tham gia không gian', labelEn: 'Join Space', href: '/portal/join', icon: KeyRound },
+      { labelVi: 'Kích hoạt tài khoản', labelEn: 'Claim Account', href: '/portal/claim', icon: ShieldCheck },
       { labelVi: 'Lịch sử điểm danh', labelEn: 'Attendance History', href: '/portal/attendance', icon: CalendarCheck2 },
+      { labelVi: 'Ca làm & Chấm công', labelEn: 'Shifts & Attendance', href: '/portal/shifts', icon: Clock },
     ],
   },
   {
-    titleVi: 'Tài chính & Học phí',
-    titleEn: 'Finance & Tuition',
+    titleVi: 'Tài chính & Pháp lý',
+    titleEn: 'Finance & Legal',
     items: [
       { labelVi: 'Khoản phải đóng', labelEn: 'Tuition & Fees', href: '/portal/fees', icon: Receipt, badge: 'VietQR' },
+      { labelVi: 'Hợp đồng & Ký điện tử', labelEn: 'Contracts & E-Sign', href: '/portal/contracts', icon: FileText, badge: 'E-Sign' },
     ],
   },
   {
@@ -84,9 +94,12 @@ export default function PortalLayout({ children }: PortalNavProps) {
 
   const getPageTitle = (path: string, loc: string): string => {
     if (path === '/portal') return loc === 'en' ? 'Student Portal - Overview' : 'Cổng Học Viên - Tổng quan';
-    if (path.startsWith('/portal/groups')) return loc === 'en' ? 'My Classes & Rooms' : 'Lớp học & Phòng trọ';
+    if (path === '/portal/scan') return loc === 'en' ? 'Scan Action QR' : 'Quét Mã QR Hành Động';
+    if (path === '/portal/qr') return loc === 'en' ? 'My Check-in QR' : 'Mã QR Điểm Danh Cá Nhân';
+    if (path.startsWith('/portal/groups')) return loc === 'en' ? 'My Spaces & Groups' : 'Không gian & Nhóm của tôi';
     if (path.startsWith('/portal/fees')) return loc === 'en' ? 'Tuition & Payment' : 'Khoản phải đóng & Học phí';
     if (path.startsWith('/portal/attendance')) return loc === 'en' ? 'Attendance History' : 'Lịch sử Điểm danh';
+    if (path.startsWith('/portal/shifts')) return loc === 'en' ? 'Work Shifts' : 'Ca làm & Chấm công';
     if (path.startsWith('/portal/chat')) return loc === 'en' ? 'Chat & Communication' : 'Tin nhắn & Trao đổi';
     if (path.startsWith('/portal/profile')) return loc === 'en' ? 'My Profile' : 'Hồ sơ cá nhân';
     if (path.startsWith('/portal/help')) return loc === 'en' ? 'Help & Guides' : 'Hướng dẫn & Hỏi đáp';
@@ -108,7 +121,7 @@ export default function PortalLayout({ children }: PortalNavProps) {
     <nav className="flex-1 px-3 space-y-4 overflow-y-auto py-2">
       {PORTAL_NAV_SECTIONS.map((section) => (
         <div key={section.titleVi} className="space-y-1">
-          <div className="px-2 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <div className="px-2 pt-2 pb-1 text-xs font-semibold text-slate-400 dark:text-slate-500">
             {locale === 'en' ? section.titleEn : section.titleVi}
           </div>
           {section.items.map((item) => {
@@ -200,22 +213,11 @@ export default function PortalLayout({ children }: PortalNavProps) {
           </Link>
 
           <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-1">
-              <LanguageSwitch variant="icon" />
-              <button
-                type="button"
-                onClick={toggleTheme}
-                title={isDark ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
-                className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-[#111827] dark:hover:text-white flex items-center justify-center transition-colors bg-white/80 dark:bg-slate-900/80"
-              >
-                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
-              </button>
-            </div>
             <button
               type="button"
               onClick={handleLogout}
               title="Đăng xuất"
-              className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors bg-white/80 dark:bg-slate-900/80"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors bg-white/80 dark:bg-slate-900/80"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -318,11 +320,77 @@ export default function PortalLayout({ children }: PortalNavProps) {
         </header>
 
         {/* Scrollable Page Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
           <div className="max-w-6xl mx-auto">
             {children}
           </div>
         </main>
+
+        {/* Mobile Bottom Navigation Bar (Section 8.1 & 16 of Architecture) */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#111726]/95 border-t border-slate-200 dark:border-slate-800 backdrop-blur-md px-3 py-1.5 flex items-center justify-around shadow-lg">
+          <Link
+            href="/portal"
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
+              pathname === '/portal'
+                ? 'text-[#2538D9] dark:text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            <LayoutDashboard className="w-5 h-5 mb-0.5" />
+            <span>Tổng quan</span>
+          </Link>
+
+          <Link
+            href="/portal/fees"
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
+              pathname.startsWith('/portal/fees')
+                ? 'text-[#2538D9] dark:text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            <Receipt className="w-5 h-5 mb-0.5" />
+            <span>Học phí</span>
+          </Link>
+
+          {/* Central Highlighted QR Button */}
+          <Link
+            href="/portal/scan"
+            className="flex flex-col items-center justify-center -mt-4"
+          >
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-transform active:scale-95 ${
+              pathname === '/portal/scan' || pathname === '/portal/qr'
+                ? 'bg-gradient-to-tr from-[#2538D9] to-[#6D5CE8] text-white ring-4 ring-[#2538D9]/20 shadow-[#2538D9]/40'
+                : 'bg-[#2538D9] text-white shadow-[#2538D9]/30'
+            }`}>
+              <Camera className="w-6 h-6" />
+            </div>
+            <span className="text-[10px] font-bold text-[#2538D9] dark:text-indigo-400 mt-1">Quét QR</span>
+          </Link>
+
+          <Link
+            href="/portal/attendance"
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
+              pathname.startsWith('/portal/attendance')
+                ? 'text-[#2538D9] dark:text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            <CalendarCheck2 className="w-5 h-5 mb-0.5" />
+            <span>Điểm danh</span>
+          </Link>
+
+          <Link
+            href="/portal/profile"
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
+              pathname.startsWith('/portal/profile')
+                ? 'text-[#2538D9] dark:text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            <UserCheck className="w-5 h-5 mb-0.5" />
+            <span>Cá nhân</span>
+          </Link>
+        </nav>
       </div>
     </div>
   );

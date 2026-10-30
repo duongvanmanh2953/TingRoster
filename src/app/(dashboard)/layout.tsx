@@ -36,7 +36,8 @@ import {
   Palette,
   Layers,
   ArrowLeft,
-  ArrowRightLeft
+  ArrowRightLeft,
+  AlertTriangle
 } from 'lucide-react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -123,57 +124,34 @@ const NAV_CATEGORIES: NavCategory[] = [
     ],
   },
   {
-    title: 'Vận hành & Quản lý',
-    titleEn: 'Operations & Management',
+    title: 'Không gian quản lý',
+    titleEn: 'Spaces',
     items: [
       {
-        id: 'management',
-        label: 'Quản lý',
-        labelEn: 'Management',
+        id: 'spaces',
+        href: '/groups',
+        label: 'Không gian của tôi',
+        labelEn: 'My Spaces',
         icon: Building2,
-        subItems: [
-          { href: '/groups', label: 'Không gian của tôi', labelEn: 'My Spaces' },
-          { href: '/members', label: 'Thành viên', labelEn: 'Members' },
-          { href: '/attendance', label: 'Lịch & Điểm danh', labelEn: 'Attendance & Schedule', badge: 'Hôm nay', badgeVariant: 'success' },
-          { href: '/workflows', label: 'Quy trình vận hành', labelEn: 'Workflows & Rules' },
-        ],
+        badge: 'Đa cơ sở',
+        badgeVariant: 'brand',
       },
     ],
   },
   {
-    title: 'Tài chính & Thu phí',
-    titleEn: 'Finance & Payments',
-    items: [
-      {
-        id: 'finance',
-        label: 'Tài chính',
-        labelEn: 'Finance',
-        icon: CreditCard,
-        subItems: [
-          { href: '/invoices', label: 'Khoản thu', labelEn: 'Collections' },
-          { href: '/transactions', label: 'Giao dịch VietQR', labelEn: 'VietQR Transactions', live: true },
-          { href: '/documents', label: 'Hóa đơn & Chứng từ', labelEn: 'Receipts & Documents' },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Báo cáo & Phân tích',
-    titleEn: 'Reports & Analytics',
+    title: 'Báo cáo tổng hợp',
+    titleEn: 'Consolidated Reports',
     items: [
       {
         id: 'reports',
-        label: 'Tổng quan báo cáo',
-        labelEn: 'Reports Overview',
+        label: 'Báo cáo hợp nhất',
+        labelEn: 'Consolidated Reports',
         icon: BarChart3,
         subItems: [
           { href: '/reports', label: 'Tổng quan báo cáo', labelEn: 'Report Overview' },
           { href: '/reports/cashflow', label: 'Báo cáo khoản thu', labelEn: 'Collections Report' },
           { href: '/reports/aging', label: 'Báo cáo công nợ', labelEn: 'Debt & Receivables' },
-          { href: '/reports/attendance', label: 'Báo cáo điểm danh', labelEn: 'Attendance Analytics' },
-          { href: '/reports/tax', label: 'Báo cáo thuế TT 40', labelEn: 'Tax Estimate TT 40' },
-          { href: '/reports/reconciliation', label: 'Báo cáo đối soát', labelEn: 'VietQR Reconciliation' },
-          { href: '/export', label: 'Xuất sổ sách kế toán', labelEn: 'Data Export' },
+          { href: '/reports/reconciliation', label: 'Đối soát VietQR', labelEn: 'VietQR Reconciliation' },
         ],
       },
     ],
@@ -195,30 +173,17 @@ const NAV_CATEGORIES: NavCategory[] = [
     ],
   },
   {
-    title: 'Giao tiếp',
-    titleEn: 'Communication',
-    items: [
-      {
-        id: 'notifications',
-        href: '/notifications',
-        label: 'Trung tâm Thông báo',
-        labelEn: 'Notifications',
-        icon: Bell,
-      },
-    ],
-  },
-  {
-    title: 'Cấu hình & Mở rộng',
-    titleEn: 'Settings & Portals',
+    title: 'Tài khoản & Hệ thống',
+    titleEn: 'Account & Ecosystem',
     items: [
       {
         id: 'settings',
-        label: 'Cấu hình & Hệ thống',
+        label: 'Cấu hình & Mở rộng',
         labelEn: 'Settings & Ecosystem',
         icon: Settings,
         subItems: [
-          { href: '/settings', label: 'Cài đặt workspace & VietQR', labelEn: 'Settings' },
-          { href: '/billing', label: 'Gói cước & Số dư', labelEn: 'Billing & Subscriptions' },
+          { href: '/settings', label: 'Cài đặt tài khoản & VietQR', labelEn: 'Account Settings' },
+          { href: '/billing', label: 'Gói cước & Đăng ký', labelEn: 'Billing & Subscriptions' },
           { href: '/help', label: 'Trợ giúp & Hướng dẫn', labelEn: 'Help & Guides' },
           { href: '/portal', label: 'Cổng Học Viên (Portal)', labelEn: 'Member Portal', badge: 'Học viên', badgeVariant: 'neutral' },
           { href: '/kiosk', label: 'Kiosk quét QR tại sân', labelEn: 'QR Kiosk Check-in', external: true },
@@ -274,6 +239,22 @@ export default function DashboardLayout({
     if (path.startsWith('/groups/')) {
       const spaceTitle = activeSpace?.name || (loc === 'en' ? 'Space' : 'Không gian');
       if (path.endsWith('/members')) return `${spaceTitle} • ${loc === 'en' ? 'Members' : 'Thành viên'}`;
+      if (path.endsWith('/attendance')) return `${spaceTitle} • ${loc === 'en' ? 'Attendance' : 'Lịch & Điểm danh'}`;
+      if (path.endsWith('/classes')) return `${spaceTitle} • ${loc === 'en' ? 'Classes & Courses' : 'Lớp học & Khóa học'}`;
+      if (path.endsWith('/bookings')) return `${spaceTitle} • ${loc === 'en' ? 'Bookings & CI/CO' : 'Đặt sân & CI/CO'}`;
+      if (path.endsWith('/rentals')) return `${spaceTitle} • ${loc === 'en' ? 'Rental Contracts' : 'Hợp đồng thuê phòng'}`;
+      if (path.endsWith('/services')) return `${spaceTitle} • ${loc === 'en' ? 'Services & Pricing' : 'Dịch vụ & Bảng giá'}`;
+      if (path.endsWith('/meters')) return `${spaceTitle} • ${loc === 'en' ? 'Meters & Utilities' : 'Điện & Nước'}`;
+      if (path.endsWith('/invoices')) return `${spaceTitle} • ${loc === 'en' ? 'Collections' : 'Khoản thu'}`;
+      if (path.endsWith('/transactions')) return `${spaceTitle} • ${loc === 'en' ? 'Transactions' : 'Giao dịch VietQR'}`;
+      if (path.endsWith('/reports/financial')) return `${spaceTitle} • ${loc === 'en' ? 'Financial Report' : 'Báo cáo tài chính'}`;
+      if (path.endsWith('/reports/debt')) return `${spaceTitle} • ${loc === 'en' ? 'Debt Aging Report' : 'Báo cáo công nợ'}`;
+      if (path.endsWith('/reports/attendance')) return `${spaceTitle} • ${loc === 'en' ? 'Attendance Analytics' : 'Báo cáo chuyên cần'}`;
+      if (path.endsWith('/reports/services')) return `${spaceTitle} • ${loc === 'en' ? 'Services Performance' : 'Báo cáo dịch vụ'}`;
+      if (path.endsWith('/reports/rentals')) return `${spaceTitle} • ${loc === 'en' ? 'Rentals & Utilities' : 'Báo cáo phòng & điện nước'}`;
+      if (path.endsWith('/reports/sports')) return `${spaceTitle} • ${loc === 'en' ? 'Sports & CI/CO' : 'Báo cáo sân & CI/CO'}`;
+      if (path.endsWith('/reports/education')) return `${spaceTitle} • ${loc === 'en' ? 'Education & Tuition' : 'Báo cáo lớp & học phí'}`;
+      if (path.endsWith('/reports')) return `${spaceTitle} • ${loc === 'en' ? 'Reports' : 'Báo cáo không gian'}`;
       if (path.endsWith('/settings')) return `${spaceTitle} • ${loc === 'en' ? 'Space Info' : 'Thông tin không gian'}`;
       return `${spaceTitle} • ${loc === 'en' ? 'Overview' : 'Tổng quan'}`;
     }
@@ -417,7 +398,7 @@ export default function DashboardLayout({
               }`}
             >
               <ArrowLeft className="w-4 h-4 text-slate-400" />
-              <span>← Không gian của tôi</span>
+              <span>Không gian của tôi</span>
             </Link>
           </div>
 
@@ -451,7 +432,7 @@ export default function DashboardLayout({
           <div className="space-y-3.5">
             {/* TỔNG QUAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+              <div className={`px-2 text-xs font-semibold ${
                 isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Tổng quan
@@ -474,7 +455,7 @@ export default function DashboardLayout({
 
             {/* QUẢN LÝ */}
             <div className="space-y-1">
-              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+              <div className={`px-2 text-xs font-semibold ${
                 isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Quản lý
@@ -499,10 +480,10 @@ export default function DashboardLayout({
 
               {spaceModules.includes('attendance') && (
                 <Link
-                  href={`/attendance?groupId=${currentSpaceId}`}
+                  href={`/groups/${currentSpaceId}/attendance`}
                   onClick={closeDrawer}
                   className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                    pathname.startsWith('/attendance')
+                    pathname === `/groups/${currentSpaceId}/attendance`
                       ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
@@ -513,11 +494,106 @@ export default function DashboardLayout({
                   <span className="truncate">Lịch & Điểm danh</span>
                 </Link>
               )}
+
+              {/* Module đặc thù: Giáo dục */}
+              {activeSpace?.groupType === 'CLASS' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/classes`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/classes`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4 flex-shrink-0 text-blue-400" />
+                  <span className="truncate">Lớp học & Khóa</span>
+                </Link>
+              )}
+
+              {/* Module đặc thù: Thể thao */}
+              {activeSpace?.groupType === 'SPORTS_CLUB' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/bookings`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/bookings`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Tv className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                  <span className="truncate">Đặt sân & CI/CO</span>
+                </Link>
+              )}
+
+              {/* Module đặc thù: Cho thuê */}
+              {activeSpace?.groupType === 'RENTAL' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/rentals`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/rentals`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Building2 className="w-4 h-4 flex-shrink-0 text-indigo-400" />
+                  <span className="truncate">Phòng & Hợp đồng</span>
+                </Link>
+              )}
+            </div>
+
+            {/* DỊCH VỤ & BẢNG GIÁ */}
+            <div className="space-y-1">
+              <div className={`px-2 text-xs font-semibold ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Dịch vụ & Bảng giá
+              </div>
+
+              <Link
+                href={`/groups/${currentSpaceId}/services`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/services`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Layers className="w-4 h-4 flex-shrink-0 text-amber-400" />
+                <span className="truncate">Bảng giá dịch vụ</span>
+              </Link>
+
+              {activeSpace?.groupType === 'RENTAL' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/meters`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/meters`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Zap className="w-4 h-4 flex-shrink-0 text-amber-500" />
+                  <span className="truncate">Điện, Nước & Định mức</span>
+                </Link>
+              )}
             </div>
 
             {/* TÀI CHÍNH */}
             <div className="space-y-1">
-              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+              <div className={`px-2 text-xs font-semibold ${
                 isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Tài chính
@@ -525,10 +601,10 @@ export default function DashboardLayout({
 
               {spaceModules.includes('invoices') && (
                 <Link
-                  href={`/invoices?groupId=${currentSpaceId}`}
+                  href={`/groups/${currentSpaceId}/invoices`}
                   onClick={closeDrawer}
                   className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                    pathname.startsWith('/invoices')
+                    pathname === `/groups/${currentSpaceId}/invoices`
                       ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
@@ -541,10 +617,10 @@ export default function DashboardLayout({
               )}
 
               <Link
-                href={`/transactions?groupId=${currentSpaceId}`}
+                href={`/groups/${currentSpaceId}/transactions`}
                 onClick={closeDrawer}
                 className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
-                  pathname.startsWith('/transactions')
+                  pathname === `/groups/${currentSpaceId}/transactions`
                     ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
@@ -554,97 +630,187 @@ export default function DashboardLayout({
                 <ArrowRightLeft className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">Giao dịch VietQR</span>
               </Link>
+
+              <Link
+                href={`/groups/${currentSpaceId}/surcharges`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/surcharges`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 text-amber-500" />
+                <span className="truncate">Phụ thu & Bồi hoàn</span>
+              </Link>
             </div>
 
-            {/* BÁO CÁO */}
+            {/* BÁO CÁO KHÔNG GIAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+              <div className={`px-2 text-xs font-semibold ${
                 isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
               }`}>
-                Báo cáo
+                Báo cáo không gian
               </div>
 
               <Link
-                href={`/reports?groupId=${currentSpaceId}`}
+                href={`/groups/${currentSpaceId}/reports`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  pathname === '/reports'
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/reports`
                     ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                     : isDarkSidebar
-                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <BarChart3 className="w-3.5 h-3.5 flex-shrink-0" />
+                <BarChart3 className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">Tổng quan báo cáo</span>
               </Link>
 
               <Link
-                href={`/reports/cashflow?groupId=${currentSpaceId}`}
+                href={`/groups/${currentSpaceId}/reports/financial`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  pathname.startsWith('/reports/cashflow')
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/reports/financial`
                     ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                     : isDarkSidebar
-                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
-                <span className="truncate">Báo cáo khoản thu</span>
+                <TrendingUp className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                <span className="truncate">Báo cáo tài chính</span>
               </Link>
 
               <Link
-                href={`/reports/aging?groupId=${currentSpaceId}`}
+                href={`/groups/${currentSpaceId}/reports/debt`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  pathname.startsWith('/reports/aging')
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/reports/debt`
                     ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                     : isDarkSidebar
-                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Receipt className="w-3.5 h-3.5 flex-shrink-0" />
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 text-rose-400" />
                 <span className="truncate">Báo cáo công nợ</span>
               </Link>
 
-              {spaceModules.includes('attendance') && (
+              <Link
+                href={`/groups/${currentSpaceId}/reports/attendance`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/reports/attendance`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <CalendarCheck className="w-4 h-4 flex-shrink-0 text-blue-400" />
+                <span className="truncate">Báo cáo chuyên cần</span>
+              </Link>
+
+              <Link
+                href={`/groups/${currentSpaceId}/reports/services`}
+                onClick={closeDrawer}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  pathname === `/groups/${currentSpaceId}/reports/services`
+                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    : isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Layers className="w-4 h-4 flex-shrink-0 text-amber-400" />
+                <span className="truncate">Báo cáo dịch vụ</span>
+              </Link>
+
+              {activeSpace?.groupType === 'RENTAL' && (
                 <Link
-                  href={`/reports/attendance?groupId=${currentSpaceId}`}
+                  href={`/groups/${currentSpaceId}/reports/rentals`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    pathname.startsWith('/reports/attendance')
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/reports/rentals`
                       ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
                       : isDarkSidebar
-                      ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <CalendarCheck className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="truncate">Báo cáo điểm danh</span>
+                  <Building2 className="w-4 h-4 flex-shrink-0 text-indigo-400" />
+                  <span className="truncate">Báo cáo phòng & điện nước</span>
                 </Link>
               )}
 
+              {activeSpace?.groupType === 'SPORTS_CLUB' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/reports/sports`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/reports/sports`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <Tv className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                  <span className="truncate">Báo cáo sân & CI/CO</span>
+                </Link>
+              )}
+
+              {activeSpace?.groupType === 'CLASS' && (
+                <Link
+                  href={`/groups/${currentSpaceId}/reports/education`}
+                  onClick={closeDrawer}
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    pathname === `/groups/${currentSpaceId}/reports/education`
+                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      : isDarkSidebar
+                      ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4 flex-shrink-0 text-blue-400" />
+                  <span className="truncate">Báo cáo lớp & học phí</span>
+                </Link>
+              )}
+            </div>
+
+            {/* THIẾT BỊ KIOSK */}
+            <div className="space-y-1">
+              <div className={`px-2 text-xs font-semibold ${
+                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              }`}>
+                Kiosk & Thiết bị
+              </div>
+
               <Link
-                href={`/reports/reconciliation?groupId=${currentSpaceId}`}
+                href={`/kiosk/${currentSpaceId}`}
+                target="_blank"
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  pathname.startsWith('/reports/reconciliation')
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
-                    : isDarkSidebar
-                    ? 'text-slate-400 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  isDarkSidebar
+                    ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-                <span className="truncate">Báo cáo đối soát</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Tv className="w-4 h-4 flex-shrink-0 text-emerald-500" />
+                  <span className="truncate">Kiosk quét QR tự phục vụ</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
               </Link>
             </div>
 
             {/* CÀI ĐẶT KHÔNG GIAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-[10px] font-bold uppercase tracking-wider ${
+              <div className={`px-2 text-xs font-semibold ${
                 isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
               }`}>
                 Cài đặt
@@ -692,7 +858,7 @@ export default function DashboardLayout({
     <nav className="flex-1 px-3 space-y-3.5 overflow-y-auto pb-4">
       {NAV_CATEGORIES.map((category) => (
         <div key={category.title} className="space-y-1">
-          <div className={`px-2 pt-2 pb-0.5 text-[10px] font-bold uppercase tracking-wider ${
+          <div className={`px-2 pt-2 pb-0.5 text-xs font-semibold ${
             isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
           }`}>
             {locale === 'en' && category.titleEn ? category.titleEn : category.title}
@@ -725,7 +891,7 @@ export default function DashboardLayout({
                     className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
                       isActive
                         ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
-                        : isDarkSidebar
+                        : !isDarkSidebar
                         ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
                         : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 font-medium'
                     }`}
@@ -798,7 +964,7 @@ export default function DashboardLayout({
                             className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[11.5px] transition-all ${
                               isActive
                                 ? 'bg-[#2538D9] text-white font-bold shadow-xs'
-                                : isDarkSidebar
+                                : !isDarkSidebar
                                 ? 'text-slate-400 hover:text-white hover:bg-white/[0.06] font-medium'
                                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
                             }`}
@@ -862,7 +1028,7 @@ export default function DashboardLayout({
         {/* Bank Connection Pill with Logo & MUI Tag */}
         <div className="p-3">
           <div className={`flex items-center justify-between px-3 py-2 rounded-lg text-[11px] border ${
-            isDarkSidebar
+            !isDarkSidebar
               ? 'bg-[#131A2B] border-[#1E283D] text-slate-200'
               : 'bg-slate-50 border-slate-200 text-slate-700'
           }`}>

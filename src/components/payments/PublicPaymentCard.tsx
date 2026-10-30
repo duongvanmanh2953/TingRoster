@@ -62,38 +62,38 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
     switch (invoice.status) {
       case 'PAID':
         return (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Đã đóng đủ
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+            <span>Đã đóng đủ</span>
           </div>
         );
       case 'PARTIAL':
         return (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            <Clock className="w-3.5 h-3.5" />
-            Đóng thiếu
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+            <Clock className="w-3.5 h-3.5 shrink-0" />
+            <span>Đóng thiếu</span>
           </div>
         );
       case 'OVERPAID':
         return (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Đóng thừa ({formatVND(excess)})
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
+            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+            <span>Đóng thừa ({formatVND(excess)})</span>
           </div>
         );
       case 'VOID':
         return (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-300">
-            <Ban className="w-3.5 h-3.5" />
-            Đã hủy
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-300 whitespace-nowrap">
+            <Ban className="w-3.5 h-3.5 shrink-0" />
+            <span>Đã hủy</span>
           </div>
         );
       case 'UNPAID':
       default:
         return (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-            <AlertCircle className="w-3.5 h-3.5" />
-            Chưa đóng tiền
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>Chưa đóng tiền</span>
           </div>
         );
     }
@@ -106,7 +106,7 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs uppercase tracking-wider text-slate-300 font-bold">
+            <span className="text-xs text-slate-300 font-medium">
               Phiếu thu học phí trực tuyến
             </span>
           </div>
@@ -169,7 +169,7 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
         {invoice.status !== 'PAID' && invoice.status !== 'VOID' && (
           <div className="space-y-4">
             <div className="text-center">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              <span className="text-xs font-semibold text-slate-600">
                 Quét mã VietQR bằng app ngân hàng
               </span>
             </div>

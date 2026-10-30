@@ -106,7 +106,7 @@ export function LegalPrintableDocument({
               {/* Header: Đơn vị & Mẫu số Bộ Tài Chính */}
               <div className="grid grid-cols-12 gap-2 text-xs">
                 <div className="col-span-7 space-y-0.5">
-                  <div className="font-bold uppercase tracking-wider text-[13px]">{data.groupName}</div>
+                  <div className="font-bold uppercase text-[13px]">{data.groupName}</div>
                   <div>Địa chỉ: {data.facilityAddress || 'Hà Nội / TP. Hồ Chí Minh'}</div>
                   <div>Điện thoại: {data.facilityPhone || '0987 654 321'}</div>
                   {data.taxCode && <div>MST / Mã cơ sở: {data.taxCode}</div>}
@@ -128,7 +128,7 @@ export function LegalPrintableDocument({
 
               {/* Title Header */}
               <div className="text-center pt-2 pb-1 space-y-0.5">
-                <h1 className="text-lg font-bold uppercase tracking-wide">PHIẾU THU TIỀN</h1>
+                <h1 className="text-lg font-bold uppercase">PHIẾU THU TIỀN</h1>
                 <div className="text-xs italic font-sans">
                   Ngày {day} tháng {month} năm {year}
                 </div>
@@ -233,7 +233,7 @@ export function LegalPrintableDocument({
               {/* Header: Đơn vị & Mẫu số Bộ Tài Chính */}
               <div className="grid grid-cols-12 gap-2 text-xs">
                 <div className="col-span-7 space-y-0.5">
-                  <div className="font-bold uppercase tracking-wider text-[13px]">{data.groupName}</div>
+                  <div className="font-bold uppercase text-[13px]">{data.groupName}</div>
                   <div>Địa chỉ: {data.facilityAddress || 'Hà Nội / TP. Hồ Chí Minh'}</div>
                   <div>Điện thoại: {data.facilityPhone || '0987 654 321'}</div>
                 </div>
@@ -251,7 +251,7 @@ export function LegalPrintableDocument({
 
               {/* Title Header */}
               <div className="text-center pt-2 pb-1 space-y-0.5">
-                <h2 className="text-lg font-bold uppercase tracking-wide">GIẤY BIÊN NHẬN NỘP TIỀN</h2>
+                <h2 className="text-lg font-bold uppercase">GIẤY BIÊN NHẬN NỘP TIỀN</h2>
                 <div className="text-xs italic font-sans">
                   Ngày {day} tháng {month} năm {year}
                 </div>

@@ -126,7 +126,7 @@ export function ShareSpaceModal({
           {/* Space Code Box */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
             <div>
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block uppercase tracking-wider">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">
                 Mã không gian
               </span>
               <span className="text-lg font-mono font-black text-slate-900 dark:text-white mt-0.5 block">
@@ -136,9 +136,9 @@ export function ShareSpaceModal({
             <button
               type="button"
               onClick={() => copyToClipboard(spaceCode, true)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
             >
-              {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> : <Copy className="w-3.5 h-3.5 shrink-0" />}
               <span>{copiedCode ? 'Đã sao chép' : 'Sao chép mã'}</span>
             </button>
           </div>

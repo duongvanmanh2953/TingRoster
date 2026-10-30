@@ -720,10 +720,10 @@ export default function AttendancePage() {
             <table className="w-full text-left text-xs border-collapse">
               
               {/* Table Header: Admission No, Student, Abs, Lve, Day Columns */}
-              <thead className="bg-[#F8FAFC] border-b border-[#E4E7EC] text-[#475467] font-semibold text-[11px]">
+              <thead className="bg-[#F8FAFC] dark:bg-slate-900 border-b border-[#E4E7EC] dark:border-slate-800 text-[#475467] dark:text-slate-400 font-semibold text-[11px] sticky top-0 z-30">
                 <tr>
-                  <th className="py-3 px-3.5 w-28 whitespace-nowrap">Mã HV</th>
-                  <th className="py-3 px-3.5 min-w-[160px] whitespace-nowrap">Học viên</th>
+                  <th className="sticky left-0 z-40 bg-[#F8FAFC] dark:bg-slate-900 py-3 px-3.5 w-28 whitespace-nowrap border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">Mã HV</th>
+                  <th className="sticky left-28 z-40 bg-[#F8FAFC] dark:bg-slate-900 py-3 px-3.5 min-w-[160px] whitespace-nowrap border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">Học viên</th>
                   <th className="py-3 px-2 text-center w-12 text-rose-600 font-bold" title="Tổng buổi vắng">Abs</th>
                   <th className="py-3 px-2 text-center w-12 text-amber-600 font-bold" title="Tổng buổi phép">Lve</th>
 
@@ -735,8 +735,8 @@ export default function AttendancePage() {
                         col.isToday
                           ? 'bg-[#2538D9]/10 text-[#2538D9] font-bold border-x border-[#2538D9]/20'
                           : col.isWeekend
-                          ? 'bg-slate-100/60 text-slate-400'
-                          : 'text-[#101828]'
+                          ? 'bg-slate-100/60 dark:bg-slate-800/40 text-slate-400'
+                          : 'text-[#101828] dark:text-slate-200'
                       }`}
                     >
                       <span className="block text-[10px] uppercase font-bold">{col.dayLabel}</span>
@@ -747,12 +747,15 @@ export default function AttendancePage() {
               </thead>
 
               {/* SUMMARY ROWS (matching Image 2: Total Present, Total Absent, Total Leave, Percentage %) */}
-              <tbody className="bg-slate-50/70 border-b-2 border-slate-300 font-semibold text-[11px]">
+              <tbody className="font-semibold text-[11px]">
                 
                 {/* Total Present */}
-                <tr className="border-b border-[#E4E7EC]/60 hover:bg-slate-100/50">
-                  <td colSpan={2} className="py-2 px-3.5 text-[#101828] font-bold">
-                    Tổng Có mặt (Total Present)
+                <tr>
+                  <td className="sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-[#101828] dark:text-white font-bold border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">
+                    Tổng Có mặt
+                  </td>
+                  <td className="sticky left-28 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-slate-500 font-medium border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+                    (Total Present)
                   </td>
                   <td className="text-center text-slate-400">—</td>
                   <td className="text-center text-slate-400">—</td>
@@ -767,9 +770,12 @@ export default function AttendancePage() {
                 </tr>
 
                 {/* Total Absent */}
-                <tr className="border-b border-[#E4E7EC]/60 hover:bg-slate-100/50">
-                  <td colSpan={2} className="py-2 px-3.5 text-rose-700 font-bold">
-                    Tổng Vắng (Total Absent)
+                <tr className="border-b border-[#E4E7EC]/60 dark:border-slate-800 ">
+                  <td className="sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-rose-700 font-bold border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">
+                    Tổng Vắng
+                  </td>
+                  <td className="sticky left-28 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-rose-600 font-medium border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+                    (Total Absent)
                   </td>
                   <td className="text-center text-slate-400">—</td>
                   <td className="text-center text-slate-400">—</td>
@@ -784,9 +790,12 @@ export default function AttendancePage() {
                 </tr>
 
                 {/* Total Leave */}
-                <tr className="border-b border-[#E4E7EC]/60 hover:bg-slate-100/50">
-                  <td colSpan={2} className="py-2 px-3.5 text-amber-700 font-bold">
-                    Tổng Phép (Total Leave)
+                <tr className="border-b border-[#E4E7EC]/60 dark:border-slate-800 ">
+                  <td className="sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-amber-700 font-bold border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">
+                    Tổng Phép
+                  </td>
+                  <td className="sticky left-28 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-amber-600 font-medium border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+                    (Total Leave)
                   </td>
                   <td className="text-center text-slate-400">—</td>
                   <td className="text-center text-slate-400">—</td>
@@ -801,9 +810,12 @@ export default function AttendancePage() {
                 </tr>
 
                 {/* Percentage % */}
-                <tr className="hover:bg-slate-100/50">
-                  <td colSpan={2} className="py-2 px-3.5 text-[#2538D9] font-bold">
-                    Tỷ lệ chuyên cần (Percentage %)
+                <tr className="">
+                  <td className="sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-[#2538D9] dark:text-indigo-400 font-bold border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">
+                    Tỷ lệ chuyên cần
+                  </td>
+                  <td className="sticky left-28 z-20 bg-slate-50 dark:bg-slate-900 py-2 px-3.5 text-slate-500 font-medium border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+                    (Attendance %)
                   </td>
                   <td className="text-center text-slate-400">—</td>
                   <td className="text-center text-slate-400">—</td>
@@ -828,7 +840,7 @@ export default function AttendancePage() {
               </tbody>
 
               {/* STUDENT ROWS */}
-              <tbody className="divide-y divide-[#E4E7EC]">
+              <tbody className="divide-y divide-[#E4E7EC] dark:divide-slate-800">
                 {filteredMembers.map((m) => {
                   // Calculate member's total absences and leaves in this window
                   let mAbs = 0;
@@ -840,26 +852,26 @@ export default function AttendancePage() {
                   });
 
                   return (
-                    <tr key={m.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={m.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
                       
-                      {/* Admission / Student Code */}
-                      <td className="py-3 px-3.5 font-bold tabular-nums text-slate-500 whitespace-nowrap text-[11px]">
+                      {/* Admission / Student Code (STICKY LEFT-0) */}
+                      <td className="sticky left-0 z-10 bg-white dark:bg-slate-900 py-3 px-3.5 font-bold tabular-nums text-slate-500 whitespace-nowrap text-[11px] border-r border-[#E4E7EC] dark:border-slate-800 shadow-xs">
                         {m.code}
                       </td>
 
-                      {/* Student info */}
-                      <td className="py-3 px-3.5 whitespace-nowrap">
+                      {/* Student info (STICKY LEFT-28) */}
+                      <td className="sticky left-28 z-10 bg-white dark:bg-slate-900 py-3 px-3.5 whitespace-nowrap border-r-2 border-[#E4E7EC] dark:border-slate-800 shadow-sm">
                         <div className="flex items-center gap-2.5">
                           <Avatar name={m.name} size="xs" />
                           <div>
                             <Link
                               href={`/members/${m.id}`}
-                              className="font-bold text-[#101828] hover:text-[#2538D9] transition-colors block leading-tight text-xs"
+                              className="font-bold text-[#101828] dark:text-slate-100 hover:text-[#2538D9] dark:hover:text-indigo-400 transition-colors block leading-tight text-xs"
                             >
                               {m.name}
                             </Link>
                             {m.phone && (
-                              <span className="text-[10px] text-[#475467] tabular-nums block font-normal">
+                              <span className="text-[10px] text-[#475467] dark:text-slate-400 tabular-nums block font-normal">
                                 {m.phone}
                               </span>
                             )}

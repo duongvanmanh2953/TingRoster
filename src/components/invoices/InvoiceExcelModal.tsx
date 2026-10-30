@@ -374,7 +374,7 @@ export function InvoiceExcelModal({
             {/* Guide & Sample Download Box */}
             <div className="p-4 rounded-xl border border-indigo-100 dark:border-indigo-950 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
-                <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 flex items-center gap-1.5">
                   <Info className="w-3.5 h-3.5" />
                   Bước 1: Tải file mẫu chuẩn
                 </span>

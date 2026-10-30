@@ -1,344 +1,240 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   MessageSquare,
-  Megaphone,
   Users,
-  Send,
-  Lock,
+  Search,
   Sparkles,
-  AlertCircle,
-  Clock,
-  CheckCheck,
-  ShieldAlert,
-  ArrowRight
+  KeyRound,
+  ArrowRight,
+  ShieldCheck,
+  CheckCheck
 } from 'lucide-react';
+import CircularProgress from '@mui/material/CircularProgress';
+import { SpaceAvatar } from '@/components/common/SpaceAvatar';
+import { GroupChatRoom } from '@/components/chat/GroupChatRoom';
 
-interface ChatConversation {
+interface StudentGroup {
   id: string;
-  title: string;
-  type: 'ANNOUNCEMENT' | 'GROUP' | 'DIRECT';
-  groupId?: string;
-  workspaceId: string;
-  isLocked?: boolean;
+  name: string;
+  slug: string;
+  code?: string | null;
+  logoUrl?: string | null;
+  themeColor?: string | null;
+  ownerName: string;
   lastMessage?: {
     content: string;
-    createdAt: string;
     senderName: string;
-  };
+    createdAt: string;
+    messageType: string;
+  } | null;
+  isUnread: boolean;
 }
 
-interface ChatMsg {
-  id: string;
-  senderId: string;
-  senderName: string;
-  senderRole: string;
-  content: string;
-  isAnnouncement: boolean;
-  createdAt: string;
-}
+function PortalChatContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const requestedGroupId = searchParams.get('groupId');
 
-export default function ChatPortalPage() {
-  const [conversations, setConversations] = useState<ChatConversation[]>([]);
-  const [activeConv, setActiveConv] = useState<ChatConversation | null>(null);
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [inputText, setInputText] = useState('');
-  const [loadingConv, setLoadingConv] = useState(true);
-  const [loadingMsg, setLoadingMsg] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [directMessagesEnabled, setDirectMessagesEnabled] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [groups, setGroups] = useState<StudentGroup[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<StudentGroup | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // 1. Fetch conversations
+  // 1. Fetch student's joined groups
   useEffect(() => {
-    fetch('/api/chat/conversations')
+    setLoading(true);
+    fetch('/api/portal/chat/groups')
       .then((res) => res.json())
       .then((res) => {
-        if (res.success) {
-          setConversations(res.data.conversations || []);
-          setDirectMessagesEnabled(res.data.entitlements.directMessagesEnabled);
-          if (res.data.conversations.length > 0) {
-            setActiveConv(res.data.conversations[0]);
+        if (res.success && res.data) {
+          const list: StudentGroup[] = res.data;
+          setGroups(list);
+
+          // Select requested group from URL param or default to first group on desktop
+          if (requestedGroupId) {
+            const found = list.find((g) => g.id === requestedGroupId);
+            if (found) setSelectedGroup(found);
+            else if (list.length > 0) setSelectedGroup(list[0]);
+          } else if (list.length > 0) {
+            setSelectedGroup(list[0]);
           }
         }
       })
-      .catch((err) => console.error('Fetch conversations error:', err))
-      .finally(() => setLoadingConv(false));
-  }, []);
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [requestedGroupId]);
 
-  // 2. Fetch messages when active conversation changes
-  useEffect(() => {
-    if (!activeConv) return;
-    setLoadingMsg(true);
-    setErrorMsg(null);
+  const filteredGroups = groups.filter((g) =>
+    g.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+  );
 
-    fetch(`/api/chat/messages?conversationId=${activeConv.id}`)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          setMessages(res.data || []);
-        } else {
-          setErrorMsg(res.error || 'Không thể tải tin nhắn');
-        }
-      })
-      .catch((err) => console.error('Fetch messages error:', err))
-      .finally(() => setLoadingMsg(false));
-  }, [activeConv?.id]);
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[450px] space-y-3">
+        <CircularProgress size={32} sx={{ color: '#2538D9' }} />
+        <p className="text-xs text-slate-500 font-medium">Đang tải danh sách nhóm chat...</p>
+      </div>
+    );
+  }
 
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // 3. Send message
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputText.trim() || !activeConv || sending) return;
-
-    setSending(true);
-    setErrorMsg(null);
-
-    const tempContent = inputText.trim();
-    setInputText('');
-
-    try {
-      const res = await fetch('/api/chat/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          conversationId: activeConv.id,
-          content: tempContent,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setMessages((prev) => [...prev, data.data]);
-      } else {
-        setErrorMsg(data.message || data.error || 'Không thể gửi tin nhắn');
-        setInputText(tempContent); // restore
-      }
-    } catch {
-      setErrorMsg('Lỗi kết nối máy chủ');
-      setInputText(tempContent);
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const getConvIcon = (type: string) => {
-    if (type === 'ANNOUNCEMENT') return <Megaphone className="w-4 h-4 text-indigo-600" />;
-    if (type === 'DIRECT') return <MessageSquare className="w-4 h-4 text-purple-600" />;
-    return <Users className="w-4 h-4 text-blue-600" />;
-  };
-
-  return (
-    <div className="bg-white dark:bg-[#111726] border border-[#E5E7EB] dark:border-[#1E293B] rounded-2xl shadow-xs overflow-hidden flex flex-col md:flex-row h-[700px]">
-      {/* Left Sidebar: Conversations List (1/3 width) */}
-      <div className="w-full md:w-80 border-r border-[#E5E7EB] dark:border-[#1E293B] flex flex-col bg-[#F9FAFB] dark:bg-[#0B0F19]">
-        <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1E293B]">
-          <h2 className="text-sm font-bold text-[#111827] dark:text-white flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-[#2538D9]" />
-            <span>Kênh Trò Chuyện & Bảng Tin</span>
-          </h2>
-          <span className="text-[11px] text-slate-400">Trao đổi nội bộ giữa Thầy cô và Học viên</span>
+  // Empty state: Student is not a member of any group yet
+  if (groups.length === 0) {
+    return (
+      <div className="max-w-md mx-auto my-12 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-4 shadow-sm">
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] flex items-center justify-center mx-auto">
+          <MessageSquare className="w-7 h-7" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+            Chưa có nhóm trao đổi nào
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+            Bạn cần tham gia một không gian (lớp học, CLB thể thao hoặc phòng trọ) để bắt đầu trò chuyện cùng giáo viên và các thành viên khác.
+          </p>
         </div>
 
-        {/* Conversations List */}
-        <div className="flex-1 overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1E293B]">
-          {loadingConv ? (
-            <div className="p-4 text-center text-xs text-slate-400">Đang tải danh sách kênh...</div>
-          ) : conversations.length === 0 ? (
-            <div className="p-4 text-center text-xs text-slate-400">Không có cuộc trò chuyện nào.</div>
-          ) : (
-            conversations.map((c) => {
-              const isActive = activeConv?.id === c.id;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => setActiveConv(c)}
-                  className={`w-full text-left p-3.5 transition-colors flex items-start gap-3 ${
-                    isActive
-                      ? 'bg-white dark:bg-[#111726] border-l-4 border-l-[#2538D9] shadow-xs'
-                      : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/50'
-                  }`}
-                >
-                  <div className="p-2 rounded-xl bg-white dark:bg-[#1E293B] border border-[#E5E7EB] dark:border-slate-800 shrink-0">
-                    {getConvIcon(c.type)}
+        <Link
+          href="/portal/join"
+          className="w-full py-3 px-4 rounded-2xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition"
+        >
+          <KeyRound className="w-4 h-4" />
+          <span>Tham gia không gian bằng mã / QR</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-[calc(100vh-6rem)] flex gap-4 overflow-hidden">
+      {/* Left Groups List Sidebar (Hidden on mobile if a group is currently opened) */}
+      <div
+        className={`w-full sm:w-80 md:w-88 flex flex-col bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm shrink-0 overflow-hidden ${
+          selectedGroup ? 'hidden sm:flex' : 'flex'
+        }`}
+      >
+        {/* Header */}
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-[#2538D9]" />
+              <span>Nhóm Của Tôi</span>
+            </h2>
+            <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-[#2538D9] dark:text-blue-300 text-[10px] font-bold">
+              {groups.length} nhóm
+            </span>
+          </div>
+
+          {/* Search bar */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm theo tên nhóm..."
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Groups List */}
+        <div className="flex-1 overflow-y-auto p-2 space-y-1">
+          {filteredGroups.map((g) => {
+            const isSelected = selectedGroup?.id === g.id;
+
+            return (
+              <button
+                key={g.id}
+                type="button"
+                onClick={() => {
+                  setSelectedGroup(g);
+                  router.replace(`/portal/chat?groupId=${g.id}`, { scroll: false });
+                }}
+                className={`w-full text-left p-3 rounded-2xl flex items-start gap-3 transition-all ${
+                  isSelected
+                    ? 'bg-blue-50/90 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900'
+                    : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border border-transparent'
+                }`}
+              >
+                <div className="relative shrink-0">
+                  <SpaceAvatar
+                    name={g.name}
+                    logoUrl={g.logoUrl}
+                    themeColor={g.themeColor || '#2538D9'}
+                    size="md"
+                  />
+                  {g.isUnread && (
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#2538D9] rounded-full border-2 border-white dark:border-slate-900" />
+                  )}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1 mb-0.5">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                      {g.name}
+                    </span>
+                    {g.lastMessage && (
+                      <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                        {new Date(g.lastMessage.createdAt).toLocaleDateString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                        })}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">{c.title}</span>
-                      {c.isLocked && <Lock className="w-3 h-3 text-amber-500 shrink-0 ml-1" />}
-                    </div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mt-0.5">
-                      {c.type === 'ANNOUNCEMENT' ? 'Bảng tin thông báo' : c.type === 'DIRECT' ? 'Nhắn tin riêng 1-1' : 'Nhóm thảo luận'}
-                    </span>
-                    <p className="text-[11px] text-slate-500 truncate mt-1">
-                      {c.lastMessage ? `${c.lastMessage.senderName}: ${c.lastMessage.content}` : 'Chưa có tin nhắn mới'}
-                    </p>
-                  </div>
-                </button>
-              );
-            })
-          )}
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                    {g.lastMessage ? (
+                      <span>
+                        <strong className="text-slate-700 dark:text-slate-300 font-medium">
+                          {g.lastMessage.senderName}:
+                        </strong>{' '}
+                        {g.lastMessage.content}
+                      </span>
+                    ) : (
+                      <span className="italic text-slate-400">Chưa có tin nhắn nào</span>
+                    )}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Right Chat Panel (2/3 width) */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-[#111726]">
-        {activeConv ? (
-          <>
-            {/* Header */}
-            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1E293B] flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-slate-50 dark:bg-[#0B0F19] border border-[#E5E7EB] dark:border-[#1E293B]">
-                  {getConvIcon(activeConv.type)}
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-[#111827] dark:text-white">{activeConv.title}</h3>
-                  <span className="text-[11px] text-slate-400">
-                    {activeConv.type === 'ANNOUNCEMENT'
-                      ? 'Kênh thông báo 1 chiều từ Giáo viên / Quản lý'
-                      : activeConv.type === 'DIRECT'
-                      ? 'Nhắn tin riêng tư bảo mật'
-                      : 'Các thành viên trong nhóm có thể tự do thảo luận'}
-                  </span>
-                </div>
-              </div>
-
-              {activeConv.type === 'ANNOUNCEMENT' && (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 text-[#2538D9] border border-indigo-200">
-                  Chỉ đọc
-                </span>
-              )}
-            </div>
-
-            {/* Locked feature banner (if Direct message is locked) */}
-            {activeConv.isLocked && (
-              <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-800 text-xs text-amber-800 dark:text-amber-300 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>
-                    Tính năng <strong>Direct Messages (1-1)</strong> thuộc gói Pro của cơ sở. Cơ sở hiện đang dùng gói miễn phí nên tính năng tạm khóa.
-                  </span>
-                </div>
-                <span className="text-[11px] font-bold underline cursor-pointer">Tìm hiểu thêm</span>
-              </div>
-            )}
-
-            {/* Error Message */}
-            {errorMsg && (
-              <div className="p-3 bg-rose-50 text-rose-700 border-b border-rose-200 text-xs font-semibold flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{errorMsg}</span>
-              </div>
-            )}
-
-            {/* Messages Body */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              {loadingMsg ? (
-                <div className="text-center text-xs text-slate-400 py-12">Đang tải lịch sử trò chuyện...</div>
-              ) : messages.length === 0 ? (
-                <div className="text-center text-xs text-slate-400 py-12">
-                  Chưa có tin nhắn nào trong kênh này. Hãy gửi tin nhắn đầu tiên!
-                </div>
-              ) : (
-                messages.map((m) => {
-                  const isTeacher = m.senderRole === 'TEACHER' || m.senderRole === 'OWNER';
-                  return (
-                    <div
-                      key={m.id}
-                      className={`flex flex-col ${
-                        m.isAnnouncement
-                          ? 'items-center my-3'
-                          : isTeacher
-                          ? 'items-start'
-                          : 'items-start sm:items-end'
-                      }`}
-                    >
-                      {/* If announcement card */}
-                      {m.isAnnouncement ? (
-                        <div className="w-full max-w-lg p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-1 text-center">
-                          <span className="text-[10px] uppercase font-bold text-[#2538D9] tracking-wider block">
-                            📢 THÔNG BÁO TỪ GIÁO VIÊN ({m.senderName})
-                          </span>
-                          <p className="text-slate-800 dark:text-slate-200 font-medium leading-relaxed">{m.content}</p>
-                          <span className="text-[10px] text-slate-400 block mt-1">
-                            {new Date(m.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} •{' '}
-                            {new Date(m.createdAt).toLocaleDateString('vi-VN')}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="max-w-md space-y-1">
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                            <span className="font-bold text-slate-700 dark:text-slate-300">{m.senderName}</span>
-                            {isTeacher && (
-                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-100 text-blue-700">
-                                Chủ nhiệm
-                              </span>
-                            )}
-                            <span>{new Date(m.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
-                          </div>
-
-                          <div
-                            className={`p-3 rounded-2xl text-xs leading-relaxed ${
-                              isTeacher
-                                ? 'bg-slate-100 dark:bg-[#1E293B] text-slate-800 dark:text-slate-100 rounded-tl-xs'
-                                : 'bg-[#2538D9] text-white rounded-tr-xs'
-                            }`}
-                          >
-                            {m.content}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Composer Box */}
-            <div className="p-3 sm:p-4 border-t border-[#E5E7EB] dark:border-[#1E293B] bg-[#F9FAFB] dark:bg-[#0B0F19]">
-              {activeConv.type === 'ANNOUNCEMENT' ? (
-                <div className="text-center text-xs text-slate-400 py-2">
-                  🔒 Kênh thông báo phát thanh 1 chiều. Học viên chỉ có quyền xem tin nhắn.
-                </div>
-              ) : activeConv.isLocked ? (
-                <div className="text-center text-xs text-amber-600 font-semibold py-2">
-                  🔒 Tính năng nhắn tin riêng bị khóa theo gói của cơ sở.
-                </div>
-              ) : (
-                <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    required
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    placeholder="Nhập tin nhắn..."
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-[#CBD5E1] dark:border-[#334155] bg-white dark:bg-[#111726] text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[#2538D9]"
-                  />
-                  <button
-                    type="submit"
-                    disabled={sending || !inputText.trim()}
-                    className="px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shrink-0 shadow-xs"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>{sending ? 'Đang gửi...' : 'Gửi'}</span>
-                  </button>
-                </form>
-              )}
-            </div>
-          </>
+      {/* Right Group Chat Area (Fills screen on mobile when opened) */}
+      <div
+        className={`flex-1 min-w-0 h-full ${
+          selectedGroup ? 'flex' : 'hidden sm:flex'
+        }`}
+      >
+        {selectedGroup ? (
+          <GroupChatRoom
+            key={selectedGroup.id}
+            groupId={selectedGroup.id}
+            isPortal={true}
+            onBack={() => setSelectedGroup(null)}
+          />
         ) : (
-          <div className="flex-1 flex items-center justify-center text-xs text-slate-400">
-            Chọn một kênh trò chuyện để bắt đầu.
+          <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 text-center text-slate-400">
+            <MessageSquare className="w-10 h-10 mb-2 text-slate-300" />
+            <p className="text-xs">Chọn một nhóm bên trái để bắt đầu trò chuyện</p>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+export default function PortalChatPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Đang tải Tin nhắn & Trao đổi...</div>}>
+      <PortalChatContent />
+    </Suspense>
   );
 }

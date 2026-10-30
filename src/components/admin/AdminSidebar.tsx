@@ -261,7 +261,7 @@ export function AdminSidebar({
           {groups.map((group) => (
             <div key={group.id}>
               {!collapsed && (
-                <div className="px-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <div className="px-2.5 text-xs font-semibold text-slate-400 mb-1.5">
                   {group.title}
                 </div>
               )}

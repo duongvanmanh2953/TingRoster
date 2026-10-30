@@ -289,7 +289,7 @@ export function AdminTopbar({
         </div>
 
         <DialogContent className="p-2 space-y-1 max-h-80 overflow-y-auto">
-          <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="px-2 py-1 text-xs font-semibold text-slate-500">
             Kết quả gợi ý thao tác nhanh
           </div>
           {filteredItems.map((item, idx) => (

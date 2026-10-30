@@ -166,15 +166,15 @@ export function SupportTicketsTab() {
   const getStatusBadge = (s: string) => {
     switch (s) {
       case 'OPEN':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-[#2538D9] border border-blue-200">Mới mở</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-[#2538D9] border border-blue-200 whitespace-nowrap select-none">Mới mở</span>;
       case 'IN_PROGRESS':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Đang xử lý</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap select-none">Đang xử lý</span>;
       case 'WAITING_CUSTOMER':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">Chờ khách phản hồi</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap select-none">Chờ phản hồi</span>;
       case 'RESOLVED':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Đã giải quyết</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap select-none">Đã giải quyết</span>;
       case 'CLOSED':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">Đã đóng</span>;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 whitespace-nowrap select-none">Đã đóng</span>;
       default:
         return null;
     }

@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import {
   CalendarCheck2,
   CheckCircle2,
@@ -11,8 +14,14 @@ import {
   HelpCircle,
   FileEdit,
   X,
-  Check
+  Check,
+  Sparkles,
+  Building2,
+  ArrowRight,
+  ShieldCheck
 } from 'lucide-react';
+import CircularProgress from '@mui/material/CircularProgress';
+import { ResolvedAction } from '@/lib/qr/actionEngine';
 
 interface AttendanceRecord {
   id: string;
@@ -45,7 +54,11 @@ interface AttendanceData {
   pendingAdjustments: AdjustmentRequest[];
 }
 
-export default function MemberAttendancePage() {
+function MemberAttendanceContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const actionToken = searchParams.get('actionToken');
+
   const [data, setData] = useState<AttendanceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAdjustmentModal, setShowAdjustmentModal] = useState(false);
@@ -55,6 +68,59 @@ export default function MemberAttendancePage() {
   const [adjReason, setAdjReason] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Action QR Confirmation State
+  const [actionData, setActionData] = useState<ResolvedAction | null>(null);
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [confirmingAttendance, setConfirmingAttendance] = useState(false);
+  const [actionSuccessMsg, setActionSuccessMsg] = useState<string | null>(null);
+  const [actionErrorMsg, setActionErrorMsg] = useState<string | null>(null);
+
+  // Load Action QR Details if token is provided in query params
+  useEffect(() => {
+    if (!actionToken) return;
+
+    setLoadingAction(true);
+    setActionErrorMsg(null);
+    fetch(`/api/qr/actions/${encodeURIComponent(actionToken)}`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setActionData(res.data);
+        } else {
+          setActionErrorMsg(res.error || 'Mã điểm danh không hợp lệ hoặc đã hết hạn');
+        }
+      })
+      .catch(() => setActionErrorMsg('Không thể kết nối đến máy chủ xác minh điểm danh'))
+      .finally(() => setLoadingAction(false));
+  }, [actionToken]);
+
+  const handleConfirmAttendance = async () => {
+    if (!actionToken || confirmingAttendance) return;
+
+    setConfirmingAttendance(true);
+    setActionErrorMsg(null);
+
+    try {
+      const res = await fetch('/api/qr/actions/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: actionToken }),
+      });
+
+      const resData = await res.json();
+      if (resData.success) {
+        setActionSuccessMsg(resData.data?.message || 'Điểm danh thành công!');
+        fetchAttendance();
+      } else {
+        setActionErrorMsg(resData.error || 'Không thể xác nhận điểm danh');
+      }
+    } catch {
+      setActionErrorMsg('Lỗi mạng khi xác nhận điểm danh');
+    } finally {
+      setConfirmingAttendance(false);
+    }
+  };
 
   const fetchAttendance = () => {
     fetch('/api/portal/attendance')
@@ -146,6 +212,94 @@ export default function MemberAttendancePage() {
         </button>
       </div>
 
+      {/* Action QR Scan Attendance Confirmation Card */}
+      {actionToken && (
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white shadow-xl space-y-4 border border-blue-700/50 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Yêu Cầu Điểm Danh Từ Mã QR</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => router.push('/portal/attendance')}
+              className="text-xs text-blue-300 hover:text-white transition"
+            >
+              Đóng
+            </button>
+          </div>
+
+          {loadingAction ? (
+            <div className="py-6 flex items-center justify-center gap-2 text-xs font-medium text-blue-200">
+              <CircularProgress size={20} sx={{ color: '#fff' }} />
+              <span>Đang kiểm tra thông tin buổi điểm danh...</span>
+            </div>
+          ) : actionSuccessMsg ? (
+            <div className="p-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-100 flex items-center gap-3">
+              <CheckCircle2 className="w-7 h-7 text-emerald-400 flex-shrink-0" />
+              <div>
+                <h4 className="font-extrabold text-sm">{actionSuccessMsg}</h4>
+                <p className="text-xs text-emerald-200/80">Lịch sử điểm danh đã được cập nhật tự động.</p>
+              </div>
+            </div>
+          ) : actionErrorMsg ? (
+            <div className="p-4 rounded-2xl bg-rose-500/20 border border-rose-400/40 text-rose-100 flex items-center gap-3">
+              <AlertCircle className="w-6 h-6 text-rose-400 flex-shrink-0" />
+              <div>
+                <h4 className="font-bold text-sm">Không thể thực hiện điểm danh</h4>
+                <p className="text-xs text-rose-200/80">{actionErrorMsg}</p>
+              </div>
+            </div>
+          ) : actionData ? (
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/10 p-4 rounded-2xl border border-white/10">
+                <div>
+                  <h3 className="text-base font-extrabold text-white">{actionData.title}</h3>
+                  <p className="text-xs text-blue-200 flex items-center gap-1.5 mt-1">
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>{actionData.groupName}</span>
+                  </p>
+                  {actionData.description && (
+                    <p className="text-xs text-blue-100/80 mt-1">{actionData.description}</p>
+                  )}
+                </div>
+
+                <div className="text-left sm:text-right">
+                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap select-none ${
+                    actionData.canExecute
+                      ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                      : 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+                  }`}>
+                    {actionData.eligibilityMessage || (actionData.canExecute ? 'Có thể điểm danh' : 'Không khả dụng')}
+                  </span>
+                </div>
+              </div>
+
+              {actionData.canExecute && (
+                <button
+                  type="button"
+                  onClick={handleConfirmAttendance}
+                  disabled={confirmingAttendance}
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-extrabold text-sm shadow-lg shadow-emerald-500/40 flex items-center justify-center gap-2 transition"
+                >
+                  {confirmingAttendance ? (
+                    <>
+                      <CircularProgress size={16} sx={{ color: '#fff' }} />
+                      <span>Đang lưu điểm danh...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>Xác nhận Điểm Danh Ngay</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          ) : null}
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-[#111726] border border-[#E5E7EB] dark:border-[#1E293B] rounded-2xl p-4">
@@ -193,7 +347,7 @@ export default function MemberAttendancePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1E293B]">
-                {records.map((r) => {
+                {records.map((r: AttendanceRecord) => {
                   const isPresent = r.status === 'PRESENT';
                   return (
                     <tr key={r.id} className="hover:bg-slate-50/50">
@@ -208,7 +362,7 @@ export default function MemberAttendancePage() {
                       <td className="py-3 px-4 text-slate-600 dark:text-slate-300">{r.group.name}</td>
                       <td className="py-3 px-4">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap select-none ${
                             isPresent
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               : r.status === 'ABSENT_CHARGED'
@@ -234,7 +388,7 @@ export default function MemberAttendancePage() {
         <div className="bg-white dark:bg-[#111726] border border-[#E5E7EB] dark:border-[#1E293B] rounded-2xl p-6">
           <h2 className="text-sm font-bold text-[#111827] dark:text-white mb-3">Yêu cầu khiếu nại đã gửi</h2>
           <div className="space-y-2">
-            {data.pendingAdjustments.map((adj) => (
+            {data.pendingAdjustments.map((adj: AdjustmentRequest) => (
               <div
                 key={adj.id}
                 className="p-3.5 rounded-xl border border-[#E5E7EB] dark:border-[#1E293B] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
@@ -246,7 +400,7 @@ export default function MemberAttendancePage() {
                   <p className="text-slate-500 mt-0.5">Lý do: &quot;{adj.reason}&quot;</p>
                 </div>
                 <span
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold self-start sm:self-auto ${
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold self-start sm:self-auto whitespace-nowrap select-none ${
                     adj.status === 'APPROVED'
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       : adj.status === 'REJECTED'
@@ -349,5 +503,20 @@ export default function MemberAttendancePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MemberAttendancePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[350px] space-y-3">
+          <CircularProgress size={32} sx={{ color: '#2538D9' }} />
+          <p className="text-xs text-slate-500 font-medium">Đang tải trang điểm danh...</p>
+        </div>
+      }
+    >
+      <MemberAttendanceContent />
+    </Suspense>
   );
 }

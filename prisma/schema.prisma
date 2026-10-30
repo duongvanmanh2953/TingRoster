@@ -124,6 +124,9 @@ model User {
   aiImportJobs    AiImportJob[]
   memberProfiles  Member[]          @relation("UserMemberProfiles")
   supportTickets  SupportTicket[]
+  joinRequests    SpaceJoinRequest[]
+  shiftAssignments ShiftAssignment[]
+  claimedTemporaryAccounts TemporaryAccount[] @relation("ClaimedUser")
 
   @@index([email])
   @@index([role])
@@ -148,10 +151,26 @@ model Group {
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  members     Member[]
-  attendances Attendance[]
-  invoices    Invoice[]
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  members            Member[]
+  attendances        Attendance[]
+  invoices           Invoice[]
+  services           Service[]
+  meterReadings      MeterReading[]
+  sportsBookings     SportsBooking[]
+  rentalContracts    RentalContract[]
+  educationalClasses EducationalClass[]
+  actionQrCodes      ActionQrCode[]
+  joinRequests       SpaceJoinRequest[]
+  workShifts         WorkShift[]
+  shiftAssignments   ShiftAssignment[]
+  conversations      Conversation[]
+  temporaryAccounts  TemporaryAccount[]
+  digitalContracts   DigitalContract[]
+  spaceClauses       SpaceClause[]
+  pricingHistories   PricingHistory[]
+  ocrJobs            DocumentOcrJob[]
+  surcharges         SurchargeProposal[]
 
   @@index([userId])
   @@index([slug])
@@ -177,6 +196,10 @@ model Member {
   attendances        Attendance[]
   invoices           Invoice[]
   adjustmentRequests AttendanceAdjustmentRequest[]
+  meterReadings      MeterReading[]
+  sportsBookings     SportsBooking[]
+  rentalContracts    RentalContract[]
+  surcharges         SurchargeProposal[]
 
   @@index([groupId])
   @@index([userId])
@@ -229,6 +252,7 @@ model Invoice {
   user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   allocations         PaymentAllocation[]
   matchedTransactions TransactionLog[]
+  lineItems           InvoiceLineItem[]
 
   @@index([userId])
   @@index([groupId])
@@ -439,14 +463,18 @@ model SupportTicket {
 }
 
 model Conversation {
-  id          String        @id @default(cuid())
-  groupId     String?
-  type        String        @default("GROUP") // ANNOUNCEMENT, GROUP, DIRECT
-  title       String
-  workspaceId String        // Owner user ID
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  messages    ChatMessage[]
+  id               String        @id @default(cuid())
+  groupId          String?
+  type             String        @default("GROUP") // ANNOUNCEMENT, GROUP, DIRECT
+  title            String
+  workspaceId      String        // Owner user ID
+  onlyAdminCanPost Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  messages         ChatMessage[]
+  polls            GroupPoll[]
+
+  group            Group?        @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
   @@index([groupId])
@@ -454,19 +482,124 @@ model Conversation {
 }
 
 model ChatMessage {
-  id             String       @id @default(cuid())
+  id             String              @id @default(cuid())
   conversationId String
-  senderId       String       // User ID or Member ID
+  senderId       String              // User ID or Member ID
   senderName     String
-  senderRole     String       // OWNER, MANAGER, MEMBER, ADMIN
+  senderRole     String              // OWNER, MANAGER, MEMBER, ADMIN, SYSTEM
   content        String
-  isAnnouncement Boolean      @default(false)
-  createdAt      DateTime     @default(now())
+  messageType    String              @default("TEXT") // TEXT, SYSTEM, CARD_SCHEDULE, CARD_ATTENDANCE, CARD_POLL, CARD_ANNOUNCEMENT, CARD_PAYMENT, CARD_FILE
+  isAnnouncement Boolean             @default(false)
+  replyToId      String?
+  isEdited       Boolean             @default(false)
+  editedAt       DateTime?
+  isDeleted      Boolean             @default(false)
+  isPinned       Boolean             @default(false)
+  pinnedAt       DateTime?
+  pinnedById     String?
+  pinnedByName   String?
+  cardPayload    String?             // JSON string for business cards (schedule, attendance, poll, etc.)
+  createdAt      DateTime            @default(now())
 
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  replyTo        ChatMessage?        @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        ChatMessage[]       @relation("MessageReplies")
+  attachments    MessageAttachment[]
+  reactions      MessageReaction[]
 
   @@index([conversationId])
   @@index([createdAt])
+  @@index([replyToId])
+  @@index([isPinned])
+}
+
+model MessageAttachment {
+  id        String      @id @default(cuid())
+  messageId String
+  fileName  String
+  fileUrl   String
+  fileType  String      // e.g. image/jpeg, application/pdf
+  fileSize  Int         // bytes
+  createdAt DateTime    @default(now())
+
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+model MessageReaction {
+  id        String      @id @default(cuid())
+  messageId String
+  userId    String
+  userName  String
+  emoji     String      // "👍", "❤️", "🎉", "🔥", "😂"
+  createdAt DateTime    @default(now())
+
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId])
+  @@index([userId])
+}
+
+model GroupPoll {
+  id             String       @id @default(cuid())
+  conversationId String
+  messageId      String?      @unique
+  creatorId      String
+  creatorName    String
+  question       String
+  isMultiple     Boolean      @default(false)
+  isClosed       Boolean      @default(false)
+  closedAt       DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  options        PollOption[]
+  votes          PollVote[]
+
+  @@index([conversationId])
+}
+
+model PollOption {
+  id        String     @id @default(cuid())
+  pollId    String
+  text      String
+  createdAt DateTime   @default(now())
+
+  poll      GroupPoll  @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes     PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id        String     @id @default(cuid())
+  pollId    String
+  optionId  String
+  userId    String
+  userName  String
+  createdAt DateTime   @default(now())
+
+  poll      GroupPoll  @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([pollId, optionId, userId])
+  @@index([pollId])
+  @@index([userId])
+}
+
+model GroupReadState {
+  id                String   @id @default(cuid())
+  groupId           String
+  userId            String
+  lastReadMessageId String?
+  lastReadAt        DateTime @default(now())
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
 }
 
 model PolicyDocument {
@@ -494,4 +627,489 @@ model PolicyAcceptance {
   @@unique([userId, policyId, version])
   @@index([userId])
 }
+
+model Service {
+  id          String   @id @default(cuid())
+  groupId     String
+  name        String
+  code        String   // e.g. SVC-ELEC, SVC-COURT-01
+  category    String   @default("GENERAL") // RENTAL, SPORTS, EDUCATION, UTILITY, GENERAL
+  billingType String   @default("MONTHLY") // FIXED_ONE_TIME, DAILY, WEEKLY, MONTHLY, PER_SESSION, PER_HOUR, METERED, PACKAGE, SURCHARGE
+  unit        String   @default("tháng") // kWh, m3, giờ, buổi, tháng, người
+  unitPrice   Int      @default(0) // VND integer
+  description String?
+  isActive    Boolean  @default(true)
+  metadata    String?  // JSON configuration: tiered pricing, peak hours, rules
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  lineItems   InvoiceLineItem[]
+
+  @@unique([groupId, code])
+  @@index([groupId])
+  @@index([category])
+  @@index([isActive])
+}
+
+model InvoiceLineItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  serviceId   String?
+  title       String
+  unit        String?
+  quantity    Float    @default(1)
+  unitPrice   Int      // Snapshot VND
+  amount      Int      // Snapshot total = quantity * unitPrice
+  metadata    String?  // JSON details e.g. previousReading, currentReading, courtTime
+  createdAt   DateTime @default(now())
+
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  service     Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId])
+  @@index([serviceId])
+}
+
+model MeterReading {
+  id            String   @id @default(cuid())
+  groupId       String
+  memberId      String?
+  roomCode      String   // e.g. P.101, P.202
+  billingMonth  String   // "2026-10"
+  prevElectric  Float    @default(0)
+  currElectric  Float    @default(0)
+  electricUsage Float    @default(0)
+  electricRate  Int      @default(3500)
+  electricTotal Int      @default(0)
+  prevWater     Float    @default(0)
+  currWater     Float    @default(0)
+  waterUsage    Float    @default(0)
+  waterRate     Int      @default(25000)
+  waterTotal    Int      @default(0)
+  meterImageUrl String?
+  note          String?
+  status        String   @default("PENDING") // PENDING, INVOICED
+  invoiceId     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  group         Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  member        Member?  @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@unique([groupId, roomCode, billingMonth])
+  @@index([groupId])
+  @@index([memberId])
+  @@index([billingMonth])
+}
+
+model SportsBooking {
+  id             String    @id @default(cuid())
+  groupId        String
+  memberId       String?
+  customerName   String
+  customerPhone  String?
+  courtName      String    // Sân Pickleball 1
+  courtType      String    @default("STANDARD") // INDOOR, OUTDOOR, VIP
+  bookingDate    DateTime  @db.Date
+  startTime      String    // "18:00"
+  endTime        String    // "20:00"
+  actualCheckIn  DateTime?
+  actualCheckOut DateTime?
+  status         String    @default("RESERVED") // RESERVED, CHECKED_IN, CHECKED_OUT, CANCELLED, NO_SHOW
+  courtPrice     Int       @default(0)
+  overtimeFee    Int       @default(0)
+  surchargeFee   Int       @default(0)
+  totalAmount    Int       @default(0)
+  paidAmount     Int       @default(0)
+  isPaid         Boolean   @default(false)
+  invoiceId      String?
+  qrToken        String    @unique @default(cuid())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  group          Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  member         Member?   @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([groupId])
+  @@index([memberId])
+  @@index([bookingDate])
+  @@index([status])
+  @@index([qrToken])
+}
+
+model RentalContract {
+  id                String    @id @default(cuid())
+  groupId           String
+  memberId          String
+  roomNumber        String    // e.g. "P.202"
+  contractCode      String    @unique // e.g. "HD-202-01"
+  monthlyRent       Int       // VND
+  depositAmount     Int       @default(0)
+  startDate         DateTime  @db.Date
+  endDate           DateTime? @db.Date
+  billingDayOfMonth Int       @default(5)
+  status            String    @default("ACTIVE") // ACTIVE, EXPIRING_SOON, TERMINATED
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  group             Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  member            Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([memberId])
+  @@index([roomNumber])
+  @@index([status])
+}
+
+model EducationalClass {
+  id            String   @id @default(cuid())
+  groupId       String
+  className     String   // e.g. "Lớp Toán 9A"
+  subject       String   // e.g. "Toán học"
+  courseType    String   @default("MONTHLY") // MONTHLY, PACKAGE, PER_SESSION
+  teacherName   String?
+  room          String?
+  schedule      String?  // "T3, T5: 18:00 - 19:30"
+  maxCapacity   Int      @default(30)
+  feePerPeriod  Int      @default(0)
+  status        String   @default("ACTIVE") // ACTIVE, COMPLETED, ARCHIVED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  group         Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([className])
+  @@index([status])
+}
+
+model ActionQrCode {
+  id          String   @id @default(cuid())
+  token       String   @unique // Cryptographic opaque token e.g. "tr_act_ckx982..."
+  shortCode   String   @unique // 6-8 char code for manual fallback e.g. "ACT-8921"
+  actionType  String   // ATTENDANCE, JOIN_SPACE, JOIN_GROUP, PAYMENT, SHIFT_REGISTER, SHIFT_CHECK_IN, SHIFT_CHECK_OUT, BOOKING, EVENT_REGISTER
+  groupId     String
+  contextType String?  // CLASS, SESSION, INVOICE, BOOKING, SHIFT, GENERAL
+  contextId   String?  // Reference ID of specific context
+  title       String
+  description String?
+  metadata    String?  // JSON string
+  expiresAt   DateTime
+  isRevoked   Boolean  @default(false)
+  usageCount  Int      @default(0)
+  maxUsage    Int?     // null = unlimited usage
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([actionType])
+  @@index([token])
+  @@index([shortCode])
+  @@index([expiresAt])
+}
+
+model SpaceJoinRequest {
+  id          String   @id @default(cuid())
+  groupId     String
+  userId      String
+  userName    String
+  userEmail   String?
+  userPhone   String?
+  message     String?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED, CANCELLED
+  reviewedBy  String?
+  reviewNote  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([userId])
+  @@index([status])
+}
+
+model WorkShift {
+  id          String            @id @default(cuid())
+  groupId     String
+  name        String            // e.g. "Ca sáng Lễ tân & Huấn luyện viên"
+  shiftDate   DateTime          @db.Date
+  startTime   String            // "08:00"
+  endTime     String            // "12:00"
+  location    String?
+  maxSlots    Int               @default(2)
+  status      String            @default("OPEN") // OPEN, CLOSED, CANCELLED
+  description String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  group       Group             @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  assignments ShiftAssignment[]
+
+  @@index([groupId])
+  @@index([shiftDate])
+  @@index([status])
+}
+
+model ShiftAssignment {
+  id             String    @id @default(cuid())
+  shiftId        String
+  groupId        String
+  userId         String
+  userName       String
+  status         String    @default("APPROVED") // PENDING, APPROVED, REJECTED, CANCELLED
+  checkInTime    DateTime?
+  checkOutTime   DateTime?
+  checkInSource  String?   // KIOSK, MOBILE_QR, MANUAL
+  checkOutSource String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  shift          WorkShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  group          Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, userId])
+  @@index([groupId])
+  @@index([userId])
+  @@index([status])
+}
+
+model TemporaryAccount {
+  id             String    @id @default(cuid())
+  identifier     String    @unique // e.g. "TR-TEMP-948210"
+  name           String
+  phone          String?
+  email          String?
+  groupId        String
+  ownerId        String
+  status         String    @default("CREATED") // CREATED, PENDING_ACTIVATION, ACTIVE_TEMPORARY, CLAIMED, EXPIRED, REVOKED, DISABLED
+  activationCode String    @unique // 6-digit code e.g. "ACT-849201"
+  activationToken String   @unique // URL token
+  claimedUserId  String?
+  claimedAt      DateTime?
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  revokedReason  String?
+  renewalCount   Int       @default(0)
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  group          Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  claimedUser    User?     @relation("ClaimedUser", fields: [claimedUserId], references: [id], onDelete: SetNull)
+
+  @@index([groupId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([activationCode])
+  @@index([activationToken])
+  @@index([expiresAt])
+}
+
+model DigitalContract {
+  id                    String                   @id @default(cuid())
+  contractCode          String                   @unique // e.g. "HD-2026-8921"
+  groupId               String
+  title                 String
+  templateType          String                   // RENTAL, EDUCATION, SPORTS, GENERAL
+  status                String                   @default("DRAFT") // DRAFT, PENDING_PARTY_B, READY_TO_SIGN, PARTIALLY_SIGNED, COMPLETED, EXPIRED, CANCELLED
+  version               Int                      @default(1)
+  ownerId               String                   // Party A
+  memberId              String?                  // Party B Member ID
+  partyBUserId          String?                  // Party B User ID
+  partyBName            String
+  partyBPhone           String?
+  partyBIdCard          String?                  // CCCD / ID Card
+  partyBAddress         String?
+  effectiveDate         DateTime?                @db.Date
+  expirationDate        DateTime?                @db.Date
+  contentHtml           String                   // Formatted contract body
+  contentHash           String?                  // SHA-256 integrity hash
+  fieldsJson            String?                  // Dynamic placeholder key-values
+  partyARequiredFields  String?                  // JSON array
+  partyBRequiredFields  String?                  // JSON array
+  partyBCompletedFields Boolean                  @default(false)
+  docxUrl               String?                  // Exported DOCX path
+  pdfUrl                String?                  // Exported PDF path
+  signatureLevel        String                   @default("LEVEL_2_ESIGN") // LEVEL_1_CONFIRMATION, LEVEL_2_ESIGN, LEVEL_3_DIGITAL_CERT
+  isCompleted           Boolean                  @default(false)
+  completedAt           DateTime?
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+
+  group                 Group                    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  signatures            ContractSignature[]
+  versions              ContractVersionHistory[]
+
+  @@index([groupId])
+  @@index([ownerId])
+  @@index([memberId])
+  @@index([partyBUserId])
+  @@index([status])
+  @@index([contractCode])
+}
+
+model ContractSignature {
+  id                 String          @id @default(cuid())
+  contractId         String
+  signerType         String          // PARTY_A, PARTY_B, GUARDIAN
+  signerId           String          // User ID
+  signerName         String
+  signerRole         String
+  signatureType      String          @default("DRAWING") // DRAWING, TYPING, OTP_CONFIRMED, CA_CERTIFICATE
+  signatureData      String?         // Base64 PNG signature or Cert ID
+  ipAddress          String?
+  userAgent          String?
+  signedContentHash  String          // SHA-256 hash at signing time
+  signedAt           DateTime        @default(now())
+  caProvider         String?         // VNPT, Viettel, FPT
+  caCertSerial       String?
+
+  contract           DigitalContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+  @@index([signerId])
+  @@index([signerType])
+}
+
+model ContractVersionHistory {
+  id              String          @id @default(cuid())
+  contractId      String
+  version         Int
+  changedById     String
+  changedByName   String
+  changeSummary   String
+  snapshotContent String
+  createdAt       DateTime        @default(now())
+
+  contract        DigitalContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+  @@index([version])
+}
+
+model SpaceClause {
+  id                     String                   @id @default(cuid())
+  groupId                String
+  clauseType             String                   // RENTAL_RULES, TUITION_POLICY, SPORTS_REGULATION, GENERAL_TERMS
+  title                  String
+  version                Int                      @default(1)
+  content                String
+  previousContent        String?
+  changeReason           String?
+  effectiveDate          DateTime                 @default(now())
+  isActive               Boolean                  @default(true)
+  requiresReacceptance   Boolean                  @default(false)
+  createdById            String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+
+  group                  Group                    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  acceptances            SpaceClauseAcceptance[]
+
+  @@index([groupId])
+  @@index([clauseType])
+  @@index([isActive])
+}
+
+model SpaceClauseAcceptance {
+  id              String      @id @default(cuid())
+  clauseId        String
+  groupId         String
+  userId          String
+  userName        String
+  versionAccepted Int
+  ipAddress       String?
+  acceptedAt      DateTime    @default(now())
+
+  clause          SpaceClause @relation(fields: [clauseId], references: [id], onDelete: Cascade)
+
+  @@unique([clauseId, userId, versionAccepted])
+  @@index([clauseId])
+  @@index([groupId])
+  @@index([userId])
+}
+
+model PricingHistory {
+  id            String   @id @default(cuid())
+  groupId       String
+  itemType      String   // DEFAULT_FEE, SERVICE, SURCHARGE, METER_RATE
+  itemId        String?
+  itemName      String
+  oldPrice      Int
+  newPrice      Int
+  currency      String   @default("VND")
+  effectiveFrom DateTime @default(now())
+  reason        String
+  changedById   String
+  changedByName String
+  createdAt     DateTime @default(now())
+
+  group         Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([itemType])
+  @@index([effectiveFrom])
+}
+
+model DocumentOcrJob {
+  id              String   @id @default(cuid())
+  groupId         String
+  userId          String
+  fileName        String
+  fileUrl         String
+  fileType        String   // image/jpeg, image/png, application/pdf
+  status          String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  rawText         String?
+  extractedFields String?  // JSON string
+  confidenceScore Float?
+  templateMapped  String?  // RENTAL_CONTRACT, EDUCATION_AGREEMENT, etc.
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  group           Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([userId])
+  @@index([status])
+}
+
+model SurchargeProposal {
+  id              String    @id @default(cuid())
+  groupId         String
+  memberId        String
+  title           String    // e.g. "Phí vệ sinh đột xuất", "Bồi hoàn thiết bị"
+  category        String    // PRE_AGREED, NEW_INCIDENTAL, INDEMNITY_VIOLATION
+  amount          Int       // VND integer
+  reason          String
+  evidenceUrl     String?
+  clauseReference String?
+  status          String    @default("PROPOSED") // DRAFT, PROPOSED, WAITING_FOR_PARTY_B, ACCEPTED, REJECTED, DISPUTED, CANCELLED
+  proposedById    String
+  proposedByName  String
+  responseNote    String?
+  respondedAt     DateTime?
+  invoicedAt      DateTime?
+  invoiceId       String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  member          Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([memberId])
+  @@index([status])
+  @@index([category])
+}
+
 

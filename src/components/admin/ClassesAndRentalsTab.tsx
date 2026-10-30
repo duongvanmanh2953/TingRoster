@@ -191,7 +191,7 @@ export function ClassesAndRentalsTab({ initialType = 'CLASSES' }: ClassesAndRent
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-[#F9FAFB] dark:bg-[#0B0F19]">
+              <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-xs font-semibold text-slate-500 bg-[#F9FAFB] dark:bg-[#0B0F19]">
                 <th className="py-3 px-3">Tên lớp học / Môn học</th>
                 <th className="py-3 px-3">Cơ sở / Giáo viên</th>
                 <th className="py-3 px-3">Sĩ số học viên</th>
@@ -226,7 +226,7 @@ export function ClassesAndRentalsTab({ initialType = 'CLASSES' }: ClassesAndRent
                     </span>
                   </td>
                   <td className="py-3 px-3">
-                    <Chip label="ĐANG DẠY" size="small" sx={{ bgcolor: '#ECFDF3', color: '#067647', fontWeight: 700 }} />
+                    <Chip label="Đang dạy" size="small" sx={{ bgcolor: '#ECFDF3', color: '#067647', fontWeight: 600 }} />
                   </td>
                 </tr>
               ))}
@@ -240,7 +240,7 @@ export function ClassesAndRentalsTab({ initialType = 'CLASSES' }: ClassesAndRent
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-[#F9FAFB] dark:bg-[#0B0F19]">
+              <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-xs font-semibold text-slate-500 bg-[#F9FAFB] dark:bg-[#0B0F19]">
                 <th className="py-3 px-3">Khu trọ / Bất động sản</th>
                 <th className="py-3 px-3">Chủ cơ sở quản lý</th>
                 <th className="py-3 px-3">Tỷ lệ lấp đầy phòng</th>
@@ -279,7 +279,7 @@ export function ClassesAndRentalsTab({ initialType = 'CLASSES' }: ClassesAndRent
                     )}
                   </td>
                   <td className="py-3 px-3">
-                    <Chip label="HOẠT ĐỘNG" size="small" sx={{ bgcolor: '#EFF8FF', color: '#175CD3', fontWeight: 700 }} />
+                    <Chip label="Đang hoạt động" size="small" sx={{ bgcolor: '#EFF8FF', color: '#175CD3', fontWeight: 600 }} />
                   </td>
                 </tr>
               ))}

@@ -437,7 +437,7 @@ export default function InvoicesPage() {
         ) : invoices.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F8FAFC] dark:bg-[#111726] border-b border-[#E4E7EC] dark:border-[#1E293B] text-[#475467] dark:text-slate-400 uppercase font-bold tracking-wider text-[11px]">
+              <thead className="bg-[#F8FAFC] dark:bg-[#111726] border-b border-[#E4E7EC] dark:border-[#1E293B] text-slate-600 dark:text-slate-400 font-semibold text-xs">
                 <tr>
                   <th className="py-3 px-4">Mã thu</th>
                   <th className="py-3 px-4">Học viên</th>

@@ -177,8 +177,8 @@ export default function BillingWalletPage() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
               Gói dịch vụ & Số dư Ví TingRoster
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#3344D6] text-white uppercase tracking-wider">
-              Fintech Billing
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#3344D6] text-white whitespace-nowrap">
+              Ví dịch vụ
             </span>
           </div>
           <p className="text-sm text-neutral-500 mt-1">
@@ -259,18 +259,18 @@ export default function BillingWalletPage() {
               </div>
 
               <div className="text-right">
-                <span className="font-extrabold text-base tracking-wider block bg-gradient-to-r from-blue-200 to-indigo-100 bg-clip-text text-transparent">
+                <span className="font-extrabold text-base tracking-wide block text-white">
                   TINGROSTER
                 </span>
-                <span className="text-[9px] font-bold tracking-widest text-slate-300 block uppercase">
-                  Service Debit Card
+                <span className="text-[10px] font-semibold text-slate-300 block">
+                  Thẻ dịch vụ lưu ký
                 </span>
               </div>
             </div>
 
             {/* Middle: Embossed Balance */}
             <div className="my-3 relative z-10 space-y-1">
-              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-medium block">
+              <span className="text-xs text-slate-300 font-medium block">
                 Số dư dịch vụ khả dụng
               </span>
               <div className="text-3xl font-extrabold tabular-nums tracking-tight font-mono text-white drop-shadow-sm">
@@ -417,7 +417,7 @@ export default function BillingWalletPage() {
 
           {/* PRO PLAN */}
           <div className="bg-white rounded-2xl border-2 border-[#3344D6] p-6 shadow-sm relative flex flex-col justify-between space-y-4">
-            <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#3344D6] text-white text-[10px] font-bold uppercase tracking-wider">
+            <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#3344D6] text-white text-[10px] font-bold whitespace-nowrap">
               Khuyên dùng
             </span>
             <div className="space-y-3">
@@ -444,7 +444,7 @@ export default function BillingWalletPage() {
 
             <button
               onClick={() => handleOpenBuyPlan('PRO', 299000)}
-              className="w-full py-2.5 rounded-xl bg-[#3344D6] hover:bg-[#2538D9] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 rounded-xl bg-[#3344D6] hover:bg-[#2538D9] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
               <QrCode size={16} />
               <span>Quét VietQR mua gói PRO</span>
@@ -453,7 +453,7 @@ export default function BillingWalletPage() {
 
           {/* ENTERPRISE PLAN */}
           <div className="bg-white rounded-2xl border-2 border-[#6D5CE8] p-6 shadow-sm relative flex flex-col justify-between space-y-4">
-            <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold uppercase tracking-wider">
+            <span className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-full bg-[#6D5CE8] text-white text-[10px] font-bold whitespace-nowrap">
               Đa cơ sở & Chuỗi
             </span>
             <div className="space-y-3">

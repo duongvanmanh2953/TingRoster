@@ -400,7 +400,7 @@ export default function AiAssistantPage() {
           {/* Quick Prompts Panel */}
           <div className="lg:col-span-1 bg-white rounded-2xl border border-[#E4E7EC] p-4 flex flex-col justify-between shadow-xs">
             <div className="space-y-3">
-              <h3 className="text-xs font-black text-[#101828] uppercase tracking-wider">Hỏi nhanh hệ thống</h3>
+              <h3 className="text-xs font-bold text-[#101828]">Hỏi nhanh hệ thống</h3>
               <div className="space-y-2">
                 {[
                   {

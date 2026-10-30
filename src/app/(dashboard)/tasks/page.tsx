@@ -155,15 +155,9 @@ export default function TasksPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Quản lý công việc hàng ngày
-            </h1>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#2538D9] text-white uppercase tracking-wider flex items-center gap-1">
-              <Sparkles className="w-3 h-3" />
-              <span>REACTBITS CARDS</span>
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Quản lý công việc hàng ngày
+          </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
             Theo dõi danh sách nhắc việc, gạch nợ tự động và các đầu việc vận hành cơ sở.
           </p>
@@ -171,21 +165,21 @@ export default function TasksPage() {
 
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1D2DB0] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2538D9] hover:bg-[#1D2DB0] text-white text-xs font-bold shadow-md shadow-[#2538D9]/25 transition-all whitespace-nowrap"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 shrink-0" />
           <span>Thêm công việc</span>
         </button>
       </div>
 
-      {/* Top 4 Spotlight Metric Cards */}
+      {/* Top 4 Metric Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <SpotlightCard
           onClick={() => setActiveTab('all')}
           spotlightColor="rgba(37, 56, 217, 0.15)"
           className={`p-4 cursor-pointer border ${activeTab === 'all' ? 'border-[#2538D9] ring-1 ring-[#2538D9]/30' : ''}`}
         >
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Tổng việc</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">Tổng việc</span>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-black text-slate-900 dark:text-white">{tasks.length}</span>
             <span className="text-xs font-semibold text-slate-500">việc</span>
@@ -197,7 +191,7 @@ export default function TasksPage() {
           spotlightColor="rgba(99, 102, 241, 0.15)"
           className={`p-4 cursor-pointer border ${activeTab === 'today' ? 'border-indigo-500 ring-1 ring-indigo-500/30' : ''}`}
         >
-          <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider block">Hôm nay</span>
+          <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 block">Hôm nay</span>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{countToday}</span>
             <span className="text-xs font-semibold text-indigo-400">cần làm</span>
@@ -209,7 +203,7 @@ export default function TasksPage() {
           spotlightColor="rgba(245, 158, 11, 0.15)"
           className={`p-4 cursor-pointer border ${activeTab === 'week' ? 'border-amber-500 ring-1 ring-amber-500/30' : ''}`}
         >
-          <span className="text-[11px] font-bold text-amber-500 uppercase tracking-wider block">Quan trọng</span>
+          <span className="text-xs font-medium text-amber-600 dark:text-amber-400 block">Quan trọng</span>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-black text-amber-600 dark:text-amber-400">{countStarred}</span>
             <span className="text-xs font-semibold text-amber-500">gắn sao</span>
@@ -221,7 +215,7 @@ export default function TasksPage() {
           spotlightColor="rgba(16, 185, 129, 0.15)"
           className={`p-4 cursor-pointer border ${activeTab === 'completed' ? 'border-emerald-500 ring-1 ring-emerald-500/30' : ''}`}
         >
-          <span className="text-[11px] font-bold text-emerald-500 uppercase tracking-wider block">Đã xong</span>
+          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 block">Đã xong</span>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{countCompleted}</span>
             <span className="text-xs font-semibold text-emerald-500">hoàn thành</span>

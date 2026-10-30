@@ -106,7 +106,7 @@ export function Logo({
           </span>
           {showBadge && badgeText && (
             <span
-              className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wider mt-1 ${badgeStyle}`}
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md inline-flex items-center whitespace-nowrap select-none mt-1 ${badgeStyle}`}
             >
               {badgeText}
             </span>
@@ -162,7 +162,7 @@ export function Logo({
         {showBadge && badgeText && (
           <div className="flex items-center mt-1">
             <span
-              className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wider leading-none ${badgeStyle}`}
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md inline-flex items-center whitespace-nowrap select-none leading-none ${badgeStyle}`}
             >
               {badgeText}
             </span>

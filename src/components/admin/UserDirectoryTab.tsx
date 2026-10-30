@@ -204,7 +204,7 @@ export function UserDirectoryTab({ users = [], onActionToast }: UserDirectoryTab
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-[#F9FAFB] dark:bg-[#0B0F19]">
+            <tr className="border-b border-[#E5E7EB] dark:border-slate-800 text-xs font-semibold text-slate-500 bg-[#F9FAFB] dark:bg-[#0B0F19]">
               <th className="py-3 px-3">Người dùng / Định danh</th>
               <th className="py-3 px-3">Email (Masked)</th>
               <th className="py-3 px-3">Số điện thoại</th>
@@ -237,7 +237,7 @@ export function UserDirectoryTab({ users = [], onActionToast }: UserDirectoryTab
                 </td>
                 <td className="py-3 px-3">
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap select-none ${
                       user.role === 'ADMIN'
                         ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
                         : 'bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-indigo-400 border border-blue-200 dark:border-blue-800'
@@ -251,7 +251,7 @@ export function UserDirectoryTab({ users = [], onActionToast }: UserDirectoryTab
                 </td>
                 <td className="py-3 px-3">
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap select-none ${
                       user.status === 'ACTIVE'
                         ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200'
                         : 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200'
