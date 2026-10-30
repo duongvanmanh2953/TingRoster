@@ -183,7 +183,7 @@ export function AdminSidebar({
           label: 'Cấu hình các phần & Bảng giá',
           icon: SlidersHorizontal,
           badge: 'Mới',
-          badgeColor: 'bg-indigo-500/20 text-indigo-300',
+          badgeColor: 'bg-black-500/20 text-indigo-300',
         },
       ],
     },

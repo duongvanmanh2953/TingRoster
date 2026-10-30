@@ -101,7 +101,7 @@ function ContractsContent() {
       {/* Header */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-3xl p-6 md:p-8 shadow-sm">
         <div className="space-y-3 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold backdrop-blur-xs border border-indigo-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black-500/20 text-indigo-300 text-xs font-semibold backdrop-blur-xs border border-indigo-500/30">
             <Shield className="w-3.5 h-3.5 text-indigo-400" />
             <span>Cổng Ký Kết & Hồ Sơ Điện Tử Thành Viên</span>
           </div>

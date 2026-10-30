@@ -638,7 +638,7 @@ export function QuickCreateInvoiceModal({
                 </div>
 
                 {/* Total Line Items Summary Banner */}
-                <div className="flex items-center justify-between p-2.5 rounded-lg bg-[rgb(70 0 241 / 27%)] dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/50">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-[rgb(70 0 241 / 27%)] dark:bg-black-950/30 border border-indigo-200/50 dark:border-indigo-800/50">
                   <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
                     Tổng cộng hóa đơn:
                   </span>

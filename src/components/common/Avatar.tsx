@@ -139,7 +139,7 @@ interface AvatarProps {
 
 const COLOR_PALETTES = [
   { bg: 'bg-blue-100 text-[#2538D9] border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-900' },
-  { bg: 'bg-indigo-100 text-[#4353EB] border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-900' },
+  { bg: 'bg-black-100 text-[#4353EB] border-indigo-200 dark:bg-black-950/50 dark:text-indigo-300 dark:border-indigo-900' },
   { bg: 'bg-violet-100 text-[#6D5CE8] border-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:border-violet-900' },
   { bg: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-900' },
   { bg: 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-950/50 dark:text-teal-300 dark:border-teal-900' },
@@ -382,7 +382,7 @@ export function AvatarPickerModal({
       >
         <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] dark:border-[#1E293B]">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-400">
+            <span className="p-1.5 rounded-lg bg-black-50 dark:bg-black-950/60 text-[#2538D9] dark:text-indigo-400">
               <Smile className="w-4 h-4" />
             </span>
             <h3 className="text-sm font-bold text-[#101828] dark:text-[#F8FAFC]">

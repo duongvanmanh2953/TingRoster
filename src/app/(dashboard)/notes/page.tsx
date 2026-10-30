@@ -73,7 +73,7 @@ const INITIAL_NOTES: Note[] = [
     ],
     date: '21/04/2025',
     borderColor: 'border-indigo-500/30',
-    accentBg: 'bg-indigo-950/20',
+    accentBg: 'bg-black-950/20',
   },
 ];
 
@@ -94,7 +94,7 @@ export default function NotesPage() {
       content: newContent.split('\n').filter(Boolean),
       date: 'Vừa xong',
       borderColor: 'border-indigo-500/30',
-      accentBg: 'bg-indigo-950/20',
+      accentBg: 'bg-black-950/20',
     };
 
     setNotes([newNote, ...notes]);

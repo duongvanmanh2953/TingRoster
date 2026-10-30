@@ -170,7 +170,7 @@ export function LogoCustomizer({
           </p>
         </div>
 
-        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex-shrink-0">
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black-50 dark:bg-black-950/60 text-[#2538D9] dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 flex-shrink-0">
           Tùy chỉnh
         </span>
       </div>

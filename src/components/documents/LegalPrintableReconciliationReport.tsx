@@ -58,7 +58,7 @@ export function LegalPrintableReconciliationReport({
         {/* Screen Controls Header (Hidden on Print) */}
         <div className="no-print p-4 bg-white dark:bg-[#111726] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-indigo-50 text-[#2538D9] dark:bg-indigo-950 dark:text-indigo-400">
+            <span className="p-1.5 rounded-lg bg-black-50 text-[#2538D9] dark:bg-black-950 dark:text-indigo-400">
               <BarChart3 className="w-5 h-5" />
             </span>
             <div>

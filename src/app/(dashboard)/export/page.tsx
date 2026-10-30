@@ -201,7 +201,7 @@ export default function ExportCenterPage() {
                     onClick={() => setSelectedReportId(rep.id)}
                     className={`p-4 rounded-xl border cursor-pointer transition-all duration-150 flex items-start justify-between gap-3 ${
                       isSelected
-                        ? 'border-[#2538D9] dark:border-indigo-400 bg-blue-50/80 dark:bg-indigo-950/60 ring-1 ring-[#2538D9]/40 dark:ring-indigo-400/50 shadow-xs'
+                        ? 'border-[#2538D9] dark:border-indigo-400 bg-blue-50/80 dark:bg-black-950/60 ring-1 ring-[#2538D9]/40 dark:ring-indigo-400/50 shadow-xs'
                         : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 bg-white dark:bg-[#131C2E]'
                     }`}
                   >
@@ -232,7 +232,7 @@ export default function ExportCenterPage() {
                       <div
                         className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
                           isSelected
-                            ? 'border-[#2538D9] dark:border-indigo-400 bg-[#2538D9] dark:bg-indigo-500'
+                            ? 'border-[#2538D9] dark:border-indigo-400 bg-[#2538D9] dark:bg-black-500'
                             : 'border-slate-300 dark:border-slate-500 bg-transparent'
                         }`}
                       >
@@ -269,7 +269,7 @@ export default function ExportCenterPage() {
                     key={t.id}
                     className={`flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-colors ${
                       isChecked
-                        ? 'border-[#2538D9] dark:border-indigo-400 bg-blue-50/80 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-200 font-bold shadow-xs'
+                        ? 'border-[#2538D9] dark:border-indigo-400 bg-blue-50/80 dark:bg-black-950/60 text-[#2538D9] dark:text-indigo-200 font-bold shadow-xs'
                         : 'border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 bg-white dark:bg-[#131C2E] hover:bg-slate-50 dark:hover:bg-slate-800/80'
                     }`}
                   >

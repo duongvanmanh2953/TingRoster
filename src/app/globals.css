@@ -326,7 +326,7 @@ input, textarea, select {
 
 /* Tinted highlight containers in dark mode */
 .dark [class*="bg-blue-50"],
-.dark [class*="bg-indigo-950"] {
+.dark [class*="bg-black-950"] {
   background-color: rgba(99, 102, 241, 0.2) !important;
   color: #E0E7FF !important;
 }

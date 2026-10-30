@@ -210,7 +210,7 @@ export default function SpaceRentalsReportPage() {
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Phòng đang thuê</span>
-            <span className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600">
+            <span className="p-2 rounded-xl bg-black-50 dark:bg-black-950/50 text-indigo-600">
               <Building2 className="w-4 h-4" />
             </span>
           </div>

@@ -417,7 +417,7 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
         <div className="relative z-10 space-y-3 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold backdrop-blur-xs border border-indigo-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black-500/20 text-indigo-300 text-xs font-semibold backdrop-blur-xs border border-indigo-500/30">
             <Shield className="w-3.5 h-3.5 text-indigo-400" />
             <span>Pháp Lý & Hợp Đồng Điện Tử TingRoster</span>
           </div>
@@ -975,7 +975,7 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
             </div>
             <button
               onClick={() => setCreateClauseModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-3.5 py-2 rounded-xl bg-black-600 hover:bg-black-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Plus className="w-4 h-4" />
               <span>Thêm điều khoản mới</span>
@@ -993,7 +993,7 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
                     <span className="text-xs font-black text-slate-900 dark:text-white">
                       {clause.title}
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black-50 text-indigo-700">
                       Phiên bản v{clause.version}.0
                     </span>
                   </div>
@@ -1317,7 +1317,7 @@ Bên B cam kết giữ gìn an ninh trật tự, phòng cháy chữa cháy và t
                 <button
                   type="submit"
                   disabled={creatingClause}
-                  className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-black-600 hover:bg-black-500 text-white font-bold cursor-pointer disabled:opacity-50"
                 >
                   {creatingClause ? 'Đang lưu...' : 'Lưu điều khoản'}
                 </button>

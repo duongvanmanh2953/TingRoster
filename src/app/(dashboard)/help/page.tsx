@@ -35,7 +35,7 @@ export default function HelpCenterPage() {
         <button
           onClick={() => setActiveCategory('QUICK_START')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeCategory === 'QUICK_START' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+            activeCategory === 'QUICK_START' ? 'bg-black-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           Checklist bắt đầu nhanh
@@ -44,7 +44,7 @@ export default function HelpCenterPage() {
         <button
           onClick={() => setActiveCategory('INTEGRATION')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeCategory === 'INTEGRATION' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+            activeCategory === 'INTEGRATION' ? 'bg-black-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           Tích hợp SePay & Casso
@@ -53,7 +53,7 @@ export default function HelpCenterPage() {
         <button
           onClick={() => setActiveCategory('FAQ')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeCategory === 'FAQ' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+            activeCategory === 'FAQ' ? 'bg-black-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           Câu hỏi thường gặp (FAQ)
@@ -62,7 +62,7 @@ export default function HelpCenterPage() {
         <button
           onClick={() => setActiveCategory('GLOSSARY')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeCategory === 'GLOSSARY' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+            activeCategory === 'GLOSSARY' ? 'bg-black-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           Giải thích thuật ngữ

@@ -402,7 +402,7 @@ export default function MemberPortalDashboard() {
                 {data.announcements.map((ann) => (
                   <div
                     key={ann.id}
-                    className="p-3.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/60 text-xs"
+                    className="p-3.5 rounded-xl bg-black-50/50 dark:bg-black-950/30 border border-indigo-100 dark:border-indigo-900/60 text-xs"
                   >
                     <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
                       <span className="font-bold text-[#2538D9] dark:text-indigo-400">{ann.conversation.title}</span>

@@ -316,7 +316,7 @@ export function SupportTicketsTab() {
                       <div className="font-semibold text-slate-900 dark:text-white truncate">{t.subject}</div>
                       <div className="text-[11px] text-slate-500 truncate mt-0.5">{t.description}</div>
                       {t.adminNote && (
-                        <div className="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded mt-1 inline-block">
+                        <div className="text-[10px] text-indigo-600 bg-black-50 px-1.5 py-0.5 rounded mt-1 inline-block">
                           Ghi chú nội bộ: {t.adminNote}
                         </div>
                       )}

@@ -136,7 +136,7 @@ export default function MemberProfilePage() {
           <div className="space-y-3 text-xs">
             <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors shadow-2xs">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-black-50 dark:bg-black-950/60 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
                   <Mail className="w-4 h-4" />
                 </div>
                 <div>

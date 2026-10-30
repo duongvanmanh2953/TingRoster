@@ -69,7 +69,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
     description: 'Gửi thẻ liên kết Cổng tra cứu và thanh toán học phí/tiền quỹ nhóm',
     icon: CreditCard,
     roleRequired: 'ANY',
-    color: 'text-[#2538D9] bg-indigo-50 dark:bg-indigo-950/50',
+    color: 'text-[#2538D9] bg-black-50 dark:bg-black-950/50',
   },
   {
     id: 'members',

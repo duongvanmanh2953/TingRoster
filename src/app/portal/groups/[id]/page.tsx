@@ -461,7 +461,7 @@ export default function StudentDedicatedSpacePage() {
                 className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition flex items-center justify-between group text-left shadow-2xs cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-black-50 text-indigo-600 flex items-center justify-center">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>

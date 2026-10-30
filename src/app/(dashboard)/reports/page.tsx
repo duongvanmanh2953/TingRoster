@@ -294,7 +294,7 @@ export default function ReportsOverviewPage() {
             className="group block bg-white dark:bg-[#111726] p-5 rounded-2xl border border-[#E4E7EC] dark:border-[#1E293B] hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all"
           >
             <div className="flex items-center justify-between mb-3">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-[#2538D9] flex items-center justify-center font-bold">
+              <div className="w-9 h-9 rounded-xl bg-black-50 dark:bg-black-950/40 text-[#2538D9] flex items-center justify-center font-bold">
                 <Landmark className="w-5 h-5" />
               </div>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">

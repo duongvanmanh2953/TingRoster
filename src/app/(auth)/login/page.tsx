@@ -322,13 +322,13 @@ export default function LoginPage() {
             </div>
 
             {/* Quick Demo Access Bar */}
-            <div className="p-3 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 space-y-1.5 text-[11px]">
+            <div className="p-3 rounded-xl bg-black-50/70 dark:bg-black-950/40 border border-indigo-100 dark:border-indigo-900/60 space-y-1.5 text-[11px]">
               <span className="font-bold text-[#2538D9] dark:text-indigo-400 block">Đăng nhập nhanh dữ liệu mẫu:</span>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('demo@tingroster.vn')}
-                  className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#0F172A] border border-indigo-200 dark:border-indigo-800 font-semibold text-[#2538D9] dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/40"
+                  className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#0F172A] border border-indigo-200 dark:border-indigo-800 font-semibold text-[#2538D9] dark:text-indigo-300 hover:bg-black-50 dark:hover:bg-black-900/40"
                 >
                   Chủ nhóm / Giáo viên (demo@tingroster.vn)
                 </button>

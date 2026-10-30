@@ -199,7 +199,7 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
             {/* Transfer Instructions & One-click Copy */}
             <div className="space-y-2.5 pt-2">
               {/* Transfer Content */}
-              <div className="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+              <div className="flex items-center justify-between p-3 bg-black-50 border border-indigo-100 rounded-xl">
                 <div>
                   <span className="text-xs text-indigo-700 block font-medium">Nội dung chuyển khoản (bắt buộc)</span>
                   <span className="text-base font-bold text-indigo-950 font-mono tracking-wider">
@@ -209,7 +209,7 @@ export function PublicPaymentCard({ invoice }: PublicPaymentCardProps) {
                 <button
                   type="button"
                   onClick={() => handleCopy(invoice.paymentCode, 'code')}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white rounded-lg transition"
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-black-600 hover:bg-black-700 active:scale-95 text-white rounded-lg transition"
                   aria-label="Sao chép nội dung chuyển khoản"
                 >
                   {copiedField === 'code' ? (

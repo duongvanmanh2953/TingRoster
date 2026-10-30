@@ -372,7 +372,7 @@ export function InvoiceExcelModal({
         {step === 'UPLOAD' && (
           <div className="space-y-6">
             {/* Guide & Sample Download Box */}
-            <div className="p-4 rounded-xl border border-indigo-100 dark:border-indigo-950 bg-indigo-50/40 dark:bg-indigo-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="p-4 rounded-xl border border-indigo-100 dark:border-indigo-950 bg-black-50/40 dark:bg-black-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <span className="text-xs font-bold text-[#2538D9] dark:text-indigo-400 flex items-center gap-1.5">
                   <Info className="w-3.5 h-3.5" />
@@ -407,7 +407,7 @@ export function InvoiceExcelModal({
               onClick={() => fileInputRef.current?.click()}
               className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#2538D9] dark:hover:border-indigo-500 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-900/30 flex flex-col items-center justify-center space-y-3"
             >
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-black-50 dark:bg-black-950/50 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center">
                 <Upload className="w-6 h-6" />
               </div>
               <div>
@@ -460,7 +460,7 @@ export function InvoiceExcelModal({
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20">
+              <div className="p-3 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-black-50/50 dark:bg-black-950/20">
                 <span className="text-[11px] font-semibold text-indigo-800 dark:text-indigo-300 block">
                   Tổng tiền dự kiến
                 </span>

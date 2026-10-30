@@ -299,7 +299,7 @@ export default function BillingWalletPage() {
 
             {/* Decorative background light refraction */}
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#3344D6]/30 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-black-500/20 rounded-full blur-2xl pointer-events-none" />
           </div>
         </div>
 

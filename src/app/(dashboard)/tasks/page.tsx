@@ -81,7 +81,7 @@ const INITIAL_TASKS: Task[] = [
     id: '6',
     title: 'Kiểm tra gia hạn gói TingRoster Pro (299k)',
     category: 'Phát triển',
-    tagColor: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 border-indigo-500/30',
+    tagColor: 'bg-black-500/15 text-indigo-600 dark:text-indigo-300 border-indigo-500/30',
     time: 'Ngày mai',
     tab: 'week',
     completed: false,

@@ -466,7 +466,7 @@ export default function MembersPage() {
                     <tr
                       key={m.id}
                       className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors ${
-                        isSelected ? 'bg-indigo-50/30 dark:bg-indigo-950/20' : ''
+                        isSelected ? 'bg-black-50/30 dark:bg-black-950/20' : ''
                       }`}
                     >
                       <td className="py-3 px-4">
@@ -510,7 +510,7 @@ export default function MembersPage() {
 
                       {/* Class / Group */}
                       <td className="py-3 px-4">
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/40 text-[#2538D9] dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-bold bg-black-50 dark:bg-black-950/40 text-[#2538D9] dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
                           {m.group.name}
                         </span>
                       </td>

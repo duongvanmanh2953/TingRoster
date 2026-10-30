@@ -431,7 +431,7 @@ export function CreateSpaceWizardModal({
                       onClick={() => handlePresetSelect(preset)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                         isSelected
-                          ? 'border-[#2538D9] bg-indigo-50/40 dark:bg-indigo-950/30 shadow-xs ring-1 ring-[#2538D9]'
+                          ? 'border-[#2538D9] bg-black-50/40 dark:bg-black-950/30 shadow-xs ring-1 ring-[#2538D9]'
                           : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 hover:border-slate-300'
                       }`}
                     >
@@ -503,7 +503,7 @@ export function CreateSpaceWizardModal({
                             onClick={() => toggleModule(module.id)}
                             className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                               isChecked
-                                ? 'border-[#2538D9]/70 bg-indigo-50/30 dark:bg-indigo-950/20 shadow-2xs'
+                                ? 'border-[#2538D9]/70 bg-black-50/30 dark:bg-black-950/20 shadow-2xs'
                                 : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/40 opacity-70 hover:opacity-100'
                             }`}
                           >

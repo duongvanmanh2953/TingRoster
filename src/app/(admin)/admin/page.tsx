@@ -501,7 +501,7 @@ export default function PlatformAdminPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Dòng tiền đối soát (GMV)</span>
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-black-50 dark:bg-black-950 text-indigo-600 flex items-center justify-center">
                       <QrCode className="w-4 h-4" />
                     </div>
                   </div>
@@ -577,7 +577,7 @@ export default function PlatformAdminPage() {
                   {/* Card 2: Neutral / Info Trial Expiry */}
                   <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 space-y-2.5 transition-all hover:border-indigo-400">
                     <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center whitespace-nowrap select-none px-2 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80">
+                      <span className="inline-flex items-center whitespace-nowrap select-none px-2 py-0.5 rounded-md text-xs font-semibold bg-black-50 dark:bg-black-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80">
                         Dùng thử sắp hết hạn
                       </span>
                       <span className="text-[11px] text-slate-600 dark:text-slate-400 font-bold">5 cơ sở (&le; 5 ngày)</span>
@@ -841,7 +841,7 @@ export default function PlatformAdminPage() {
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             t.planType === 'PRO'
-                              ? 'bg-indigo-50 text-[#3344D6] border border-indigo-200/80'
+                              ? 'bg-black-50 text-[#3344D6] border border-indigo-200/80'
                               : 'bg-slate-100 text-slate-700'
                           }`}
                         >
@@ -851,7 +851,7 @@ export default function PlatformAdminPage() {
 
                       <td className="py-3.5 px-4 text-center">
                         {t.planType === 'PRO' ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-[#3344D6] border border-indigo-200">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-black-50 text-[#3344D6] border border-indigo-200">
                             Đã nâng cấp PRO
                           </span>
                         ) : t.trialStatus === 'EXPIRED' ? (
@@ -1013,7 +1013,7 @@ export default function PlatformAdminPage() {
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                               t.planType === 'PRO'
-                                ? 'bg-indigo-50 text-[#3344D6]'
+                                ? 'bg-black-50 text-[#3344D6]'
                                 : t.trialStatus === 'TRIAL_EXPIRING'
                                 ? 'bg-amber-50 text-amber-700'
                                 : 'bg-emerald-50 text-emerald-700'

@@ -921,7 +921,7 @@ export default function DashboardLayout({
                       isChildActive
                         ? isDarkSidebar
                           ? 'text-white bg-white/[0.05]'
-                          : 'text-[#2538D9] bg-indigo-50/80 font-bold border border-indigo-100/60'
+                          : 'text-[#2538D9] bg-black-50/80 font-bold border border-indigo-100/60'
                         : isDarkSidebar
                         ? 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
                         : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-semibold'

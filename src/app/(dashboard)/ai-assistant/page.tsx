@@ -626,7 +626,7 @@ export default function AiAssistantPage() {
                 <div className="flex flex-wrap gap-1.5">
                   <button
                     onClick={() => handleLoadSample('class')}
-                    className="px-2.5 py-1 rounded-lg bg-indigo-50 text-[#2538D9] border border-indigo-100 text-[11px] font-bold hover:bg-indigo-100 transition-colors"
+                    className="px-2.5 py-1 rounded-lg bg-black-50 text-[#2538D9] border border-indigo-100 text-[11px] font-bold hover:bg-black-100 transition-colors"
                   >
                     Lớp Toán 10A
                   </button>
@@ -697,7 +697,7 @@ export default function AiAssistantPage() {
                     </p>
                   </div>
                   {parsedList.length > 0 && (
-                    <span className="px-2.5 py-1 rounded-full bg-indigo-50 text-[#2538D9] text-xs font-bold border border-indigo-100">
+                    <span className="px-2.5 py-1 rounded-full bg-black-50 text-[#2538D9] text-xs font-bold border border-indigo-100">
                       {parsedList.length} thành viên
                     </span>
                   )}
@@ -814,7 +814,7 @@ export default function AiAssistantPage() {
                     </div>
 
                     <div className="text-right">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 border border-indigo-100 text-[#2538D9] text-xs font-black">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-black-50 border border-indigo-100 text-[#2538D9] text-xs font-black">
                         <BrainCircuit className="w-3.5 h-3.5" />
                         Độ tin cậy: {item.confidence}%
                       </div>

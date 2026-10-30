@@ -72,7 +72,7 @@ export default function PomodoroPage() {
           
           {/* Mode Badge */}
           <div className="relative z-10 mb-8">
-            <span className="px-4 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-semibold text-xs tracking-wider uppercase">
+            <span className="px-4 py-1.5 rounded-full bg-black-500/20 border border-indigo-500/40 text-indigo-300 font-semibold text-xs tracking-wider uppercase">
               {currentMode === 'focus' ? 'Phiên tập trung' : 'Thời gian nghỉ ngơi'} • Vòng {currentCycle}/{cycles}
             </span>
           </div>
@@ -220,7 +220,7 @@ export default function PomodoroPage() {
                 type="button"
                 onClick={() => setSoundEnabled(!soundEnabled)}
                 className={`w-11 h-6 rounded-full transition-colors relative ${
-                  soundEnabled ? 'bg-indigo-600' : 'bg-slate-700'
+                  soundEnabled ? 'bg-black-600' : 'bg-slate-700'
                 }`}
               >
                 <span
@@ -232,7 +232,7 @@ export default function PomodoroPage() {
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-indigo-950/30 border border-indigo-500/20 text-xs text-indigo-300 space-y-1">
+          <div className="p-3.5 rounded-2xl bg-black-950/30 border border-indigo-500/20 text-xs text-indigo-300 space-y-1">
             <p className="font-semibold text-white">Mẹo tập trung:</p>
             <p className="text-[11px] text-slate-400 leading-relaxed">
               Tắt mọi thông báo điện thoại và tập trung hoàn toàn vào một mục tiêu duy nhất trong 25 phút.

@@ -146,7 +146,7 @@ export function PlatformConfigTab({ onSaveSuccess }: PlatformConfigTabProps) {
         {/* Section 1: Cấu hình Chính sách Dùng thử */}
         <SpotlightCard spotlightColor="rgba(99, 102, 241, 0.15)" className="p-5 space-y-4">
           <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-white/10">
-            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+            <div className="p-1.5 rounded-lg bg-black-500/10 text-indigo-600 dark:text-indigo-400">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>

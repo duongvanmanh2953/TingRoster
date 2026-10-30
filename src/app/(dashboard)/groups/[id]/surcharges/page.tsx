@@ -230,7 +230,7 @@ export default function SpaceSurchargesPage() {
         return <span className="text-[11px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 whitespace-nowrap">Vi phạm / Bồi hoàn</span>;
       case 'NEW_INCIDENTAL':
       default:
-        return <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 whitespace-nowrap">Phát sinh mới ngoài hợp đồng</span>;
+        return <span className="text-[11px] font-semibold text-indigo-700 bg-black-50 px-2 py-0.5 rounded border border-indigo-200 whitespace-nowrap">Phát sinh mới ngoài hợp đồng</span>;
     }
   };
 

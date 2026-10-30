@@ -526,7 +526,7 @@ export default function AutomationsPage() {
                         <div className="flex items-center gap-1.5">
                           {renderStepIcon(step.iconName)}
                           {isCurrentSim && (
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9] dark:bg-indigo-400 animate-ping" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#2538D9] dark:bg-black-400 animate-ping" />
                           )}
                           {isPastSim && (
                             <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 font-bold" />
@@ -553,7 +553,7 @@ export default function AutomationsPage() {
                       <div className="relative flex items-center justify-center">
                         <ArrowRight className={`w-4 h-4 ${isCurrentSim ? 'text-[#2538D9] dark:text-indigo-400 scale-125 transition-transform' : ''}`} />
                         {isCurrentSim && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9] dark:bg-indigo-400 absolute -top-1 animate-pulse" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2538D9] dark:bg-black-400 absolute -top-1 animate-pulse" />
                         )}
                       </div>
                     </div>

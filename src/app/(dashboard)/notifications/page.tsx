@@ -312,7 +312,7 @@ export default function NotificationsPage() {
                         {n.title}
                       </h4>
                       {!n.read && (
-                        <span className="w-2 h-2 rounded-full bg-[#3344D6] dark:bg-indigo-400"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#3344D6] dark:bg-black-400"></span>
                       )}
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">

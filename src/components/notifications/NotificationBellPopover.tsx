@@ -136,7 +136,7 @@ export function NotificationBellPopover() {
         return 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800/80';
       case 'SYSTEM':
       default:
-        return 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800/80';
+        return 'bg-black-50 dark:bg-black-950/60 border-indigo-200 dark:border-indigo-800/80';
     }
   };
 
@@ -213,7 +213,7 @@ export function NotificationBellPopover() {
                     className={`p-3.5 transition-colors cursor-pointer flex gap-3 ${
                       item.isRead
                         ? 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40 opacity-75'
-                        : 'bg-indigo-50/30 dark:bg-indigo-950/20 hover:bg-[rgb(70 0 241 / 27%)] dark:hover:bg-indigo-950/40'
+                        : 'bg-black-50/30 dark:bg-black-950/20 hover:bg-[rgb(70 0 241 / 27%)] dark:hover:bg-black-950/40'
                     }`}
                   >
                     <div
