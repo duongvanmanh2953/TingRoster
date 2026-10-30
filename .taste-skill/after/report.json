@@ -1,0 +1,3689 @@
+{
+ "url": "http://localhost:3001",
+ "at": "2026-10-30T08:26:09.798Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 10,
+   "filled": [
+    0.56,
+    0.68,
+    0.73,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.71,
+    0.76
+   ],
+   "motion": {
+    "elements": 3,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 3,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 8363,
+     "screens": 9.3,
+     "words": 1486,
+     "img": 22,
+     "video": 0,
+     "canvas": 0,
+     "svg": 45,
+     "sections": 11,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 1,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fmultidevice-suite.jpg&w=19",
+      "image?url=%2Fimages%2Ftablet-manager.jpg&w=640&q",
+      "image?url=%2Fimages%2Fkiosk-checkin.jpg&w=640&q=",
+      "image?url=%2Fimages%2Fmobile-vietqr.jpg&w=640&q="
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Điểm danh một chạm. Đối soát tự động.",
+     "words": 8,
+     "chars": 37,
+     "lines": 4,
+     "size": 60,
+     "vw": 4.2,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.33,
+     "top": 178,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Điểm danh một chạm. Đối soát tự động.",
+     "words": 8,
+     "lines": 4,
+     "size": 60,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Điểm danh một chạm. Đối soát tự động.",
+      "words": 8,
+      "chars": 37,
+      "lines": 4,
+      "size": 60,
+      "vw": 4.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.33,
+      "top": 178,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "0.2s",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 722,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "100%",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 722,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0 VNĐ",
+      "words": 2,
+      "chars": 5,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 722,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+      "words": 10,
+      "chars": 43,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 1070,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành đồng bộ trên mọi thiết bị",
+      "words": 8,
+      "chars": 34,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 1966,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Giải pháp chuyên biệt cho từng mô hình",
+      "words": 8,
+      "chars": 38,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 3494,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Ước tính hiệu quả vận hành thực tế",
+      "words": 8,
+      "chars": 34,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 4191,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.12,
+      "top": 4552,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.12,
+      "top": 4552,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.12,
+      "top": 4552,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+      "words": 9,
+      "chars": 46,
+      "lines": 2,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 4924,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Ba bước đơn giản để bắt đầu vận hành",
+      "words": 9,
+      "chars": 36,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 5264,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 5856,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Biểu phí minh bạch, không phí ẩn",
+      "words": 7,
+      "chars": 32,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.53,
+      "top": 6422,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.13,
+      "top": 6618,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.14,
+      "top": 6618,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Miễn phí",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.22,
+      "top": 6618,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.58,
+      "top": 7155,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+      "words": 11,
+      "chars": 42,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.84,
+      "top": 7833,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 20,
+     "maxLines": 4,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48,
+      60
+     ],
+     "sizeCount": 11,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 104,
+     "max": {
+      "size": 60,
+      "vw": 4.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "Điểm danh một chạm.Đối soát tự động."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.07,
+     "smallText": 16
+    },
+    "eyebrows": [
+     {
+      "text": "+1",
+      "above": "0.2s",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 10,
+      "top": 642
+     },
+     {
+      "text": "cơ sở tin dùng mỗi ngày",
+      "above": "100%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 648
+     },
+     {
+      "text": "cơ sở tin dùng mỗi ngày",
+      "above": "0 VNĐ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 648
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 4532
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 4532
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 4532
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 6582
+     },
+     {
+      "text": "Gói Chuỗi & Cơ sở lớn",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 6582
+     },
+     {
+      "text": "Gói Khởi đầu",
+      "above": "Miễn phí",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 6582
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 178,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 4111,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.59
+      },
+      {
+       "color": "#101828",
+       "share": 0.21
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      },
+      {
+       "color": "#94a3b8",
+       "share": 0.05
+      },
+      {
+       "color": "#cbd5e1",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Mở Kiosk tự phục vụ",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Phụ huynh & Hội viên",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#ffffff",
+       "bg": "#059669"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 17,
+     "inHero": 7,
+     "radius": 12,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập",
+      "Có mặt",
+      "Có mặt",
+      "Có mặt"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 28,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 1274
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2858
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 4512
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 5392
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 6012
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 6550
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 74,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 8363,
+    "margins": {
+     "left": 112,
+     "right": 112
+    },
+    "sections": [
+     {
+      "sel": "section.pt-12.pb-20",
+      "tag": "section",
+      "top": 114,
+      "height": 876,
+      "words": 169,
+      "media": 0,
+      "middle": 94,
+      "heading": {
+       "text": "Điểm danh một chạm.",
+       "size": 60,
+       "tag": "h1"
+      },
+      "left": 112,
+      "right": 154,
+      "textLeft": 112,
+      "textRight": 154,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-20.bg-white",
+      "tag": "section",
+      "top": 990,
+      "height": 896,
+      "words": 176,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 151,
+      "textLeft": 112,
+      "textRight": 151,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 1886,
+      "height": 1528,
+      "words": 191,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành đồng bộ trên mọi thiết bị",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 112,
+      "textLeft": 112,
+      "textRight": 140,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-20.bg-white",
+      "tag": "section",
+      "top": 3414,
+      "height": 697,
+      "words": 110,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Giải pháp chuyên biệt cho từng mô hình",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 329,
+      "textLeft": 112,
+      "textRight": 329,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-20.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 4111,
+      "height": 749,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Ước tính hiệu quả vận hành thực tế",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 600,
+      "textLeft": 112,
+      "textRight": 600,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 4860,
+      "height": 324,
+      "words": 39,
+      "media": 0,
+      "middle": 58,
+      "heading": {
+       "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 389,
+      "textLeft": 112,
+      "textRight": 389,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 5184,
+      "height": 592,
+      "words": 113,
+      "media": 0,
+      "middle": 101,
+      "heading": {
+       "text": "Ba bước đơn giản để bắt đầu vận hành",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 173,
+      "textLeft": 112,
+      "textRight": 173,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-white",
+      "tag": "section",
+      "top": 5776,
+      "height": 566,
+      "words": 143,
+      "media": 0,
+      "middle": 88,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 147,
+      "textLeft": 112,
+      "textRight": 147,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#bang-gia.py-20.max-w-7xl",
+      "tag": "section",
+      "top": 6342,
+      "height": 732,
+      "words": 174,
+      "media": 0,
+      "middle": 96,
+      "heading": {
+       "text": "Biểu phí minh bạch, không phí ẩn",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 112,
+      "right": 160,
+      "textLeft": 112,
+      "textRight": 160,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-20.bg-white",
+      "tag": "section",
+      "top": 7075,
+      "height": 678,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 304,
+      "right": 304,
+      "textLeft": 304,
+      "textRight": 342,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 7753,
+      "height": 376,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 182,
+      "right": 182,
+      "textLeft": 182,
+      "textRight": 182,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 8129,
+      "height": 234,
+      "words": 39,
+      "media": 0,
+      "middle": 276,
+      "heading": null,
+      "left": 93,
+      "right": 80,
+      "textLeft": 93,
+      "textRight": 80,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Điểm danh một chạm. Đối soát tự động.",
+      "size": 60,
+      "top": 178,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 112,
+      "n": 19
+     },
+     {
+      "x": 136,
+      "n": 13
+     },
+     {
+      "x": 768,
+      "n": 4
+     },
+     {
+      "x": 549,
+      "n": 3
+     },
+     {
+      "x": 560,
+      "n": 3
+     },
+     {
+      "x": 963,
+      "n": 3
+     },
+     {
+      "x": 976,
+      "n": 3
+     },
+     {
+      "x": 152,
+      "n": 2
+     },
+     {
+      "x": 304,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 51,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.13,
+    "voidBox": {
+     "x": 0,
+     "y": 300,
+     "w": 1440,
+     "h": 120
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 10,
+   "filled": [
+    0.57,
+    0.61,
+    0.61,
+    0.66,
+    0.66,
+    0.73,
+    0.67,
+    0.67,
+    0.71,
+    0.71
+   ],
+   "motion": {
+    "elements": 3,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 3,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 10143,
+     "screens": 9.9,
+     "words": 1486,
+     "img": 22,
+     "video": 0,
+     "canvas": 0,
+     "svg": 45,
+     "sections": 11,
+     "horizontalOverflow": 81,
+     "overflowCulprits": [
+      "span (+61px)",
+      "span.text-sm.text-[#475467] (+4px)"
+     ],
+     "uiFragments": 1,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fmultidevice-suite.jpg&w=82"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Điểm danh một chạm. Đối soát tự động.",
+     "words": 8,
+     "chars": 37,
+     "lines": 2,
+     "size": 48,
+     "vw": 6.3,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 248,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Điểm danh một chạm. Đối soát tự động.",
+     "words": 8,
+     "lines": 2,
+     "size": 48,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Điểm danh một chạm. Đối soát tự động.",
+      "words": 8,
+      "chars": 37,
+      "lines": 2,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 248,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "0.2s",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 620,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "100%",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.3,
+      "top": 620,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0 VNĐ",
+      "words": 2,
+      "chars": 5,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.3,
+      "top": 620,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+      "words": 10,
+      "chars": 43,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1596,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành đồng bộ trên mọi thiết bị",
+      "words": 8,
+      "chars": 34,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2952,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Giải pháp chuyên biệt cho từng mô hình",
+      "words": 8,
+      "chars": 38,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 4539,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Ước tính hiệu quả vận hành thực tế",
+      "words": 8,
+      "chars": 34,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 5316,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.21,
+      "top": 5677,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.21,
+      "top": 5677,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.21,
+      "top": 5677,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+      "words": 9,
+      "chars": 46,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 6049,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Ba bước đơn giản để bắt đầu vận hành",
+      "words": 9,
+      "chars": 36,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 6449,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 7201,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Biểu phí minh bạch, không phí ẩn",
+      "words": 7,
+      "chars": 32,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 7900,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.2,
+      "top": 8124,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.21,
+      "top": 8124,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Miễn phí",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.2,
+      "top": 8124,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 8849,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+      "words": 11,
+      "chars": 42,
+      "lines": 2,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 9527,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 20,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48
+     ],
+     "sizeCount": 10,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 90,
+     "max": {
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "Điểm danh một chạm.Đối soát tự động."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.07,
+     "smallText": 16
+    },
+    "eyebrows": [
+     {
+      "text": "+1",
+      "above": "0.2s",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 10,
+      "top": 540
+     },
+     {
+      "text": "cơ sở tin dùng mỗi ngày",
+      "above": "100%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 546
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 5657
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 5657
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 5657
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 8088
+     },
+     {
+      "text": "Gói Chuỗi & Cơ sở lớn",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 8088
+     },
+     {
+      "text": "Gói Khởi đầu",
+      "above": "Miễn phí",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 8088
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 720,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 5236,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      },
+      {
+       "color": "#131a2b",
+       "top": 5444,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.59
+      },
+      {
+       "color": "#101828",
+       "share": 0.21
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      },
+      {
+       "color": "#94a3b8",
+       "share": 0.05
+      },
+      {
+       "color": "#cbd5e1",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Mở Kiosk tự phục vụ",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 16,
+     "inHero": 3,
+     "radius": 12,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập",
+      "Có mặt"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 28,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 3784
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 5007
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 5637
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 6577
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 7397
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 8056
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 132,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 10143,
+    "margins": {
+     "left": 24,
+     "right": 24
+    },
+    "sections": [
+     {
+      "sel": "header.bg-white.dark:bg-[#0B0F19]",
+      "tag": "header",
+      "top": 1042,
+      "height": 132,
+      "words": 21,
+      "media": 0,
+      "middle": 49,
+      "heading": null,
+      "left": 76,
+      "right": 0,
+      "textLeft": 76,
+      "textRight": -56,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": true
+     },
+     {
+      "sel": "section.pt-12.pb-20",
+      "tag": "section",
+      "top": 200,
+      "height": 1316,
+      "words": 169,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Điểm danh một chạm.",
+       "size": 48,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 66,
+      "textLeft": 24,
+      "textRight": 66,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-20.bg-white",
+      "tag": "section",
+      "top": 1516,
+      "height": 1356,
+      "words": 176,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 33,
+      "textLeft": 24,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 2872,
+      "height": 1587,
+      "words": 191,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành đồng bộ trên mọi thiết bị",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-20.bg-white",
+      "tag": "section",
+      "top": 4459,
+      "height": 777,
+      "words": 110,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Giải pháp chuyên biệt cho từng mô hình",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 28,
+      "textLeft": 24,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-20.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 5236,
+      "height": 749,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Ước tính hiệu quả vận hành thực tế",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 40,
+      "textLeft": 24,
+      "textRight": 40,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 5985,
+      "height": 384,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 98,
+      "textLeft": 24,
+      "textRight": 98,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 6369,
+      "height": 752,
+      "words": 113,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Ba bước đơn giản để bắt đầu vận hành",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 44,
+      "textLeft": 24,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-white",
+      "tag": "section",
+      "top": 7121,
+      "height": 700,
+      "words": 143,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 49,
+      "textLeft": 24,
+      "textRight": 49,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#bang-gia.py-20.max-w-7xl",
+      "tag": "section",
+      "top": 7820,
+      "height": 949,
+      "words": 174,
+      "media": 0,
+      "middle": 4,
+      "heading": {
+       "text": "Biểu phí minh bạch, không phí ẩn",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 0,
+      "textLeft": 24,
+      "textRight": -4,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-20.bg-white",
+      "tag": "section",
+      "top": 8769,
+      "height": 678,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 24,
+      "right": 24,
+      "textLeft": 24,
+      "textRight": 60,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 9447,
+      "height": 424,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+       "size": 48,
+       "tag": "h2"
+      },
+      "left": 58,
+      "right": 58,
+      "textLeft": 58,
+      "textRight": 58,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 9871,
+      "height": 272,
+      "words": 39,
+      "media": 0,
+      "middle": 4,
+      "heading": null,
+      "left": 24,
+      "right": 82,
+      "textLeft": 24,
+      "textRight": 82,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Điểm danh một chạm. Đối soát tự động.",
+      "size": 48,
+      "top": 248,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 20
+     },
+     {
+      "x": 48,
+      "n": 17
+     },
+     {
+      "x": 296,
+      "n": 3
+     },
+     {
+      "x": 307,
+      "n": 3
+     },
+     {
+      "x": 544,
+      "n": 3
+     },
+     {
+      "x": 557,
+      "n": 3
+     },
+     {
+      "x": 64,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 51,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.61,
+    0.8,
+    0.81,
+    0.76,
+    0.78,
+    0.78,
+    0.77,
+    0.76,
+    0.76,
+    0.79,
+    0.74,
+    0.74
+   ],
+   "motion": {
+    "elements": 3,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 3,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 14482,
+     "screens": 17.2,
+     "words": 1468,
+     "img": 22,
+     "video": 0,
+     "canvas": 0,
+     "svg": 45,
+     "sections": 11,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 1,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Điểm danh một chạm.Đối soát tự động.",
+     "words": 7,
+     "chars": 36,
+     "lines": 3,
+     "size": 36,
+     "vw": 9.2,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1.08,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 210,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Điểm danh một chạm.Đối soát tự động.",
+     "words": 7,
+     "lines": 3,
+     "size": 36,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Điểm danh một chạm.Đối soát tự động.",
+      "words": 7,
+      "chars": 36,
+      "lines": 3,
+      "size": 36,
+      "vw": 9.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.08,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 210,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "0.2s",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.28,
+      "top": 689,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "100%",
+      "words": 1,
+      "chars": 4,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.28,
+      "top": 689,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0 VNĐ",
+      "words": 2,
+      "chars": 5,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": true,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.28,
+      "top": 689,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+      "words": 10,
+      "chars": 43,
+      "lines": 3,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1838,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Vận hành đồng bộ trên mọi thiết bị",
+      "words": 8,
+      "chars": 34,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3668,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Giải pháp chuyên biệt cho từng mô hình",
+      "words": 8,
+      "chars": 38,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 6062,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Dành cho Giáo viên & Trung tâm bồi dưỡng kiến thức",
+      "words": 11,
+      "chars": 50,
+      "lines": 3,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 700,
+      "tracking": -0.01,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.75,
+      "top": 6482,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Ước tính hiệu quả vận hành thực tế",
+      "words": 8,
+      "chars": 34,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 7226,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "60 người",
+      "words": 2,
+      "chars": 8,
+      "lines": 2,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.17,
+      "top": 7442,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.65,
+      "top": 7683,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.65,
+      "top": 7819,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.65,
+      "top": 7955,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+      "words": 9,
+      "chars": 46,
+      "lines": 2,
+      "size": 24,
+      "vw": 6.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 8315,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Ba bước đơn giản để bắt đầu vận hành",
+      "words": 9,
+      "chars": 36,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 8787,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 10079,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Biểu phí minh bạch, không phí ẩn",
+      "words": 7,
+      "chars": 32,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 11249,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Miễn phí",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.75,
+      "top": 11501,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.48,
+      "top": 11941,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.5,
+      "top": 12418,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 12922,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+      "words": 11,
+      "chars": 42,
+      "lines": 2,
+      "size": 30,
+      "vw": 7.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 13804,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 22,
+     "maxLines": 3,
+     "over2Lines": 3,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      36
+     ],
+     "sizeCount": 9,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 16,
+      "leading": 1.63,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.2
+     },
+     "measureChars": 45,
+     "max": {
+      "size": 36,
+      "vw": 9.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "Điểm danh một chạm.Đối soát tự động."
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.07,
+     "smallText": 16
+    },
+    "eyebrows": [
+     {
+      "text": "+1",
+      "above": "0.2s",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 10,
+      "top": 605
+     },
+     {
+      "text": "+1",
+      "above": "100%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 10,
+      "top": 605
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 7663
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 7799
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 7935
+     },
+     {
+      "text": "Gói Khởi đầu",
+      "above": "Miễn phí",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 11465
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 11905
+     },
+     {
+      "text": "Gói Chuỗi & Cơ sở lớn",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 14,
+      "top": 12382
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 805,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 7146,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      },
+      {
+       "color": "#131a2b",
+       "top": 7410,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.59
+      },
+      {
+       "color": "#101828",
+       "share": 0.21
+      },
+      {
+       "color": "#94a3b8",
+       "share": 0.05
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      },
+      {
+       "color": "#cbd5e1",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Mở Kiosk tự phục vụ",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 16,
+     "inHero": 2,
+     "radius": 12,
+     "height": 44,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 31,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 7643
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 74,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 14482,
+    "margins": {
+     "left": 16,
+     "right": 16
+    },
+    "sections": [
+     {
+      "sel": "section.pt-12.pb-20",
+      "tag": "section",
+      "top": 162,
+      "height": 1596,
+      "words": 169,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Điểm danh một chạm.",
+       "size": 36,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 20,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-20.bg-white",
+      "tag": "section",
+      "top": 1758,
+      "height": 1830,
+      "words": 176,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành tự động từ điểm danh đến dòng tiền",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 32,
+      "textLeft": 16,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 3588,
+      "height": 2394,
+      "words": 191,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Vận hành đồng bộ trên mọi thiết bị",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 29,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-20.bg-white",
+      "tag": "section",
+      "top": 5982,
+      "height": 1164,
+      "words": 110,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Giải pháp chuyên biệt cho từng mô hình",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 17,
+      "textLeft": 16,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-20.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 7146,
+      "height": 1105,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Ước tính hiệu quả vận hành thực tế",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 37,
+      "textLeft": 16,
+      "textRight": 37,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 8251,
+      "height": 456,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tương thích 100% hệ thống ngân hàng Napas 24/7",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 32,
+      "textLeft": 16,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 8707,
+      "height": 1292,
+      "words": 113,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Ba bước đơn giản để bắt đầu vận hành",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 27,
+      "textLeft": 16,
+      "textRight": 27,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-white",
+      "tag": "section",
+      "top": 9999,
+      "height": 1169,
+      "words": 143,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 43,
+      "textLeft": 16,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.max-w-3xl.space-y-3",
+      "tag": "div",
+      "top": 11249,
+      "height": 136,
+      "words": 23,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Biểu phí minh bạch, không phí ẩn",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 22,
+      "textLeft": 16,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.grid.grid-cols-1",
+      "tag": "div",
+      "top": 11433,
+      "height": 1330,
+      "words": 151,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "199.000 đ",
+       "size": 36,
+       "tag": "h3"
+      },
+      "left": 48,
+      "right": 48,
+      "textLeft": 48,
+      "textRight": 50,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-20.bg-white",
+      "tag": "section",
+      "top": 12842,
+      "height": 882,
+      "words": 94,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 39,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-20.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 13724,
+      "height": 396,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Bắt đầu tự động hóa cơ sở của bạn hôm nay.",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 17,
+      "right": 17,
+      "textLeft": 17,
+      "textRight": 17,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 14120,
+      "height": 362,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 22,
+      "textLeft": 16,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Điểm danh một chạm.Đối soát tự động.",
+      "size": 36,
+      "top": 210,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 40,
+      "n": 31
+     },
+     {
+      "x": 16,
+      "n": 20
+     }
+    ],
+    "leftBlocks": 51,
+    "bodySize": 16,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 1440,
+   "message": "1 headline(s) wrap past two lines at 1440px: \"Điểm danh một chạm. Đối soát tự động.\" → 4 lines (8 words, 60px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 36px or less."
+  },
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "9 eyebrow/kicker label(s) above headings: \"+1\" (pill) above \"0.2s\"; \"cơ sở tin dùng mỗi ngày\" above \"100%\"; \"cơ sở tin dùng mỗi ngày\" above \"0 VNĐ\"; \"Thời gian tiết kiệm\" above \"~27 giờ\"; \"Thất thoát thu hồi\" above \"~2.700.000 ₫\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "icon-cards",
+   "width": 1440,
+   "message": "4 row(s) of identical cards each topped with a small icon (4, 3, 3, 3 cards).",
+   "fix": "Replace with one composed section from the direction: a narrative split, a list set in large type, or real imagery per item.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Mở Kiosk tự phục vụ\" 3.8:1 needs 4.5:1; \"Phụ huynh & Hội viên\" 3.8:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-fallback",
+   "width": 1440,
+   "message": "Typeface(s) declared but not loaded, so a fallback is rendering: __Be_Vietnam_Pro_0df554",
+   "fix": "Fix the font URL / family name, or the screenshots you are judging are not the design.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "11 different font sizes (10, 12, 14, 16, 18, 20, 24, 30, 36, 48, 60).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "measure",
+   "width": 1440,
+   "message": "Longest paragraph runs about 104 characters per line.",
+   "fix": "Cap paragraphs at 45–75 characters (max-width: 60ch).",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "16 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "long-pin",
+   "width": 1440,
+   "message": "The same large text stays on screen for 9 screens in a row: \"Vận hành tự động từ điểm danh đến dòng tiền\"",
+   "fix": "A pinned element earns two screens, and something must change at each. Shorten the run or give every screen its own content."
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 3 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  },
+  {
+   "level": "FAIL",
+   "id": "overflow",
+   "width": 768,
+   "message": "Page scrolls sideways by 81px at 768px. Widest offenders: span (+61px), span.text-sm.text-[#475467] (+4px).",
+   "fix": "Constrain the element that is wider than the viewport (max-width: 100%, or overflow: clip on its section)."
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 390,
+   "message": "3 headline(s) wrap past two lines at 390px: \"Điểm danh một chạm.Đối soát tự động.\" → 3 lines (7 words, 36px); \"Vận hành tự động từ điểm danh đến dòng tiền\" → 3 lines (10 words, 30px); \"Dành cho Giáo viên & Trung tâm bồi dưỡng kiến th\" → 3 lines (11 words, 24px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\desktop-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\desktop-page-02.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\tablet-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\mobile-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\after\\mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

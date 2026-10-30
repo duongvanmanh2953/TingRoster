@@ -1,0 +1,3764 @@
+{
+ "url": "http://localhost:3001",
+ "at": "2026-10-30T08:14:25.171Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    0.63,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 6,
+    "css": 2,
+    "transitions": 0,
+    "scripted": 4,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 6957,
+     "screens": 7.7,
+     "words": 1683,
+     "img": 26,
+     "video": 0,
+     "canvas": 0,
+     "svg": 68,
+     "sections": 10,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fmultidevice-suite.jpg&w=19",
+      "image?url=%2Fimages%2Ftablet-manager.jpg&w=640&q",
+      "image?url=%2Fimages%2Fkiosk-checkin.jpg&w=640&q=",
+      "image?url=%2Fimages%2Fmobile-vietqr.jpg&w=640&q="
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "chars": 51,
+     "lines": 3,
+     "size": 48,
+     "vw": 3.3,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "left",
+     "widthRatio": 0.33,
+     "top": 211,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "lines": 3,
+     "size": 48,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "words": 12,
+      "chars": 51,
+      "lines": 3,
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.33,
+      "top": 211,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+      "words": 11,
+      "chars": 46,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.53,
+      "top": 917,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile",
+      "words": 10,
+      "chars": 53,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.53,
+      "top": 1398,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Một tài khoản duy nhất — Vận hành toàn bộ cơ sở",
+      "words": 12,
+      "chars": 47,
+      "lines": 2,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.47,
+      "top": 1959,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+      "words": 9,
+      "chars": 38,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 2884,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+      "words": 7,
+      "chars": 40,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 3680,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.13,
+      "top": 4054,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.13,
+      "top": 4054,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.13,
+      "top": 4054,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu vận hành chỉ trong 3 phút",
+      "words": 8,
+      "chars": 33,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 4632,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.04,
+      "top": 4765,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.05,
+      "top": 4765,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.05,
+      "top": 4765,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 2,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 5106,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Gói dịch vụ phù hợp mọi quy mô",
+      "words": 8,
+      "chars": 30,
+      "lines": 1,
+      "size": 36,
+      "vw": 2.5,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.47,
+      "top": 5593,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.11,
+      "top": 5787,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.12,
+      "top": 5787,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": -0.015,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.58,
+      "top": 6268,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 18,
+     "maxLines": 3,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 8,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      10,
+      11,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48
+     ],
+     "sizeCount": 11,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 12,
+      "leading": 1.33,
+      "weight": 600,
+      "tracking": 0,
+      "contrast": 15.5
+     },
+     "measureChars": 138,
+     "max": {
+      "size": 48,
+      "vw": 3.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối so"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.22,
+     "smallText": 114
+    },
+    "eyebrows": [
+     {
+      "text": "Đồng bộ 2 chiều tức thì",
+      "above": "Một tài khoản duy nhất — Vận hành toàn b",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 12,
+      "top": 1927
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 4033
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 4033
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 4033
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 5753
+     },
+     {
+      "text": "Gói Doanh nghiệp",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 5753
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 48,
+      "top": 4765
+     },
+     {
+      "text": "02",
+      "size": 48,
+      "top": 4765
+     },
+     {
+      "text": "03",
+      "size": 48,
+      "top": 4765
+     }
+    ],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 860,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 3616,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.59
+      },
+      {
+       "color": "#101828",
+       "share": 0.18
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      },
+      {
+       "color": "#64748b",
+       "share": 0.04
+      },
+      {
+       "color": "#e2e8f0",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "100%",
+       "ratio": 3.5,
+       "need": 4.5,
+       "size": 18,
+       "fg": "#059669",
+       "bg": "#f5f7fb"
+      },
+      {
+       "text": "Dự kiến thu",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "Đã thu 88%",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "10 người (Quy mô nhỏ)",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      },
+      {
+       "text": "150 người",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      },
+      {
+       "text": "300+ người (Quy mô lớn)",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 17,
+     "inHero": 7,
+     "radius": 12,
+     "height": 30,
+     "withShadow": 0,
+     "withGradient": 2,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập",
+      "Có mặt",
+      "Có mặt",
+      "Có mặt"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 22,
+     "shadowOverlay": 1,
+     "shadowSamples": [
+      "button.px-6.py-3.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.bg-white.dark:bg-slate-900 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-3.5.py-1.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.relative.rounded-3xl → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 1,
+     "scrims": 1,
+     "gradientSamples": [
+      "section#da-thiet-bi.py-16.lg:py-24 → linear-gradient(rgb(245, 247, 251), rgb(255, 255, 255), rgb(245, 247, 251))"
+     ],
+     "gradientText": 0,
+     "hairlines": 21,
+     "hairlineSamples": [
+      "div.bg-[#0B0F19].dark:bg-[#060911] 1440px",
+      "header.border-b.border-[#E4E7EC] 1440px",
+      "div.grid.grid-cols-3 479px",
+      "div.flex.items-center 689px",
+      "section#tinh-nang.py-14.bg-white 1440px"
+     ],
+     "outlinedBoxes": 24,
+     "dashed": 0,
+     "blurred": 2,
+     "roundedBoxes": 27,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 1021
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2242
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 4016
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 4748
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 5262
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 5713
+      }
+     ]
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.22
+     }
+    ],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 71,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 6957,
+    "margins": {
+     "left": 112,
+     "right": 113
+    },
+    "sections": [
+     {
+      "sel": "section.pt-10.pb-16",
+      "tag": "section",
+      "top": 104,
+      "height": 756,
+      "words": 194,
+      "media": 0,
+      "middle": 90,
+      "heading": {
+       "text": "Quản lý gọn hơn.",
+       "size": 48,
+       "tag": "h1"
+      },
+      "left": 112,
+      "right": 137,
+      "textLeft": 112,
+      "textRight": 137,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-14.bg-white",
+      "tag": "section",
+      "top": 860,
+      "height": 442,
+      "words": 141,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 137,
+      "right": 143,
+      "textLeft": 137,
+      "textRight": 143,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-16.lg:py-24",
+      "tag": "section",
+      "top": 1302,
+      "height": 1518,
+      "words": 295,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mob",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 113,
+      "right": 113,
+      "textLeft": 135,
+      "textRight": 142,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-16.max-w-7xl",
+      "tag": "section",
+      "top": 2820,
+      "height": 797,
+      "words": 195,
+      "media": 0,
+      "middle": 59,
+      "heading": {
+       "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 153,
+      "right": 174,
+      "textLeft": 153,
+      "textRight": 174,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-16.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 3616,
+      "height": 715,
+      "words": 97,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 377,
+      "right": 377,
+      "textLeft": 377,
+      "textRight": 377,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-12.bg-white",
+      "tag": "section",
+      "top": 4331,
+      "height": 237,
+      "words": 45,
+      "media": 0,
+      "middle": 58,
+      "heading": null,
+      "left": 336,
+      "right": 264,
+      "textLeft": 336,
+      "textRight": 264,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 4568,
+      "height": 474,
+      "words": 123,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "01",
+       "size": 48,
+       "tag": "span"
+      },
+      "left": 145,
+      "right": 137,
+      "textLeft": 145,
+      "textRight": 137,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 5042,
+      "height": 471,
+      "words": 144,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 137,
+      "right": 160,
+      "textLeft": 137,
+      "textRight": 160,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#bang-gia.py-16.lg:py-20",
+      "tag": "section",
+      "top": 5513,
+      "height": 691,
+      "words": 183,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Gói dịch vụ phù hợp mọi quy mô",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 145,
+      "right": 150,
+      "textLeft": 145,
+      "textRight": 150,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-16.bg-white",
+      "tag": "section",
+      "top": 6203,
+      "height": 541,
+      "words": 93,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 305,
+      "right": 305,
+      "textLeft": 321,
+      "textRight": 324,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 6744,
+      "height": 213,
+      "words": 49,
+      "media": 0,
+      "middle": 339,
+      "heading": null,
+      "left": 92,
+      "right": 80,
+      "textLeft": 92,
+      "textRight": 80,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "size": 48,
+      "top": 211,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 112,
+      "n": 4
+     },
+     {
+      "x": 153,
+      "n": 4
+     },
+     {
+      "x": 137,
+      "n": 3
+     },
+     {
+      "x": 447,
+      "n": 1
+     },
+     {
+      "x": 561,
+      "n": 1
+     },
+     {
+      "x": 757,
+      "n": 1
+     },
+     {
+      "x": 977,
+      "n": 1
+     },
+     {
+      "x": 1067,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 16,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.13,
+    "voidBox": {
+     "x": 0,
+     "y": 360,
+     "w": 1440,
+     "h": 120
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.6,
+    0.92,
+    0.92,
+    0.86,
+    0.86,
+    0.86,
+    0.86,
+    0.86,
+    0.86
+   ],
+   "motion": {
+    "elements": 6,
+    "css": 2,
+    "transitions": 0,
+    "scripted": 4,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 8392,
+     "screens": 8.2,
+     "words": 1683,
+     "img": 26,
+     "video": 0,
+     "canvas": 0,
+     "svg": 68,
+     "sections": 10,
+     "horizontalOverflow": 16,
+     "overflowCulprits": [
+      "div.absolute.-bottom-10 (+16px)"
+     ],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 4,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fmultidevice-suite.jpg&w=82",
+      "image?url=%2Fimages%2Ftablet-manager.jpg&w=828&q",
+      "image?url=%2Fimages%2Fkiosk-checkin.jpg&w=828&q=",
+      "image?url=%2Fimages%2Fmobile-vietqr.jpg&w=828&q="
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "chars": 51,
+     "lines": 3,
+     "size": 48,
+     "vw": 6.3,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 182,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "lines": 3,
+     "size": 48,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "words": 12,
+      "chars": 51,
+      "lines": 3,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 182,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+      "words": 11,
+      "chars": 46,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1426,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile",
+      "words": 10,
+      "chars": 53,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 2120,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Một tài khoản duy nhất — Vận hành toàn bộ cơ sở",
+      "words": 12,
+      "chars": 47,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.83,
+      "top": 2601,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+      "words": 9,
+      "chars": 38,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 3652,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+      "words": 7,
+      "chars": 40,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 4744,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.22,
+      "top": 5118,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.22,
+      "top": 5118,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.22,
+      "top": 5118,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu vận hành chỉ trong 3 phút",
+      "words": 8,
+      "chars": 33,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 5770,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.07,
+      "top": 5903,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.09,
+      "top": 5903,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.09,
+      "top": 5903,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 6346,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Gói dịch vụ phù hợp mọi quy mô",
+      "words": 8,
+      "chars": 30,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.88,
+      "top": 6911,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.17,
+      "top": 7098,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 2,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.18,
+      "top": 7098,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": -0.015,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 7681,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 18,
+     "maxLines": 3,
+     "over2Lines": 1,
+     "statements": 0,
+     "centered": 8,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      10,
+      11,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      36,
+      48
+     ],
+     "sizeCount": 11,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 12,
+      "leading": 1.33,
+      "weight": 600,
+      "tracking": 0,
+      "contrast": 15.5
+     },
+     "measureChars": 120,
+     "max": {
+      "size": 48,
+      "vw": 6.3,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối so"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.22,
+     "smallText": 114
+    },
+    "eyebrows": [
+     {
+      "text": "Đồng bộ 2 chiều tức thì",
+      "above": "Một tài khoản duy nhất — Vận hành toàn b",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 12,
+      "top": 2569
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 5097
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 5097
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 5097
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 7063
+     },
+     {
+      "text": "Gói Doanh nghiệp",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 7063
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 48,
+      "top": 5903
+     },
+     {
+      "text": "02",
+      "size": 48,
+      "top": 5903
+     },
+     {
+      "text": "03",
+      "size": 48,
+      "top": 5903
+     }
+    ],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 722,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 4680,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      },
+      {
+       "color": "#131a2b",
+       "top": 4892,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.59
+      },
+      {
+       "color": "#101828",
+       "share": 0.18
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      },
+      {
+       "color": "#64748b",
+       "share": 0.04
+      },
+      {
+       "color": "#e2e8f0",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "100%",
+       "ratio": 3.5,
+       "need": 4.5,
+       "size": 18,
+       "fg": "#059669",
+       "bg": "#f5f7fb"
+      },
+      {
+       "text": "Dự kiến thu",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "Đã thu 88%",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "10 người (Quy mô nhỏ)",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      },
+      {
+       "text": "150 người",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      },
+      {
+       "text": "300+ người (Quy mô lớn)",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#64748b",
+       "bg": "#131a2b"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 17,
+     "inHero": 5,
+     "radius": 12,
+     "height": 30,
+     "withShadow": 0,
+     "withGradient": 2,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập",
+      "Có mặt",
+      "Có mặt",
+      "Có mặt"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 22,
+     "shadowOverlay": 1,
+     "shadowSamples": [
+      "button.px-6.py-3.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.bg-white.dark:bg-slate-900 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-3.5.py-1.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.relative.rounded-3xl → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 1,
+     "scrims": 1,
+     "gradientSamples": [
+      "section#da-thiet-bi.py-16.lg:py-24 → linear-gradient(rgb(245, 247, 251), rgb(255, 255, 255), rgb(245, 247, 251))"
+     ],
+     "gradientText": 0,
+     "hairlines": 15,
+     "hairlineSamples": [
+      "div.bg-[#0B0F19].dark:bg-[#060911] 768px",
+      "header.border-b.border-[#E4E7EC] 768px",
+      "div.grid.grid-cols-3 720px",
+      "div.flex.items-center 720px",
+      "section#tinh-nang.py-14.bg-white 768px"
+     ],
+     "outlinedBoxes": 24,
+     "dashed": 0,
+     "blurred": 2,
+     "roundedBoxes": 27,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 1566
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2924
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 5080
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 5886
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 6502
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 7031
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 109,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 8392,
+    "margins": {
+     "left": 24,
+     "right": 25
+    },
+    "sections": [
+     {
+      "sel": "section.pt-10.pb-16",
+      "tag": "section",
+      "top": 142,
+      "height": 1227,
+      "words": 194,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Quản lý gọn hơn.",
+       "size": 48,
+       "tag": "h1"
+      },
+      "left": 24,
+      "right": 36,
+      "textLeft": 24,
+      "textRight": 36,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-14.bg-white",
+      "tag": "section",
+      "top": 1369,
+      "height": 687,
+      "words": 141,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 35,
+      "right": 35,
+      "textLeft": 35,
+      "textRight": 35,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-16.lg:py-24",
+      "tag": "section",
+      "top": 2056,
+      "height": 1533,
+      "words": 295,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mob",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 25,
+      "right": 25,
+      "textLeft": 29,
+      "textRight": 29,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-16.max-w-7xl",
+      "tag": "section",
+      "top": 3588,
+      "height": 1092,
+      "words": 195,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 31,
+      "right": 31,
+      "textLeft": 65,
+      "textRight": 57,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-16.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 4680,
+      "height": 715,
+      "words": 97,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 65,
+      "right": 65,
+      "textLeft": 65,
+      "textRight": 65,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-12.bg-white",
+      "tag": "section",
+      "top": 5395,
+      "height": 311,
+      "words": 45,
+      "media": 0,
+      "middle": 24,
+      "heading": null,
+      "left": 105,
+      "right": 34,
+      "textLeft": 105,
+      "textRight": 34,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 5706,
+      "height": 576,
+      "words": 123,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "01",
+       "size": 48,
+       "tag": "span"
+      },
+      "left": 57,
+      "right": 49,
+      "textLeft": 57,
+      "textRight": 49,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 6282,
+      "height": 565,
+      "words": 144,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 49,
+      "right": 53,
+      "textLeft": 49,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#bang-gia.py-16.lg:py-20",
+      "tag": "section",
+      "top": 6847,
+      "height": 769,
+      "words": 183,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Gói dịch vụ phù hợp mọi quy mô",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 49,
+      "right": 34,
+      "textLeft": 49,
+      "textRight": 34,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-16.bg-white",
+      "tag": "section",
+      "top": 7616,
+      "height": 541,
+      "words": 93,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 30,
+       "tag": "h2"
+      },
+      "left": 25,
+      "right": 25,
+      "textLeft": 41,
+      "textRight": 47,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 8157,
+      "height": 235,
+      "words": 49,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 28,
+      "right": 16,
+      "textLeft": 28,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "size": 48,
+      "top": 182,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 24,
+      "n": 4
+     },
+     {
+      "x": 49,
+      "n": 4
+     },
+     {
+      "x": 65,
+      "n": 4
+     },
+     {
+      "x": 421,
+      "n": 2
+     },
+     {
+      "x": 308,
+      "n": 1
+     },
+     {
+      "x": 558,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 16,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.7,
+    0.84,
+    0.84,
+    0.84,
+    0.84,
+    0.79,
+    0.79,
+    0.79,
+    0.79,
+    0.79,
+    0.79,
+    0.79
+   ],
+   "motion": {
+    "elements": 6,
+    "css": 2,
+    "transitions": 0,
+    "scripted": 4,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 414,
+     "h": 896
+    },
+    "page": {
+     "height": 11984,
+     "screens": 13.4,
+     "words": 1656,
+     "img": 26,
+     "video": 0,
+     "canvas": 0,
+     "svg": 68,
+     "sections": 10,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 1,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "image?url=%2Fimages%2Fmultidevice-suite.jpg&w=64"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "chars": 51,
+     "lines": 3,
+     "size": 30,
+     "vw": 7.2,
+     "font": "__Be_Vietnam_Pro_0df554",
+     "weight": 900,
+     "tracking": 0,
+     "leading": 1.15,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.86,
+     "top": 200,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+     "words": 12,
+     "lines": 3,
+     "size": 30,
+     "font": "__Be_Vietnam_Pro_0df554"
+    },
+    "headings": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "words": 12,
+      "chars": 51,
+      "lines": 3,
+      "size": 30,
+      "vw": 7.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.15,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 200,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+      "words": 11,
+      "chars": 46,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 1579,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile",
+      "words": 10,
+      "chars": 53,
+      "lines": 3,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 2734,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+      "words": 9,
+      "chars": 38,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 5083,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Quản lý chuyên cần và học phí không bao giờ sai sót",
+      "words": 12,
+      "chars": 51,
+      "lines": 3,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.74,
+      "top": 5440,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+      "words": 7,
+      "chars": 40,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 6368,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "60 người",
+      "words": 2,
+      "chars": 8,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.15,
+      "top": 6537,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~27 giờ",
+      "words": 2,
+      "chars": 7,
+      "lines": 1,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.66,
+      "top": 6771,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "~2.700.000 ₫",
+      "words": 2,
+      "chars": 12,
+      "lines": 1,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.66,
+      "top": 6893,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "0%",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.66,
+      "top": 7016,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Bắt đầu vận hành chỉ trong 3 phút",
+      "words": 8,
+      "chars": 33,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 7703,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "01",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 11.6,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.13,
+      "top": 7872,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "02",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 11.6,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.16,
+      "top": 8132,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "03",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 48,
+      "vw": 11.6,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.16,
+      "top": 8393,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "An toàn tài chính & Phân quyền chặt chẽ",
+      "words": 9,
+      "chars": 39,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 8733,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Gói dịch vụ phù hợp mọi quy mô",
+      "words": 8,
+      "chars": 30,
+      "lines": 2,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 9638,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Miễn phí",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": -0.01,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.74,
+      "top": 9860,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "199.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.38,
+      "top": 10257,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "499.000 đ",
+      "words": 2,
+      "chars": 9,
+      "lines": 1,
+      "size": 30,
+      "vw": 7.2,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 900,
+      "tracking": 0,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.4,
+      "top": 10684,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "Câu hỏi thường gặp",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 24,
+      "vw": 5.8,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "weight": 800,
+      "tracking": -0.015,
+      "leading": 1.33,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.86,
+      "top": 11114,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 20,
+     "maxLines": 3,
+     "over2Lines": 3,
+     "statements": 0,
+     "centered": 8,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "__Be_Vietnam_Pro_0df554",
+       "share": 1,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      10,
+      11,
+      12,
+      14,
+      16,
+      18,
+      20,
+      24,
+      30,
+      48
+     ],
+     "sizeCount": 10,
+     "notLoaded": [
+      "__Be_Vietnam_Pro_0df554"
+     ],
+     "body": {
+      "font": "__Be_Vietnam_Pro_0df554",
+      "size": 12,
+      "leading": 1.33,
+      "weight": 600,
+      "tracking": 0,
+      "contrast": 15.5
+     },
+     "measureChars": 59,
+     "max": {
+      "size": 48,
+      "vw": 11.6,
+      "font": "__Be_Vietnam_Pro_0df554",
+      "text": "01"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.23,
+     "smallText": 130
+    },
+    "eyebrows": [
+     {
+      "text": "Dành riêng cho Gia sư & Trung tâm Giáo dục",
+      "above": "Quản lý chuyên cần và học phí không bao ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": true,
+      "size": 12,
+      "top": 5387
+     },
+     {
+      "text": "Thời gian tiết kiệm",
+      "above": "~27 giờ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 6750
+     },
+     {
+      "text": "Thất thoát thu hồi",
+      "above": "~2.700.000 ₫",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 6872
+     },
+     {
+      "text": "Tỷ lệ sai lệch nợ",
+      "above": "0%",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 11,
+      "top": 6995
+     },
+     {
+      "text": "Gói Khởi đầu",
+      "above": "Miễn phí",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 9825
+     },
+     {
+      "text": "Gói Chuyên nghiệp",
+      "above": "199.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 10222
+     },
+     {
+      "text": "Gói Doanh nghiệp",
+      "above": "499.000 đ",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 12,
+      "top": 10649
+     }
+    ],
+    "numbered": [
+     {
+      "text": "01",
+      "size": 48,
+      "top": 7872
+     },
+     {
+      "text": "02",
+      "size": 48,
+      "top": 8132
+     },
+     {
+      "text": "03",
+      "size": 48,
+      "top": 8393
+     }
+    ],
+    "color": {
+     "bodyBg": "#f5f7fb",
+     "bodyBgHsl": {
+      "h": 220,
+      "s": 0.43,
+      "l": 0.97
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f5f7fb",
+       "top": 0,
+       "hsl": {
+        "h": 220,
+        "s": 0.43,
+        "l": 0.97
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 810,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#0b0f19",
+       "top": 6304,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.07
+       }
+      },
+      {
+       "color": "#131a2b",
+       "top": 6512,
+       "hsl": {
+        "h": 223,
+        "s": 0.39,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#475467",
+       "share": 0.6
+      },
+      {
+       "color": "#101828",
+       "share": 0.19
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.06
+      },
+      {
+       "color": "#64748b",
+       "share": 0.04
+      },
+      {
+       "color": "#e2e8f0",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#2538d9",
+      "hsl": {
+       "h": 234,
+       "s": 0.71,
+       "l": 0.5
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "100%",
+       "ratio": 3.5,
+       "need": 4.5,
+       "size": 18,
+       "fg": "#059669",
+       "bg": "#f5f7fb"
+      },
+      {
+       "text": "Dự kiến thu",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "Đã thu 88%",
+       "ratio": 3.6,
+       "need": 4.5,
+       "size": 12,
+       "fg": "#059669",
+       "bg": "#f8fafc"
+      },
+      {
+       "text": "Đã đóng đủ",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#059669",
+       "bg": "#ffffff"
+      },
+      {
+       "text": "Đã đóng đủ",
+       "ratio": 3.8,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#059669",
+       "bg": "#ffffff"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 16,
+     "inHero": 3,
+     "radius": 12,
+     "height": 30,
+     "withShadow": 0,
+     "withGradient": 1,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Đăng nhập",
+      "Trải nghiệm Demo ngay",
+      "Đăng nhập"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 22,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "button.px-6.py-3.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.bg-white.dark:bg-slate-900 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0",
+      "button.px-3.5.py-1.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+      "div.relative.rounded-3xl → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0"
+     ],
+     "gradients": 2,
+     "scrims": 1,
+     "gradientSamples": [
+      "section#da-thiet-bi.py-16.lg:py-24 → linear-gradient(rgb(245, 247, 251), rgb(255, 255, 255), rgb(245, 247, 251))",
+      "button.px-6.py-3 → linear-gradient(to right, rgb(37, 56, 217), rgb(109, 92, 232))"
+     ],
+     "gradientText": 0,
+     "hairlines": 21,
+     "hairlineSamples": [
+      "div.bg-[#0B0F19].dark:bg-[#060911] 390px",
+      "header.border-b.border-[#E4E7EC] 390px",
+      "div.grid.grid-cols-3 358px",
+      "div.flex.items-center 358px",
+      "section#tinh-nang.py-14.bg-white 390px"
+     ],
+     "outlinedBoxes": 25,
+     "dashed": 0,
+     "blurred": 2,
+     "roundedBoxes": 28,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 4,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 1723
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": false,
+       "top": 3290
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 3567
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 6733
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 7855
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 8885
+      },
+      {
+       "count": 3,
+       "iconTopped": true,
+       "rounded": true,
+       "top": 9794
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 71,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "__be_vietnam_pro_a0d886"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 414,
+     "h": 896
+    },
+    "pageH": 11984,
+    "margins": {
+     "left": 16,
+     "right": 41
+    },
+    "sections": [
+     {
+      "sel": "section.pt-10.pb-16",
+      "tag": "section",
+      "top": 160,
+      "height": 1362,
+      "words": 194,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Quản lý gọn hơn.",
+       "size": 30,
+       "tag": "h1"
+      },
+      "left": 16,
+      "right": 40,
+      "textLeft": 16,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tinh-nang.py-14.bg-white",
+      "tag": "section",
+      "top": 1522,
+      "height": 1148,
+      "words": 141,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tất cả những gì bạn cần để vận hành thảnh thơi",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 47,
+      "textLeft": 23,
+      "textRight": 47,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#da-thiet-bi.py-16.lg:py-24",
+      "tag": "section",
+      "top": 2670,
+      "height": 2349,
+      "words": 295,
+      "media": 4,
+      "middle": 0,
+      "heading": {
+       "text": "Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mob",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 17,
+      "right": 41,
+      "textLeft": 17,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#doi-tuong.py-16.max-w-7xl",
+      "tag": "section",
+      "top": 5019,
+      "height": 1285,
+      "words": 195,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Tối ưu hóa chuyên sâu cho từng mô hình",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 23,
+      "right": 47,
+      "textLeft": 27,
+      "textRight": 51,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#roi-calculator.py-16.bg-[#0B0F19]",
+      "tag": "section",
+      "top": 6304,
+      "height": 950,
+      "words": 97,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "TingRoster giúp bạn tiết kiệm bao nhiêu?",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 20,
+      "right": 44,
+      "textLeft": 20,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-12.bg-white",
+      "tag": "section",
+      "top": 7254,
+      "height": 385,
+      "words": 45,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 40,
+      "textLeft": 16,
+      "textRight": 40,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-[#F5F7FB]",
+      "tag": "section",
+      "top": 7639,
+      "height": 1031,
+      "words": 123,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "01",
+       "size": 48,
+       "tag": "span"
+      },
+      "left": 19,
+      "right": 43,
+      "textLeft": 19,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.py-16.bg-white",
+      "tag": "section",
+      "top": 8669,
+      "height": 905,
+      "words": 144,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "An toàn tài chính & Phân quyền chặt chẽ",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 40,
+      "textLeft": 16,
+      "textRight": 40,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#bang-gia.py-16.lg:py-20",
+      "tag": "section",
+      "top": 9574,
+      "height": 1475,
+      "words": 183,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Gói dịch vụ phù hợp mọi quy mô",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 25,
+      "right": 49,
+      "textLeft": 25,
+      "textRight": 49,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#huong-dan.py-16.bg-white",
+      "tag": "section",
+      "top": 11049,
+      "height": 592,
+      "words": 93,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Câu hỏi thường gặp",
+       "size": 24,
+       "tag": "h2"
+      },
+      "left": 17,
+      "right": 41,
+      "textLeft": 33,
+      "textRight": 59,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.bg-[#0B0F19].text-white",
+      "tag": "footer",
+      "top": 11641,
+      "height": 343,
+      "words": 40,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 16,
+      "right": 54,
+      "textLeft": 16,
+      "textRight": 54,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.",
+      "size": 30,
+      "top": 200,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 41,
+      "n": 10
+     },
+     {
+      "x": 16,
+      "n": 4
+     }
+    ],
+    "leftBlocks": 14,
+    "bodySize": 12,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 1440,
+   "message": "1 headline(s) wrap past two lines at 1440px: \"Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dà\" → 3 lines (12 words, 48px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 36px or less."
+  },
+  {
+   "level": "WARN",
+   "id": "hero-words",
+   "width": 1440,
+   "message": "Hero headline is 12 words (\"Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dàng.\"). Gallery median is 5.",
+   "fix": "Say the one thing. Move the rest to the supporting line.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "eyebrow",
+   "width": 1440,
+   "message": "6 eyebrow/kicker label(s) above headings: \"Đồng bộ 2 chiều tức thì\" (pill) above \"Một tài khoản duy nhất — Vận hành toàn b\"; \"Thời gian tiết kiệm\" above \"~27 giờ\"; \"Thất thoát thu hồi\" above \"~2.700.000 ₫\"; \"Tỷ lệ sai lệch nợ\" above \"0%\"; \"Gói Chuyên nghiệp\" above \"199.000 đ\"",
+   "fix": "Delete them. If the label carried real information, fold it into the headline or the supporting sentence.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "numbering",
+   "width": 1440,
+   "message": "Decorative index numbers: \"01\", \"02\", \"03\"",
+   "fix": "Remove them. If order truly matters, write it into the words (\"First, …\") or use a real <ol>.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "1 gradient fill(s): section#da-thiet-bi.py-16.lg:py-24 → linear-gradient(rgb(245, 247, 251), rgb(255, 255, 255), rgb(245, 247, 251))",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "22 box-shadow(s) on elements at rest: button.px-6.py-3.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56, | div.bg-white.dark:bg-slate-900 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0 | button.px-3.5.py-1.5 → rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(37, 56,",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "button-fx",
+   "width": 1440,
+   "message": "Buttons with gradient fill.",
+   "fix": "Flat fill, one colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "21 thin rule(s)/divider line(s): div.bg-[#0B0F19].dark:bg-[#060911] 1440px | header.border-b.border-[#E4E7EC] 1440px | div.grid.grid-cols-3 479px | div.flex.items-center 689px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "outlined-box",
+   "width": 1440,
+   "message": "24 boxes drawn with a 1px outline.",
+   "fix": "Define a surface by its fill (one tone step from the page) or leave the content unboxed.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "glass",
+   "width": 1440,
+   "message": "2 backdrop-blur surfaces.",
+   "fix": "One blurred sticky bar at most; glass cards are a tell.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "icon-cards",
+   "width": 1440,
+   "message": "4 row(s) of identical cards each topped with a small icon (4, 3, 3, 3 cards).",
+   "fix": "Replace with one composed section from the direction: a narrative split, a list set in large type, or real imagery per item.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"100%\" 3.5:1 needs 4.5:1; \"Dự kiến thu\" 3.6:1 needs 4.5:1; \"Đã thu 88%\" 3.6:1 needs 4.5:1; \"10 người (Quy mô nhỏ)\" 3.6:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-fallback",
+   "width": 1440,
+   "message": "Typeface(s) declared but not loaded, so a fallback is rendering: __Be_Vietnam_Pro_0df554",
+   "fix": "Fix the font URL / family name, or the screenshots you are judging are not the design.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "11 different font sizes (10, 11, 12, 14, 16, 18, 20, 24, 30, 36, 48).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 12px (the size most of the running text is set in).",
+   "fix": "Body copy 16–20px. Map small sizes from blueprints onto your body step.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "measure",
+   "width": 1440,
+   "message": "Longest paragraph runs about 138 characters per line.",
+   "fix": "Cap paragraphs at 45–75 characters (max-width: 60ch).",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "114 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "focal-point",
+   "width": 1440,
+   "message": "The first screen has no dominant element: the largest type is 48px (3.3vw) and no single picture holds a third of the viewport.",
+   "fix": "Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw."
+  },
+  {
+   "level": "WARN",
+   "id": "untitled-section",
+   "width": 1440,
+   "message": "A section carries text but no heading: section.py-12.bg-white at 4331px.",
+   "fix": "Name it with a short heading unless it is the continuation of the section above.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "long-pin",
+   "width": 1440,
+   "message": "The same large text stays on screen for 7 screens in a row: \"Sử dụng mượt mà trên Desktop, Tablet, Kiosk và Mobile\"",
+   "fix": "A pinned element earns two screens, and something must change at each. Shorten the run or give every screen its own content."
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 6 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 768,
+   "message": "1 headline(s) wrap past two lines at 768px: \"Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dà\" → 3 lines (12 words, 48px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 32px or less."
+  },
+  {
+   "level": "FAIL",
+   "id": "overflow",
+   "width": 768,
+   "message": "Page scrolls sideways by 16px at 768px. Widest offenders: div.absolute.-bottom-10 (+16px).",
+   "fix": "Constrain the element that is wider than the viewport (max-width: 100%, or overflow: clip on its section)."
+  },
+  {
+   "level": "FAIL",
+   "id": "headline-lines",
+   "width": 390,
+   "message": "3 headline(s) wrap past two lines at 390px: \"Quản lý gọn hơn. Thu phí rõ ràng. Đối soát dễ dà\" → 3 lines (12 words, 30px); \"Sử dụng mượt mà trên Desktop, Tablet, Kiosk và M\" → 3 lines (10 words, 24px); \"Quản lý chuyên cần và học phí không bao giờ sai \" → 3 lines (12 words, 24px)",
+   "fix": "Cut words first (a headline is a title, not a sentence). Then give it a wider measure. Lower the size only as a last resort and never below the scale you chose. A real statement paragraph belongs in a <p> or <blockquote> at 24px or less."
+  },
+  {
+   "level": "FAIL",
+   "id": "off-centre",
+   "width": 390,
+   "message": "The page sits off-centre: its content comes to 16px from the left edge but only to 41px from the right, at 390px.",
+   "fix": "Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure)."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\desktop-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\tablet-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\mobile-page-01.jpg",
+    "C:\\Users\\manhd\\Downloads\\TingRoster\\.taste-skill\\before\\mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

@@ -77,31 +77,56 @@ const getSpaceTypeMeta = (groupType?: string | null) => {
       return {
         label: 'Lớp học & Khóa',
         icon: GraduationCap,
-        color: 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200/60',
+        color: 'bg-blue-100/90 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border-blue-200/80',
+        cardBg: 'bg-gradient-to-b from-blue-50/70 via-white to-white dark:from-blue-950/25 dark:via-[#111726] dark:to-[#111726]',
+        cardBorder: 'border-blue-200/80 dark:border-blue-900/40 hover:border-[#2538D9]/70',
+        tableBg: 'bg-gradient-to-r from-blue-50/60 via-white to-white dark:from-blue-950/20 dark:via-[#111726] dark:to-[#111726]',
+        tableBorder: 'border-blue-200/80 dark:border-blue-900/40 hover:border-[#2538D9]/70',
+        statBg: 'bg-blue-50/60 dark:bg-blue-950/40 border-blue-100/80 dark:border-blue-900/40',
       };
     case 'SPORTS_CLUB':
       return {
         label: 'CLB Thể thao',
         icon: Tv,
-        color: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60',
+        color: 'bg-emerald-100/90 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200/80',
+        cardBg: 'bg-gradient-to-b from-emerald-50/70 via-white to-white dark:from-emerald-950/25 dark:via-[#111726] dark:to-[#111726]',
+        cardBorder: 'border-emerald-200/80 dark:border-emerald-900/40 hover:border-emerald-500/70',
+        tableBg: 'bg-gradient-to-r from-emerald-50/60 via-white to-white dark:from-emerald-950/20 dark:via-[#111726] dark:to-[#111726]',
+        tableBorder: 'border-emerald-200/80 dark:border-emerald-900/40 hover:border-emerald-500/70',
+        statBg: 'bg-emerald-50/60 dark:bg-emerald-950/40 border-emerald-100/80 dark:border-emerald-900/40',
       };
     case 'RENTAL':
       return {
         label: 'Nhà cho thuê',
         icon: Building2,
-        color: 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200/60',
+        color: 'bg-purple-100/90 text-purple-800 dark:bg-purple-950/70 dark:text-purple-300 border-purple-200/80',
+        cardBg: 'bg-gradient-to-b from-purple-50/70 via-white to-white dark:from-purple-950/25 dark:via-[#111726] dark:to-[#111726]',
+        cardBorder: 'border-purple-200/80 dark:border-purple-900/40 hover:border-purple-500/70',
+        tableBg: 'bg-gradient-to-r from-purple-50/60 via-white to-white dark:from-purple-950/20 dark:via-[#111726] dark:to-[#111726]',
+        tableBorder: 'border-purple-200/80 dark:border-purple-900/40 hover:border-purple-500/70',
+        statBg: 'bg-purple-50/60 dark:bg-purple-950/40 border-purple-100/80 dark:border-purple-900/40',
       };
     case 'WORKFORCE':
       return {
         label: 'Nhân sự & Ca',
         icon: Briefcase,
-        color: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200/60',
+        color: 'bg-amber-100/90 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border-amber-200/80',
+        cardBg: 'bg-gradient-to-b from-amber-50/70 via-white to-white dark:from-amber-950/25 dark:via-[#111726] dark:to-[#111726]',
+        cardBorder: 'border-amber-200/80 dark:border-amber-900/40 hover:border-amber-500/70',
+        tableBg: 'bg-gradient-to-r from-amber-50/60 via-white to-white dark:from-amber-950/20 dark:via-[#111726] dark:to-[#111726]',
+        tableBorder: 'border-amber-200/80 dark:border-amber-900/40 hover:border-amber-500/70',
+        statBg: 'bg-amber-50/60 dark:bg-amber-950/40 border-amber-100/80 dark:border-amber-900/40',
       };
     default:
       return {
         label: 'Không gian chung',
         icon: Layers,
-        color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200/60',
+        color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200/80',
+        cardBg: 'bg-gradient-to-b from-slate-50/80 via-white to-white dark:from-slate-900/30 dark:via-[#111726] dark:to-[#111726]',
+        cardBorder: 'border-slate-200/90 dark:border-white/10 hover:border-[#2538D9]/60',
+        tableBg: 'bg-gradient-to-r from-slate-50/60 via-white to-white dark:from-slate-900/20 dark:via-[#111726] dark:to-[#111726]',
+        tableBorder: 'border-slate-200/90 dark:border-white/10 hover:border-[#2538D9]/60',
+        statBg: 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800',
       };
   }
 };
@@ -155,7 +180,7 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
     <>
       {viewMode === 'table' ? (
         /* List / Table Mode Row */
-        <div className="group relative w-full bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-white/10 p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-blue-500/40 dark:hover:border-indigo-500/40 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden">
+        <div className={`group relative w-full ${typeMeta.tableBg} rounded-2xl border ${typeMeta.tableBorder} p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden`}>
           {/* Subtle colored brand accent strip on the left */}
           <div
             className="absolute left-0 top-0 bottom-0 w-1.5 opacity-80 group-hover:opacity-100 transition-opacity"
@@ -277,7 +302,7 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
         </div>
       ) : (
         /* Grid Mode Card: High-End Productivity SaaS Design with Brand Hue Indicator */
-        <div className="group relative w-full bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-white/10 p-5 shadow-xs hover:shadow-xl hover:border-blue-500/40 dark:hover:border-indigo-500/40 transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between overflow-hidden">
+        <div className={`group relative w-full ${typeMeta.cardBg} rounded-2xl border ${typeMeta.cardBorder} p-5 shadow-xs hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between overflow-hidden`}>
           {/* Top Brand Color Strip */}
           <div
             className="absolute top-0 left-0 right-0 h-1.5 opacity-90 transition-opacity group-hover:opacity-100"
@@ -381,13 +406,13 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
               {modules.slice(0, 4).map((mod) => (
                 <span
                   key={mod}
-                  className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/50 dark:border-white/5 whitespace-nowrap"
+                  className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border border-slate-200/60 dark:border-white/5 whitespace-nowrap font-semibold"
                 >
                   {MODULE_LABEL_MAP[mod] || mod}
                 </span>
               ))}
               {modules.length > 4 && (
-                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded text-slate-400">
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded text-slate-400 font-semibold">
                   +{modules.length - 4}
                 </span>
               )}
@@ -397,13 +422,13 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
             <div className="grid grid-cols-2 gap-2 mb-4">
               <Link
                 href={`/groups/${space.id}/members`}
-                className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors group/stat"
+                className={`p-2.5 rounded-xl ${typeMeta.statBg} hover:bg-blue-50/70 dark:hover:bg-blue-950/60 border flex items-center justify-between transition-colors group/stat`}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-[#2538D9] dark:text-indigo-400 flex items-center justify-center shrink-0">
                     <Users2 className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                     Thành viên
                   </span>
                 </div>
@@ -414,13 +439,13 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
 
               <Link
                 href={`/groups/${space.id}/invoices`}
-                className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-emerald-50/50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 flex items-center justify-between transition-colors group/stat"
+                className={`p-2.5 rounded-xl ${typeMeta.statBg} hover:bg-emerald-50/70 dark:hover:bg-emerald-950/60 border flex items-center justify-between transition-colors group/stat`}
               >
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                     <Receipt className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                     Hóa đơn
                   </span>
                 </div>

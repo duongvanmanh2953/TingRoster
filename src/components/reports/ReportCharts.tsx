@@ -56,7 +56,7 @@ export function CollectionsTrendChart({
         }));
 
   return (
-    <div className="ting-card p-5 space-y-4">
+    <div className="p-5 rounded-2xl bg-gradient-to-b from-blue-50/50 via-white to-white dark:from-blue-950/20 dark:via-[#111726] dark:to-[#111726] border border-blue-200/60 dark:border-blue-900/40 shadow-xs space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="text-sm sm:text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
@@ -116,23 +116,24 @@ export function CollectionsTrendChart({
               tickFormatter={(v) => formatCompactVND(v)}
             />
             <RechartsTooltip
+              cursor={{ fill: 'transparent' }}
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length) {
                   return (
-                    <div className="bg-white dark:bg-[#111726] border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-xl text-xs space-y-1.5 min-w-[200px]">
-                      <p className="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-1">
+                    <div className="bg-slate-900/95 dark:bg-[#0B0F19]/95 text-white border border-slate-700/60 p-3.5 rounded-2xl shadow-2xl backdrop-blur-md text-xs space-y-2 min-w-[210px]">
+                      <p className="font-bold text-white border-b border-slate-700/60 pb-1.5 text-xs">
                         {label}
                       </p>
                       {payload.map((entry, index) => (
                         <div key={`item-${index}`} className="flex items-center justify-between gap-4">
-                          <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                          <span className="flex items-center gap-1.5 text-slate-300">
                             <span
                               className="w-2.5 h-2.5 rounded-full"
                               style={{ backgroundColor: entry.color }}
                             />
                             <span>{entry.name}:</span>
                           </span>
-                          <span className="font-bold text-slate-900 dark:text-white tabular-nums">
+                          <span className="font-bold text-white tabular-nums">
                             {formatVND(Number(entry.value))}
                           </span>
                         </div>
@@ -195,7 +196,7 @@ export function PaymentStatusDonutChart({
   const collectionRate = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
 
   return (
-    <div className="ting-card p-5 space-y-3">
+    <div className="p-5 rounded-2xl bg-gradient-to-b from-emerald-50/50 via-white to-white dark:from-emerald-950/20 dark:via-[#111726] dark:to-[#111726] border border-emerald-200/60 dark:border-emerald-900/40 shadow-xs space-y-3">
       <div>
         <h3 className="text-sm sm:text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
           Cơ cấu Trạng thái Khoản thu
@@ -222,14 +223,18 @@ export function PaymentStatusDonutChart({
               ))}
             </Pie>
             <RechartsTooltip
+              cursor={false}
               formatter={(value: any) => [formatVND(Number(value)), '']}
               contentStyle={{
-                backgroundColor: isDark ? '#111726' : '#FFFFFF',
-                borderColor: isDark ? '#1E293B' : '#E4E7EC',
-                borderRadius: '0.75rem',
+                backgroundColor: isDark ? '#0B0F19' : '#0F172A',
+                borderColor: '#334155',
+                borderRadius: '1rem',
                 fontSize: '12px',
                 fontWeight: 600,
+                color: '#FFFFFF',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
               }}
+              itemStyle={{ color: '#FFFFFF' }}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -313,7 +318,7 @@ export function DebtAgingDistributionChart({
   ];
 
   return (
-    <div className="ting-card p-5 space-y-4">
+    <div className="p-5 rounded-2xl bg-gradient-to-b from-rose-50/50 via-white to-white dark:from-rose-950/20 dark:via-[#111726] dark:to-[#111726] border border-rose-200/60 dark:border-rose-900/40 shadow-xs space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h3 className="text-sm sm:text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
@@ -328,7 +333,7 @@ export function DebtAgingDistributionChart({
           <button
             type="button"
             onClick={() => onSelectBucket(null)}
-            className="text-xs font-semibold text-[#2538D9] dark:text-indigo-400 hover:underline self-start sm:self-auto"
+            className="text-xs font-semibold text-[#2538D9] dark:text-indigo-400 hover:underline self-start sm:self-auto cursor-pointer"
           >
             ✕ Bỏ lọc cột
           </button>
@@ -367,19 +372,20 @@ export function DebtAgingDistributionChart({
               tickFormatter={(v) => formatCompactVND(v)}
             />
             <RechartsTooltip
+              cursor={{ fill: 'transparent' }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const p = payload[0].payload;
                   return (
-                    <div className="bg-white dark:bg-[#111726] border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-xl text-xs space-y-1">
-                      <p className="font-bold text-slate-900 dark:text-white">{p.label}</p>
-                      <p className="text-slate-600 dark:text-slate-300">
-                        Số tiền: <strong className="text-slate-900 dark:text-white">{formatVND(p.amount)}</strong>
+                    <div className="bg-slate-900/95 dark:bg-[#0B0F19]/95 text-white border border-slate-700/60 p-3.5 rounded-2xl shadow-2xl backdrop-blur-md text-xs space-y-1.5">
+                      <p className="font-bold text-white text-xs">{p.label}</p>
+                      <p className="text-slate-300">
+                        Số tiền: <strong className="text-emerald-400 font-bold">{formatVND(p.amount)}</strong>
                       </p>
-                      <p className="text-slate-600 dark:text-slate-300">
-                        Số phiếu nợ: <strong className="text-slate-900 dark:text-white">{p.count} hóa đơn</strong>
+                      <p className="text-slate-300">
+                        Số phiếu nợ: <strong className="text-white font-bold">{p.count} hóa đơn</strong>
                       </p>
-                      <span className="text-[10px] text-indigo-600 dark:text-indigo-400 block pt-1 font-semibold">
+                      <span className="text-[10px] text-indigo-400 block pt-1 font-semibold">
                         Bấm để lọc bảng chi tiết bên dưới ⬇
                       </span>
                     </div>
@@ -415,7 +421,7 @@ export function AttendanceDayOfWeekChart({
   const { isDark } = useTheme();
 
   return (
-    <div className="ting-card p-5 space-y-4">
+    <div className="p-5 rounded-2xl bg-gradient-to-b from-purple-50/50 via-white to-white dark:from-purple-950/20 dark:via-[#111726] dark:to-[#111726] border border-purple-200/60 dark:border-purple-900/40 shadow-xs space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h3 className="text-sm sm:text-base font-bold text-[#101828] dark:text-[#F8FAFC]">
@@ -454,16 +460,17 @@ export function AttendanceDayOfWeekChart({
               tickFormatter={(v) => `${v}%`}
             />
             <RechartsTooltip
+              cursor={{ fill: 'transparent' }}
               content={({ active, payload, label }) => {
                 if (active && payload && payload.length) {
                   const p = payload[0].payload;
                   return (
-                    <div className="bg-white dark:bg-[#111726] border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-xl text-xs space-y-1">
-                      <p className="font-bold text-slate-900 dark:text-white">{label}</p>
-                      <p className="text-slate-600 dark:text-slate-300">
-                        Tỷ lệ có mặt: <strong className="text-emerald-600 dark:text-emerald-400">{p.rate}%</strong>
+                    <div className="bg-slate-900/95 dark:bg-[#0B0F19]/95 text-white border border-slate-700/60 p-3 rounded-2xl shadow-2xl backdrop-blur-md text-xs space-y-1">
+                      <p className="font-bold text-white">{label}</p>
+                      <p className="text-slate-300">
+                        Tỷ lệ có mặt: <strong className="text-emerald-400 font-bold">{p.rate}%</strong>
                       </p>
-                      <p className="text-slate-500 text-[11px]">
+                      <p className="text-slate-400 text-[11px]">
                         {p.present} / {p.total} lượt điểm danh
                       </p>
                     </div>

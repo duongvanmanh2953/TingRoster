@@ -633,14 +633,15 @@ export default function DashboardPage() {
                       tickFormatter={(val) => formatCompactVND(val)}
                     />
                     <RechartsTooltip
+                      cursor={{ stroke: 'rgba(37, 56, 217, 0.4)', strokeWidth: 1.5, strokeDasharray: '3 3' }}
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           const dataPoint = payload[0].payload;
                           return (
-                            <div className="bg-[#0B0F19] text-white p-2.5 rounded-xl shadow-xl text-xs space-y-1">
-                              <span className="font-semibold text-slate-400 block text-[10px]">{dataPoint.label}</span>
+                            <div className="bg-slate-900/95 dark:bg-[#0B0F19]/95 text-white border border-slate-700/60 p-3 rounded-2xl shadow-2xl backdrop-blur-md text-xs space-y-1">
+                              <span className="font-semibold text-slate-300 block text-[10px]">{dataPoint.label}</span>
                               <span className="font-bold text-emerald-400 block text-sm">+{formatVND(dataPoint.amount)}</span>
-                              <span className="text-slate-400 text-[10px] block">{dataPoint.count} giao dịch khớp tự động</span>
+                              <span className="text-slate-300 text-[10px] block">{dataPoint.count} giao dịch khớp tự động</span>
                             </div>
                           );
                         }

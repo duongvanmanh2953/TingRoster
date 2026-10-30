@@ -394,7 +394,7 @@ export default function DashboardLayout({
               className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                 isDarkSidebar
                   ? 'text-slate-300 hover:text-white bg-white/[0.05] hover:bg-white/[0.1]'
-                  : 'text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200'
+                  : 'text-slate-800 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 shadow-2xs'
               }`}
             >
               <ArrowLeft className="w-4 h-4 text-slate-400" />
@@ -406,7 +406,7 @@ export default function DashboardLayout({
           <div className={`p-2.5 rounded-2xl border transition-all ${
             isDarkSidebar
               ? 'bg-[#131A2B] border-[#1E283D]'
-              : 'bg-slate-50 border-slate-200'
+              : 'bg-black-50/60 border-black-200/80 shadow-2xs'
           }`}>
             <div className="flex items-center gap-2.5 min-w-0">
               <SpaceAvatar
@@ -421,7 +421,7 @@ export default function DashboardLayout({
                 <p className={`text-xs font-bold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>
                   {activeSpace?.name || 'Đang tải...'}
                 </p>
-                <p className="text-[10px] font-mono text-slate-400 truncate">
+                <p className={`text-[10px] font-mono truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-600 font-semibold'}`}>
                   {spaceCode}
                 </p>
               </div>
@@ -432,20 +432,20 @@ export default function DashboardLayout({
           <div className="space-y-3.5">
             {/* TỔNG QUAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Tổng quan
               </div>
               <Link
                 href={`/groups/${currentSpaceId}`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-semibold'
                 }`}
               >
                 <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
@@ -455,8 +455,8 @@ export default function DashboardLayout({
 
             {/* QUẢN LÝ */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Quản lý
               </div>
@@ -465,12 +465,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/members`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/members`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Users2 className="w-4 h-4 flex-shrink-0" />
@@ -482,12 +482,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/attendance`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/attendance`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <CalendarCheck className="w-4 h-4 flex-shrink-0" />
@@ -500,12 +500,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/classes`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/classes`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <GraduationCap className="w-4 h-4 flex-shrink-0 text-blue-400" />
@@ -518,12 +518,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/bookings`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/bookings`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Tv className="w-4 h-4 flex-shrink-0 text-emerald-400" />
@@ -536,12 +536,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/rentals`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/rentals`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Building2 className="w-4 h-4 flex-shrink-0 text-indigo-400" />
@@ -552,8 +552,8 @@ export default function DashboardLayout({
 
             {/* DỊCH VỤ & BẢNG GIÁ */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Dịch vụ & Bảng giá
               </div>
@@ -561,12 +561,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/services`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/services`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <Layers className="w-4 h-4 flex-shrink-0 text-amber-400" />
@@ -577,12 +577,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/meters`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/meters`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Zap className="w-4 h-4 flex-shrink-0 text-amber-500" />
@@ -593,8 +593,8 @@ export default function DashboardLayout({
 
             {/* TÀI CHÍNH */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Tài chính
               </div>
@@ -603,12 +603,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/invoices`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/invoices`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <CreditCard className="w-4 h-4 flex-shrink-0" />
@@ -619,12 +619,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/transactions`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/transactions`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <ArrowRightLeft className="w-4 h-4 flex-shrink-0" />
@@ -634,12 +634,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/surcharges`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/surcharges`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 flex-shrink-0 text-amber-500" />
@@ -649,8 +649,8 @@ export default function DashboardLayout({
 
             {/* BÁO CÁO KHÔNG GIAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Báo cáo không gian
               </div>
@@ -658,12 +658,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/reports`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/reports`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <BarChart3 className="w-4 h-4 flex-shrink-0" />
@@ -673,12 +673,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/reports/financial`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/reports/financial`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <TrendingUp className="w-4 h-4 flex-shrink-0 text-emerald-400" />
@@ -688,12 +688,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/reports/debt`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/reports/debt`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 flex-shrink-0 text-rose-400" />
@@ -703,12 +703,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/reports/attendance`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/reports/attendance`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <CalendarCheck className="w-4 h-4 flex-shrink-0 text-blue-400" />
@@ -718,12 +718,12 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/reports/services`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/reports/services`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <Layers className="w-4 h-4 flex-shrink-0 text-amber-400" />
@@ -734,12 +734,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/reports/rentals`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/reports/rentals`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Building2 className="w-4 h-4 flex-shrink-0 text-indigo-400" />
@@ -751,12 +751,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/reports/sports`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/reports/sports`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <Tv className="w-4 h-4 flex-shrink-0 text-emerald-400" />
@@ -768,12 +768,12 @@ export default function DashboardLayout({
                 <Link
                   href={`/groups/${currentSpaceId}/reports/education`}
                   onClick={closeDrawer}
-                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     pathname === `/groups/${currentSpaceId}/reports/education`
-                      ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                      ? 'bg-[#2538D9] text-white shadow-xs'
                       : isDarkSidebar
                       ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                   }`}
                 >
                   <GraduationCap className="w-4 h-4 flex-shrink-0 text-blue-400" />
@@ -784,8 +784,8 @@ export default function DashboardLayout({
 
             {/* THIẾT BỊ KIOSK */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Kiosk & Thiết bị
               </div>
@@ -794,10 +794,10 @@ export default function DashboardLayout({
                 href={`/kiosk/${currentSpaceId}`}
                 target="_blank"
                 onClick={closeDrawer}
-                className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -810,8 +810,8 @@ export default function DashboardLayout({
 
             {/* CÀI ĐẶT KHÔNG GIAN */}
             <div className="space-y-1">
-              <div className={`px-2 text-xs font-semibold ${
-                isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+              <div className={`px-2 text-[11px] font-bold uppercase tracking-wider ${
+                isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
               }`}>
                 Cài đặt
               </div>
@@ -819,16 +819,15 @@ export default function DashboardLayout({
               <Link
                 href={`/groups/${currentSpaceId}/settings`}
                 onClick={closeDrawer}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                   pathname === `/groups/${currentSpaceId}/settings`
-                    ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
+                    ? 'bg-[#2538D9] text-white shadow-xs'
                     : isDarkSidebar
                     ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
                 }`}
               >
                 <Settings className="w-4 h-4 flex-shrink-0" />
-                <span className="truncate">Thông tin không gian</span>
               </Link>
 
               {activeSpace?.slug && (
@@ -858,8 +857,8 @@ export default function DashboardLayout({
     <nav className="flex-1 px-3 space-y-3.5 overflow-y-auto pb-4">
       {NAV_CATEGORIES.map((category) => (
         <div key={category.title} className="space-y-1">
-          <div className={`px-2 pt-2 pb-0.5 text-xs font-semibold ${
-            isDarkSidebar ? 'text-slate-500' : 'text-slate-400'
+          <div className={`px-2 pt-2.5 pb-1 text-[11px] font-bold uppercase tracking-wider ${
+            isDarkSidebar ? 'text-slate-400' : 'text-slate-600'
           }`}>
             {locale === 'en' && category.titleEn ? category.titleEn : category.title}
           </div>
@@ -888,16 +887,16 @@ export default function DashboardLayout({
                     href={item.href}
                     target={item.external ? '_blank' : undefined}
                     onClick={closeDrawer}
-                    className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-[#2538D9] text-white font-semibold shadow-xs'
-                        : !isDarkSidebar
+                        ? 'bg-[#2538D9] text-white shadow-xs'
+                        : isDarkSidebar
                         ? 'text-slate-300 hover:text-white hover:bg-white/[0.07]'
-                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                        : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-semibold'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`} />
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : isDarkSidebar ? 'text-slate-400' : 'text-slate-600'}`} />
                       <span className="truncate">{label}</span>
                     </div>
                     {item.live && !isActive && <TingBadge pulse variant="dot" />}
@@ -922,10 +921,10 @@ export default function DashboardLayout({
                       isChildActive
                         ? isDarkSidebar
                           ? 'text-white bg-white/[0.05]'
-                          : 'text-[#2538D9] bg-indigo-50/60 dark:bg-indigo-950/20'
+                          : 'text-[#2538D9] bg-indigo-50/80 font-bold border border-indigo-100/60'
                         : isDarkSidebar
                         ? 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
-                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                        : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-semibold'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -934,20 +933,20 @@ export default function DashboardLayout({
                           ? 'text-[#2538D9] dark:text-indigo-400'
                           : isDarkSidebar
                           ? 'text-slate-400'
-                          : 'text-slate-500'
+                          : 'text-slate-600'
                       }`} />
                       <span className="truncate">{label}</span>
                     </div>
                     <ChevronDown
-                      className={`w-3.5 h-3.5 flex-shrink-0 text-slate-400 transition-transform duration-200 ${
-                        isExpanded ? 'rotate-0' : '-rotate-90'
-                      }`}
+                      className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${
+                        isDarkSidebar ? 'text-slate-400' : 'text-slate-500'
+                      } ${isExpanded ? 'rotate-0' : '-rotate-90'}`}
                     />
                   </button>
 
                   {/* Submenu items */}
                   {isExpanded && item.subItems && (
-                    <div className="pl-6 pr-1 space-y-0.5 py-0.5 border-l-2 border-slate-200 dark:border-slate-800 ml-3.5 my-1">
+                    <div className="pl-6 pr-1 space-y-0.5 py-0.5 border-l-2 border-slate-300 dark:border-slate-800 ml-3.5 my-1">
                       {item.subItems.map((sub) => {
                         const subBase = sub.href.split('?')[0];
                         const isActive = subBase === '/reports'
@@ -964,9 +963,9 @@ export default function DashboardLayout({
                             className={`flex items-center justify-between px-2 py-1.5 rounded-md text-[11.5px] transition-all ${
                               isActive
                                 ? 'bg-[#2538D9] text-white font-bold shadow-xs'
-                                : !isDarkSidebar
+                                : isDarkSidebar
                                 ? 'text-slate-400 hover:text-white hover:bg-white/[0.06] font-medium'
-                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'
+                                : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-semibold'
                             }`}
                           >
                             <span className="truncate">{subLabel}</span>
@@ -1027,14 +1026,14 @@ export default function DashboardLayout({
 
         {/* Bank Connection Pill with Logo & MUI Tag */}
         <div className="p-3">
-          <div className={`flex items-center justify-between px-3 py-2 rounded-lg text-[11px] border ${
-            !isDarkSidebar
-              ? 'bg-[#131A2B] border-[#1E283D] text-slate-200'
-              : 'bg-slate-50 border-slate-200 text-slate-700'
+          <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[11px] border transition-all ${
+            isDarkSidebar
+              ? 'bg-[#131A2B] border-[#1E283D] text-slate-100 shadow-inner'
+              : 'bg-indigo-50/70 border-indigo-200/90 text-slate-900 shadow-2xs'
           }`}>
             <div className="flex items-center gap-2 min-w-0">
               <BankLogo bankId={userData.bankId} size="xs" />
-              <span className={`font-semibold truncate ${isDarkSidebar ? 'text-slate-200' : 'text-slate-800'}`}>
+              <span className={`font-bold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>
                 {userData.bankId} • {userData.bankAccountNo}
               </span>
             </div>
@@ -1071,7 +1070,7 @@ export default function DashboardLayout({
               />
               <div className="min-w-0">
                 <p className={`text-xs font-semibold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>{userData.name}</p>
-                <p className={`text-[10px] truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`}>{userData.email}</p>
+                <p className={`text-[10px] truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>{userData.email}</p>
               </div>
             </div>
 
@@ -1130,14 +1129,14 @@ export default function DashboardLayout({
         </div>
 
         <div className="p-3">
-          <div className={`flex items-center justify-between px-3 py-2 rounded-lg text-[11px] border ${
+          <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[11px] border transition-all ${
             isDarkSidebar
-              ? 'bg-[#131A2B] border-[#1E283D] text-slate-200'
-              : 'bg-slate-50 border-slate-200 text-slate-700'
+              ? 'bg-[#131A2B] border-[#1E283D] text-slate-100 shadow-inner'
+              : 'bg-indigo-50/70 border-indigo-200/90 text-slate-900 shadow-2xs'
           }`}>
             <div className="flex items-center gap-2 min-w-0">
               <BankLogo bankId={userData.bankId} size="xs" />
-              <span className={`font-semibold truncate ${isDarkSidebar ? 'text-slate-200' : 'text-slate-800'}`}>
+              <span className={`font-bold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>
                 {userData.bankId} • {userData.bankAccountNo}
               </span>
             </div>
@@ -1170,7 +1169,7 @@ export default function DashboardLayout({
               />
               <div className="min-w-0">
                 <p className={`text-xs font-semibold truncate ${isDarkSidebar ? 'text-white' : 'text-slate-900'}`}>{userData.name}</p>
-                <p className={`text-[10px] truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-500'}`}>{userData.email}</p>
+                <p className={`text-[10px] truncate ${isDarkSidebar ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>{userData.email}</p>
               </div>
             </div>
 
@@ -1190,8 +1189,9 @@ export default function DashboardLayout({
             <IconButton
               size="small"
               edge="start"
+              aria-label="Mở menu điều hướng"
               onClick={() => setMobileMenuOpen(true)}
-              sx={{ color: isDark ? '#F8FAFC' : '#101828' }}
+              sx={{ color: isDark ? '#F8FAFC' : '#101828', width: 40, height: 40 }}
             >
               <MenuIcon className="w-5 h-5" />
             </IconButton>
@@ -1199,13 +1199,15 @@ export default function DashboardLayout({
           </div>
 
           {/* Search Form using MUI OutlinedInput */}
-          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md">
+          <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md min-w-0" role="search">
             <OutlinedInput
               size="small"
               fullWidth
+              id="global-search-input"
+              inputProps={{ 'aria-label': 'Tìm kiếm mã TR, học viên hoặc hóa đơn' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm mã TR (VD: TR84920), tên học viên, phụ huynh..."
+              placeholder="Tìm kiếm mã TR, tên học viên, hóa đơn..."
               startAdornment={
                 <InputAdornment position="start">
                   <Search className="w-4 h-4 text-slate-400" />
@@ -1216,6 +1218,7 @@ export default function DashboardLayout({
                   <InputAdornment position="end">
                     <IconButton
                       size="small"
+                      aria-label="Xóa nội dung tìm kiếm"
                       onClick={() => setSearchQuery('')}
                       edge="end"
                       sx={{ p: 0.5 }}
@@ -1226,9 +1229,9 @@ export default function DashboardLayout({
                 ) : null
               }
               sx={{
-                height: 36,
-                borderRadius: '0.5rem',
-                fontSize: '0.75rem',
+                height: 38,
+                borderRadius: '0.625rem',
+                fontSize: '0.8125rem',
                 bgcolor: isDark ? '#111726' : '#F8FAFC',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: isDark ? '#1E293B' : '#E4E7EC',
@@ -1259,6 +1262,7 @@ export default function DashboardLayout({
             >
               <IconButton
                 size="small"
+                aria-label={isDark ? 'Chuyển sang giao diện Sáng' : 'Chuyển sang giao diện Tối'}
                 onClick={toggleTheme}
                 sx={{
                   width: 36,
@@ -1266,6 +1270,8 @@ export default function DashboardLayout({
                   borderRadius: '0.5rem',
                   border: isDark ? '1px solid #1E293B' : '1px solid #E4E7EC',
                   bgcolor: isDark ? '#111726' : '#F8FAFC',
+                  transition: 'all 0.15s ease-in-out',
+                  '&:active': { transform: 'scale(0.95)' },
                 }}
               >
                 {isDark ? (
@@ -1280,6 +1286,7 @@ export default function DashboardLayout({
             <Button
               variant="contained"
               size="small"
+              aria-label="Tạo hóa đơn mới"
               onClick={() => setQuickCreateOpen(true)}
               startIcon={<Plus className="w-4 h-4" />}
               sx={{
@@ -1293,6 +1300,7 @@ export default function DashboardLayout({
                 borderRadius: '0.5rem',
                 boxShadow: '0 2px 8px rgba(37, 56, 217, 0.35)',
                 '&:hover': { bgcolor: '#1E2DB8' },
+                '&:active': { transform: 'scale(0.98)' },
               }}
             >
               {t('common.create_invoice', 'Tạo hóa đơn')}
@@ -1304,6 +1312,7 @@ export default function DashboardLayout({
                 component={Link}
                 href="/transactions"
                 size="small"
+                aria-label="Giao dịch VietQR tự động"
                 sx={{
                   display: { xs: 'none', md: 'inline-flex' },
                   width: 36,
@@ -1311,6 +1320,8 @@ export default function DashboardLayout({
                   borderRadius: '0.5rem',
                   border: isDark ? '1px solid #1E293B' : '1px solid #E4E7EC',
                   bgcolor: isDark ? '#111726' : '#F8FAFC',
+                  transition: 'all 0.15s ease-in-out',
+                  '&:active': { transform: 'scale(0.95)' },
                 }}
               >
                 <TingBadge pulse variant="dot">
@@ -1325,6 +1336,7 @@ export default function DashboardLayout({
                 component={Link}
                 href="/settings"
                 size="small"
+                aria-label="Cài đặt hệ thống"
                 sx={{
                   display: { xs: 'none', md: 'inline-flex' },
                   width: 36,
@@ -1332,6 +1344,8 @@ export default function DashboardLayout({
                   borderRadius: '0.5rem',
                   border: isDark ? '1px solid #1E293B' : '1px solid #E4E7EC',
                   bgcolor: isDark ? '#111726' : '#F8FAFC',
+                  transition: 'all 0.15s ease-in-out',
+                  '&:active': { transform: 'scale(0.95)' },
                 }}
               >
                 <Settings className="w-4 h-4 text-slate-600 dark:text-slate-300" />
@@ -1346,7 +1360,8 @@ export default function DashboardLayout({
                 aria-controls={profileOpen ? 'profile-dropdown-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={profileOpen ? 'true' : undefined}
-                className="h-9 flex items-center gap-2 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all focus:outline-none shadow-2xs cursor-pointer"
+                aria-label="Menu tài khoản cá nhân"
+                className="h-9 flex items-center gap-2 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2538D9] focus-visible:ring-offset-2 shadow-2xs cursor-pointer active:scale-98"
               >
                 <Avatar
                   name={userData.name}
@@ -1430,11 +1445,11 @@ export default function DashboardLayout({
       </div>
 
       {/* Mobile Bottom Navigation Bar with MUI Badges */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-[#0B0F19]/95 border-t border-[#E4E7EC] dark:border-[#1E293B] backdrop-blur-xl flex items-center justify-around px-2 z-40">
+      <nav aria-label="Điều hướng di động" className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-[#0B0F19]/95 border-t border-[#E4E7EC] dark:border-[#1E293B] backdrop-blur-xl flex items-center justify-around px-2 z-40">
         <Link
           href="/dashboard"
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === '/dashboard' ? 'text-[#2538D9] font-bold' : 'text-slate-500'
+            pathname === '/dashboard' ? 'text-[#2538D9] dark:text-indigo-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
           }`}
         >
           <LayoutDashboard className="w-5 h-5" />
@@ -1443,7 +1458,7 @@ export default function DashboardLayout({
         <Link
           href="/attendance"
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === '/attendance' ? 'text-[#2538D9] font-bold' : 'text-slate-500'
+            pathname === '/attendance' ? 'text-[#2538D9] dark:text-indigo-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
           }`}
         >
           <CalendarCheck className="w-5 h-5" />
@@ -1451,15 +1466,16 @@ export default function DashboardLayout({
         </Link>
         <button
           type="button"
+          aria-label="Tạo nhanh hóa đơn"
           onClick={() => setQuickCreateOpen(true)}
-          className="w-10 h-10 -mt-4 rounded-full bg-[#2538D9] hover:bg-[#1E2DB8] flex items-center justify-center text-white shadow-md shadow-[#2538D9]/30 border-2 border-white dark:border-[#0B0F19] font-bold"
+          className="w-11 h-11 -mt-4 rounded-full bg-[#2538D9] hover:bg-[#1E2DB8] flex items-center justify-center text-white shadow-md shadow-[#2538D9]/30 border-2 border-white dark:border-[#0B0F19] font-bold active:scale-95 transition-transform cursor-pointer"
         >
           <Plus className="w-5 h-5 stroke-[2.5]" />
         </button>
         <Link
           href="/transactions"
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === '/transactions' ? 'text-[#2538D9] font-bold' : 'text-slate-500'
+            pathname === '/transactions' ? 'text-[#2538D9] dark:text-indigo-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
           }`}
         >
           <TingBadge pulse variant="dot">
@@ -1470,13 +1486,13 @@ export default function DashboardLayout({
         <Link
           href="/groups"
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname.startsWith('/groups') ? 'text-[#2538D9] font-bold' : 'text-slate-500'
+            pathname.startsWith('/groups') ? 'text-[#2538D9] dark:text-indigo-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
           }`}
         >
           <Layers className="w-5 h-5" />
           <span>Không gian</span>
         </Link>
-      </div>
+      </nav>
 
       {/* Quick 1-Touch Create Invoice Modal */}
       <QuickCreateInvoiceModal
