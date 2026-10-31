@@ -1,143 +1,149 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import {
-  QrCode,
-  CreditCard,
-  FileSpreadsheet,
+import Image from 'next/image';
+import { 
+  QrCode, 
+  CreditCard, 
+  Calendar, 
+  Users, 
+  MessageSquare, 
+  FileCheck, 
+  BarChart3, 
   ShieldCheck,
-  Tv,
-  ArrowRight,
-  Sparkles,
-  Lock,
+  Zap,
+  ArrowRight
 } from 'lucide-react';
-import { SpotlightCard } from '@/components/reactbits/SpotlightCard';
+import Link from 'next/link';
 
 export function FeatureBentoSection() {
   return (
-    <section className="scroll-reveal py-24 sm:py-32 relative bg-white dark:bg-[#0B0F19] w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950/70 text-[#2538D9] dark:text-blue-300 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Tính năng cốt lõi vượt trội</span>
+    <section id="tinh-nang" className="py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Heading */}
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
+            <span>Tính năng đã kiểm chứng</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-normal leading-tight">
-            Vũ khí vận hành tự động cho cơ sở của bạn
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#101828] dark:text-white leading-tight">
+            Bộ công cụ vận hành hoàn chỉnh trong một nền tảng
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-            Kết hợp điểm danh thông minh, thanh toán Napas 24/7 và kế toán hộ kinh doanh trong một hệ thống duy nhất.
+          <p className="text-base text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+            Mọi tính năng đều được xây dựng từ bài toán thực tế của các lớp học, sân bãi thể thao và cơ sở dịch vụ tại Việt Nam.
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          {/* Card 1: Kiosk QR (Span 7) */}
-          <SpotlightCard
-            spotlightColor="rgba(37, 56, 217, 0.2)"
-            className="md:col-span-7 p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-800 flex flex-col justify-between"
-          >
-            <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#2538D9]/10 text-[#2538D9] dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center">
-                <Tv className="w-6 h-6" />
+        {/* Asymmetric Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* Feature 1: Large Visual Feature - VietQR Napas Reconciliation (Span 7) */}
+          <div className="lg:col-span-7 p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left group">
+            <div className="space-y-3">
+              <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-[#4F62FF] flex items-center justify-center">
+                <CreditCard className="w-5 h-5" />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
-                  Màn hình Kiosk quét QR tự phục vụ
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Đặt một máy tính bảng hoặc laptop tại quầy đón tiếp. Thành viên chỉ cần đưa thẻ hoặc mở điện thoại có mã QR, hệ thống tự động nhận diện và phát âm thanh chào mừng tức thì.
-                </p>
-              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-[#101828] dark:text-white">
+                Tự động đối soát giao dịch VietQR 24/7
+              </h3>
+              <p className="text-sm text-[#475467] dark:text-slate-400 leading-relaxed font-normal max-w-xl">
+                Tích hợp trực tiếp với cổng Webhook VietQR SePay & Casso. Khi học viên chuyển khoản với mã nội dung duy nhất, hóa đơn tự động chuyển trạng thái <span className="font-semibold text-emerald-600 dark:text-emerald-400">Đã đóng đủ</span> chỉ trong 3 giây.
+              </p>
+            </div>
 
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 flex items-center justify-between text-xs sm:text-sm">
-                <div className="flex items-center gap-3">
-                  <QrCode className="w-6 h-6 text-[#2538D9]" />
-                  <span className="font-semibold text-slate-700 dark:text-slate-200">
-                    Tốc độ nhận diện camera: 0.12 giây
-                  </span>
+            {/* In-Card Visual Preview */}
+            <div className="mt-8 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 space-y-2">
+              <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200/60 dark:border-slate-800">
+                <span className="font-medium text-slate-700 dark:text-slate-300">Biến động số dư VietQR</span>
+                <span className="text-emerald-600 font-medium">Khớp tự động</span>
+              </div>
+              <div className="flex items-center justify-between text-xs py-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="font-medium text-[#101828] dark:text-white">MB • TR8921 NGUYEN VAN AN</span>
                 </div>
-                <Link
-                  href="/kiosk"
-                  className="font-bold text-[#2538D9] dark:text-blue-400 hover:underline flex items-center gap-1"
-                >
-                  <span>Mở Kiosk</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">+600.000 đ</span>
+              </div>
+              <div className="flex items-center justify-between text-xs py-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="font-medium text-[#101828] dark:text-white">VCB • CAULONG TRAN THI MAI</span>
+                </div>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums">+50.000 đ</span>
               </div>
             </div>
-          </SpotlightCard>
+          </div>
 
-          {/* Card 2: Zero-Custody Napas 24/7 (Span 5) */}
-          <SpotlightCard
-            spotlightColor="rgba(16, 185, 129, 0.2)"
-            className="md:col-span-5 p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-800 flex flex-col justify-between"
-          >
-            <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6" />
+          {/* Feature 2: Lifestyle Split Card - QR Check-in & Member Portal (Span 5) */}
+          <div className="lg:col-span-5 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left">
+            <div className="space-y-3">
+              <div className="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-[#6D5CE8] flex items-center justify-center">
+                <QrCode className="w-5 h-5" />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
-                  Cơ chế Zero-Custody tuyệt đối
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                  TingRoster không giữ tiền trung gian. 100% dòng tiền chuyển khoản Napas 24/7 đi thẳng vào tài khoản ngân hàng chính chủ của bạn.
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-emerald-100/60 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
-                An toàn tuyệt đối theo chuẩn bảo mật tài chính ngân hàng.
-              </div>
+              <h3 className="text-xl font-semibold text-[#101828] dark:text-white">
+                Điểm danh QR 1 chạm tại cơ sở
+              </h3>
+              <p className="text-sm text-[#475467] dark:text-slate-400 leading-relaxed font-normal">
+                Màn hình Kiosk tự phục vụ hiển thị mã QR động. Học viên hoặc hội viên quét bằng điện thoại, hệ thống tự động ghi nhận giờ vào ca và trừ số buổi học.
+              </p>
             </div>
-          </SpotlightCard>
 
-          {/* Card 3: Tax Accounting Compliance (Span 5) */}
-          <SpotlightCard
-            spotlightColor="rgba(245, 158, 11, 0.2)"
-            className="md:col-span-5 p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-800 flex flex-col justify-between"
-          >
-            <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                <FileSpreadsheet className="w-6 h-6" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
-                  Kế toán Hộ kinh doanh chuẩn mực
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Hỗ trợ xuất bảng kê Mẫu 01-1/BK-HDKD (Thông tư 40/2021) và sổ S1-HKD, S2-HKD (Thông tư 88/2021) ra file Excel chỉ trong 1 click.
-                </p>
-              </div>
-              <div className="text-xs font-bold text-amber-700 dark:text-amber-300">
-                Sẵn sàng nộp cơ quan thuế không cần thuê kế toán ngoài
-              </div>
+            <div className="mt-6 relative rounded-xl overflow-hidden aspect-[16/9] border border-slate-200 dark:border-slate-800">
+              <Image
+                src="/images/landing/lifestyle/members_checkin.jpg"
+                alt="Hội viên quét mã điểm danh tại sân thể thao"
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <p className="absolute bottom-3 left-3 text-xs text-white font-medium">
+                Check-in thành công qua camera điện thoại
+              </p>
             </div>
-          </SpotlightCard>
+          </div>
 
-          {/* Card 4: Parent Portal with Public Token (Span 7) */}
-          <SpotlightCard
-            spotlightColor="rgba(37, 56, 217, 0.2)"
-            className="md:col-span-7 p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-800 flex flex-col justify-between"
-          >
-            <div className="space-y-6">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/70 text-[#2538D9] dark:text-blue-300 flex items-center justify-center">
-                <Lock className="w-6 h-6" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#101828] dark:text-white">
-                  Cổng phụ huynh bảo mật qua Public Token
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Mỗi học viên có một đường dẫn bảo mật riêng với public token mã hóa an toàn. Phụ huynh xem được đúng thông tin và hóa đơn con mình, không thấy công nợ người khác.
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-200 text-xs font-semibold">
-                Phụ huynh quét mã VietQR Napas thanh toán ngay trên điện thoại không cần đăng ký tài khoản rườm rà.
-              </div>
+          {/* Feature 3: Schedule & Shift Management (Span 4) */}
+          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
+              <Calendar className="w-5 h-5" />
             </div>
-          </SpotlightCard>
+            <h3 className="text-lg font-semibold text-[#101828] dark:text-white">
+              Lịch hoạt động & Phân ca
+            </h3>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+              Tạo ca sân, lịch học định kỳ trong tuần. Tự động phát hiện trùng ca hoặc vượt sĩ số lớp học để chủ cơ sở kịp thời sắp xếp.
+            </p>
+          </div>
+
+          {/* Feature 4: Digital Contracts & Documents (Span 4) */}
+          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center">
+              <FileCheck className="w-5 h-5" />
+            </div>
+            <h3 className="text-lg font-semibold text-[#101828] dark:text-white">
+              Hợp đồng & Tài liệu điện tử
+            </h3>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+              Ký hợp đồng thuê phòng, cam kết khóa học trực tiếp trên điện thoại. Xuất file PDF/Word có chữ ký xác nhận pháp lý rõ ràng.
+            </p>
+          </div>
+
+          {/* Feature 5: Group Chat & Notifications (Span 4) */}
+          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] flex items-center justify-center">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <h3 className="text-lg font-semibold text-[#101828] dark:text-white">
+              Thông báo đa kênh & Trò chuyện
+            </h3>
+            <p className="text-xs sm:text-sm text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+              Tự động gửi biến động học phí và lịch sinh hoạt qua Telegram bot hoặc email. Trò chuyện nội bộ giữa giáo viên và học viên trong không gian.
+            </p>
+          </div>
+
         </div>
+
       </div>
     </section>
   );

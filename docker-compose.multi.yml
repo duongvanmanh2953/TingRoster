@@ -1,0 +1,188 @@
+services:
+  # ==============================================================================
+  # 1. DATABASE TIER (PostgreSQL 16)
+  # ==============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: tingroster-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tingroster}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tingroster_secret_password}
+      POSTGRES_DB: ${POSTGRES_DB:-tingroster}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - tingroster-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tingroster -d tingroster"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==============================================================================
+  # 2. APPLICATION SERVICES (Distinct Ports & Subdomains)
+  # ==============================================================================
+
+  # Landing & Public Auth (Port 3000)
+  app-landing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-landing
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+    networks:
+      - tingroster-network
+
+  # Platform Admin (Port 4000)
+  app-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-admin
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_ADMIN_URL:-http://localhost:4000}
+    networks:
+      - tingroster-network
+
+  # Owner Portal (Port 4001)
+  app-owner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-owner
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4001:4001"
+    environment:
+      PORT: 4001
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_OWNER_URL:-http://localhost:4001}
+    networks:
+      - tingroster-network
+
+  # Student / Member Portal (Port 4002)
+  app-member:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-member
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4002:4002"
+    environment:
+      PORT: 4002
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_MEMBER_URL:-http://localhost:4002}
+    networks:
+      - tingroster-network
+
+  # Kiosk Mode (Port 4003)
+  app-kiosk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-kiosk
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4003:4003"
+    environment:
+      PORT: 4003
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_KIOSK_URL:-http://localhost:4003}
+    networks:
+      - tingroster-network
+
+  # Backend API & Webhook Service (Port 4100)
+  app-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tingroster-api
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4100:4100"
+    environment:
+      PORT: 4100
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tingroster}:${POSTGRES_PASSWORD:-tingroster_secret_password}@postgres:5432/${POSTGRES_DB:-tingroster}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-tingroster_super_jwt_secret_key_production_2026_xyz}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4100}
+      SEPAY_WEBHOOK_API_KEY: ${SEPAY_WEBHOOK_API_KEY}
+      CASSO_WEBHOOK_SECURE_TOKEN: ${CASSO_WEBHOOK_SECURE_TOKEN}
+    networks:
+      - tingroster-network
+
+  # ==============================================================================
+  # 3. REVERSE PROXY TIER (Nginx)
+  # ==============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: tingroster-nginx
+    restart: always
+    depends_on:
+      - app-landing
+      - app-admin
+      - app-owner
+      - app-member
+      - app-kiosk
+      - app-api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - tingroster-network
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  tingroster-network:
+    driver: bridge

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
-import { getUserIdFromRequest } from '@/lib/auth/jwt';
+import { getUserIdFromRequest, generateSecureToken } from '@/lib/auth/jwt';
+import { sendVerificationEmail, sendPasswordResetEmail } from '@/lib/mail/emailService';
 import { PlanType, Role } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,23 +13,62 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Chưa đăng nhập' }, { status: 401 });
   }
 
-  // Strict Platform Admin Authorization Check
+  // Strict Platform Admin Authorization Check (ADMIN or SUPER_ADMIN)
   const currentUser = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, role: true, email: true },
   });
 
-  if (!currentUser || currentUser.role !== Role.ADMIN) {
+  if (!currentUser || (currentUser.role !== Role.ADMIN && currentUser.role !== Role.SUPER_ADMIN)) {
     return NextResponse.json(
       { success: false, error: 'Truy cập bị từ chối: Yêu cầu quyền Platform Admin' },
       { status: 403 }
     );
   }
 
+  const { searchParams } = req.nextUrl;
+  const search = searchParams.get('search')?.trim().toLowerCase() || '';
+  const filter = searchParams.get('filter') || 'ALL'; // ALL, LOCKED, UNVERIFIED, OWNER, MEMBER
+
   try {
-    // Check user & system tenants
-    const [usersCount, groupsCount, membersCount, invoicesAgg, transactionsAgg] = await Promise.all([
+    // 1. Build where filter for users
+    const whereClause: any = {};
+    if (search) {
+      whereClause.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (filter === 'LOCKED') {
+      whereClause.isLocked = true;
+    } else if (filter === 'UNVERIFIED') {
+      whereClause.isEmailVerified = false;
+    } else if (filter === 'OWNER') {
+      whereClause.role = { in: ['OWNER', 'ADMIN', 'SUPER_ADMIN'] };
+    } else if (filter === 'MEMBER') {
+      whereClause.role = 'MEMBER';
+    }
+
+    // 2. Fetch real counts & aggregations
+    const [
+      usersCount,
+      activeUsersCount,
+      lockedUsersCount,
+      unverifiedUsersCount,
+      groupsCount,
+      membersCount,
+      invoicesAgg,
+      transactionsAgg,
+      emailLogsAgg,
+      recentEmailLogs,
+      openTicketsCount,
+      totalTicketsCount
+    ] = await Promise.all([
       prisma.user.count(),
+      prisma.user.count({ where: { isActive: true, isLocked: false } }),
+      prisma.user.count({ where: { isLocked: true } }),
+      prisma.user.count({ where: { isEmailVerified: false } }),
       prisma.group.count(),
       prisma.member.count(),
       prisma.invoice.aggregate({
@@ -40,10 +79,21 @@ export async function GET(req: NextRequest) {
         _sum: { amount: true },
         _count: { id: true },
       }),
+      prisma.emailDeliveryLog.groupBy({
+        by: ['status'],
+        _count: { id: true },
+      }),
+      prisma.emailDeliveryLog.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+      }),
+      prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
+      prisma.supportTicket.count(),
     ]);
 
-    // Fetch tenants list
+    // 3. Fetch users list with pagination
     const users = await prisma.user.findMany({
+      where: whereClause,
       select: {
         id: true,
         name: true,
@@ -53,6 +103,12 @@ export async function GET(req: NextRequest) {
         serviceBalance: true,
         bankId: true,
         bankAccountNo: true,
+        bankAccountName: true,
+        isEmailVerified: true,
+        isActive: true,
+        isLocked: true,
+        lockReason: true,
+        lastLoginAt: true,
         createdAt: true,
         _count: {
           select: {
@@ -65,12 +121,13 @@ export async function GET(req: NextRequest) {
             id: true,
             name: true,
             groupType: true,
+            isActive: true,
             _count: { select: { members: true } },
           },
         },
       },
       orderBy: { createdAt: 'desc' },
-      take: 50,
+      take: 100,
     });
 
     const now = new Date();
@@ -80,16 +137,11 @@ export async function GET(req: NextRequest) {
       const groupType = u.groups[0]?.groupType || 'CLASS';
 
       let primaryType = 'GIÁO VIÊN / TRUNG TÂM';
-      if (groupType === 'RENTAL') {
-        primaryType = 'CHỦ PHÒNG TRỌ';
-      } else if (groupType === 'SPORTS_CLUB') {
-        primaryType = 'CHỦ CLB THỂ THAO';
-      }
+      if (groupType === 'RENTAL') primaryType = 'CHỦ PHÒNG TRỌ';
+      else if (groupType === 'SPORTS_CLUB') primaryType = 'CHỦ CLB THỂ THAO';
 
-      // 30-day free trial calculation
       const createdAtDate = new Date(u.createdAt);
-      const trialDurationDays = 30;
-      const trialEndsAt = new Date(createdAtDate.getTime() + trialDurationDays * 24 * 60 * 60 * 1000);
+      const trialEndsAt = new Date(createdAtDate.getTime() + 30 * 24 * 60 * 60 * 1000);
       const diffDays = Math.ceil((trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
       let trialStatus: 'TRIAL_ACTIVE' | 'TRIAL_EXPIRING' | 'CONVERTED' | 'EXPIRED' = 'TRIAL_ACTIVE';
@@ -115,38 +167,42 @@ export async function GET(req: NextRequest) {
         membersCount: totalMembers,
         primaryType,
         bankInfo: `${u.bankId} • ${u.bankAccountNo}`,
+        isEmailVerified: u.isEmailVerified,
+        isActive: u.isActive,
+        isLocked: u.isLocked,
+        lockReason: u.lockReason,
+        lastLoginAt: u.lastLoginAt ? u.lastLoginAt.toISOString() : null,
         createdAt: u.createdAt.toISOString(),
         trialEndsAt: trialEndsAt.toISOString(),
         trialDaysLeft,
         trialStatus,
-        status: 'ACTIVE',
+        groups: u.groups,
       };
     });
 
-    // Real system audit logs from database
+    // 4. Real system audit logs
     const auditLogs = await prisma.auditLog.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 25,
+      take: 30,
       include: {
         user: { select: { name: true, email: true, role: true } },
       },
     });
 
-    // Real support tickets count
-    const [openTicketsCount, totalTicketsCount] = await Promise.all([
-      prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
-      prisma.supportTicket.count(),
-    ]);
-
-    // Active tenants (users with groups or invoices)
-    const activeTenantsCount = users.filter((u) => u._count.groups > 0 || u._count.invoices > 0).length;
+    // Email delivery metrics summary
+    const emailSentCount = emailLogsAgg.find(e => e.status === 'SENT')?._count.id || 0;
+    const emailFailedCount = emailLogsAgg.find(e => e.status === 'FAILED')?._count.id || 0;
+    const totalEmails = emailSentCount + emailFailedCount;
+    const emailSuccessRate = totalEmails > 0 ? Math.round((emailSentCount / totalEmails) * 100) : 100;
 
     return NextResponse.json({
       success: true,
       data: {
         stats: {
           totalTenants: usersCount,
-          activeTenants: Math.max(activeTenantsCount, 1),
+          activeTenants: activeUsersCount,
+          lockedTenants: lockedUsersCount,
+          unverifiedTenants: unverifiedUsersCount,
           totalGroups: groupsCount,
           totalMembers: membersCount,
           systemGmv: transactionsAgg._sum.amount || 0,
@@ -155,38 +211,33 @@ export async function GET(req: NextRequest) {
           webhookSuccessRate: 99.98,
           openTickets: openTicketsCount,
           totalTickets: totalTicketsCount,
+          emailDelivery: {
+            total: totalEmails,
+            sent: emailSentCount,
+            failed: emailFailedCount,
+            successRate: emailSuccessRate,
+            recent: recentEmailLogs,
+          },
           trialStats: {
             activeTrials: tenants.filter((t) => t.trialStatus === 'TRIAL_ACTIVE').length,
             expiringTrials: tenants.filter((t) => t.trialStatus === 'TRIAL_EXPIRING').length,
             convertedPaid: tenants.filter((t) => t.trialStatus === 'CONVERTED').length,
-            conversionRate: usersCount > 0
-              ? Math.round((tenants.filter((t) => t.trialStatus === 'CONVERTED').length / usersCount) * 100)
-              : 0,
+            conversionRate: usersCount > 0 ? Math.round((tenants.filter((t) => t.trialStatus === 'CONVERTED').length / usersCount) * 100) : 0,
+          },
+          systemHealth: {
+            database: 'HEALTHY',
+            api: 'OPERATIONAL',
+            auth: 'SECURE_ACTIVE',
+            uptime: Math.round(process.uptime()),
           },
         },
         tenants,
-        auditLogs: auditLogs.map((log) => ({
-          id: log.id,
-          action: log.action,
-          entityType: log.entityType,
-          entityId: log.entityId,
-          details: log.details,
-          ipAddress: log.ipAddress || '127.0.0.1',
-          createdAt: log.createdAt.toISOString(),
-          userName: log.user?.name || 'Hệ thống',
-          userEmail: log.user?.email || 'system@tingroster.vn',
-        })),
-        gateways: [
-          { name: 'SePay Webhook Gateway', status: 'ONLINE', latencyMs: 142, uptime: '99.99%' },
-          { name: 'Casso VietQR Gateway', status: 'ONLINE', latencyMs: 165, uptime: '99.95%' },
-          { name: 'VietQR Napas 24/7 API', status: 'ONLINE', latencyMs: 88, uptime: '100%' },
-          { name: 'Zalo ZNS Notifier Service', status: 'ONLINE', latencyMs: 210, uptime: '99.90%' },
-        ],
+        auditLogs,
       },
     });
-  } catch (err) {
-    console.error('Admin API error:', err);
-    return NextResponse.json({ success: false, error: 'Lỗi nạp dữ liệu Platform Admin' }, { status: 500 });
+  } catch (err: unknown) {
+    console.error('Admin API GET error:', err);
+    return NextResponse.json({ success: false, error: 'Lỗi tải dữ liệu quản trị' }, { status: 500 });
   }
 }
 
@@ -202,7 +253,7 @@ export async function POST(req: NextRequest) {
     select: { id: true, role: true, email: true },
   });
 
-  if (!currentUser || currentUser.role !== Role.ADMIN) {
+  if (!currentUser || (currentUser.role !== Role.ADMIN && currentUser.role !== Role.SUPER_ADMIN)) {
     return NextResponse.json(
       { success: false, error: 'Truy cập bị từ chối: Yêu cầu quyền Platform Admin' },
       { status: 403 }
@@ -213,7 +264,170 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action, tenantId, amount, reason } = body;
 
-    // 1. Credit platform service balance
+    const targetUser = await prisma.user.findUnique({
+      where: { id: tenantId },
+    });
+
+    if (!targetUser) {
+      return NextResponse.json({ success: false, error: 'Không tìm thấy tài khoản người dùng' }, { status: 404 });
+    }
+
+    // 1. LOCK USER
+    if (action === 'LOCK_USER') {
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: {
+          isLocked: true,
+          lockReason: reason || 'Khóa bởi Platform Administrator',
+        },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'ADMIN_USER_LOCKED',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({ targetEmail: targetUser.email, reason }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: { message: `Đã khóa tài khoản ${targetUser.email} thành công.` },
+      });
+    }
+
+    // 2. UNLOCK USER
+    if (action === 'UNLOCK_USER') {
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: {
+          isLocked: false,
+          lockReason: null,
+        },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'ADMIN_USER_UNLOCKED',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({ targetEmail: targetUser.email }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: { message: `Đã mở khóa tài khoản ${targetUser.email} thành công.` },
+      });
+    }
+
+    // 3. ACTIVATE / DEACTIVATE USER
+    if (action === 'TOGGLE_ACTIVE') {
+      const newActive = !targetUser.isActive;
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: { isActive: newActive },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: newActive ? 'ADMIN_USER_ACTIVATED' : 'ADMIN_USER_DEACTIVATED',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({ targetEmail: targetUser.email, isActive: newActive }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: { message: `Đã ${newActive ? 'kích hoạt' : 'vô hiệu hóa'} tài khoản ${targetUser.email}.` },
+      });
+    }
+
+    // 4. RESEND VERIFICATION EMAIL FROM ADMIN
+    if (action === 'RESEND_VERIFICATION') {
+      const verificationToken = generateSecureToken(32);
+      const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: {
+          emailVerificationToken: verificationToken,
+          emailVerificationExpires: verificationExpires,
+        },
+      });
+
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      await sendVerificationEmail({
+        email: targetUser.email,
+        name: targetUser.name,
+        token: verificationToken,
+        appUrl,
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'ADMIN_RESEND_VERIFICATION',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({ targetEmail: targetUser.email }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: { message: `Đã gửi lại email xác thực cho ${targetUser.email}.` },
+      });
+    }
+
+    // 5. SEND PASSWORD RESET LINK VIA EMAIL (Secure, never shows password to Admin)
+    if (action === 'SEND_PASSWORD_RESET') {
+      const resetToken = generateSecureToken(32);
+      const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      await prisma.user.update({
+        where: { id: tenantId },
+        data: {
+          resetPasswordToken: resetToken,
+          resetPasswordExpires: resetExpires,
+        },
+      });
+
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      await sendPasswordResetEmail({
+        email: targetUser.email,
+        name: targetUser.name,
+        token: resetToken,
+        appUrl,
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'ADMIN_SEND_PASSWORD_RESET',
+          entityType: 'USER',
+          entityId: tenantId,
+          details: JSON.stringify({ targetEmail: targetUser.email, reason: reason || 'Admin kích hoạt đặt lại mật khẩu' }),
+          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: { message: `Đã gửi liên kết đặt lại mật khẩu an toàn tới email của ${targetUser.email}. Admin không được phép xem mật khẩu.` },
+      });
+    }
+
+    // 6. CREDIT SERVICE BALANCE
     if (action === 'CREDIT_BALANCE') {
       const parsedAmount = parseInt(amount, 10);
       if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -222,12 +436,9 @@ export async function POST(req: NextRequest) {
 
       const updatedUser = await prisma.user.update({
         where: { id: tenantId },
-        data: {
-          serviceBalance: { increment: parsedAmount },
-        },
+        data: { serviceBalance: { increment: parsedAmount } },
       });
 
-      // Atomic Wallet ledger entry
       await prisma.walletLedgerEntry.create({
         data: {
           userId: tenantId,
@@ -239,18 +450,13 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Audit log
       await prisma.auditLog.create({
         data: {
           userId,
           action: 'ADMIN_CREDIT_ADJUSTMENT',
           entityType: 'USER_WALLET',
           entityId: tenantId,
-          details: JSON.stringify({
-            amount: parsedAmount,
-            reason: reason || 'Nạp số dư dịch vụ từ Platform Admin',
-            balanceAfter: updatedUser.serviceBalance,
-          }),
+          details: JSON.stringify({ amount: parsedAmount, reason, balanceAfter: updatedUser.serviceBalance }),
           ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
         },
       });
@@ -264,7 +470,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. Extend trial
+    // 7. EXTEND TRIAL
     if (action === 'EXTEND_TRIAL') {
       await prisma.auditLog.create({
         data: {
@@ -283,53 +489,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. Secure Temporary Password Reset
-    if (action === 'RESET_PASSWORD') {
-      const tenant = await prisma.user.findUnique({
-        where: { id: tenantId },
-        select: { id: true, email: true, name: true },
-      });
-
-      if (!tenant) {
-        return NextResponse.json({ success: false, error: 'Không tìm thấy tài khoản người dùng' }, { status: 404 });
-      }
-
-      // Generate secure 10-char random temporary password
-      const tempPassword = `TR@${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
-      const passwordHash = await bcrypt.hash(tempPassword, 10);
-
-      await prisma.user.update({
-        where: { id: tenantId },
-        data: { passwordHash },
-      });
-
-      // Audit Log - NEVER logs the password plaintext!
-      await prisma.auditLog.create({
-        data: {
-          userId,
-          action: 'ADMIN_PASSWORD_RESET',
-          entityType: 'USER',
-          entityId: tenantId,
-          details: JSON.stringify({
-            targetEmail: tenant.email,
-            reason: reason || 'Cấp lại mật khẩu tạm thời theo yêu cầu người dùng',
-          }),
-          ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
-        },
-      });
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          temporaryPassword: tempPassword,
-          message: `Đã cấp mật khẩu tạm thời thành công cho ${tenant.email}. Mật khẩu chỉ hiển thị một lần duy nhất này.`,
-        },
-      });
-    }
-
     return NextResponse.json({ success: false, error: 'Action không được hỗ trợ' }, { status: 400 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Admin POST action error:', err);
-    return NextResponse.json({ success: false, error: err.message || 'Lỗi thực thi tác vụ Admin' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Lỗi thực thi tác vụ Admin' }, { status: 500 });
   }
 }

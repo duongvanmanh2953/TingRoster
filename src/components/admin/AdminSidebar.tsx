@@ -24,6 +24,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowLeft,
+  Mail,
   X
 } from 'lucide-react';
 import { Logo } from '@/components/common/Logo';
@@ -49,6 +50,7 @@ export type AdminTabKey =
   | 'SUPPORT_TICKETS'
   | 'WEBHOOK_GATEWAYS'
   | 'CONFIG'
+  | 'EMAIL_LOGS'
   | 'AUDIT_LOGS';
 
 interface AdminSidebarProps {
@@ -191,6 +193,7 @@ export function AdminSidebar({
       id: 'SECURITY',
       title: 'An ninh & Kiểm toán',
       items: [
+        { key: 'EMAIL_LOGS', label: 'Nhật ký gửi Email (Logs)', icon: Mail },
         { key: 'AUDIT_LOGS', label: 'Nhật ký An ninh & Audit Trail', icon: ShieldAlert },
       ],
     },

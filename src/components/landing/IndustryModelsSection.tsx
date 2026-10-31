@@ -1,236 +1,280 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  GraduationCap,
-  Trophy,
-  Building2,
-  Users,
-  CheckCircle2,
+import { 
+  GraduationCap, 
+  Trophy, 
+  Building, 
+  Briefcase, 
+  CheckCircle2, 
+  ArrowRight,
   Calendar,
   CreditCard,
   QrCode,
-  FileSpreadsheet,
+  Users,
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
-import { TiltedCard } from '@/components/reactbits/TiltedCard';
-import { formatVND } from '@/lib/utils';
+import Link from 'next/link';
+
+interface ModelData {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  features: string[];
+  mockStats: { label: string; value: string }[];
+  previewTitle: string;
+  previewRows: { col1: string; col2: string; col3: string; badge: string }[];
+}
+
+const MODELS: ModelData[] = [
+  {
+    id: 'education',
+    name: 'Giáo dục & Dạy thêm',
+    tagline: 'Lớp học thêm, Trung tâm ngoại ngữ, Luyện thi THPT',
+    description: 'Quản lý danh sách học sinh theo từng lớp, điểm danh theo buổi học, tính tiền học phí linh hoạt theo tháng hoặc theo buổi thực học.',
+    icon: GraduationCap,
+    features: [
+      'Điểm danh tự động qua mã QR lớp học hoặc Kiosk tại cửa',
+      'Học phí trừ tự động theo số buổi có mặt / vắng có phép',
+      'Cổng phụ huynh tra cứu bảng điểm danh và đóng học phí VietQR',
+      'Tự động gửi thông báo sĩ số vào nhóm Zalo/Telegram của lớp'
+    ],
+    mockStats: [
+      { label: 'Học sinh đang học', value: '185 em' },
+      { label: 'Tỷ lệ thu phí đúng hạn', value: '98.5%' },
+      { label: 'Thời gian đối soát/tháng', value: '5 phút' }
+    ],
+    previewTitle: 'Lớp Toán 12A • Luyện thi THPT Quốc Gia',
+    previewRows: [
+      { col1: 'Nguyễn Văn An', col2: '8/8 buổi (Đầy đủ)', col3: '600.000 đ', badge: 'Đã đóng đủ' },
+      { col1: 'Trần Thị Mai', col2: '7/8 buổi (1 vắng phép)', col3: '525.000 đ', badge: 'Đã đóng đủ' },
+      { col1: 'Lê Hoàng Nam', col2: '8/8 buổi', col3: '600.000 đ', badge: 'Chưa đóng' },
+    ]
+  },
+  {
+    id: 'sports',
+    name: 'CLB Thể thao & Sân bãi',
+    tagline: 'Pickleball, Cầu lông, Bóng đá mini, Gym, Yoga',
+    description: 'Phân ca tập linh hoạt, kiểm soát vé vào sân theo buổi hoặc gói tháng, thanh toán quét mã QR tại chỗ không cần nhân viên thu tiền mặt.',
+    icon: Trophy,
+    features: [
+      'Mã QR đặt tại cửa sân: Hội viên quét là vào sân, tự động tích ca',
+      'Hỗ trợ cả hội viên cố định theo tháng và khách vãng lai theo ca',
+      'Hạn chế gian lận số người vào sân nhờ camera Kiosk đối chiếu',
+      'Đối soát doanh thu theo từng sân đấu trong ngày theo thời gian thực'
+    ],
+    mockStats: [
+      { label: 'Ca sân đã đặt hôm nay', value: '28 ca' },
+      { label: 'Vé vãng lai thu qua QR', value: '1.400.000 đ' },
+      { label: 'Hội viên hoạt động', value: '64 người' }
+    ],
+    previewTitle: 'CLB Pickleball & Cầu lông Quận 10 • Sân 1 - 4',
+    previewRows: [
+      { col1: 'Ca 17:30 - 19:30 (Sân 3)', col2: 'Team Trần Tuấn (4 người)', col3: '200.000 đ', badge: 'Đã thanh toán' },
+      { col1: 'Vé vãng lai buổi sáng', col2: 'Khách lẻ quét QR quầy', col3: '50.000 đ', badge: 'Đã thanh toán' },
+      { col1: 'Ca 20:00 - 22:00 (Sân 1)', col2: 'Gói tháng CLB Đêm', col3: 'Vé tháng', badge: 'Hội viên VIP' },
+    ]
+  },
+  {
+    id: 'rental',
+    name: 'Cho thuê & Căn hộ mini',
+    tagline: 'Nhà trọ, Căn hộ dịch vụ, Co-working space, Studio',
+    description: 'Chốt chỉ số điện nước định kỳ, tự động cộng phụ phí phát sinh, sinh hóa đơn tiền phòng chi tiết có mã VietQR thanh toán 1 chạm.',
+    icon: Building,
+    features: [
+      'Ghi chỉ số điện nước theo công tơ từng phòng có lưu ảnh bằng chứng',
+      'Hợp đồng thuê điện tử và điều khoản phụ phí thỏa thuận minh bạch',
+      'Gửi thông báo hóa đơn kèm link VietQR chính xác số tiền đến từng khách',
+      'Hệ thống tự động gạch nợ tiền nhà ngay khi tài khoản ngân hàng báo có'
+    ],
+    mockStats: [
+      { label: 'Tỷ lệ lấp đầy phòng', value: '16/16 phòng' },
+      { label: 'Tiền phòng đã thu tháng', value: '72.000.000 đ' },
+      { label: 'Công nợ điện nước', value: '0 đ (Đã thu đủ)' }
+    ],
+    previewTitle: 'Tòa nhà Dịch vụ TingHouse • 16 Phòng Studio',
+    previewRows: [
+      { col1: 'Phòng 201 • Chị Hương', col2: 'Tiền phòng + 142 số điện', col3: '4.850.000 đ', badge: 'Đã thanh toán' },
+      { col1: 'Phòng 302 • Anh Đức', col2: 'Tiền phòng + 98 số điện', col3: '4.420.000 đ', badge: 'Đã thanh toán' },
+      { col1: 'Phòng 104 • Bạn Lan', col2: 'Tiền phòng tháng 11', col3: '4.200.000 đ', badge: 'Hạn: 05/11' },
+    ]
+  },
+  {
+    id: 'enterprise',
+    name: 'Doanh nghiệp & Đa chi nhánh',
+    tagline: 'Chuỗi cơ sở, Công ty dịch vụ, Không gian đào tạo',
+    description: 'Phân quyền chặt chẽ giữa Chủ cơ sở (Owner), Quản lý cơ sở (Manager) và Nhân viên lễ tân (Staff). Báo cáo tài chính hợp nhất không rò rỉ dữ liệu.',
+    icon: Briefcase,
+    features: [
+      'Quản lý không giới hạn cơ sở và chi nhánh trên một tài khoản mẹ',
+      'Mỗi chi nhánh có thể liên kết tài khoản ngân hàng nhận tiền riêng biệt',
+      'Phân quyền xem báo cáo: Nhân viên chỉ điểm danh, chủ nắm tài chính',
+      'Xuất báo cáo thuế và đối soát sao kê ngân hàng ra file Excel tiêu chuẩn'
+    ],
+    mockStats: [
+      { label: 'Chi nhánh vận hành', value: '4 cơ sở' },
+      { label: 'Tổng số nhân viên', value: '18 nhân sự' },
+      { label: 'GMV hệ thống tháng', value: '240.000.000 đ' }
+    ],
+    previewTitle: 'Tập đoàn Giáo dục & Thể thao • Báo cáo hợp nhất',
+    previewRows: [
+      { col1: 'Cơ sở Quận 1 (Toán & Anh)', col2: '12 lớp • 140 học viên', col3: '84.000.000 đ', badge: 'Hoạt động tốt' },
+      { col1: 'Cơ sở Bình Thạnh (Pickleball)', col2: '6 sân • 380 ca/tháng', col3: '76.000.000 đ', badge: 'Hoạt động tốt' },
+      { col1: 'Cơ sở Cầu Giấy (Gym & Yoga)', col2: '95 hội viên thường trực', col3: '80.000.000 đ', badge: 'Hoạt động tốt' },
+    ]
+  }
+];
 
 export function IndustryModelsSection() {
-  const [selectedIndustry, setSelectedIndustry] = useState<'EDU' | 'SPORTS' | 'RENTAL' | 'WORKFORCE'>('EDU');
-
-  const industries = [
-    {
-      id: 'EDU',
-      title: 'Giáo dục & Lớp dạy thêm',
-      desc: 'Giáo viên, trung tâm tiếng Anh, năng khiếu, dạy kèm tại nhà',
-      icon: GraduationCap,
-      color: '#2538D9',
-      features: [
-        'Điểm danh học sinh từng buổi hoặc trừ gói buổi linh hoạt',
-        'Tự động gửi thông báo lịch học và học phí tới phụ huynh',
-        'Tạo mã VietQR chuyển khoản cá nhân gắn mã học viên',
-        'Xuất bảng kê doanh thu và báo cáo sĩ số cho từng lớp',
-      ],
-      sampleData: {
-        label: 'Lớp Toán 10 Nâng cao',
-        statA: '24 Học sinh',
-        statB: formatVND(14400000) + ' /tháng',
-        statC: 'Điểm danh 1 chạm',
-      },
-    },
-    {
-      id: 'SPORTS',
-      title: 'CLB Thể thao & Đặt sân',
-      desc: 'Pickleball, Cầu lông, Bóng đá mini, Phòng tập Gym & Yoga',
-      icon: Trophy,
-      color: '#10B981',
-      features: [
-        'Kiosk quét mã QR tự phục vụ check-in ngay tại quầy lễ tân',
-        'Quản lý gói hội viên theo tháng, quý hoặc số lượt chơi',
-        'Theo dõi lịch đặt sân, tránh trùng giờ và tính tiền dịch vụ đi kèm',
-        'Tự động đối soát giao dịch đặt cọc và tiền nước qua Napas 24/7',
-      ],
-      sampleData: {
-        label: 'Cụm 4 Sân Pickleball Thủ Đức',
-        statA: '142 Hội viên',
-        statB: formatVND(48500000) + ' /tháng',
-        statC: 'Check-in QR Kiosk',
-      },
-    },
-    {
-      id: 'RENTAL',
-      title: 'Nhà trọ & Căn hộ dịch vụ',
-      desc: 'Chủ dãy nhà trọ, ký túc xá tư nhân, căn hộ mini cho thuê',
-      icon: Building2,
-      color: '#F59E0B',
-      features: [
-        'Chốt chỉ số điện nước từng phòng và tự động cộng dồn vào hóa đơn',
-        'Tạo mã VietQR Napas riêng cho từng phòng kèm cú pháp P101-T11',
-        'Tự động gạch nợ ngay khi khách thuê chuyển khoản thành công',
-        'Báo cáo tuổi nợ và theo dõi hợp đồng thuê phòng minh bạch',
-      ],
-      sampleData: {
-        label: 'Dãy 18 Phòng Trọ Bình Thạnh',
-        statA: '18 Phòng đang thuê',
-        statB: formatVND(68400000) + ' /tháng',
-        statC: 'Chốt điện nước tự động',
-      },
-    },
-    {
-      id: 'WORKFORCE',
-      title: 'Doanh nghiệp & Đội ngũ',
-      desc: 'Cửa hàng, quán cafe, chuỗi bán lẻ, quản lý nhân viên ca kíp',
-      icon: Users,
-      color: '#0B0F19',
-      features: [
-        'Chấm công ca kíp theo mã QR động, hạn chế gian lận giờ giấc',
-        'Phân quyền chi tiết cho quản lý ca, kế toán và chủ cửa hàng',
-        'Tổng hợp ngày công và tính phụ cấp tự động cuối tháng',
-        'Nhật ký hoạt động rõ ràng giúp kiểm soát nội bộ chuẩn xác',
-      ],
-      sampleData: {
-        label: 'Chuỗi 3 Cửa hàng F&B',
-        statA: '32 Nhân sự',
-        statB: '98.5% Đúng giờ',
-        statC: 'Chấm công QR ca kíp',
-      },
-    },
-  ];
-
-  const current = industries.find((i) => i.id === selectedIndustry) || industries[0];
-  const Icon = current.icon;
+  const [selectedId, setSelectedId] = useState('education');
+  const activeModel = MODELS.find(m => m.id === selectedId) || MODELS[0];
 
   return (
-    <section className="scroll-reveal py-24 sm:py-32 relative bg-slate-50/60 dark:bg-[#070A11] w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950/70 text-[#2538D9] dark:text-blue-300 text-xs font-semibold">
-            <Users className="w-3.5 h-3.5" />
-            <span>Khả năng thích ứng vượt trội</span>
+    <section id="mo-hinh" className="py-20 sm:py-28 bg-white dark:bg-[#0B0F19] transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
+            <span>Một nền tảng, nhiều mô hình chuyên biệt</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-normal leading-tight">
-            Một nền tảng, Đa dạng mô hình vận hành
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#101828] dark:text-white leading-tight">
+            Được tùy biến cho đúng lĩnh vực của bạn
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-            Dù bạn đang điều hành lớp học, câu lạc bộ thể thao, chuỗi phòng trọ hay cửa hàng bán lẻ, TingRoster đều cung cấp quy trình chuyên biệt.
+          <p className="text-base text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+            Mỗi loại hình hoạt động có đặc thù tính phí và điểm danh khác nhau. TingRoster cung cấp các module tương ứng mà không làm phức tạp hóa giao diện.
           </p>
         </div>
 
-        {/* Industry Selector Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {industries.map((item) => {
-            const ItemIcon = item.icon;
-            const isSelected = selectedIndustry === item.id;
+        {/* Industry Model Selector Tabs */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
+          {MODELS.map((model) => {
+            const Icon = model.icon;
+            const isSelected = model.id === selectedId;
             return (
               <button
-                key={item.id}
+                key={model.id}
                 type="button"
-                onClick={() => setSelectedIndustry(item.id as typeof selectedIndustry)}
-                className={`p-4 sm:p-5 rounded-2xl text-left transition-colors cursor-pointer flex flex-col justify-between space-y-3 ${
+                onClick={() => setSelectedId(model.id)}
+                className={`p-4 sm:p-5 rounded-2xl border text-left transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#2538D9] text-white ring-2 ring-[#2538D9]'
-                    : 'bg-white dark:bg-slate-800 text-[#101828] dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60'
+                    ? 'bg-blue-50/60 dark:bg-blue-950/40 border-[#2538D9] dark:border-[#4F62FF] shadow-sm'
+                    : 'bg-white dark:bg-[#111726] border-[#E4E7EC] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    isSelected ? 'bg-white/20 text-white' : 'bg-[#2538D9]/10 text-[#2538D9] dark:bg-blue-950/80 dark:text-blue-300'
-                  }`}
-                >
-                  <ItemIcon className="w-5 h-5" />
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${
+                  isSelected 
+                    ? 'bg-[#2538D9] text-white dark:bg-[#4F62FF]' 
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                }`}>
+                  <Icon className="w-5 h-5" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm sm:text-base">{item.title}</h3>
-                  <p
-                    className={`text-xs mt-1 line-clamp-2 ${
-                      isSelected ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
-                    }`}
-                  >
-                    {item.desc}
-                  </p>
-                </div>
+                <h3 className={`text-sm font-semibold mb-1 ${
+                  isSelected ? 'text-[#2538D9] dark:text-[#4F62FF]' : 'text-[#101828] dark:text-white'
+                }`}>
+                  {model.name}
+                </h3>
+                <p className="text-xs text-[#475467] dark:text-slate-400 font-normal line-clamp-1">
+                  {model.tagline}
+                </p>
               </button>
             );
           })}
         </div>
 
-        {/* Dynamic Industry Workspace Preview */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" data-ui>
-          <div className="lg:col-span-6 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#2538D9]/10 text-[#2538D9] dark:bg-blue-900/40 dark:text-blue-300 flex items-center justify-center">
-                <Icon className="w-6 h-6" />
-              </div>
+        {/* Dynamic Model Content & Visual Preview */}
+        <div className="p-6 sm:p-10 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* Left Content Description */}
+            <div className="lg:col-span-6 space-y-6 text-left">
               <div>
-                <h3 className="text-2xl font-black text-[#101828] dark:text-white">{current.title}</h3>
-                <span className="text-xs text-slate-500 dark:text-slate-400">Giải pháp vận hành chuyên biệt</span>
+                <span className="text-xs font-semibold text-[#2538D9] dark:text-[#4F62FF] tracking-wide uppercase">
+                  {activeModel.tagline}
+                </span>
+                <h3 className="text-2xl font-semibold text-[#101828] dark:text-white mt-1">
+                  {activeModel.name}
+                </h3>
+                <p className="text-sm text-[#475467] dark:text-slate-300 font-normal mt-2 leading-relaxed">
+                  {activeModel.description}
+                </p>
+              </div>
+
+              {/* Feature Checklist */}
+              <div className="space-y-3">
+                {activeModel.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span className="text-xs sm:text-sm text-[#344054] dark:text-slate-300 font-normal">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Real Stats Grid for this Model */}
+              <div className="pt-4 grid grid-cols-3 gap-3 border-t border-[#EAECF0] dark:border-slate-800">
+                {activeModel.mockStats.map((st, i) => (
+                  <div key={i} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">{st.label}</p>
+                    <p className="text-sm sm:text-base font-semibold text-[#101828] dark:text-white tabular-nums mt-0.5">{st.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#2538D9] dark:text-[#4F62FF] hover:underline cursor-pointer"
+                >
+                  <span>Bắt đầu áp dụng cho {activeModel.name}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
 
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              {current.desc}
-            </p>
-
-            <div className="space-y-3 pt-2 text-sm text-[#101828] dark:text-slate-200">
-              {current.features.map((feat, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>{feat}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <TiltedCard maxTilt={8} perspective={1200}>
-              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/80 space-y-5">
-                <div className="flex items-center justify-between pb-1">
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                    MẪU WORKSPACE THỰC TẾ
-                  </span>
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                    Đang hoạt động
-                  </span>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="text-lg font-black text-[#101828] dark:text-white block">
-                    {current.sampleData.label}
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Được cấu hình sẵn quy tắc và biểu phí tự động
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800 space-y-1">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Quy mô</span>
-                    <span className="text-xs sm:text-sm font-bold text-[#101828] dark:text-white">
-                      {current.sampleData.statA}
-                    </span>
+            {/* Right Distinctive Screen Preview for this Model */}
+            <div className="lg:col-span-6">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-[#E4E7EC] dark:border-slate-800 shadow-md p-5 text-left">
+                
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <p className="text-xs font-semibold text-[#101828] dark:text-white">{activeModel.previewTitle}</p>
+                    <p className="text-[11px] text-slate-400">Dữ liệu đối soát tự động thời gian thực</p>
                   </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800 space-y-1">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Dòng tiền</span>
-                    <span className="text-xs sm:text-sm font-bold text-[#2538D9] dark:text-blue-400">
-                      {current.sampleData.statB}
-                    </span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-slate-800 space-y-1">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Cơ chế</span>
-                    <span className="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                      {current.sampleData.statC}
-                    </span>
-                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-[#2538D9] dark:text-[#4F62FF] font-medium">
+                    VietQR Active
+                  </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-xs text-[#2538D9] dark:text-blue-300 font-semibold flex items-center justify-between">
-                  <span>Khởi tạo workspace trong 60 giây</span>
-                  <span className="font-bold">Miễn phí trải nghiệm →</span>
+                <div className="mt-4 space-y-2.5">
+                  {activeModel.previewRows.map((row, idx) => (
+                    <div key={idx} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between text-xs">
+                      <div>
+                        <p className="font-medium text-[#101828] dark:text-slate-200">{row.col1}</p>
+                        <p className="text-[11px] text-slate-500 mt-0.5">{row.col2}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-[#101828] dark:text-slate-200 tabular-nums">{row.col3}</p>
+                        <span className="inline-block text-[10px] px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
+                          {row.badge}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                  <span>Hệ thống tự động đồng bộ khi thành viên chuyển khoản</span>
+                  <span className="text-emerald-600 font-medium">Đã kiểm chứng Zero-Custody</span>
                 </div>
               </div>
-            </TiltedCard>
+            </div>
+
           </div>
         </div>
+
       </div>
     </section>
   );

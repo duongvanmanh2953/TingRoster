@@ -1,80 +1,86 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronRight, ShieldCheck, HelpCircle, Lock } from 'lucide-react';
+import { ChevronDown, HelpCircle, ShieldCheck } from 'lucide-react';
+
+const FAQS = [
+  {
+    q: 'TingRoster phù hợp với những ai?',
+    a: 'TingRoster được thiết kế chuyên biệt cho 3 nhóm đối tượng chính: (1) Giáo viên dạy thêm và trung tâm ngoại ngữ/năng khiếu; (2) Chủ câu lạc bộ thể thao như Pickleball, Cầu lông, Bóng đá, Gym, Yoga; (3) Chủ phòng trọ hoặc căn hộ dịch vụ mini cần chốt điện nước và đối soát hóa đơn.',
+  },
+  {
+    q: 'Học viên và hội viên có bắt buộc phải tải app về điện thoại không?',
+    a: 'Hoàn toàn KHÔNG. TingRoster hoạt động 100% trên nền tảng Web App Responsive tối ưu cho điện thoại. Học viên chỉ cần quét mã QR tại quầy bằng camera điện thoại có sẵn hoặc truy cập đường link cá nhân để xem lịch và bảng đối soát.',
+  },
+  {
+    q: 'Cơ chế "Zero-Custody" bảo vệ tiền của tôi như thế nào?',
+    a: 'TingRoster không phải là ví điện tử hay cổng trung gian thu hộ tiền. Mã VietQR động trên hóa đơn chứa trực tiếp số tài khoản ngân hàng chính chủ của bạn (MB, VCB, Techcombank...). Khi học viên quét mã chuyển tiền, tiền vào thẳng tài khoản ngân hàng của bạn ngay lập tức. TingRoster chỉ nhận tín hiệu biến động số dư qua Webhook để tự động gạch nợ.',
+  },
+  {
+    q: 'Hệ thống hỗ trợ những ngân hàng nào tại Việt Nam?',
+    a: 'Hệ thống hỗ trợ 100% các ngân hàng thành viên trong mạng lưới Napas 24/7 tại Việt Nam: MBBank, Vietcombank, Techcombank, ACB, VPBank, TPBank, BIDV, Agribank, OCB, Sacombank và các ngân hàng số.',
+  },
+  {
+    q: 'Tôi có thể quản lý nhiều lớp học hoặc nhiều sân bóng khác nhau không?',
+    a: 'Có. Bạn có thể tạo nhiều Không gian (Space) độc lập trên cùng một tài khoản quản lý: ví dụ vừa có lớp học Toán 12A, vừa có CLB Cầu Lông, vừa có Tòa nhà dịch vụ cho thuê với cấu hình module và tài khoản nhận tiền độc lập.',
+  },
+  {
+    q: 'Dữ liệu thành viên và tài chính của tôi có được bảo mật không?',
+    a: 'Dữ liệu được mã hóa và phân quyền nghiêm ngặt theo vai trò (RBAC). Học viên chỉ thấy dữ liệu cá nhân của mình, nhân viên chỉ được phép điểm danh, và chỉ có Chủ tài khoản (Owner) mới có quyền truy cập vào báo cáo doanh thu tài chính.',
+  },
+];
 
 export function TrustFaqSection() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const faqs = [
-    {
-      q: 'TingRoster có giữ tiền học phí hay tiền phòng của tôi không?',
-      a: 'Tuyệt đối không. Tiền do học viên hoặc khách thuê chuyển khoản sẽ vào trực tiếp 100% tài khoản ngân hàng chính chủ của bạn (MB, Vietcombank, Techcombank...). TingRoster hoạt động theo mô hình Zero-Custody, chỉ nhận diện biến động số dư qua webhook để tự động gạch nợ.',
-    },
-    {
-      q: 'Học viên hoặc khách thuê chuyển khoản sai cú pháp thì xử lý thế nào?',
-      a: 'Hệ thống lưu trữ toàn bộ giao dịch vào mục Đối soát chưa khớp. Bạn chỉ cần 1 cú click để gán thủ công giao dịch đó vào đúng học viên mà không bao giờ bị thất thoát tiền.',
-    },
-    {
-      q: 'Tôi có thể xuất dữ liệu để nộp thuế theo Thông tư 88/2021 và 40/2021 không?',
-      a: 'Có. TingRoster tích hợp sẵn mẫu bảng kê doanh thu Mẫu 01-1/BK-HDKD và sổ chi tiết doanh thu S1-HKD, S2-HKD chuẩn mực của Bộ Tài chính, giúp bạn xuất file Excel đầy đủ để kê khai thuế nhanh chóng.',
-    },
-    {
-      q: 'Màn hình Kiosk điểm danh hoạt động ra sao nếu tôi chỉ có điện thoại hoặc máy tính bảng cũ?',
-      a: 'Bạn chỉ cần mở trình duyệt web trên bất kỳ máy tính bảng, điện thoại hoặc laptop nào có camera và truy cập đường link Kiosk của cơ sở. Không cần mua máy quét chuyên dụng đắt tiền.',
-    },
-    {
-      q: 'Phụ huynh có cần phải tải app hoặc tạo tài khoản để xem công nợ không?',
-      a: 'Không cần. Phụ huynh chỉ cần truy cập vào đường link Cổng phụ huynh bảo mật bằng mã token riêng do bạn chia sẻ để xem ngay lịch học và quét mã VietQR thanh toán tiện lợi.',
-    },
-    {
-      q: 'Tôi có được hỗ trợ cài đặt và nhập danh sách học viên ban đầu không?',
-      a: 'Có. Đội ngũ chuyên viên kỹ thuật của TingRoster luôn sẵn sàng hỗ trợ bạn import danh sách học viên từ file Excel, kết nối tài khoản ngân hàng và cấu hình biểu phí hoàn toàn miễn phí qua Zalo và Hotline 24/7.',
-    },
-  ];
+  const toggleFaq = (idx: number) => {
+    setOpenIndex(openIndex === idx ? null : idx);
+  };
 
   return (
-    <section id="huong-dan" className="scroll-reveal py-24 sm:py-32 bg-slate-50/50 dark:bg-[#070A11] w-full">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950/70 text-[#2538D9] dark:text-blue-300 text-xs font-semibold">
+    <section className="py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Heading */}
+        <div className="text-center space-y-3 mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Giải đáp thắc mắc</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#101828] dark:text-white tracking-normal leading-tight">
-            Câu hỏi thường gặp
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#101828] dark:text-white leading-tight">
+            Những câu hỏi thường gặp
           </h2>
-          <p className="text-base text-slate-600 dark:text-slate-300 max-w-[60ch] mx-auto">
-            Những thông tin cốt lõi giúp bạn hoàn toàn an tâm khi đưa cơ sở vào vận hành tự động.
+          <p className="text-base text-[#475467] dark:text-slate-400 font-normal leading-relaxed">
+            Mọi điều bạn cần biết trước khi bắt đầu sử dụng nền tảng TingRoster.
           </p>
         </div>
 
-        {/* FAQ Accordion */}
-        <div className="space-y-3.5">
-          {faqs.map((faq, idx) => {
-            const isOpen = activeFaq === idx;
+        {/* FAQ Accordion List */}
+        <div className="space-y-3.5 text-left">
+          {FAQS.map((faq, idx) => {
+            const isOpen = openIndex === idx;
             return (
               <div
                 key={idx}
-                className="rounded-2xl bg-white dark:bg-slate-800 transition-colors"
-                data-ui
+                className="rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 overflow-hidden shadow-sm transition-all"
               >
                 <button
                   type="button"
-                  onClick={() => setActiveFaq(isOpen ? null : idx)}
-                  className="w-full text-left p-6 flex items-center justify-between gap-4 cursor-pointer"
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  aria-expanded={isOpen}
                 >
-                  <span className="font-bold text-base sm:text-lg text-[#101828] dark:text-white">
+                  <span className="text-sm sm:text-base font-medium text-[#101828] dark:text-white">
                     {faq.q}
                   </span>
-                  <ChevronRight
-                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform ${
-                      isOpen ? 'rotate-90 text-[#2538D9]' : ''
-                    }`}
-                  />
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-slate-100 dark:bg-slate-800 transition-transform duration-200 ${
+                    isOpen ? 'rotate-180 bg-blue-50 text-[#2538D9] dark:bg-blue-950 dark:text-[#4F62FF]' : 'text-slate-500'
+                  }`}>
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
                 </button>
                 {isOpen && (
-                  <div className="px-6 pb-6 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[#475467] dark:text-slate-300 font-normal leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
                     {faq.a}
                   </div>
                 )}
@@ -82,6 +88,21 @@ export function TrustFaqSection() {
             );
           })}
         </div>
+
+        {/* Support Note */}
+        <div className="mt-10 p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 flex items-center justify-between gap-4 text-xs text-[#344054] dark:text-slate-300">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="w-5 h-5 text-[#2538D9] dark:text-[#4F62FF] shrink-0" />
+            <span>Bạn có câu hỏi riêng về mô hình của mình? Đội ngũ TingRoster luôn sẵn sàng đồng hành.</span>
+          </div>
+          <a
+            href="mailto:support@tingroster.vn"
+            className="font-semibold text-[#2538D9] dark:text-[#4F62FF] hover:underline shrink-0"
+          >
+            Liên hệ hỗ trợ &rarr;
+          </a>
+        </div>
+
       </div>
     </section>
   );

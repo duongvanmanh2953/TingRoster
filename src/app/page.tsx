@@ -1,8 +1,4 @@
-'use client';
-
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { LandingMotionProvider } from '@/components/landing/LandingMotionProvider';
+import React from 'react';
 import { LandingHeader } from '@/components/landing/LandingHeader';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { ProductShowcaseSection } from '@/components/landing/ProductShowcaseSection';
@@ -17,70 +13,43 @@ import { FinalCtaSection } from '@/components/landing/FinalCtaSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 
 export default function HomePage() {
-  const router = useRouter();
-  const [isDemoLoggingIn, setIsDemoLoggingIn] = useState(false);
-
-  // 1-Click Demo Instant Login Handler
-  const handleInstantDemoLogin = async () => {
-    setIsDemoLoggingIn(true);
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'demo@tingroster.vn', password: '123456' }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        window.location.href = '/dashboard';
-      } else {
-        router.push('/login');
-      }
-    } catch {
-      router.push('/login');
-    } finally {
-      setIsDemoLoggingIn(false);
-    }
-  };
-
   return (
-    <LandingMotionProvider>
-      <div className="min-h-[100dvh] bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F8FAFC] antialiased selection:bg-[#2538D9] selection:text-white transition-colors">
-        {/* SECTION 00: Navigation Header */}
-        <LandingHeader onInstantDemo={handleInstantDemoLogin} isDemoLoggingIn={isDemoLoggingIn} />
+    <div className="min-h-screen bg-[#F5F7FB] dark:bg-[#0B0F19] text-[#101828] dark:text-[#F8FAFC] antialiased selection:bg-[#2538D9] selection:text-white transition-colors">
+      {/* SECTION 00: Navigation Header */}
+      <LandingHeader />
 
-        {/* SECTION 01: Cinematic Hero with 3D Interactive Console */}
-        <HeroSection onInstantDemo={handleInstantDemoLogin} isDemoLoggingIn={isDemoLoggingIn} />
+      {/* SECTION 01: Hero with High-End Lifestyle Visual */}
+      <HeroSection />
 
-        {/* SECTION 02: Product Showcase (3D Dual Devices: Laptop & Floating Smartphone) */}
-        <ProductShowcaseSection />
+      {/* SECTION 02: Product in Action (Multi-Device Laptop & Smartphone) */}
+      <ProductShowcaseSection />
 
-        {/* SECTION 03: Pain Points / Problem to Solution */}
-        <ProblemSolutionSection />
+      {/* SECTION 03: Problem vs Solution Storytelling */}
+      <ProblemSolutionSection />
 
-        {/* SECTION 04: One Platform, Multiple Models */}
-        <IndustryModelsSection />
+      {/* SECTION 04: One Platform, Multiple Industry Spaces */}
+      <IndustryModelsSection />
 
-        {/* SECTION 05: Feature Bento Grid */}
-        <FeatureBentoSection />
+      {/* SECTION 05: Core Feature Bento Grid */}
+      <FeatureBentoSection />
 
-        {/* SECTION 06: Operational Efficiency Calculator */}
-        <RoiCalculatorSection onInstantDemo={handleInstantDemoLogin} isDemoLoggingIn={isDemoLoggingIn} />
+      {/* SECTION 06: Operational ROI & Recovery Calculator */}
+      <RoiCalculatorSection />
 
-        {/* SECTION 07: How It Works */}
-        <HowItWorksSection />
+      {/* SECTION 07: Step-by-Step How It Works */}
+      <HowItWorksSection />
 
-        {/* SECTION 08: Pricing with React Bits SpotlightCards */}
-        <PricingSection onInstantDemo={handleInstantDemoLogin} />
+      {/* SECTION 08: Transparent Pricing */}
+      <PricingSection />
 
-        {/* SECTION 09: Trust & FAQ */}
-        <TrustFaqSection />
+      {/* SECTION 09: Trust & Verified FAQ */}
+      <TrustFaqSection />
 
-        {/* SECTION 10: Final Cinematic CTA */}
-        <FinalCtaSection onInstantDemo={handleInstantDemoLogin} isDemoLoggingIn={isDemoLoggingIn} />
+      {/* SECTION 10: Final Cinematic CTA */}
+      <FinalCtaSection />
 
-        {/* SECTION 11: Footer */}
-        <LandingFooter />
-      </div>
-    </LandingMotionProvider>
+      {/* SECTION 11: Footer */}
+      <LandingFooter />
+    </div>
   );
 }

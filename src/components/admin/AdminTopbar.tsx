@@ -138,6 +138,11 @@ export function AdminTopbar({
       title: 'Cấu hình Hệ thống & Biểu phí Nền tảng',
       desc: 'Thiết lập thời gian trial 30 ngày, biểu phí 500đ/tx, gói Pro 299k và tài khoản nhận cước',
     },
+    EMAIL_LOGS: {
+      group: 'Vận hành',
+      title: 'Nhật ký Phát Thư Điện tử (Email Delivery Logs)',
+      desc: 'Theo dõi tiến trình gửi email xác thực tài khoản, khôi phục mật khẩu và cảnh báo bảo mật',
+    },
     AUDIT_LOGS: {
       group: 'An ninh',
       title: 'Nhật ký An ninh & Kiểm toán Quản trị (Audit Trail)',

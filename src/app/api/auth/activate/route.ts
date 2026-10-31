@@ -118,6 +118,7 @@ export async function POST(req: NextRequest) {
     const token = signSessionToken({
       userId: studentUser.id,
       email: studentUser.email,
+      role: studentUser.role,
       planType: studentUser.planType,
     });
 

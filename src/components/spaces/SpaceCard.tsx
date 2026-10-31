@@ -208,7 +208,7 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
                   {space.name}
                 </Link>
 
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${typeMeta.color}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] font-bold border whitespace-nowrap ${typeMeta.color}`}>
                   <TypeIcon className="w-3 h-3" />
                   <span>{typeMeta.label}</span>
                 </span>
@@ -225,8 +225,8 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
                 </Tooltip>
 
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap ${space.isActive
-                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60'
+                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                   }`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${space.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                   {space.isActive ? 'Hoạt động' : 'Đã lưu trữ'}
@@ -330,7 +330,7 @@ export function SpaceCard({ space, viewMode = 'grid', onUpdate, onDelete }: Spac
                 <div className="min-w-0 flex-1">
                   {/* Space Type Pill & Active Status */}
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border whitespace-nowrap ${typeMeta.color}`}>
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8px] font-bold border whitespace-nowrap ${typeMeta.color}`}>
                       <TypeIcon className="w-3 h-3" />
                       <span>{typeMeta.label}</span>
                     </span>

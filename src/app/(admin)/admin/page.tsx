@@ -10,6 +10,7 @@ import { UserDirectoryTab } from '@/components/admin/UserDirectoryTab';
 import { ClassesAndRentalsTab } from '@/components/admin/ClassesAndRentalsTab';
 import { FinancialOperationsTab } from '@/components/admin/FinancialOperationsTab';
 import { SupportTicketsTab } from '@/components/admin/SupportTicketsTab';
+import { EmailDeliveryLogsTab } from '@/components/admin/EmailDeliveryLogsTab';
 import {
   ShieldCheck,
   Building2,
@@ -121,86 +122,6 @@ interface AdminData {
   }>;
 }
 
-interface TopUpOrder {
-  id: string;
-  tenantName: string;
-  amount: number;
-  provider: string;
-  status: 'SUCCESS' | 'PENDING' | 'FAILED';
-  createdAt: string;
-  reference: string;
-}
-
-const MOCK_TOPUP_ORDERS: TopUpOrder[] = [
-  {
-    id: 'TOP-20261028-01',
-    tenantName: 'Thầy Hưng Toán Luyện Thi ĐH',
-    amount: 500000,
-    provider: 'VietQR SeABank',
-    status: 'SUCCESS',
-    createdAt: '2026-10-28 10:15',
-    reference: 'TRTOP500K12',
-  },
-  {
-    id: 'TOP-20261028-02',
-    tenantName: 'Nhà Trọ An Cư 12 Phòng',
-    amount: 200000,
-    provider: 'VietQR MBBank',
-    status: 'SUCCESS',
-    createdAt: '2026-10-28 09:40',
-    reference: 'TRTOP200K88',
-  },
-  {
-    id: 'TOP-20261028-03',
-    tenantName: 'CLB Cầu Lông Thủ Đức Stars',
-    amount: 1000000,
-    provider: 'VietQR Techcombank',
-    status: 'PENDING',
-    createdAt: '2026-10-28 08:30',
-    reference: 'TRTOP1M04',
-  },
-];
-
-interface SupportTicket {
-  id: string;
-  tenantName: string;
-  title: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  status: 'OPEN' | 'RESOLVED';
-  createdAt: string;
-  category: string;
-}
-
-const MOCK_SUPPORT_TICKETS: SupportTicket[] = [
-  {
-    id: 'TICK-101',
-    tenantName: 'CLB Cầu Lông Thủ Đức Stars',
-    title: 'Hỗ trợ kết nối webhook SePay chưa nhận được callback',
-    priority: 'HIGH',
-    status: 'OPEN',
-    createdAt: '30 phút trước',
-    category: 'Cổng thanh toán',
-  },
-  {
-    id: 'TICK-102',
-    tenantName: 'Trung tâm Ngoại ngữ Alpha',
-    title: 'Xin gia hạn dùng thử thêm 15 ngày để kiểm thử đợt nhập học mới',
-    priority: 'MEDIUM',
-    status: 'OPEN',
-    createdAt: '2 giờ trước',
-    category: 'Gói dịch vụ',
-  },
-  {
-    id: 'TICK-103',
-    tenantName: 'Nhà Trọ Xanh Q9',
-    title: 'Hướng dẫn in mã QR động dán trước cửa phòng trọ',
-    priority: 'LOW',
-    status: 'RESOLVED',
-    createdAt: '1 ngày trước',
-    category: 'Vận hành',
-  },
-];
-
 import { usePageTitle } from '@/hooks/usePageTitle';
 
 export default function PlatformAdminPage() {
@@ -225,6 +146,29 @@ export default function PlatformAdminPage() {
   const [healthChecking, setHealthChecking] = useState(false);
   const [tempPasswordModalOpen, setTempPasswordModalOpen] = useState(false);
   const [tempPasswordResult, setTempPasswordResult] = useState<string | null>(null);
+
+  const handleUserAction = async (action: string, tenantId: string, payload?: any) => {
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          tenantId,
+          ...payload,
+        }),
+      });
+      const resData = await res.json();
+      if (resData.success) {
+        setToastMessage(resData.data?.message || 'Thao tác tài khoản thành công!');
+        loadAdminData();
+      } else {
+        alert(resData.error || 'Thao tác thất bại');
+      }
+    } catch {
+      alert('Không thể kết nối máy chủ');
+    }
+  };
 
   const handleResetTenantPassword = async (tenant: any) => {
     if (!confirm(`Bạn có chắc chắn muốn cấp lại mật khẩu tạm thời cho ${tenant.email}?`)) return;
@@ -347,19 +291,19 @@ export default function PlatformAdminPage() {
   }
 
   const stats = data?.stats || {
-    totalTenants: 142,
-    activeTenants: 138,
-    totalGroups: 320,
-    totalMembers: 4820,
-    systemGmv: 4280000000,
-    platformFloat: 38600000,
-    mrr: 68500000,
-    webhookSuccessRate: 99.98,
+    totalTenants: 0,
+    activeTenants: 0,
+    totalGroups: 0,
+    totalMembers: 0,
+    systemGmv: 0,
+    platformFloat: 0,
+    mrr: 0,
+    webhookSuccessRate: 100,
     trialStats: {
-      activeTrials: 14,
-      expiringTrials: 5,
-      convertedPaid: 18,
-      conversionRate: 34.2,
+      activeTrials: 0,
+      expiringTrials: 0,
+      convertedPaid: 0,
+      conversionRate: 0,
     },
   };
 
@@ -721,21 +665,37 @@ export default function PlatformAdminPage() {
         {/* TAB: USERS DIRECTORY */}
         {/* ========================================================================= */}
         {activeTab === 'USERS' && (
-          <UserDirectoryTab onActionToast={(msg) => setToastMessage(msg)} />
+          <UserDirectoryTab
+            users={(data?.tenants as any) || []}
+            loading={loading}
+            onRefresh={loadAdminData}
+            onUserAction={handleUserAction}
+            onActionToast={(msg) => setToastMessage(msg)}
+          />
         )}
 
         {/* ========================================================================= */}
         {/* TAB: CLASSES & EDUCATIONAL CENTERS */}
         {/* ========================================================================= */}
         {activeTab === 'CLASSES' && (
-          <ClassesAndRentalsTab initialType="CLASSES" />
+          <ClassesAndRentalsTab
+            spaces={(data?.tenants as any) || []}
+            loading={loading}
+            onRefresh={loadAdminData}
+            initialType="CLASSES"
+          />
         )}
 
         {/* ========================================================================= */}
         {/* TAB: RENTALS & PROPERTIES */}
         {/* ========================================================================= */}
         {activeTab === 'RENTALS' && (
-          <ClassesAndRentalsTab initialType="RENTALS" />
+          <ClassesAndRentalsTab
+            spaces={(data?.tenants as any) || []}
+            loading={loading}
+            onRefresh={loadAdminData}
+            initialType="RENTALS"
+          />
         )}
 
         {/* ========================================================================= */}
@@ -1111,67 +1071,15 @@ export default function PlatformAdminPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 5: SUPPORT TICKETS */}
+        {/* TAB: EMAIL DELIVERY LOGS */}
         {/* ========================================================================= */}
-        {activeTab === 'SUPPORT_TICKETS' && (
-          <div className="bg-white rounded-xl border border-slate-200/90 p-5 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <LifeBuoy className="w-4 h-4 text-[#3344D6]" />
-                  <span>Trung tâm Hỗ trợ & Tiếp nhận Yêu cầu Kỹ thuật</span>
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Xử lý khiếu nại giao dịch đối soát, cài đặt VietQR và gia hạn dùng thử
-                </p>
-              </div>
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {MOCK_SUPPORT_TICKETS.map((ticket) => (
-                <div key={ticket.id} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-[#3344D6]">{ticket.id}</span>
-                      <span className="font-bold text-slate-900">{ticket.tenantName}</span>
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          ticket.priority === 'HIGH'
-                            ? 'bg-rose-100 text-rose-800'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}
-                      >
-                        {ticket.priority} PRIORITY
-                      </span>
-                    </div>
-                    <p className="text-slate-700 font-medium">
-                      {ticket.title}
-                    </p>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                      <span>Chuyên mục: {ticket.category}</span>
-                      <span>•</span>
-                      <span>{ticket.createdAt}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 self-end sm:self-center">
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                        ticket.status === 'OPEN'
-                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      }`}
-                    >
-                      {ticket.status === 'OPEN' ? 'ĐANG XỬ LÝ' : 'ĐÃ ĐÓNG'}
-                    </span>
-                    <button className="px-3 py-1.5 rounded-lg bg-[#3344D6] text-white font-semibold text-xs hover:bg-[#2538D9] transition-colors">
-                      Phản hồi
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {activeTab === 'EMAIL_LOGS' && (
+          <EmailDeliveryLogsTab
+            logs={(data?.stats as any)?.emailDelivery?.recent || []}
+            stats={(data?.stats as any)?.emailDelivery}
+            loading={loading}
+            onRefresh={loadAdminData}
+          />
         )}
 
         {/* ========================================================================= */}

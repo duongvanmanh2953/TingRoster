@@ -133,11 +133,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
                 key={item.href}
                 href={item.href}
                 onClick={closeDrawer}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  isActive
-                    ? 'bg-[#2538D9] text-white shadow-xs font-bold'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                }`}
+                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${isActive
+                  ? 'bg-[#2538D9] text-white shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                  }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400 dark:text-slate-400'}`} />
@@ -145,11 +144,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
                 </div>
                 {item.badge && (
                   <span
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
-                      isActive
-                        ? 'bg-white/20 text-white'
-                        : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                    }`}
+                    className={`px-2 py-0.5 rounded-md text-[8px] font-extrabold uppercase ${isActive
+                      ? 'bg-white/20 text-white'
+                      : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                      }`}
                   >
                     {item.badge}
                   </span>
@@ -330,11 +328,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#111726]/95 border-t border-slate-200 dark:border-slate-800 backdrop-blur-md px-3 py-1.5 flex items-center justify-around shadow-lg">
           <Link
             href="/portal"
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
-              pathname === '/portal'
-                ? 'text-[#2538D9] dark:text-white'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
-            }`}
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${pathname === '/portal'
+              ? 'text-[#2538D9] dark:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+              }`}
           >
             <LayoutDashboard className="w-5 h-5 mb-0.5" />
             <span>Tổng quan</span>
@@ -342,11 +339,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
 
           <Link
             href="/portal/fees"
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
-              pathname.startsWith('/portal/fees')
-                ? 'text-[#2538D9] dark:text-white'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
-            }`}
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${pathname.startsWith('/portal/fees')
+              ? 'text-[#2538D9] dark:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+              }`}
           >
             <Receipt className="w-5 h-5 mb-0.5" />
             <span>Học phí</span>
@@ -357,11 +353,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
             href="/portal/scan"
             className="flex flex-col items-center justify-center -mt-4"
           >
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-transform active:scale-95 ${
-              pathname === '/portal/scan' || pathname === '/portal/qr'
-                ? 'bg-gradient-to-tr from-[#2538D9] to-[#6D5CE8] text-white ring-4 ring-[#2538D9]/20 shadow-[#2538D9]/40'
-                : 'bg-[#2538D9] text-white shadow-[#2538D9]/30'
-            }`}>
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-transform active:scale-95 ${pathname === '/portal/scan' || pathname === '/portal/qr'
+              ? 'bg-gradient-to-tr from-[#2538D9] to-[#6D5CE8] text-white ring-4 ring-[#2538D9]/20 shadow-[#2538D9]/40'
+              : 'bg-[#2538D9] text-white shadow-[#2538D9]/30'
+              }`}>
               <Camera className="w-6 h-6" />
             </div>
             <span className="text-[10px] font-bold text-[#2538D9] dark:text-indigo-400 mt-1">Quét QR</span>
@@ -369,11 +364,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
 
           <Link
             href="/portal/attendance"
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
-              pathname.startsWith('/portal/attendance')
-                ? 'text-[#2538D9] dark:text-white'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
-            }`}
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${pathname.startsWith('/portal/attendance')
+              ? 'text-[#2538D9] dark:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+              }`}
           >
             <CalendarCheck2 className="w-5 h-5 mb-0.5" />
             <span>Điểm danh</span>
@@ -381,11 +375,10 @@ export default function PortalLayout({ children }: PortalNavProps) {
 
           <Link
             href="/portal/profile"
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${
-              pathname.startsWith('/portal/profile')
-                ? 'text-[#2538D9] dark:text-white'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
-            }`}
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl text-[10px] font-bold transition-colors ${pathname.startsWith('/portal/profile')
+              ? 'text-[#2538D9] dark:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+              }`}
           >
             <UserCheck className="w-5 h-5 mb-0.5" />
             <span>Cá nhân</span>

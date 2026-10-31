@@ -4,7 +4,7 @@ import { verifyPassword, signSessionToken, AUTH_COOKIE_NAME } from '@/lib/auth/j
 import { z } from 'zod';
 
 const LoginSchema = z.object({
-  email: z.string().email('Email không hợp lệ'),
+  email: z.string().email('Email không đúng định dạng').toLowerCase().trim(),
   password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
 });
 
@@ -14,13 +14,30 @@ export async function POST(req: NextRequest) {
     const parsed = LoginSchema.parse(body);
 
     const user = await prisma.user.findUnique({
-      where: { email: parsed.email.toLowerCase().trim() },
+      where: { email: parsed.email },
     });
 
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Email hoặc mật khẩu không chính xác' },
         { status: 401 }
+      );
+    }
+
+    if (user.isLocked) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Tài khoản đã bị tạm khóa vì lý do an toàn. ${user.lockReason ? `Lý do: ${user.lockReason}` : 'Vui lòng liên hệ ban quản trị để được hỗ trợ.'}`,
+        },
+        { status: 403 }
+      );
+    }
+
+    if (!user.isActive) {
+      return NextResponse.json(
+        { success: false, error: 'Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.' },
+        { status: 403 }
       );
     }
 
@@ -32,10 +49,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check email verification status
+    if (!user.isEmailVerified) {
+      return NextResponse.json(
+        {
+          success: false,
+          isUnverified: true,
+          email: user.email,
+          error: 'Tài khoản chưa xác thực email. Vui lòng kiểm tra hộp thư hoặc bấm gửi lại liên kết xác thực.',
+        },
+        { status: 403 }
+      );
+    }
+
+    // Update lastLoginAt
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
     const token = signSessionToken({
       userId: user.id,
       email: user.email,
+      role: user.role,
       planType: user.planType,
+      isEmailVerified: user.isEmailVerified,
     });
 
     const response = NextResponse.json({
@@ -44,6 +82,7 @@ export async function POST(req: NextRequest) {
         id: user.id,
         email: user.email,
         name: user.name,
+        role: user.role,
         planType: user.planType,
       },
     });
@@ -53,7 +92,7 @@ export async function POST(req: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
     return response;
@@ -62,6 +101,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: err.errors[0]?.message }, { status: 400 });
     }
     console.error('Login error:', err);
-    return NextResponse.json({ success: false, error: 'Đăng nhập thất bại' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Đăng nhập thất bại. Vui lòng thử lại.' }, { status: 500 });
   }
 }

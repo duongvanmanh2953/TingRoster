@@ -131,7 +131,7 @@ export default function MemberPortalDashboard() {
       <div className="bg-white dark:bg-[#111726] border border-[#E5E7EB] dark:border-[#1E293B] rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+            <span className="px-2 py-0.5 rounded-md text-[8px] font-bold uppercase bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
               Học viên / Thành viên
             </span>
             <span className="text-xs text-slate-400">Tham gia {data.joinedGroups.length} nhóm cơ sở</span>
@@ -370,11 +370,10 @@ export default function MemberPortalDashboard() {
                         </span>
                       </div>
                       <span
-                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                          isPresent
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${isPresent
                             ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200'
                             : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200'
-                        }`}
+                          }`}
                       >
                         {isPresent ? 'Có mặt' : att.status === 'ABSENT_CHARGED' ? 'Vắng (Tính phí)' : 'Nghỉ có phép'}
                       </span>

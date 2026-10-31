@@ -7,10 +7,18 @@ import { prisma } from '@/lib/db/prisma';
 const JWT_SECRET = process.env.JWT_SECRET || 'tingroster_dev_jwt_secret_change_in_production_min_32_chars';
 const COOKIE_NAME = 'tingroster_session';
 
+import crypto from 'crypto';
+
 export interface TokenPayload {
   userId: string;
   email: string;
+  role?: string;
   planType: string;
+  isEmailVerified?: boolean;
+}
+
+export function generateSecureToken(bytes = 32): string {
+  return crypto.randomBytes(bytes).toString('hex');
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -23,7 +31,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function signSessionToken(payload: TokenPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ ...payload, role: payload.role || 'USER' }, JWT_SECRET, { expiresIn: '7d' });
 }
 
 export function verifySessionToken(token: string): TokenPayload | null {
@@ -49,15 +57,24 @@ export async function getServerSession() {
         id: true,
         email: true,
         name: true,
+        role: true,
+        planType: true,
+        isEmailVerified: true,
+        isActive: true,
+        isLocked: true,
         bankId: true,
         bankAccountNo: true,
         bankAccountName: true,
         logoUrl: true,
         avatarUrl: true,
-        planType: true,
         createdAt: true,
       },
     });
+
+    if (!user || !user.isActive || user.isLocked) {
+      return null;
+    }
+
     return user;
   } catch (err) {
     console.error('Session retrieval error:', err);

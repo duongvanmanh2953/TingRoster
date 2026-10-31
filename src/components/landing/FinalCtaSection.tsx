@@ -2,78 +2,74 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Zap, RefreshCw, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { AmbientGlow } from '@/components/reactbits/AmbientGlow';
-import { MagneticButton } from '@/components/reactbits/MagneticButton';
+import { ArrowRight, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
-interface FinalCtaSectionProps {
-  onInstantDemo: () => Promise<void>;
-  isDemoLoggingIn: boolean;
-}
-
-export function FinalCtaSection({ onInstantDemo, isDemoLoggingIn }: FinalCtaSectionProps) {
+export function FinalCtaSection() {
   return (
-    <section className="scroll-reveal py-24 sm:py-32 relative bg-[#0B0F19] text-white w-full overflow-hidden">
-      <AmbientGlow className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" size={750} color="rgba(37, 56, 217, 0.28)" />
+    <section className="py-20 sm:py-28 bg-white dark:bg-[#0B0F19] transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Cinematic Card with Subtle Radial Glow */}
+        <div className="relative rounded-3xl bg-[#0B0F19] text-white p-10 sm:p-16 lg:p-20 overflow-hidden shadow-2xl border border-slate-800 text-center">
+          
+          {/* Subtle Aurora Glow inside Card */}
+          <div 
+            className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] opacity-30 blur-3xl -z-0"
+            style={{
+              background: 'radial-gradient(circle, rgba(79, 98, 255, 0.4) 0%, rgba(109, 92, 232, 0.25) 50%, transparent 70%)'
+            }}
+          />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-950/80 text-blue-300 text-xs sm:text-sm font-semibold">
-          <ShieldCheck className="w-4 h-4 text-[#2538D9]" />
-          <span>Sẵn sàng chuyển đổi quy trình trong hôm nay</span>
+          <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-900/60 border border-blue-700/60 text-blue-300 text-xs font-medium">
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+              <span>Khởi tạo trong 3 phút • Dùng thử 30 ngày đầy đủ tính năng</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-white leading-tight">
+              Sẵn sàng giải phóng thời gian và chấm dứt nỗi lo đối soát?
+            </h2>
+
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-2xl mx-auto">
+              Tham gia cùng hàng trăm giáo viên và câu lạc bộ thể thao đang vận hành điểm danh và thu phí tự động mỗi ngày với TingRoster.
+            </p>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/register"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white text-sm font-semibold shadow-lg shadow-blue-900/30 transition-all cursor-pointer"
+              >
+                <span>Tạo tài khoản miễn phí ngay</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+
+              <Link
+                href="/login"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium border border-slate-700 transition-all"
+              >
+                <span>Đăng nhập hệ thống</span>
+              </Link>
+            </div>
+
+            {/* Micro guarantees */}
+            <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Không cần thẻ tín dụng</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Zero-Custody 100% an toàn</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Hỗ trợ kỹ thuật tận tình</span>
+              </span>
+            </div>
+          </div>
+
         </div>
 
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-normal leading-[1.15]">
-          Bắt đầu vận hành chuyên nghiệp cùng TingRoster
-        </h2>
-
-        <p className="text-base sm:text-xl text-slate-300 max-w-[62ch] mx-auto leading-relaxed">
-          Xóa bỏ 100% nỗi lo dò sổ sách, thu học phí và thất thoát doanh thu. Hãy để công nghệ Napas 24/7 tự động phục vụ bạn.
-        </p>
-
-        {/* CTAs */}
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-          <Link href="/onboarding">
-            <MagneticButton className="px-8 py-4 rounded-xl bg-[#2538D9] hover:bg-[#1E2DB8] text-white font-bold text-base transition-colors flex items-center gap-2">
-              <span>Bắt đầu 30 ngày dùng thử miễn phí</span>
-              <ArrowRight className="w-5 h-5 shrink-0" />
-            </MagneticButton>
-          </Link>
-
-          <button
-            type="button"
-            onClick={onInstantDemo}
-            disabled={isDemoLoggingIn}
-            className="px-7 py-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-base transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-60"
-          >
-            {isDemoLoggingIn ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin text-[#2538D9]" />
-                <span>Đang kết nối...</span>
-              </>
-            ) : (
-              <>
-                <Zap className="w-4 h-4 fill-current text-amber-400" />
-                <span>Xem Demo trực tiếp</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Trust points */}
-        <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-slate-400">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Không yêu cầu thẻ tín dụng</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Cài đặt sẵn sàng trong 60 giây</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Cam kết Zero-Custody an toàn</span>
-          </div>
-        </div>
       </div>
     </section>
   );

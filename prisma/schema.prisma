@@ -87,6 +87,11 @@ enum OutboxStatus {
 enum Role {
   USER
   ADMIN
+  SUPER_ADMIN
+  OWNER
+  MANAGER
+  STAFF
+  MEMBER
 }
 
 enum LedgerType {
@@ -98,34 +103,43 @@ enum LedgerType {
 }
 
 model User {
-  id              String         @id @default(cuid())
-  email           String         @unique
-  name            String
-  passwordHash    String
-  role            Role           @default(USER)
-  serviceBalance  Int            @default(100000) // VND integer
-  bankId          String         @default("MB")
-  bankAccountNo   String         @default("0987654321")
-  bankAccountName String         @default("NGUYEN VAN A")
-  logoUrl         String?        // Custom workspace brand logo
-  avatarUrl       String?        // Custom owner avatar
-  planType        PlanType       @default(FREE)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                      String         @id @default(cuid())
+  email                   String         @unique
+  name                    String
+  passwordHash            String
+  role                    Role           @default(USER)
+  serviceBalance          Int            @default(100000) // VND integer
+  bankId                  String         @default("MB")
+  bankAccountNo           String         @default("0987654321")
+  bankAccountName         String         @default("NGUYEN VAN A")
+  logoUrl                 String?        // Custom workspace brand logo
+  avatarUrl               String?        // Custom owner avatar
+  planType                PlanType       @default(FREE)
+  isEmailVerified         Boolean        @default(false)
+  emailVerificationToken  String?
+  emailVerificationExpires DateTime?
+  resetPasswordToken      String?
+  resetPasswordExpires    DateTime?
+  isActive                Boolean        @default(true)
+  isLocked                Boolean        @default(false)
+  lockReason              String?
+  lastLoginAt             DateTime?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
 
-  groups          Group[]
-  invoices        Invoice[]
-  transactionLogs TransactionLog[]
-  providerConfigs PaymentProviderConfig[]
-  notificationLogs NotificationLog[]
-  auditLogs       AuditLog[]
-  automationRules AutomationRule[]
-  walletLedgers   WalletLedgerEntry[]
-  aiImportJobs    AiImportJob[]
-  memberProfiles  Member[]          @relation("UserMemberProfiles")
-  supportTickets  SupportTicket[]
-  joinRequests    SpaceJoinRequest[]
-  shiftAssignments ShiftAssignment[]
+  groups                  Group[]
+  invoices                Invoice[]
+  transactionLogs         TransactionLog[]
+  providerConfigs         PaymentProviderConfig[]
+  notificationLogs        NotificationLog[]
+  auditLogs               AuditLog[]
+  automationRules         AutomationRule[]
+  walletLedgers           WalletLedgerEntry[]
+  aiImportJobs            AiImportJob[]
+  memberProfiles          Member[]          @relation("UserMemberProfiles")
+  supportTickets          SupportTicket[]
+  joinRequests            SpaceJoinRequest[]
+  shiftAssignments        ShiftAssignment[]
   claimedTemporaryAccounts TemporaryAccount[] @relation("ClaimedUser")
 
   @@index([email])
@@ -1112,4 +1126,19 @@ model SurchargeProposal {
   @@index([category])
 }
 
+model EmailDeliveryLog {
+  id           String   @id @default(cuid())
+  recipient    String
+  subject      String
+  emailType    String   // VERIFICATION, RESET_PASSWORD, WELCOME, SECURITY_ALERT
+  status       String   // SENT, DELIVERED, FAILED
+  provider     String   @default("SMTP")
+  errorMessage String?
+  metadata     String?  // JSON string
+  createdAt    DateTime @default(now())
 
+  @@index([recipient])
+  @@index([emailType])
+  @@index([status])
+  @@index([createdAt])
+}
