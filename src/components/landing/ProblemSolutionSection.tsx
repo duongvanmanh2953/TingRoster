@@ -5,23 +5,19 @@ import {
   XCircle, 
   CheckCircle2, 
   AlertTriangle, 
-  Clock, 
   FileSpreadsheet, 
   MessageSquare, 
-  HelpCircle,
-  ArrowRight,
-  TrendingUp,
-  ShieldCheck,
-  Zap
+  ShieldCheck, 
+  Zap 
 } from 'lucide-react';
 
 export function ProblemSolutionSection() {
   return (
-    <section className="py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
+    <section className="problem-solution-section py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className="problem-solution-header text-center max-w-3xl mx-auto space-y-3 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <span>Sự chuyển đổi vận hành</span>
           </div>
@@ -37,7 +33,7 @@ export function ProblemSolutionSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
           
           {/* Panel 1: Trước khi dùng TingRoster (Manual Pain Points) */}
-          <div className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-rose-200/80 dark:border-rose-950/60 shadow-sm space-y-6 text-left relative overflow-hidden">
+          <div className="problem-card-pain p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-rose-200/80 dark:border-rose-950/60 shadow-sm space-y-6 text-left relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 text-xs font-semibold">
                 <XCircle className="w-4 h-4" />
@@ -51,7 +47,7 @@ export function ProblemSolutionSection() {
             </h3>
 
             <div className="space-y-4 text-sm text-[#475467] dark:text-slate-400">
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+              <div className="problem-item-pain flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
                 <FileSpreadsheet className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-slate-200">File Excel quá tải & dễ sai sót</p>
@@ -59,7 +55,7 @@ export function ProblemSolutionSection() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+              <div className="problem-item-pain flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
                 <MessageSquare className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-slate-200">Nhắc phí qua Zalo/Tin nhắn bất tiện</p>
@@ -67,7 +63,7 @@ export function ProblemSolutionSection() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+              <div className="problem-item-pain flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
                 <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-slate-200">Thất thoát 8% - 15% doanh thu</p>
@@ -78,7 +74,7 @@ export function ProblemSolutionSection() {
           </div>
 
           {/* Panel 2: Sau khi có TingRoster (Automated Solution) */}
-          <div className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-blue-200/80 dark:border-blue-900/60 shadow-md space-y-6 text-left relative overflow-hidden">
+          <div className="problem-card-solution p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-blue-200/80 dark:border-blue-900/60 shadow-md space-y-6 text-left relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-[#4F62FF] text-xs font-semibold">
                 <CheckCircle2 className="w-4 h-4" />
@@ -92,7 +88,7 @@ export function ProblemSolutionSection() {
             </h3>
 
             <div className="space-y-4 text-sm text-[#475467] dark:text-slate-300">
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
+              <div className="problem-item-solution flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
                 <Zap className="w-5 h-5 text-[#2538D9] dark:text-[#4F62FF] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-white">Điểm danh 1 chạm tại quầy hoặc Kiosk</p>
@@ -100,7 +96,7 @@ export function ProblemSolutionSection() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
+              <div className="problem-item-solution flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
                 <CheckCircle2 className="w-5 h-5 text-[#2538D9] dark:text-[#4F62FF] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-white">VietQR Napas 24/7 gạch nợ tức thì</p>
@@ -108,7 +104,7 @@ export function ProblemSolutionSection() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
+              <div className="problem-item-solution flex items-start gap-3 p-3.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40">
                 <ShieldCheck className="w-5 h-5 text-[#2538D9] dark:text-[#4F62FF] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#101828] dark:text-white">Cổng tra cứu công nợ minh bạch</p>

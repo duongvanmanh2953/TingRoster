@@ -36,7 +36,7 @@ export function RoiCalculatorSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <div className="roi-header text-center max-w-3xl mx-auto space-y-3 mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-[#4F62FF] text-xs font-medium">
             <Calculator className="w-3.5 h-3.5" />
             <span>Công cụ tính toán hiệu quả thực tế</span>
@@ -50,7 +50,7 @@ export function RoiCalculatorSection() {
         </div>
 
         {/* Interactive Calculator Container */}
-        <div className="max-w-4xl mx-auto p-6 sm:p-10 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+        <div className="roi-container max-w-4xl mx-auto p-6 sm:p-10 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Column: Sliders and Inputs */}
@@ -126,7 +126,7 @@ export function RoiCalculatorSection() {
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="roi-metric-item space-y-1">
                   <div className="flex items-center gap-1.5 text-xs text-[#475467] dark:text-slate-400">
                     <Clock className="w-3.5 h-3.5 text-blue-500" />
                     <span>Thời gian tiết kiệm</span>
@@ -136,7 +136,7 @@ export function RoiCalculatorSection() {
                   </p>
                 </div>
 
-                <div className="space-y-1">
+                <div className="roi-metric-item space-y-1">
                   <div className="flex items-center gap-1.5 text-xs text-[#475467] dark:text-slate-400">
                     <Coins className="w-3.5 h-3.5 text-amber-500" />
                     <span>Công nợ thu hồi</span>

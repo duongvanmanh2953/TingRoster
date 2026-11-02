@@ -12,7 +12,7 @@ export function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <div className="pricing-header text-center max-w-3xl mx-auto space-y-3 mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <span>Chi phí minh bạch</span>
           </div>
@@ -57,7 +57,7 @@ export function PricingSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch text-left">
           
           {/* Plan 1: Miễn phí (Khởi đầu) */}
-          <div className="p-8 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div className="pricing-card p-8 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-[#101828] dark:text-white">Gói Khởi Đầu</h3>
@@ -93,7 +93,7 @@ export function PricingSection() {
           </div>
 
           {/* Plan 2: Chuyên Nghiệp (PRO) - Most Popular */}
-          <div className="p-8 rounded-2xl bg-white dark:bg-[#111726] border-2 border-[#2538D9] dark:border-[#4F62FF] shadow-lg flex flex-col justify-between relative">
+          <div className="pricing-card p-8 rounded-2xl bg-white dark:bg-[#111726] border-2 border-[#2538D9] dark:border-[#4F62FF] shadow-lg flex flex-col justify-between relative">
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#2538D9] dark:bg-[#4F62FF] text-white text-[11px] font-semibold tracking-wide">
               Được khuyên dùng nhiều nhất
             </div>
@@ -137,7 +137,7 @@ export function PricingSection() {
           </div>
 
           {/* Plan 3: Doanh Nghiệp (Enterprise) */}
-          <div className="p-8 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div className="pricing-card p-8 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-[#101828] dark:text-white">Gói Doanh Nghiệp</h3>

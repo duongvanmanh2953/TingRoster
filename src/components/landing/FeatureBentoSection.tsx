@@ -22,7 +22,7 @@ export function FeatureBentoSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className="bento-header text-center max-w-3xl mx-auto space-y-3 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <span>Tính năng đã kiểm chứng</span>
           </div>
@@ -38,7 +38,7 @@ export function FeatureBentoSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* Feature 1: Large Visual Feature - VietQR Napas Reconciliation (Span 7) */}
-          <div className="lg:col-span-7 p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left group">
+          <div className="bento-card lg:col-span-7 p-8 sm:p-10 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left group">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] dark:text-[#4F62FF] flex items-center justify-center">
                 <CreditCard className="w-5 h-5" />
@@ -75,7 +75,7 @@ export function FeatureBentoSection() {
           </div>
 
           {/* Feature 2: Lifestyle Split Card - QR Check-in & Member Portal (Span 5) */}
-          <div className="lg:col-span-5 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left">
+          <div className="bento-card lg:col-span-5 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm flex flex-col justify-between text-left">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-[#6D5CE8] flex items-center justify-center">
                 <QrCode className="w-5 h-5" />
@@ -104,7 +104,7 @@ export function FeatureBentoSection() {
           </div>
 
           {/* Feature 3: Schedule & Shift Management (Span 4) */}
-          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+          <div className="bento-card lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
             <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
               <Calendar className="w-5 h-5" />
             </div>
@@ -117,7 +117,7 @@ export function FeatureBentoSection() {
           </div>
 
           {/* Feature 4: Digital Contracts & Documents (Span 4) */}
-          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+          <div className="bento-card lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center">
               <FileCheck className="w-5 h-5" />
             </div>
@@ -130,7 +130,7 @@ export function FeatureBentoSection() {
           </div>
 
           {/* Feature 5: Group Chat & Notifications (Span 4) */}
-          <div className="lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
+          <div className="bento-card lg:col-span-4 p-8 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm text-left space-y-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#2538D9] flex items-center justify-center">
               <MessageSquare className="w-5 h-5" />
             </div>

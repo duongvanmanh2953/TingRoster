@@ -46,11 +46,11 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
+    <section className="how-it-works-section py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className="how-header text-center max-w-3xl mx-auto space-y-3 mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <span>Quy trình 5 bước đơn giản</span>
           </div>
@@ -63,13 +63,18 @@ export function HowItWorksSection() {
         </div>
 
         {/* Timeline Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 text-left relative">
+        <div className="how-steps-grid grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 text-left relative">
+          {/* Animated Connecting Line on Desktop */}
+          <div className="hidden lg:block absolute top-[44px] left-[8%] right-[8%] h-[2px] bg-slate-200 dark:bg-slate-800 z-0 pointer-events-none">
+            <div className="how-progress-bar h-full bg-gradient-to-r from-[#2538D9] via-[#6D5CE8] to-[#2538D9] origin-left scale-x-0" />
+          </div>
+
           {STEPS.map((st, idx) => {
             const Icon = st.icon;
             return (
               <div 
                 key={idx}
-                className="p-6 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm space-y-3 relative flex flex-col justify-between"
+                className="how-step-card p-6 rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm space-y-3 relative flex flex-col justify-between z-10"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">

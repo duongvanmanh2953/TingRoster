@@ -38,11 +38,11 @@ export function TrustFaqSection() {
   };
 
   return (
-    <section className="py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
+    <section className="trust-faq-section py-20 sm:py-28 bg-[#F5F7FB] dark:bg-[#0B0F19] transition-colors">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="text-center space-y-3 mb-14">
+        <div className="faq-header text-center space-y-3 mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Giải đáp thắc mắc</span>
@@ -62,7 +62,7 @@ export function TrustFaqSection() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 overflow-hidden shadow-sm transition-all"
+                className="faq-item rounded-2xl bg-white dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 overflow-hidden shadow-sm transition-all"
               >
                 <button
                   type="button"

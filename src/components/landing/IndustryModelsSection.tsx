@@ -133,11 +133,11 @@ export function IndustryModelsSection() {
   const activeModel = MODELS.find(m => m.id === selectedId) || MODELS[0];
 
   return (
-    <section id="mo-hinh" className="py-20 sm:py-28 bg-white dark:bg-[#0B0F19] transition-colors">
+    <section id="mo-hinh" className="industry-models-section py-20 sm:py-28 bg-white dark:bg-[#0B0F19] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
+        <div className="industry-header text-center max-w-3xl mx-auto space-y-3 mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[#475467] dark:text-slate-300 text-xs font-medium">
             <span>Một nền tảng, nhiều mô hình chuyên biệt</span>
           </div>
@@ -159,7 +159,7 @@ export function IndustryModelsSection() {
                 key={model.id}
                 type="button"
                 onClick={() => setSelectedId(model.id)}
-                className={`p-4 sm:p-5 rounded-2xl border text-left transition-all cursor-pointer ${
+                className={`industry-tab-btn p-4 sm:p-5 rounded-2xl border text-left transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-blue-50/60 dark:bg-blue-950/40 border-[#2538D9] dark:border-[#4F62FF] shadow-sm'
                     : 'bg-white dark:bg-[#111726] border-[#E4E7EC] dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -186,7 +186,7 @@ export function IndustryModelsSection() {
         </div>
 
         {/* Dynamic Model Content & Visual Preview */}
-        <div className="p-6 sm:p-10 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm">
+        <div className="industry-card p-6 sm:p-10 rounded-2xl bg-[#F5F7FB] dark:bg-[#111726] border border-[#E4E7EC] dark:border-slate-800 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Content Description */}
