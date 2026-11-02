@@ -29,16 +29,14 @@ export function LandingMotionProvider({ children }: LandingMotionProviderProps) 
 
       if (!prefersReducedMotion) {
         lenis = new Lenis({
-          duration: 1.15,
+          duration: 1.0,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: 'vertical',
           smoothWheel: true,
         });
 
-        // Kết nối sự kiện cuộn Lenis tới ScrollTrigger
         lenis.on('scroll', ScrollTrigger.update);
 
-        // Nguồn nhịp chính xác qua GSAP ticker
         updateTicker = (time: number) => {
           lenis?.raf(time * 1000);
         };
@@ -46,7 +44,7 @@ export function LandingMotionProvider({ children }: LandingMotionProviderProps) 
         gsap.ticker.lagSmoothing(0);
       }
 
-      // 2. Thanh tiến trình cuộn trang toàn cục (Global Scroll Progress Bar)
+      // 2. Thanh tiến trình cuộn trang bám mép trên
       if (progressBarRef.current) {
         gsap.to(progressBarRef.current, {
           scaleX: 1,
@@ -55,13 +53,13 @@ export function LandingMotionProvider({ children }: LandingMotionProviderProps) 
             trigger: containerRef.current,
             start: 'top top',
             end: 'bottom bottom',
-            scrub: 0.2,
+            scrub: 0.15,
           },
         });
       }
 
       // -------------------------------------------------------------
-      // KỊCH BẢN 1: HERO SECTION ENTRANCE + SCRUBBED 3D PARALLAX
+      // KỊCH BẢN 1: HERO SECTION - MỞ MÀN HIỂN THỊ RÕ NÉT NGAY
       // -------------------------------------------------------------
       const heroTl = gsap.timeline({
         defaults: { ease: 'power3.out' },
@@ -69,101 +67,98 @@ export function LandingMotionProvider({ children }: LandingMotionProviderProps) 
 
       heroTl
         .from('.hero-ambient-glow', {
-          scale: 0.8,
+          scale: 0.85,
           opacity: 0,
-          duration: 1.4,
-          ease: 'power2.out',
+          duration: 1.0,
         })
         .from(
           '.hero-badge',
           {
-            y: -16,
+            y: -12,
             opacity: 0,
-            duration: 0.6,
+            duration: 0.5,
           },
-          '-=1.0'
+          '-=0.7'
         )
         .from(
           '.hero-title',
           {
-            y: 35,
+            y: 25,
             opacity: 0,
-            duration: 0.85,
+            duration: 0.65,
           },
-          '-=0.45'
+          '-=0.4'
         )
         .from(
           '.hero-desc',
           {
-            y: 20,
+            y: 15,
             opacity: 0,
-            duration: 0.7,
-          },
-          '-=0.55'
-        )
-        .from(
-          '.hero-cta',
-          {
-            y: 18,
-            opacity: 0,
-            scale: 0.96,
-            duration: 0.6,
+            duration: 0.55,
           },
           '-=0.45'
         )
         .from(
-          '.hero-trust-item',
+          '.hero-cta',
           {
-            y: 16,
+            y: 12,
             opacity: 0,
-            stagger: 0.1,
             duration: 0.5,
           },
           '-=0.35'
         )
         .from(
+          '.hero-trust-item',
+          {
+            y: 10,
+            opacity: 0,
+            stagger: 0.08,
+            duration: 0.45,
+          },
+          '-=0.3'
+        )
+        .from(
           '.hero-image-card',
           {
-            y: 45,
-            scale: 0.94,
+            y: 30,
+            scale: 0.96,
             opacity: 0,
-            duration: 1.0,
-            ease: 'power3.out',
+            duration: 0.8,
           },
-          '-=0.9'
+          '-=0.7'
         )
         .from(
           '.hero-floating-vietqr',
           {
-            y: 30,
-            scale: 0.88,
+            y: 20,
+            scale: 0.9,
             opacity: 0,
-            duration: 0.8,
-            ease: 'back.out(1.6)',
+            duration: 0.6,
+            ease: 'back.out(1.5)',
           },
           '-=0.4'
         )
         .from(
           '.hero-floating-attendance',
           {
-            y: -20,
-            scale: 0.88,
+            y: -15,
+            scale: 0.9,
             opacity: 0,
-            duration: 0.7,
-            ease: 'back.out(1.5)',
+            duration: 0.5,
+            ease: 'back.out(1.4)',
           },
-          '-=0.5'
+          '-=0.4'
         );
 
       if (!prefersReducedMotion) {
-        // Nhịp thở lơ lửng nhẹ nhàng (Idle Float) cho 2 badge nổi
+        // Nhịp thở lơ lửng nhẹ nhàng cho 2 badge nổi
         gsap.to('.hero-floating-vietqr', {
           y: '-=6',
           duration: 3.2,
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut',
-          delay: 1.5,
+          delay: 1.2,
         });
 
         gsap.to('.hero-floating-attendance', {
@@ -172,303 +167,328 @@ export function LandingMotionProvider({ children }: LandingMotionProviderProps) 
           repeat: -1,
           yoyo: true,
           ease: 'sine.inOut',
-          delay: 1.8,
+          delay: 1.5,
         });
-
-        // DIỄN HOẠT CUỘN CHUỘT (SCRUB) RỜI KHỎI HERO:
-        // Khi người dùng cuộn chuột xuống, Hero visual nghiêng 3D và trôi lùi tạo độ sâu
-        const heroScrollTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: '.hero-image-card',
-            start: 'top 60%',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        });
-
-        heroScrollTl
-          .to('.hero-image-card', {
-            y: 70,
-            scale: 0.94,
-            ease: 'none',
-          }, 0)
-          .to('.hero-floating-vietqr', {
-            y: -40,
-            x: -25,
-            scale: 0.9,
-            opacity: 0.6,
-            ease: 'none',
-          }, 0)
-          .to('.hero-floating-attendance', {
-            y: -50,
-            scale: 0.9,
-            opacity: 0.6,
-            ease: 'none',
-          }, 0)
-          .to('.hero-ambient-glow', {
-            y: 120,
-            scale: 1.2,
-            opacity: 0.15,
-            ease: 'none',
-          }, 0);
       }
 
       // -------------------------------------------------------------
-      // KỊCH BẢN 2: PRODUCT SHOWCASE ĐÃ ĐƯỢC PIN TRONG ProductShowcaseSection
+      // KỊCH BẢN 2: PRODUCT SHOWCASE ĐƯỢC QUẢN LÝ BẰNG PINNED TIMELINE RIÊNG
+      // (ĐÃ CÓ TRONG ProductShowcaseSection.tsx)
       // -------------------------------------------------------------
 
       // -------------------------------------------------------------
-      // KỊCH BẢN 3: PROBLEM VS SOLUTION (SCRUB THEO NHỊP CUỘN CHUỘT)
+      // QUY TẮC HIỂN THỊ TỨC THÌ (FAST VIEWPORT ENTRANCE):
+      // Khi người dùng cuộn đến đâu, các section lập tức đạt 100% hiển thị
+      // hoàn chỉnh ngay tại mép dưới (start: 'top 88%'), không bị trễ mờ!
       // -------------------------------------------------------------
-      const compareTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.problem-solution-section',
-          start: 'top 80%',
-          end: 'bottom 85%',
-          scrub: 1,
-        },
-      });
 
-      compareTl
-        .from('.problem-solution-header', {
-          y: 25,
-          opacity: 0,
-          duration: 0.3,
-        }, 0)
-        // Cực Trái (Nỗi đau thủ công): trượt vào từ mép trái theo độ cuộn
-        .fromTo('.problem-card-pain',
-          { x: -70, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.6, ease: 'none' },
-          0.1
-        )
-        .fromTo('.problem-item-pain',
-          { x: -25, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.15, duration: 0.5, ease: 'none' },
-          0.2
-        )
-        // Cực Phải (Giải pháp TingRoster): trượt vào từ mép phải theo độ cuộn
-        .fromTo('.problem-card-solution',
-          { x: 70, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.6, ease: 'none' },
-          0.15
-        )
-        .fromTo('.problem-item-solution',
-          { x: 25, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.15, duration: 0.5, ease: 'none' },
-          0.25
-        );
+      // KỊCH BẢN 3: PROBLEM VS SOLUTION (SO SÁNH 2 CỰC)
+      gsap.fromTo(
+        '.problem-solution-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.problem-solution-section',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 4: INDUSTRY MODELS (SCRUB KHI VÀO VIEWPORT)
-      // -------------------------------------------------------------
-      const industryTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.industry-models-section',
-          start: 'top 78%',
-          end: 'bottom 85%',
-          scrub: 0.8,
-        },
-      });
+      gsap.fromTo(
+        ['.problem-card-pain', '.problem-card-solution'],
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.12,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.problem-solution-section',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      industryTl
-        .from('.industry-header', {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-        }, 0)
-        .fromTo('.industry-tab-btn',
-          { y: 25, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'none' },
-          0.1
-        )
-        .fromTo('.industry-card',
-          { y: 45, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'none' },
-          0.25
-        );
+      gsap.fromTo(
+        ['.problem-item-pain', '.problem-item-solution'],
+        { y: 15, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.05,
+          duration: 0.4,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.problem-solution-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 5: CORE FEATURE BENTO GRID (SCRUB STAGGER)
-      // -------------------------------------------------------------
-      const bentoTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#tinh-nang',
-          start: 'top 80%',
-          end: 'bottom 85%',
-          scrub: 1,
-        },
-      });
+      // KỊCH BẢN 4: INDUSTRY MODELS (ĐA KHÔNG GIAN)
+      gsap.fromTo(
+        '.industry-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.industry-models-section',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      bentoTl
-        .from('.bento-header', {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-        }, 0)
-        .fromTo('.bento-card',
-          { y: 50, opacity: 0, scale: 0.97 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.15, duration: 0.8, ease: 'none' },
-          0.1
-        );
+      gsap.fromTo(
+        '.industry-tab-btn',
+        { y: 20, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.06,
+          duration: 0.45,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.industry-models-section',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
+      gsap.fromTo(
+        '.industry-card',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.industry-models-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+
+      // KỊCH BẢN 5: CORE FEATURE BENTO GRID (HIỂN THỊ ĐẦY ĐỦ NGAY)
+      gsap.fromTo(
+        '.bento-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#tinh-nang',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.bento-card',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.08,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#tinh-nang',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+
       // KỊCH BẢN 6: ROI CALCULATOR
-      // -------------------------------------------------------------
-      const roiTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#roi-calculator',
-          start: 'top 80%',
-          end: 'bottom 85%',
-          scrub: 0.8,
-        },
-      });
+      gsap.fromTo(
+        '.roi-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#roi-calculator',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      roiTl
-        .from('.roi-header', {
-          y: 30,
-          opacity: 0,
-          duration: 0.3,
-        }, 0)
-        .fromTo('.roi-container',
-          { y: 45, scale: 0.96, opacity: 0 },
-          { y: 0, scale: 1, opacity: 1, duration: 0.6, ease: 'none' },
-          0.1
-        )
-        .fromTo('.roi-metric-item',
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.4, ease: 'none' },
-          0.25
-        );
+      gsap.fromTo(
+        '.roi-container',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#roi-calculator',
+            start: 'top 84%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 7: HOW IT WORKS (TIA SÁNG TIẾN TRÌNH VẼ THEO CUỘN)
-      // -------------------------------------------------------------
-      const howTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.how-it-works-section',
-          start: 'top 78%',
-          end: 'bottom 80%',
-          scrub: 1,
-        },
-      });
+      // KỊCH BẢN 7: HOW IT WORKS (5 BƯỚC XUẤT HIỆN SẴN SÀNG)
+      gsap.fromTo(
+        '.how-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.how-it-works-section',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      howTl
-        .from('.how-header', {
-          y: 25,
-          opacity: 0,
-          duration: 0.2,
-        }, 0)
-        // Tia sáng nối ngang giữa 5 bước kéo dài theo độ cuộn chuột
-        .fromTo('.how-progress-bar',
-          { scaleX: 0 },
-          { scaleX: 1, ease: 'none', duration: 1 },
-          0.1
-        )
-        // 5 thẻ bước nhảy sáng lần lượt khi tia sáng chạm tới
-        .fromTo('.how-step-card',
-          { y: 35, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.18, duration: 0.7, ease: 'none' },
-          0.1
-        );
+      gsap.fromTo(
+        '.how-progress-bar',
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.how-steps-grid',
+            start: 'top 86%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 8: TRANSPARENT PRICING CARDS
-      // -------------------------------------------------------------
-      const pricingTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '#bang-gia',
-          start: 'top 78%',
-          end: 'bottom 85%',
-          scrub: 0.8,
-        },
-      });
+      gsap.fromTo(
+        '.how-step-card',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.08,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.how-steps-grid',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      pricingTl
-        .from('.pricing-header', {
-          y: 25,
-          opacity: 0,
-          duration: 0.2,
-        }, 0)
-        .fromTo('.pricing-card',
-          { y: 45, opacity: 0, scale: 0.97 },
-          { y: 0, opacity: 1, scale: 1, stagger: 0.15, duration: 0.6, ease: 'none' },
-          0.1
-        );
+      // KỊCH BẢN 8: TRANSPARENT PRICING
+      gsap.fromTo(
+        '.pricing-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#bang-gia',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 9: TRUST & VERIFIED FAQ ACCORDION
-      // -------------------------------------------------------------
-      const faqTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.trust-faq-section',
-          start: 'top 80%',
-          end: 'bottom 85%',
-          scrub: 0.8,
-        },
-      });
+      gsap.fromTo(
+        '.pricing-card',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '#bang-gia',
+            start: 'top 84%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      faqTl
-        .from('.faq-header', {
-          y: 25,
-          opacity: 0,
-          duration: 0.2,
-        }, 0)
-        .fromTo('.faq-item',
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'none' },
-          0.1
-        );
+      // KỊCH BẢN 9: TRUST & FAQ ACCORDION
+      gsap.fromTo(
+        '.faq-header',
+        { y: 25, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.trust-faq-section',
+            start: 'top 88%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // -------------------------------------------------------------
-      // KỊCH BẢN 10: FINAL CINEMATIC CTA SECTION (CỰC QUANG NỞ RỘNG KHI CUỘN)
-      // -------------------------------------------------------------
-      const finalCtaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.final-cta-section',
-          start: 'top 85%',
-          end: 'bottom bottom',
-          scrub: 1,
-        },
-      });
+      gsap.fromTo(
+        '.faq-item',
+        { y: 15, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          stagger: 0.06,
+          duration: 0.45,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.trust-faq-section',
+            start: 'top 84%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      finalCtaTl
-        .fromTo('.final-cta-card',
-          { scale: 0.92, y: 50, opacity: 0 },
-          { scale: 1, y: 0, opacity: 1, duration: 0.6, ease: 'none' },
-          0
-        )
-        .fromTo('.final-cta-glow',
-          { scale: 0.7, opacity: 0.1 },
-          { scale: 1.4, opacity: 0.55, duration: 0.8, ease: 'none' },
-          0.1
-        )
-        .fromTo('.final-cta-badge',
-          { y: -10, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.3, ease: 'none' },
-          0.2
-        )
-        .fromTo('.final-cta-title',
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, ease: 'none' },
-          0.25
-        )
-        .fromTo('.final-cta-desc',
-          { y: 15, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, ease: 'none' },
-          0.3
-        )
-        .fromTo('.final-cta-buttons',
-          { y: 15, scale: 0.95, opacity: 0 },
-          { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: 'none' },
-          0.35
-        );
+      // KỊCH BẢN 10: FINAL CINEMATIC CTA SECTION
+      gsap.fromTo(
+        '.final-cta-card',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.final-cta-section',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
 
-      // Làm mới lại tính toán vị trí của ScrollTrigger sau khi render
+      // Tự động làm mới ScrollTrigger sau khi render
       const refreshTimer = setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 300);
+      }, 250);
 
-      // Cleanup function cho ticker và timeout
       return () => {
         clearTimeout(refreshTimer);
         if (updateTicker) {
